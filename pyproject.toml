@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypto-trading"
+version = "0.1.0"
+description = "Crypto spot long-only paper trading MVP foundation."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pydantic",
+    "pydantic-settings",
+    "PyYAML",
+    "httpx",
+    "websockets",
+    "SQLAlchemy",
+    "alembic",
+    "psycopg",
+    "pandas",
+    "numpy",
+    "pyarrow",
+    "fastapi",
+    "jinja2",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+    "import-linter",
+    "pre-commit",
+    "types-PyYAML",
+    "pandas-stubs",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src", "src.*", "scripts", "scripts.*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["."]
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".omx",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_configs = true
+exclude = [
+    "^\\.venv/",
+    "^\\.omx/",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "network: tests that touch external network services and are excluded from default verification",
+]
+

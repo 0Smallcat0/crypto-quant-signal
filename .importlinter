@@ -1,0 +1,23 @@
+[importlinter]
+root_package = src
+include_external_packages = True
+
+[importlinter:contract:domain_independence]
+name = Domain must not import business, runtime, backtest, API, or scripts packages
+type = forbidden
+source_modules =
+    src.domain
+forbidden_modules =
+    src.config
+    src.data
+    src.features
+    src.strategies
+    src.portfolio
+    src.risk
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts

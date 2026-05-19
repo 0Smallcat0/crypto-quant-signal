@@ -1,0 +1,22 @@
+services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: crypto_trading_timescaledb
+    environment:
+      POSTGRES_USER: crypto
+      POSTGRES_PASSWORD: crypto_dev_only
+      POSTGRES_DB: crypto_quant
+    ports:
+      - "54320:5432"
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crypto -d crypto_quant"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+volumes:
+  timescaledb_data:
+

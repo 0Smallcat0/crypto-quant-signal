@@ -1,0 +1,37 @@
+# Local agent/runtime state
+.omx/
+
+# Python environments and caches
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.import_linter_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Local configuration and secrets
+.env*
+
+# Local data and database artifacts
+/data/
+*.db
+*.sqlite
+*.sqlite3
+timescaledb-data/
+postgres-data/
+
+# Editor and OS noise
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+Desktop.ini
