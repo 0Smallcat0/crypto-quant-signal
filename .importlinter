@@ -21,3 +21,22 @@ forbidden_modules =
     src.runtime
     src.api
     scripts
+
+[importlinter:contract:feature_independence]
+name = Features must stay neutral and avoid stateful trading layers
+type = forbidden
+source_modules =
+    src.features
+forbidden_modules =
+    src.config
+    src.data
+    src.strategies
+    src.portfolio
+    src.risk
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts

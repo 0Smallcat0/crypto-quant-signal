@@ -1,0 +1,88 @@
+version: "1"
+data_source:
+  provider: binance_spot_public
+  symbols:
+    - BTCUSDT
+    - ETHUSDT
+    - SOLUSDT
+  timeframe: 15m
+  rest_base_url_candidates:
+    - https://data-api.binance.vision
+    - https://api.binance.com
+    - https://api-gcp.binance.com
+    - https://api1.binance.com
+    - https://api2.binance.com
+    - https://api3.binance.com
+    - https://api4.binance.com
+  ws_stream_base_url_candidates:
+    - wss://data-stream.binance.vision/stream
+    - wss://stream.binance.com:443/stream
+    - wss://stream.binance.com:9443/stream
+  timeout_seconds: "10"
+  private_api_enabled: false
+  api_key_required: false
+strategy:
+  name: large_liquid_trend_15
+  allowed_signals:
+    - LONG
+    - FLAT
+  allow_short: false
+  parameters:
+    momentum_lookback_candles: 12
+    trend_lookback_candles: 48
+    volume_lookback_candles: 96
+    minimum_entry_score: "0.70"
+    exit_score: "0.40"
+portfolio:
+  max_active_positions: 3
+  max_symbol_weight: "0.35"
+  max_gross_exposure: "1.0"
+  cash_allowed: true
+  cooldown_enabled: true
+  allow_short: false
+risk:
+  min_notional_usdt: "10"
+  stale_data_max_age_seconds: 120
+  max_drawdown_fraction: "0.20"
+  daily_loss_pause_fraction: "0.05"
+  short_exposure_enabled: false
+  margin_enabled: false
+  leverage_enabled: false
+execution:
+  mode: paper
+  fee_bps: "10"
+  slippage_bps: "5"
+  quantity_step: "0.000001"
+  price_tick: "0.01"
+  real_orders_enabled: false
+  private_api_enabled: false
+  margin_enabled: false
+  leverage_enabled: false
+account:
+  account_id: paper-main
+  initial_cash: "1000"
+  quote_asset: USDT
+runtime:
+  mode: paper
+  decision_timeframe: 15m
+  config_snapshot_required: true
+  halt_on_stale_data: true
+  idempotency_key_namespace: paper-runtime
+  real_trading_enabled: false
+  private_api_enabled: false
+storage:
+  backend: postgresql
+  host: localhost
+  port: 54320
+  database: crypto_quant
+  username: crypto
+  password: crypto_dev_only
+  snapshot_directory: docs/reports/config-snapshots
+api_dashboard:
+  enabled: true
+  host: 127.0.0.1
+  port: 8000
+  read_only: true
+  manual_orders_enabled: false
+  risk_limit_mutation_enabled: false
+  private_account_access_enabled: false

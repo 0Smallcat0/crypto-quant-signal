@@ -1,1 +1,43 @@
-"""Shared domain type package scaffold."""
+"""Shared domain types for the paper-trading MVP."""
+
+from src.domain.types import (
+    Candle,
+    DomainValidationError,
+    Fee,
+    Money,
+    OrderIntent,
+    OrderSide,
+    Position,
+    Price,
+    Quantity,
+    RiskDecision,
+    RiskDecisionStatus,
+    Signal,
+    Symbol,
+    TargetPosition,
+    Timeframe,
+    VirtualAccountSnapshot,
+    VirtualFill,
+    VirtualOrder,
+)
+
+__all__ = [
+    "Candle",
+    "DomainValidationError",
+    "Fee",
+    "Money",
+    "OrderIntent",
+    "OrderSide",
+    "Position",
+    "Price",
+    "Quantity",
+    "RiskDecision",
+    "RiskDecisionStatus",
+    "Signal",
+    "Symbol",
+    "TargetPosition",
+    "Timeframe",
+    "VirtualAccountSnapshot",
+    "VirtualFill",
+    "VirtualOrder",
+]
