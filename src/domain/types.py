@@ -36,6 +36,8 @@ class RiskDecisionStatus(Enum):
 
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
+    PAUSED = "PAUSED"
+    STOPPED = "STOPPED"
 
 
 def _require_decimal(name: str, value: Decimal) -> None:
@@ -189,10 +191,23 @@ class VirtualOrder:
 
     order_id: str
     intent: OrderIntent
+    risk_decision: RiskDecision
     approved_at: datetime
 
     def __post_init__(self) -> None:
         _require_non_empty("order_id", self.order_id)
+        if not isinstance(self.intent, OrderIntent):
+            msg = "intent must be OrderIntent"
+            raise DomainValidationError(msg)
+        if not isinstance(self.risk_decision, RiskDecision):
+            msg = "risk_decision must be RiskDecision"
+            raise DomainValidationError(msg)
+        if self.risk_decision.intent != self.intent:
+            msg = "risk decision intent must match virtual order intent"
+            raise DomainValidationError(msg)
+        if self.risk_decision.status is not RiskDecisionStatus.APPROVED:
+            msg = "virtual order requires an approved risk decision"
+            raise DomainValidationError(msg)
         _require_utc_datetime("approved_at", self.approved_at)
 
 
@@ -264,6 +279,6 @@ class RiskDecision:
             msg = "reason_codes must contain non-empty strings"
             raise DomainValidationError(msg)
         _require_utc_datetime("decided_at", self.decided_at)
-        if self.status is RiskDecisionStatus.REJECTED and not self.reason_codes:
-            msg = "rejected risk decision must include at least one reason code"
+        if self.status is not RiskDecisionStatus.APPROVED and not self.reason_codes:
+            msg = "non-approved risk decision must include at least one reason code"
             raise DomainValidationError(msg)

@@ -30,7 +30,9 @@ strategy:
   parameters:
     momentum_lookback_candles: 12
     trend_lookback_candles: 48
+    breakout_lookback_candles: 96
     volume_lookback_candles: 96
+    volatility_lookback_candles: 48
     minimum_entry_score: "0.70"
     exit_score: "0.40"
 portfolio:

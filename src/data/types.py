@@ -66,6 +66,39 @@ class SymbolFilters:
 
 
 @dataclass(frozen=True, slots=True)
+class UniverseSelectionRules:
+    """Public-data eligibility floors for the Core MVP universe."""
+
+    quote_asset: str = "USDT"
+    min_closed_15m_candles: int = 96
+    min_recent_quote_volume: Decimal = Decimal("100000")
+
+    def __post_init__(self) -> None:
+        if not self.quote_asset.strip():
+            msg = "quote_asset must not be empty"
+            raise MarketDataValidationError(msg)
+        if self.min_closed_15m_candles <= 0:
+            msg = "min_closed_15m_candles must be positive"
+            raise MarketDataValidationError(msg)
+        _require_positive_decimal("min_recent_quote_volume", self.min_recent_quote_volume)
+
+
+@dataclass(frozen=True, slots=True)
+class UniverseEligibilityMetrics:
+    """Closed-candle public metrics used to admit symbols into the MVP universe."""
+
+    symbol: Symbol
+    closed_15m_candle_count: int
+    recent_quote_volume: Decimal
+
+    def __post_init__(self) -> None:
+        if self.closed_15m_candle_count < 0:
+            msg = "closed_15m_candle_count must not be negative"
+            raise MarketDataValidationError(msg)
+        _require_non_negative_decimal("recent_quote_volume", self.recent_quote_volume)
+
+
+@dataclass(frozen=True, slots=True)
 class BookTickerSnapshot:
     """Best public bid/ask snapshot for one Binance Spot symbol."""
 

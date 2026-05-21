@@ -22,6 +22,8 @@ from src.data.types import (
     MarketDataError,
     MarketDataValidationError,
     SymbolFilters,
+    UniverseEligibilityMetrics,
+    UniverseSelectionRules,
     UniverseSnapshot,
 )
 from src.domain import Candle, Symbol, Timeframe
@@ -30,6 +32,10 @@ BINANCE_SOURCE = "binance_spot_public"
 
 _COMMON_QUOTE_ASSETS = ("USDT", "FDUSD", "USDC", "TUSD", "BUSD", "BTC", "ETH", "BNB")
 _EXCLUDED_STABLE_BASE_ASSETS = frozenset({"USDT", "USDC", "FDUSD", "TUSD", "BUSD", "DAI", "USDP"})
+_EXCLUDED_FIAT_PROXY_BASE_ASSETS = frozenset(
+    {"AUD", "BRL", "EUR", "GBP", "NGN", "RUB", "TRY", "UAH", "ZAR"}
+)
+_LEVERAGED_TOKEN_SUFFIXES = ("UP", "DOWN", "BULL", "BEAR")
 
 
 class BinanceSpotPublicClient:
@@ -337,23 +343,65 @@ def parse_depth_snapshot_payload(
 def build_universe_snapshot(
     symbol_filters: Iterable[SymbolFilters],
     *,
+    metrics: Iterable[UniverseEligibilityMetrics],
     created_at: datetime,
-    quote_asset: str = "USDT",
+    rules: UniverseSelectionRules | None = None,
 ) -> UniverseSnapshot:
-    """Build the MVP public-data universe from available symbol filter metadata."""
+    """Build the MVP universe from public filters and closed-candle metrics."""
 
-    eligible_symbols = tuple(
-        filters.symbol
+    selection_rules = rules or UniverseSelectionRules()
+    metrics_by_symbol = _metrics_by_symbol(metrics)
+    eligible_symbols_with_metrics = [
+        (filters.symbol, symbol_metrics)
         for filters in symbol_filters
-        if filters.status == "TRADING"
-        and filters.is_spot_trading_allowed
-        and filters.symbol.quote_asset == quote_asset
-        and filters.symbol.base_asset not in _EXCLUDED_STABLE_BASE_ASSETS
+        if (symbol_metrics := metrics_by_symbol.get(filters.symbol.value)) is not None
+        and _is_universe_eligible(filters, symbol_metrics, selection_rules)
+    ]
+    eligible_symbols = tuple(
+        symbol
+        for symbol, _symbol_metrics in sorted(
+            eligible_symbols_with_metrics,
+            key=lambda item: (-item[1].recent_quote_volume, item[0].value),
+        )
     )
     return UniverseSnapshot(
         symbols=eligible_symbols,
         created_at=created_at,
         source=BINANCE_SOURCE,
+    )
+
+
+def build_universe_eligibility_metrics(
+    candles: Iterable[Candle],
+) -> tuple[UniverseEligibilityMetrics, ...]:
+    """Summarize closed 15m public candles for universe eligibility checks."""
+
+    metrics_by_symbol: dict[str, tuple[Symbol, int, Decimal]] = {}
+    for candle in candles:
+        if not candle.is_closed:
+            msg = "universe metrics require closed candles"
+            raise MarketDataValidationError(msg)
+        if candle.timeframe.value != "15m":
+            msg = "universe metrics require 15m candles"
+            raise MarketDataValidationError(msg)
+        previous = metrics_by_symbol.get(candle.symbol.value)
+        symbol = candle.symbol
+        count = 0
+        quote_volume = Decimal("0")
+        if previous is not None:
+            symbol, count, quote_volume = previous
+        metrics_by_symbol[candle.symbol.value] = (
+            symbol,
+            count + 1,
+            quote_volume + (candle.close_price * candle.volume),
+        )
+    return tuple(
+        UniverseEligibilityMetrics(
+            symbol=symbol,
+            closed_15m_candle_count=count,
+            recent_quote_volume=quote_volume,
+        )
+        for _symbol_value, (symbol, count, quote_volume) in sorted(metrics_by_symbol.items())
     )
 
 
@@ -379,6 +427,37 @@ def _symbols_params(symbols: Iterable[str] | None) -> dict[str, str]:
     if len(symbol_tuple) > 1:
         return {"symbols": json.dumps(symbol_tuple)}
     return {}
+
+
+def _metrics_by_symbol(
+    metrics: Iterable[UniverseEligibilityMetrics],
+) -> dict[str, UniverseEligibilityMetrics]:
+    metrics_by_symbol: dict[str, UniverseEligibilityMetrics] = {}
+    for symbol_metrics in metrics:
+        symbol_value = symbol_metrics.symbol.value
+        if symbol_value in metrics_by_symbol:
+            msg = f"duplicate universe metrics symbol: {symbol_value}"
+            raise MarketDataValidationError(msg)
+        metrics_by_symbol[symbol_value] = symbol_metrics
+    return metrics_by_symbol
+
+
+def _is_universe_eligible(
+    filters: SymbolFilters,
+    metrics: UniverseEligibilityMetrics,
+    rules: UniverseSelectionRules,
+) -> bool:
+    base_asset = filters.symbol.base_asset
+    return (
+        filters.status == "TRADING"
+        and filters.is_spot_trading_allowed
+        and filters.symbol.quote_asset == rules.quote_asset
+        and base_asset not in _EXCLUDED_STABLE_BASE_ASSETS
+        and base_asset not in _EXCLUDED_FIAT_PROXY_BASE_ASSETS
+        and not base_asset.endswith(_LEVERAGED_TOKEN_SUFFIXES)
+        and metrics.closed_15m_candle_count >= rules.min_closed_15m_candles
+        and metrics.recent_quote_volume >= rules.min_recent_quote_volume
+    )
 
 
 def symbol_from_binance_native(native_symbol: str) -> Symbol:

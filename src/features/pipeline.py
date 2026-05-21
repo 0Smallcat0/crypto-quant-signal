@@ -8,6 +8,7 @@ from decimal import Decimal
 from src.domain import Candle
 from src.features.types import (
     FeaturePipelineConfig,
+    FeaturePipelineParameterValues,
     FeaturePipelineValidationError,
     FeatureSnapshot,
     FeatureSourceRange,
@@ -18,11 +19,11 @@ def build_feature_snapshots(
     candles: Iterable[Candle],
     *,
     btc_candles: Iterable[Candle],
-    config: FeaturePipelineConfig | None = None,
+    config: FeaturePipelineParameterValues | None = None,
 ) -> tuple[FeatureSnapshot, ...]:
     """Build point-in-time feature snapshots from closed 15m candles."""
 
-    feature_config = config or FeaturePipelineConfig()
+    feature_config = _feature_pipeline_config_from(config)
     primary_candles = _prepare_candles(candles, label="candles")
     btc_history = _prepare_candles(btc_candles, label="btc_candles")
     _require_same_stream(primary_candles, label="candles")
@@ -133,6 +134,20 @@ def _required_candle_count(config: FeaturePipelineConfig) -> int:
         config.breakout_lookback_candles + 1,
         config.volume_lookback_candles + 1,
         config.volatility_lookback_candles + 1,
+    )
+
+
+def _feature_pipeline_config_from(
+    config: FeaturePipelineParameterValues | None,
+) -> FeaturePipelineConfig:
+    if config is None:
+        return FeaturePipelineConfig()
+    return FeaturePipelineConfig(
+        momentum_lookback_candles=config.momentum_lookback_candles,
+        trend_lookback_candles=config.trend_lookback_candles,
+        breakout_lookback_candles=config.breakout_lookback_candles,
+        volume_lookback_candles=config.volume_lookback_candles,
+        volatility_lookback_candles=config.volatility_lookback_candles,
     )
 
 

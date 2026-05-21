@@ -22,6 +22,81 @@ forbidden_modules =
     src.api
     scripts
 
+[importlinter:contract:data_boundary]
+name = Data must stay public-data-only and avoid trading layers
+type = forbidden
+source_modules =
+    src.data
+forbidden_modules =
+    src.config
+    src.features
+    src.strategies
+    src.portfolio
+    src.risk
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
+[importlinter:contract:config_boundary]
+name = Config must not import runtime or business implementation packages
+type = forbidden
+source_modules =
+    src.config
+forbidden_modules =
+    src.data
+    src.features
+    src.strategies
+    src.portfolio
+    src.risk
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
+[importlinter:contract:strategy_boundary]
+name = Strategy must not size, trade, execute, persist, or bypass risk
+type = forbidden
+source_modules =
+    src.strategies
+forbidden_modules =
+    src.config
+    src.data
+    src.portfolio
+    src.risk
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
+[importlinter:contract:portfolio_boundary]
+name = Portfolio must not depend on strategy implementation or trading layers
+type = forbidden
+source_modules =
+    src.portfolio
+forbidden_modules =
+    src.config
+    src.data
+    src.features
+    src.strategies
+    src.risk
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
 [importlinter:contract:feature_independence]
 name = Features must stay neutral and avoid stateful trading layers
 type = forbidden
@@ -35,6 +110,63 @@ forbidden_modules =
     src.risk
     src.execution
     src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
+[importlinter:contract:risk_boundary]
+name = Risk must evaluate supplied facts without importing data, config, or downstream layers
+type = forbidden
+source_modules =
+    src.risk
+forbidden_modules =
+    src.config
+    src.data
+    src.features
+    src.strategies
+    src.portfolio
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
+[importlinter:contract:execution_boundary]
+name = Execution must stay paper-only and avoid upstream/downstream orchestration layers
+type = forbidden
+source_modules =
+    src.execution
+forbidden_modules =
+    src.config
+    src.data
+    src.features
+    src.strategies
+    src.portfolio
+    src.risk
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
+[importlinter:contract:accounting_boundary]
+name = Accounting must keep virtual ledger state independent from broker and orchestration layers
+type = forbidden
+source_modules =
+    src.accounting
+forbidden_modules =
+    src.config
+    src.data
+    src.features
+    src.strategies
+    src.portfolio
+    src.risk
+    src.execution
     src.monitoring
     src.backtest
     src.runtime

@@ -7,6 +7,7 @@ from src.binance_public_hosts import (
 from src.data.binance import (
     BinanceSpotPublicClient,
     build_closed_kline_stream_url,
+    build_universe_eligibility_metrics,
     build_universe_snapshot,
     parse_book_ticker_payload,
     parse_depth_snapshot_payload,
@@ -34,6 +35,8 @@ from src.data.types import (
     MarketDataError,
     MarketDataValidationError,
     SymbolFilters,
+    UniverseEligibilityMetrics,
+    UniverseSelectionRules,
     UniverseSnapshot,
 )
 
@@ -52,8 +55,11 @@ __all__ = [
     "PublicDataSmokeResult",
     "PublicDataSmokeStatus",
     "SymbolFilters",
+    "UniverseEligibilityMetrics",
+    "UniverseSelectionRules",
     "UniverseSnapshot",
     "build_closed_kline_stream_url",
+    "build_universe_eligibility_metrics",
     "build_universe_snapshot",
     "dns_resolves",
     "first_passing_public_rest_base_url",

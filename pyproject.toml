@@ -10,7 +10,6 @@ readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "pydantic",
-    "pydantic-settings",
     "PyYAML",
     "httpx",
     "websockets",
@@ -31,9 +30,7 @@ dev = [
     "ruff",
     "mypy",
     "import-linter",
-    "pre-commit",
     "types-PyYAML",
-    "pandas-stubs",
 ]
 
 [tool.setuptools.packages.find]
@@ -72,4 +69,3 @@ testpaths = ["tests"]
 markers = [
     "network: tests that touch external network services and are excluded from default verification",
 ]
-

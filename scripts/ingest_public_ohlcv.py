@@ -17,6 +17,7 @@ from src.data import (
     MarketDataError,
     PublicDataSmokeResult,
     PublicDataSmokeStatus,
+    build_universe_eligibility_metrics,
     build_universe_snapshot,
     first_passing_public_rest_base_url,
     inspect_candle_quality,
@@ -93,7 +94,12 @@ async def run(args: argparse.Namespace) -> None:
         observed_at=observed_at,
         stale_after=timedelta(seconds=config.risk.stale_data_max_age_seconds),
     )
-    universe = build_universe_snapshot(symbol_filters, created_at=observed_at)
+    universe_metrics = build_universe_eligibility_metrics(candles)
+    universe = build_universe_snapshot(
+        symbol_filters,
+        metrics=universe_metrics,
+        created_at=observed_at,
+    )
 
     print(
         json.dumps(

@@ -138,14 +138,18 @@ class StrategyParametersConfig(CoreConfigModel):
 
     momentum_lookback_candles: int = 12
     trend_lookback_candles: int = 48
+    breakout_lookback_candles: int = 96
     volume_lookback_candles: int = 96
+    volatility_lookback_candles: int = 48
     minimum_entry_score: Decimal = Decimal("0.70")
     exit_score: Decimal = Decimal("0.40")
 
     @field_validator(
         "momentum_lookback_candles",
         "trend_lookback_candles",
+        "breakout_lookback_candles",
         "volume_lookback_candles",
+        "volatility_lookback_candles",
     )
     @classmethod
     def _validate_positive_windows(cls, value: int, info: object) -> int:

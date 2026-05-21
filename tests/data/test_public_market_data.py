@@ -12,7 +12,9 @@ from src.data import (
     BinanceSpotPublicClient,
     CandleIssueCode,
     MarketDataValidationError,
+    UniverseSelectionRules,
     build_closed_kline_stream_url,
+    build_universe_eligibility_metrics,
     build_universe_snapshot,
     inspect_candle_quality,
     parse_book_ticker_payload,
@@ -67,6 +69,49 @@ def _closed_candle(open_time: datetime, symbol: Symbol | None = None) -> Candle:
         received_at=open_time + timedelta(minutes=16),
     )
     return candle
+
+
+def _history(
+    symbol: Symbol,
+    *,
+    count: int,
+    close: str = "100",
+    volume: str = "1000",
+) -> tuple[Candle, ...]:
+    start = datetime(2026, 5, 20, 0, 0, tzinfo=UTC)
+    return tuple(
+        Candle(
+            symbol=symbol,
+            timeframe=_timeframe(),
+            open_time=start + timedelta(minutes=15 * index),
+            close_time=start + timedelta(minutes=15 * (index + 1)) - timedelta(milliseconds=1),
+            open_price=Decimal(close),
+            high_price=Decimal(close),
+            low_price=Decimal(close),
+            close_price=Decimal(close),
+            volume=Decimal(volume),
+            is_closed=True,
+        )
+        for index in range(count)
+    )
+
+
+def _symbol_payload(
+    symbol: str,
+    base_asset: str,
+    *,
+    quote_asset: str = "USDT",
+    status: str = "TRADING",
+    is_spot_trading_allowed: bool = True,
+) -> dict[str, object]:
+    return {
+        "symbol": symbol,
+        "status": status,
+        "baseAsset": base_asset,
+        "quoteAsset": quote_asset,
+        "isSpotTradingAllowed": is_spot_trading_allowed,
+        "filters": [],
+    }
 
 
 def test_rest_klines_are_parsed_as_closed_utc_domain_candles() -> None:
@@ -243,7 +288,12 @@ def test_exchange_info_symbol_filters_and_universe_snapshot_are_created() -> Non
     btc_filters = filters[0]
     snapshot = build_universe_snapshot(
         filters,
+        metrics=build_universe_eligibility_metrics(_history(_symbol(), count=3)),
         created_at=datetime(2026, 5, 20, 0, 0, tzinfo=UTC),
+        rules=UniverseSelectionRules(
+            min_closed_15m_candles=3,
+            min_recent_quote_volume=Decimal("100"),
+        ),
     )
 
     assert btc_filters.symbol == _symbol()
@@ -251,6 +301,76 @@ def test_exchange_info_symbol_filters_and_universe_snapshot_are_created() -> Non
     assert btc_filters.quantity_step_size == Decimal("0.00001000")
     assert btc_filters.min_notional == Decimal("10.00000000")
     assert tuple(symbol.value for symbol in snapshot.symbols) == ("BTCUSDT",)
+
+
+def test_universe_snapshot_enforces_maturity_liquidity_and_spot_usdt_rules() -> None:
+    payload = {
+        "symbols": [
+            _symbol_payload("BTCUSDT", "BTC"),
+            _symbol_payload("ETHUSDT", "ETH"),
+            _symbol_payload("USDCUSDT", "USDC"),
+            _symbol_payload("EURUSDT", "EUR"),
+            _symbol_payload("BTCUPUSDT", "BTCUP"),
+            _symbol_payload("LOWLIQUSDT", "LOWLIQ"),
+            _symbol_payload("NEWUSDT", "NEW"),
+            _symbol_payload("NOMETRICUSDT", "NOMETRIC"),
+            _symbol_payload("OLDUSDT", "OLD", status="HALT"),
+            _symbol_payload("ETHBTC", "ETH", quote_asset="BTC"),
+        ]
+    }
+    filters = parse_exchange_info_symbol_filters(payload)
+    metrics = build_universe_eligibility_metrics(
+        (
+            *_history(_symbol(), count=3, close="100", volume="1000"),
+            *_history(_eth_symbol(), count=3, close="200", volume="1000"),
+            *_history(Symbol("LOWLIQUSDT", "LOWLIQ", "USDT"), count=3, close="1", volume="1"),
+            *_history(Symbol("NEWUSDT", "NEW", "USDT"), count=1, close="100", volume="1000"),
+        )
+    )
+
+    snapshot = build_universe_snapshot(
+        filters,
+        metrics=metrics,
+        created_at=datetime(2026, 5, 20, 1, 0, tzinfo=UTC),
+        rules=UniverseSelectionRules(
+            min_closed_15m_candles=3,
+            min_recent_quote_volume=Decimal("100"),
+        ),
+    )
+
+    assert tuple(symbol.value for symbol in snapshot.symbols) == ("ETHUSDT", "BTCUSDT")
+
+
+def test_universe_metrics_require_closed_15m_candles() -> None:
+    open_candle = Candle(
+        symbol=_symbol(),
+        timeframe=_timeframe(),
+        open_time=datetime(2026, 5, 20, 0, 0, tzinfo=UTC),
+        close_time=datetime(2026, 5, 20, 0, 15, tzinfo=UTC) - timedelta(milliseconds=1),
+        open_price=Decimal("50000"),
+        high_price=Decimal("50100"),
+        low_price=Decimal("49900"),
+        close_price=Decimal("50050"),
+        volume=Decimal("1"),
+        is_closed=False,
+    )
+    with pytest.raises(MarketDataValidationError, match="closed candles"):
+        build_universe_eligibility_metrics((open_candle,))
+
+    one_hour_candle = Candle(
+        symbol=_symbol(),
+        timeframe=Timeframe("1h"),
+        open_time=open_candle.open_time,
+        close_time=open_candle.close_time,
+        open_price=open_candle.open_price,
+        high_price=open_candle.high_price,
+        low_price=open_candle.low_price,
+        close_price=open_candle.close_price,
+        volume=open_candle.volume,
+        is_closed=True,
+    )
+    with pytest.raises(MarketDataValidationError, match="15m"):
+        build_universe_eligibility_metrics((one_hour_candle,))
 
 
 def test_book_ticker_and_depth_snapshot_payloads_are_parsed() -> None:

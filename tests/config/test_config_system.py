@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 
@@ -13,6 +14,10 @@ from src.binance_public_hosts import (
     BINANCE_PUBLIC_WS_STREAM_BASE_URL_CANDIDATES,
 )
 from src.config import AppConfig, config_snapshot, load_config, write_config_snapshot
+from src.domain import Candle, Signal, Symbol, Timeframe
+from src.features import FeatureSnapshot, FeatureSourceRange, build_feature_snapshots
+from src.portfolio import build_portfolio_targets
+from src.strategies import StrategyDecision, evaluate_large_liquid_trend_15
 
 DEFAULT_CONFIG_PATH = Path("configs/runtime/paper_runtime.yaml")
 
@@ -30,6 +35,74 @@ def _with_nested_value(path: tuple[str, ...], value: object) -> dict[str, object
         cursor = next_value
     cursor[path[-1]] = value
     return updated
+
+
+def _symbol(value: str, base_asset: str) -> Symbol:
+    return Symbol(value=value, base_asset=base_asset, quote_asset="USDT")
+
+
+def _timeframe() -> Timeframe:
+    return Timeframe("15m")
+
+
+def _closed_candle(
+    symbol: Symbol,
+    index: int,
+    *,
+    close: str,
+    volume: str = "10",
+) -> Candle:
+    open_time = datetime(2026, 5, 20, 0, 0, tzinfo=UTC) + timedelta(minutes=15 * index)
+    close_price = Decimal(close)
+    return Candle(
+        symbol=symbol,
+        timeframe=_timeframe(),
+        open_time=open_time,
+        close_time=open_time + timedelta(minutes=15) - timedelta(milliseconds=1),
+        open_price=close_price,
+        high_price=close_price + Decimal("2"),
+        low_price=close_price - Decimal("2"),
+        close_price=close_price,
+        volume=Decimal(volume),
+        is_closed=True,
+    )
+
+
+def _strategy_snapshot(symbol: Symbol) -> FeatureSnapshot:
+    as_of = datetime(2026, 5, 20, 0, 14, 59, 999000, tzinfo=UTC)
+    return FeatureSnapshot(
+        symbol=symbol,
+        timeframe=_timeframe(),
+        as_of=as_of,
+        source_ranges=(
+            FeatureSourceRange(
+                symbol=symbol,
+                timeframe=_timeframe(),
+                start_open_time=as_of - timedelta(minutes=15) + timedelta(milliseconds=1),
+                end_close_time=as_of,
+            ),
+        ),
+        values={
+            "momentum_return": Decimal("0.01"),
+            "trend_distance": Decimal("0.01"),
+            "recent_high_distance": Decimal("0.01"),
+            "volume_ratio": Decimal("0.5"),
+            "btc_momentum_return": Decimal("-0.01"),
+            "btc_trend_distance": Decimal("-0.01"),
+        },
+    )
+
+
+def _portfolio_decision(value: str, base_asset: str, score: str) -> StrategyDecision:
+    generated_at = datetime(2026, 5, 20, 0, 14, 59, 999000, tzinfo=UTC)
+    return StrategyDecision(
+        symbol=_symbol(value, base_asset),
+        signal=Signal.LONG,
+        score=Decimal(score),
+        reason_codes=("CONFIG_INTEGRATION_TEST",),
+        generated_at_bar_close=generated_at,
+        executable_from_next_bar=generated_at + timedelta(milliseconds=1),
+    )
 
 
 def test_default_config_model_has_core_mvp_defaults() -> None:
@@ -87,6 +160,75 @@ def test_config_file_values_override_model_defaults(tmp_path: Path) -> None:
     assert config.runtime.idempotency_key_namespace == "paper-runtime-test"
 
 
+def test_loaded_config_values_drive_goal_e_f_g_parameters(tmp_path: Path) -> None:
+    data = _base_config_data()
+    strategy = data["strategy"]
+    portfolio = data["portfolio"]
+    assert isinstance(strategy, dict)
+    assert isinstance(portfolio, dict)
+    strategy_parameters = strategy["parameters"]
+    assert isinstance(strategy_parameters, dict)
+
+    strategy_parameters.update(
+        {
+            "momentum_lookback_candles": 1,
+            "trend_lookback_candles": 2,
+            "breakout_lookback_candles": 2,
+            "volume_lookback_candles": 2,
+            "volatility_lookback_candles": 2,
+            "minimum_entry_score": "0.80",
+            "exit_score": "0.20",
+        }
+    )
+    portfolio.update(
+        {
+            "max_active_positions": 1,
+            "max_symbol_weight": "0.20",
+            "max_gross_exposure": "0.50",
+        }
+    )
+    config_path = tmp_path / "paper_runtime.yaml"
+    config_path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+
+    config = load_config(config_path)
+    eth = _symbol("ETHUSDT", "ETH")
+    btc = _symbol("BTCUSDT", "BTC")
+    feature_snapshots = build_feature_snapshots(
+        (
+            _closed_candle(eth, 0, close="100", volume="10"),
+            _closed_candle(eth, 1, close="100", volume="20"),
+            _closed_candle(eth, 2, close="120", volume="60"),
+        ),
+        btc_candles=(
+            _closed_candle(btc, 0, close="200"),
+            _closed_candle(btc, 1, close="200"),
+            _closed_candle(btc, 2, close="220"),
+        ),
+        config=config.strategy.parameters,
+    )
+    assert len(feature_snapshots) == 1
+    assert feature_snapshots[0].values["momentum_return"] == Decimal("0.2")
+
+    strategy_decision = evaluate_large_liquid_trend_15(
+        _strategy_snapshot(eth),
+        parameters=config.strategy.parameters,
+    )
+    assert strategy_decision.score == Decimal("0.70")
+    assert strategy_decision.signal is Signal.FLAT
+
+    targets = build_portfolio_targets(
+        (
+            _portfolio_decision("BTCUSDT", "BTC", "0.90"),
+            _portfolio_decision("ETHUSDT", "ETH", "0.80"),
+        ),
+        parameters=config.portfolio,
+    )
+    assert [(target.symbol.value, target.target_weight) for target in targets.targets] == [
+        ("BTCUSDT", Decimal("0.20")),
+    ]
+    assert targets.cash_weight == Decimal("0.80")
+
+
 @pytest.mark.parametrize(
     ("path", "value"),
     (
@@ -119,6 +261,22 @@ def test_real_trading_and_private_api_flags_are_rejected(
     ),
 )
 def test_short_margin_and_leverage_flags_are_rejected(path: tuple[str, ...], value: object) -> None:
+    with pytest.raises(ValidationError):
+        AppConfig.model_validate(_with_nested_value(path, value))
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    (
+        (("api_dashboard", "read_only"), False),
+        (("api_dashboard", "manual_orders_enabled"), True),
+        (("api_dashboard", "risk_limit_mutation_enabled"), True),
+        (("api_dashboard", "private_account_access_enabled"), True),
+    ),
+)
+def test_api_dashboard_mutation_and_private_account_flags_are_rejected(
+    path: tuple[str, ...], value: object
+) -> None:
     with pytest.raises(ValidationError):
         AppConfig.model_validate(_with_nested_value(path, value))
 

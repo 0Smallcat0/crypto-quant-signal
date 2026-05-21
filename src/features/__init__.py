@@ -3,6 +3,7 @@
 from src.features.pipeline import build_feature_snapshots
 from src.features.types import (
     FeaturePipelineConfig,
+    FeaturePipelineParameterValues,
     FeaturePipelineValidationError,
     FeatureSnapshot,
     FeatureSourceRange,
@@ -10,6 +11,7 @@ from src.features.types import (
 
 __all__ = [
     "FeaturePipelineConfig",
+    "FeaturePipelineParameterValues",
     "FeaturePipelineValidationError",
     "FeatureSnapshot",
     "FeatureSourceRange",

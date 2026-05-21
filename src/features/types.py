@@ -7,12 +7,32 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
 from types import MappingProxyType
+from typing import Protocol
 
 from src.domain import Symbol, Timeframe
 
 
 class FeaturePipelineValidationError(ValueError):
     """Raised when candles are not safe for feature generation."""
+
+
+class FeaturePipelineParameterValues(Protocol):
+    """Readable lookback values accepted by the feature pipeline."""
+
+    @property
+    def momentum_lookback_candles(self) -> int: ...
+
+    @property
+    def trend_lookback_candles(self) -> int: ...
+
+    @property
+    def breakout_lookback_candles(self) -> int: ...
+
+    @property
+    def volume_lookback_candles(self) -> int: ...
+
+    @property
+    def volatility_lookback_candles(self) -> int: ...
 
 
 @dataclass(frozen=True, slots=True)
