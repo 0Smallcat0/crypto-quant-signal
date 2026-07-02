@@ -386,7 +386,7 @@ class RuntimeConfig(CoreConfigModel):
 
 
 class StorageConfig(CoreConfigModel):
-    """PostgreSQL-compatible runtime storage configuration."""
+    """PostgreSQL-compatible runtime storage plus research artifact paths."""
 
     backend: Literal["postgresql"] = "postgresql"
     host: str = "localhost"
@@ -395,8 +395,22 @@ class StorageConfig(CoreConfigModel):
     username: str = "crypto"
     password: str = "crypto_dev_only"
     snapshot_directory: str = "docs/reports/config-snapshots"
+    trial_registry_path: str = "docs/reports/research/trial_registry.jsonl"
+    holdout_lock_path: str = "docs/reports/research/holdout_lock.json"
+    backtest_reports_directory: str = "docs/reports/backtests"
+    candle_files_directory: str = "data/candles"
 
-    @field_validator("host", "database", "username", "password", "snapshot_directory")
+    @field_validator(
+        "host",
+        "database",
+        "username",
+        "password",
+        "snapshot_directory",
+        "trial_registry_path",
+        "holdout_lock_path",
+        "backtest_reports_directory",
+        "candle_files_directory",
+    )
     @classmethod
     def _validate_storage_strings(cls, value: str, info: object) -> str:
         field_name = getattr(info, "field_name", "storage string")

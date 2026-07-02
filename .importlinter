@@ -172,3 +172,14 @@ forbidden_modules =
     src.runtime
     src.api
     scripts
+
+[importlinter:contract:backtest_boundary]
+name = Backtest composes business packages but must not touch runtime, API, or scripts
+type = forbidden
+source_modules =
+    src.backtest
+forbidden_modules =
+    src.runtime
+    src.api
+    src.monitoring
+    scripts

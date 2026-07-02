@@ -25,9 +25,14 @@ CASH_HELD = "CASH_HELD"
 class LadderDecisionLike(Protocol):
     """Strategy output fields needed by the ladder target builder."""
 
-    symbol: Symbol
-    exposure_fraction: Decimal
-    reason_codes: tuple[str, ...]
+    @property
+    def symbol(self) -> Symbol: ...
+
+    @property
+    def exposure_fraction(self) -> Decimal: ...
+
+    @property
+    def reason_codes(self) -> tuple[str, ...]: ...
 
 
 @dataclass(frozen=True, slots=True)
