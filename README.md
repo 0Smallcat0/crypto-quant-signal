@@ -1,11 +1,17 @@
-# Crypto Quant Paper Trading MVP
+# Crypto Quant Signal MVP
 
-Clean rebuild for a crypto spot, long-only, public-data, 15-minute paper trading MVP.
+A crypto spot, long-only, public-data, DAILY signal notification system.
 
-The Core MVP starts with a `1000 USDT` virtual account and records virtual decisions,
-orders, fills, positions, cash, PnL, rejected orders, and risk events. It must not submit
-real exchange orders, read private account balances, require API keys, or add live trading
-paths in MVP v1.0.
+Every day after the UTC close, the system tells the user what to buy or sell and why;
+the user executes manually. A `1000 USDT` virtual account follows every signal in
+parallel as the honest scoreboard, recording virtual decisions, orders, fills,
+positions, cash, PnL, rejected orders, and risk events. The system never submits real
+exchange orders, never reads private account balances, and never requires API keys —
+permanently, by product definition.
+
+Design decisions are grounded in adversarially verified research:
+`docs/research/SIGNAL_DESIGN_RESEARCH.md`. Work queue: `GOALS.md` (v0.9).
+Qualification standard: `docs/contracts/VALIDATION_GATE_CONTRACT.md`.
 
 ## Goal A Status
 

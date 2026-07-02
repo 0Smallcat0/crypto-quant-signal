@@ -1,9 +1,10 @@
 # AGENTS.md
 
-Version: `v0.8-readable-expandable`
+Version: `v0.9-daily-signal-redefinition`
 Status: agent and contributor operating contract
-Last updated: `2026-05-19`
-Project: `Crypto Quant Paper Trading MVP v1.0`
+Last updated: `2026-07-02`
+Project: `Crypto Quant Signal MVP v1.0`
+Evidence basis: `docs/research/SIGNAL_DESIGN_RESEARCH.md` (2026-07-02)
 
 ---
 
@@ -11,17 +12,20 @@ Project: `Crypto Quant Paper Trading MVP v1.0`
 
 This file tells AI agents, coding assistants, and contributors how to work in this repository.
 
-The project is being rebuilt from zero as a paper trading MVP:
+The product is a DAILY signal notification system with a paper-trading scoreboard:
 
 ```text
-1000 USDT virtual account
-15-minute public market data
-spot long-only decisions
-virtual buy/sell orders
-no real exchange orders
+daily (UTC close) public market data decisions
+spot long-only exposure ladder
+signal notifications to the user, who executes manually
+1000 USDT virtual account follows every signal as the honest scoreboard
+no real exchange orders, ever (permanent product property)
 ```
 
-The goal is to build a system that can actively trade virtually while remaining safe, auditable, and expandable.
+The goal is to tell the user WHEN to enter and WHEN to exit, verifiably and
+auditable — and to prove or disprove the strategy's edge before real money
+follows it. Design decisions are grounded in adversarially verified research
+(`docs/research/SIGNAL_DESIGN_RESEARCH.md`).
 
 Plain language:
 
@@ -77,7 +81,7 @@ Allowed in MVP:
 - backtesting
 - paper trading through virtual account ledger
 
-Forbidden in MVP:
+Forbidden in MVP (and permanently, by product definition):
 
 - margin
 - leverage
@@ -87,9 +91,11 @@ Forbidden in MVP:
 - derivatives
 - short exposure
 - synthetic short exposure
-- real order submission
-- private exchange API
-- real account balance access
+- real order submission (permanent — the user is the only executor)
+- auto-execution of any kind (permanent)
+- private exchange API (permanent)
+- API keys (permanent)
+- real account balance access (permanent)
 
 ### 2.3 Signal And Position Rules
 
@@ -126,35 +132,41 @@ Paper trading must not:
 
 ```text
 public market data
-  -> closed 15m candle gate
-  -> feature pipeline
-  -> one active strategy
-  -> portfolio targets
+  -> closed DAILY candle gate (UTC close)
+  -> feature pipeline (SMA ensemble)
+  -> one active strategy (Daily Trend Ensemble, exposure ladder)
+  -> portfolio targets (ladder x risk budget)
   -> risk gate
-  -> paper broker
-  -> virtual account
+  -> signal notification (persisted, idempotent, advisory)
+  -> paper broker -> virtual account (scoreboard)
   -> read-only dashboard/API
 ```
+
+The human executes real trades manually, outside the system. 15m candles remain
+available as data granularity (cost measurement, later research), not as the
+decision timeframe.
 
 ### 3.2 Do Not Build In Core MVP
 
 ```text
-real trading bot
-private exchange client
-live account manager
+real trading bot (excluded permanently, not just in MVP)
+private exchange client (excluded permanently)
+live account manager (excluded permanently)
+intraday decision loop
 research lab as a blocker
 multi-strategy production allocator
 unbounded optimizer
 HMM or neural network strategy
 ```
 
-### 3.3 Initial Virtual Account
+### 3.3 Initial Virtual Account (the scoreboard)
 
 ```text
 initial_cash: 1000 USDT
 mode: paper
-real_orders: disabled
-private_api: disabled
+role: follows every signal in parallel — "what if you followed everything"
+real_orders: disabled (permanent)
+private_api: disabled (permanent)
 ```
 
 ---
@@ -210,6 +222,7 @@ src/portfolio/
 src/risk/
 src/execution/
 src/accounting/
+src/notify/       (Goal L: persisted, idempotent notification events)
 src/monitoring/
 ```
 
@@ -254,11 +267,13 @@ Scripts must not contain:
 
 ### 6.1 Candle Rules
 
-- Use only closed candles for feature and signal generation.
+- Decisions use closed DAILY candles (UTC close) only.
+- Use only closed candles for feature and signal generation, at any timeframe.
 - Still-open candles must not be used for strategy decisions.
 - Store candle close status when available.
 - If close status is unclear, infer conservatively.
 - Runtime candle closure should come from Binance Spot public kline closure fields when available.
+- No decision before the warmup floor (200 daily closes per asset).
 
 ### 6.2 Symbol And Time Rules
 
@@ -290,24 +305,33 @@ Stop and report if code:
 
 ## 7. Core MVP Strategy Rules
 
-The first active strategy is a readable trend strategy:
+The active strategy is a readable daily trend strategy:
 
 ```text
-Large Liquid Trend 15
-大幣高流動性 15 分鐘趨勢策略
+Daily Trend Ensemble
+日線趨勢均線組合（20/65/150/200 日 SMA，曝險五檔階梯）
+Contract: docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md
 ```
 
-It may also be described technically as a long-only time-series momentum style strategy, but avoid unnecessary jargon in the main documents.
+It is a long-only time-series trend rule: per asset, exposure equals the
+fraction of the four SMAs the close sits above (0/25/50/75/100%).
 
 Default behavior:
 
 ```text
-Check every 15 minutes.
-Trade only when the signal is strong enough.
-Let strong positions run.
-Exit weak positions.
-Avoid flip-flopping.
+Check once per day after the UTC daily close.
+Ladder up when more trend lines are reclaimed.
+Ladder down toward cash when they break.
+No shorting. No dip-buying. No cross-sectional rotation.
+Long silences are correct behavior.
 ```
+
+The four lookbacks {20, 65, 150, 200} are contract-fixed and uniform across
+assets. Changing or tuning them is a new strategy variant: it requires
+pre-registration in the trial registry (counts toward N) and a contract change.
+
+The superseded `Large Liquid Trend 15` (15m) code and contract remain in the
+repository as inactive reference — do not delete, do not wire into runtime.
 
 Do not hard-code parameters in business logic. Use config or strategy contract values.
 
@@ -362,6 +386,7 @@ Runtime must persist:
 - signals
 - targets
 - risk decisions
+- notification events (persisted BEFORE delivery, with reason codes)
 - virtual orders
 - virtual fills
 - account snapshots
@@ -372,8 +397,9 @@ Runtime must not:
 - depend on private API
 - need API keys
 - submit real orders
-- continue trading on stale data
+- continue increasing exposure on stale data
 - duplicate orders after restart
+- duplicate notifications after restart (idempotency keys required)
 
 ---
 
@@ -408,13 +434,16 @@ MVP API is read-only.
 
 Allowed views:
 
-- account
+- current signal state per asset (ladder position, sub-signals, reason codes)
+- notifications history
+- account (scoreboard)
 - positions
 - signals
 - virtual orders
 - virtual fills
 - rejected orders
 - risk status
+- validation gate status (trial count N, PBO/DSR when computed, holdout lock)
 - runtime health
 - data freshness
 
@@ -441,16 +470,24 @@ Do not introduce a full frontend framework unless a later goal authorizes it.
 
 ## 12. Research Rules
 
-Research is not a Core MVP blocker.
+Research is not a Core MVP blocker, but the VALIDATION GATE tooling is
+(Goal K): trial registry, CSCV/PBO, DSR, and the locked holdout are core
+infrastructure, not research extras. Full rules:
+`docs/contracts/VALIDATION_GATE_CONTRACT.md`.
 
-Allowed after Core MVP through a research contract:
+Non-negotiable from the first backtest onward:
+
+- every backtest run is registered (unregistered results are void)
+- the final ~12 months of data are locked as single-use holdout
+- iterated out-of-sample is not out-of-sample
+
+Allowed after Core MVP through pre-registered experiments (Goal P):
 
 - bounded parameter search
 - walk-forward validation
 - holdout testing
 - cost stress testing
 - Monte Carlo robustness checks
-- trial ledger
 - research report
 
 Forbidden in Core MVP:
@@ -506,17 +543,12 @@ Requires:
 - reporting rules
 - no automatic runtime deployment
 
-### 13.4 Adding Live Trading
+### 13.4 Live Trading / Auto-Execution
 
-Requires:
-
-- separate live trading contract
-- explicit human approval
-- secret handling plan
-- order submission safety plan
-- kill switch plan
-
-Live trading is not authorized by MVP v1.0.
+PERMANENTLY EXCLUDED by product definition (v0.9). The user is the only
+executor. No future contract may re-introduce order submission, private API
+access, or key custody into this product. If that need ever truly arises, it is
+a different product in a different repository.
 
 ---
 
@@ -554,13 +586,19 @@ Always test:
 
 - no `SHORT` signal
 - no negative position
+- no negative exposure fraction; fraction only in {0, .25, .5, .75, 1}
 - no sell greater than current holdings
 - no still-open candle signal
+- no decision before the 200-close warmup
 - no same-bar execution
 - no order below minimum notional
 - no order violating exchange filters
-- no trading on stale data
+- no exposure increase on stale data
 - no duplicate order after runtime restart
+- no duplicate notification after runtime restart
+- notification persisted before delivery, with reason codes
+- every backtest run appears in the trial registry
+- holdout lock is single-use (second unlock attempt fails)
 - paper broker never calls private API
 - virtual account ledger balances after fills
 
@@ -618,14 +656,17 @@ Do not add `Co-authored-by: OmX` unless the human explicitly requests that conve
 Stop and report if a task requires:
 
 - storing or exposing secrets
-- enabling real order submission
-- using private exchange API in MVP
+- enabling real order submission or any auto-execution
+- using private exchange API
 - adding leverage, margin, derivatives, or short exposure
 - weakening risk rules to make a bad action pass
 - using still-open candles for signals
 - hiding a failed verification result
-- changing universe or cost assumptions after seeing results without recording a new contract
-- adding research, ML, HMM, GA, or live trading during Core MVP without authorization
+- running or citing a backtest outside the trial registry
+- touching the locked holdout outside the single-use Goal O procedure
+- representing unqualified signals as qualified
+- changing universe or cost assumptions after seeing results without recording a new experiment
+- adding research, ML, HMM, GA during Core MVP without authorization
 
 ---
 

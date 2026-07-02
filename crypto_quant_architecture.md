@@ -1,9 +1,30 @@
 # Crypto Quant Paper Trading Architecture
 
-Version: `v0.8-readable-expandable`
+Version: `v0.8-readable-expandable` (see v0.9 Redefinition Notice below)
 Status: system foundation contract
-Last updated: `2026-05-19`
-Project: `Crypto Quant Paper Trading MVP v1.0`
+Last updated: `2026-07-02`
+Project: `Crypto Quant Signal MVP v1.0`
+
+---
+
+> ## v0.9 Redefinition Notice (2026-07-02)
+>
+> The product was redefined after adversarially verified design research
+> (`docs/research/SIGNAL_DESIGN_RESEARCH.md`). Where this document conflicts
+> with the deltas below, the deltas and `GOALS.md v0.9` win:
+>
+> | Topic | This document (v0.8) | Superseded by (v0.9) |
+> | --- | --- | --- |
+> | Product | 15m paper trading system | Daily signal notifications + manual execution + paper scoreboard |
+> | Decision timeframe | 15 minutes | 1 day (UTC close); 15m kept as data granularity |
+> | Active strategy | Large Liquid Trend 15 | Daily Trend Ensemble (`docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md`) |
+> | Universe | Large liquid USDT pairs | BTC + ETH core; SOL candidate pending gate |
+> | Validation | Baseline checks | Six-gate qualification (`docs/contracts/VALIDATION_GATE_CONTRACT.md`) |
+> | Live trading | Future contract-gated goal | PERMANENTLY EXCLUDED |
+> | New module | — | `src/notify/` (persisted, idempotent notification events) |
+>
+> The layered architecture, module boundaries, storage design, and safety rules
+> in this document remain authoritative.
 
 ---
 

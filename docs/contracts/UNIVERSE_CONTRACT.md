@@ -1,12 +1,30 @@
 # Universe Contract
 
-Status: Core MVP Goal D contract
+Status: Core MVP Goal D contract (v0.9 amendment: decision universe pinned)
 
 ## Purpose
 
 The Core MVP universe defines which public Binance Spot symbols are eligible to reach the feature and strategy layers.
 
 It is an input-safety contract, not a research or optimizer contract.
+
+## v0.9 Decision Universe (2026-07-02)
+
+Eligibility rules below define which symbols COULD be traded safely. The
+DECISION universe — which symbols the active strategy actually decides on —
+is pinned by verified research (`docs/research/SIGNAL_DESIGN_RESEARCH.md` §3.4):
+
+```text
+Core: BTCUSDT (50% risk budget), ETHUSDT (50% risk budget)
+Candidate: SOLUSDT — 0% until it independently passes the validation gate
+Excluded: broad altcoin universes (survivorship bias inflates equal-weighted
+backtests ~62.19%/yr; small-cap signals are pump-and-dump contaminated)
+```
+
+Expanding the decision universe (e.g., top-N liquidity rotation) requires a
+pre-registered experiment with survivorship-safe data (including delisted
+symbols) and a gate pass. Decision candles are DAILY (UTC close); the 15-minute
+rules below remain valid for data-quality and liquidity screening.
 
 ## Source Boundary
 

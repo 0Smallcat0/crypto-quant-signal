@@ -1,31 +1,49 @@
 # GOALS.md
 
-Version: `v0.8-readable-expandable`
-Status: Core MVP work queue
-Last updated: `2026-05-19`
-Project: `Crypto Quant Paper Trading MVP v1.0`
+Version: `v0.9-daily-signal-redefinition`
+Status: Core MVP work queue (redefined after design research)
+Last updated: `2026-07-02`
+Project: `Crypto Quant Signal MVP v1.0`
+Evidence basis: `docs/research/SIGNAL_DESIGN_RESEARCH.md` (2026-07-02)
 
 ---
 
 ## 0. Product Target
 
-Build a crypto spot, long-only, public-data, 15-minute paper trading system.
+Build a crypto spot, long-only, public-data, DAILY signal notification system.
 
 MVP output:
 
 ```text
-A 1000 USDT virtual account follows system-generated LONG/FLAT decisions.
-The user can see virtual buys, virtual sells, positions, cash, PnL, rejected orders, and risk events.
+Every day after the UTC daily close, the system tells the user WHAT to buy or sell and WHY.
+The user places orders manually. The system never touches an exchange account.
+A 1000 USDT virtual account follows every signal in parallel as the honest scoreboard.
 ```
-
-MVP does not submit real exchange orders.
 
 Plain language:
 
 ```text
-先做一個會用真實公開行情、但只在虛擬帳戶買賣的系統。
-不是先做實盤機器人，也不是先做研究平台。
+系統每天收盤後告訴你該進還是該出，你自己手動下單。
+虛擬帳戶同步照做，誠實記錄「如果完全照做會怎樣」。
+系統永遠不自動下單，永遠不需要 API key。
 ```
+
+### 0.1 What Changed From v0.8 (And Why)
+
+Every change below is grounded in adversarially verified evidence
+(`docs/research/SIGNAL_DESIGN_RESEARCH.md`, 19 confirmed / 11 refuted claims):
+
+| Decision | v0.8 | v0.9 | Evidence anchor |
+| --- | --- | --- | --- |
+| Product | Paper trading system | Signal notifications + manual execution + paper scoreboard | User requirement; execution constraints |
+| Decision timeframe | 15 minutes | 1 day (UTC close) | No after-cost evidence for <=1h passed verification; daily MA/TSM rules beat buy-and-hold after 10-50bps in 2014-2023 samples |
+| First strategy | Large Liquid Trend 15 | Daily Trend Ensemble (SMA 20/65/150/200 ladder) | Single-lookback superiority claims were refuted; ensemble spreads parameter risk and minimizes trials N |
+| Universe | Large liquid USDT pairs (BTC/ETH/SOL) | BTC + ETH core; SOL candidate pending its own gate pass | Equal-weighted broad altcoin backtests inflated ~62.19%/yr by survivorship bias; P&D contamination in small caps |
+| Validation | Baseline checks only | Six-gate qualification before trusting signals with real money | Unregistered-N backtests are "worthless" (Bailey & Lopez de Prado); random walks can show IS Sharpe 1.27 |
+| Live trading | Future goal T (contract-gated) | PERMANENTLY EXCLUDED | Product definition: the user is the executor; no key custody, no order path, ever |
+
+The v0.8 goal history (A-I) remains valid completed work. Its code carries forward;
+only the strategy layer and defaults are superseded (see Goal J).
 
 ---
 
@@ -35,44 +53,41 @@ Goals are split into three groups.
 
 ### 1.1 Core MVP
 
-Must be done first.
+Must be done first, in order.
 
 ```text
-A. Repository Foundation
-B. Domain Types
-C. Config System
-D. Public Market Data
-E. Feature Pipeline
-F. First Strategy
-G. Portfolio Targets
-H. Risk Gate
-I. Paper Broker + Accounting
-J. Backtest
-K. Paper Runtime
-L. Read-Only Dashboard
-M. Core MVP Complete
+A-I. Foundation (COMPLETED under v0.8 — see section 3)
+J. Daily Signal Strategy Retrofit
+K. Backtest + Validation Gate Tooling
+L. Signal Runtime (notifications + parallel scoreboard)
+M. Read-Only Dashboard
+N. Core MVP Complete
 ```
 
 ### 1.2 Post-MVP Validation
 
-Useful after Core MVP works.
-
 ```text
-N. Paper Runtime Stability Run
-O. Research Lab
+O. Signal-Live Qualification (the six-gate pass)
+P. Research Lab (pre-registered experiments only)
 ```
 
-### 1.3 Future Extensions
-
-Allowed later, not part of Core MVP.
+### 1.3 Future Extensions (allowed later, by contract)
 
 ```text
-P. HMM / ML Regime Research
-Q. Genetic Algorithm Parameter Research
-R. Multi-Strategy Studio
-S. Read-Only Real Account Reconciliation
-T. Live Trading Contract
+Q. HMM / ML Regime Research (research-only)
+R. Genetic Algorithm Parameter Research
+S. Multi-Strategy Studio
+T. Manual Fill Journal (user-entered fills; execution-quality tracking; no private API)
 ```
+
+### 1.4 Permanently Excluded
+
+```text
+Live trading. Auto-execution. Private exchange API. API keys. Real account access.
+```
+
+These are not "future goals". They are excluded by product definition:
+the user is the only executor. No new contract can re-introduce them into this product.
 
 ---
 
@@ -80,36 +95,30 @@ T. Live Trading Contract
 
 ### 2.1 Allowed In Core MVP
 
-- Public market data.
-- Binance Spot public REST/WebSocket.
-- Backtesting.
-- Paper trading through virtual account ledger.
-- Virtual orders.
-- Virtual fills.
-- Spot long-only portfolio logic.
+- Public market data (Binance Spot REST/WebSocket).
+- Daily closed candles for decisions; 15m candles as data granularity where useful.
+- Backtesting with trial registration.
+- Paper trading through the virtual account ledger (the scoreboard).
+- Virtual orders and virtual fills.
+- Spot long-only exposure-ladder portfolio logic.
+- Persisted, idempotent signal notification events (advisory only).
 - Read-only dashboard/API.
 
-### 2.2 Forbidden In Core MVP
+### 2.2 Forbidden In Core MVP (and beyond)
 
-- Real order submission.
-- Private exchange API.
-- API keys.
-- Real account balances.
-- Margin.
-- Leverage.
-- Borrowing.
-- Lending.
-- Derivatives.
-- Perpetual futures.
-- Short selling.
-- Negative position quantity.
-- Selling more than current holdings.
+- Real order submission (permanent).
+- Private exchange API (permanent).
+- API keys (permanent).
+- Real account balances (permanent).
+- Margin, leverage, borrowing, lending, derivatives, perpetual futures.
+- Short selling, negative position quantity, selling more than current holdings.
 - Using still-open candles for signal generation.
 - Same-bar execution.
+- Running any backtest without recording it in the trial registry (from Goal K on).
 
 ### 2.3 Baseline Verification
 
-Before claiming Core MVP complete:
+Before claiming any goal complete:
 
 ```bash
 ruff check .
@@ -119,701 +128,348 @@ lint-imports
 pytest -m "not network" tests -q
 ```
 
-Network tests are not part of unit tests or CI. Manual public-data smoke tests must be explicitly marked.
+Network tests are not part of unit tests or CI. Manual public-data smoke tests must be
+explicitly marked `pytest.mark.network`.
 
----
+### 2.4 Signal And Notification Rules
 
-## Goal A: Repository Foundation
+- A notification is advisory output, never an execution instruction to an exchange.
+- Every notification carries: symbol, action (increase/decrease ladder step), tranche
+  size (fraction of the asset's risk budget), reason codes, decision price, decision
+  timestamp (UTC daily close), and current risk status.
+- Notifications are persisted before delivery and deduplicated by idempotency key:
+  a runtime restart must never re-send an already-persisted notification.
+- Expected cadence per asset is a handful of notifications per year
+  (inference: roughly 4-15). Long silent stretches are correct behavior, not a bug.
 
-### Why
+### 2.5 Validation Gate (summary)
 
-Create a clean project foundation that future work can build on without carrying over legacy code.
-
-### Build
-
-- Initialize git repository.
-- Create `main` branch.
-- Add `.gitignore`.
-- Add Python 3.12 project config.
-- Add package scaffold.
-- Add test scaffold.
-- Add config folders.
-- Add contract folders.
-- Add local database compose file.
-- Add baseline tool configuration.
-
-### Required Choices
+No strategy output may be represented as "qualified" until all six gates pass
+(full text: `docs/contracts/VALIDATION_GATE_CONTRACT.md`):
 
 ```text
-Python: >=3.12,<3.13
-Environment: .venv
-Install: pip install -e ".[dev]" -c requirements/constraints-dev.txt
-Package manager: pip + pyproject.toml + constraints file
+1. Trial registry: every backtest run recorded; unregistered results are void.
+2. Data floor: >=1,000 daily observations spanning bull, bear, and recovery.
+3. PBO <= 0.05 via CSCV (S=16).
+4. DSR >= 0.95 (effective trial count N).
+5. Final holdout: most recent ~12 months, single use, never iterated.
+6. >=3 months paper trading with measured real costs within 1.5x assumption.
 ```
 
-Allowed runtime dependencies:
-
-```text
-pydantic
-pydantic-settings
-PyYAML
-httpx
-websockets
-SQLAlchemy
-alembic
-psycopg
-pandas
-numpy
-pyarrow
-fastapi
-jinja2
-uvicorn
-```
-
-Allowed dev dependencies:
-
-```text
-pytest
-ruff
-mypy
-import-linter
-pre-commit
-types-PyYAML
-pandas-stubs
-```
-
-Not part of Core MVP dependencies:
-
-```text
-ccxt
-torch
-hmmlearn
-scikit-learn
-ta-lib
-optuna
-tensorflow
-xgboost
-lightgbm
-```
-
-### Done When
-
-- repo is initialized
-- base files exist
-- package imports
-- tests can run
-- verification commands are documented
-- initial commit contains docs and scaffold
-- no remote is configured
-- no private API code exists
-
-### Not Now
-
-- no strategy implementation yet
-- no real exchange API
-- no research lab
-- no live trading
+Passing the gate is a necessary condition to trust signals, not a profit guarantee.
 
 ---
 
-## Goal B: Domain Types
+## 3. Goals A-I: Completed Foundation (v0.8 history)
 
-### Why
+All nine foundation goals were completed and verified under v0.8
+(151 unit tests passing; commits `8b6ac35`, `ca35428`, `f876f10`).
+Full original text lives in git history. What carries forward:
 
-Make illegal trading states hard or impossible to represent.
-
-### Build
-
-Domain objects for:
-
-- symbol
-- timeframe
-- candle
-- money
-- price
-- quantity
-- signal
-- position
-- target position
-- order intent
-- virtual order
-- virtual fill
-- virtual account snapshot
-- risk decision
-
-### Done When
-
-- `Signal` supports only `LONG` and `FLAT`
-- `SHORT` cannot be represented
-- position quantity cannot be negative
-- target quantity cannot be negative
-- sell cannot exceed current holding
-- money, price, quantity, fee, and fill values use `Decimal`
-- domain imports no business, runtime, database, script, or exchange modules
-
-### Not Now
-
-- no exchange API
-- no strategy logic
-- no account persistence
+- **A. Repository Foundation** — unchanged. Python 3.12, pip + pyproject,
+  TimescaleDB/PostgreSQL compose, ruff/mypy/import-linter/pytest baseline.
+- **B. Domain Types** — unchanged. `Signal` is LONG/FLAT only; Decimal money;
+  UTC-aware timestamps; illegal states unrepresentable.
+- **C. Config System** — carried forward; Goal J changes the default decision
+  timeframe to `1d` and adds ensemble/ladder parameters. Real-trading and
+  private-API flags remain rejected.
+- **D. Public Market Data** — carried forward; Goal J adds daily closed-candle
+  ingestion beside the existing 15m path. Closed-candle gate, gap/duplicate/stale
+  detection, symbol filters, universe snapshot all reused.
+- **E. Feature Pipeline** — architecture carried forward; Goal J adds daily SMA
+  ensemble features. Existing 15m features remain valid code but are no longer
+  the decision path.
+- **F. First Strategy (Large Liquid Trend 15)** — SUPERSEDED as the active
+  strategy by the Daily Trend Ensemble (Goal J). Code and contract remain in the
+  repository as inactive reference; do not delete, do not wire into runtime.
+- **G. Portfolio Targets** — carried forward; Goal J maps ladder fractions to
+  target weights within per-asset risk budgets.
+- **H. Risk Gate** — unchanged checks (no short, no negative, min notional,
+  stale-data block, drawdown/daily-loss pause, filters); Goal J adds the
+  disaster-notice risk event (single-day -20%).
+- **I. Paper Broker + Accounting** — unchanged. The virtual account becomes the
+  permanent scoreboard.
 
 ---
 
-## Goal C: Config System
+## Goal J: Daily Signal Strategy Retrofit
 
 ### Why
 
-The system should be reproducible without editing code.
+The research verdict: after-cost evidence exists only at daily frequency, for
+long-only trend following, on large caps. The pipeline built in A-I is correct;
+the decision layer must be retargeted from 15m to daily.
 
 ### Build
 
-Typed configs for:
-
-- data source
-- strategy
-- portfolio
-- risk
-- execution
-- runtime
-- storage
-- API/dashboard
+- Config: default decision timeframe `1d`; ensemble lookbacks `[20, 65, 150, 200]`
+  fixed by contract; per-asset risk budgets (BTC 50% / ETH 50%); SOL present in
+  config but disabled until it passes the gate.
+- Data: ingest and replay Binance Spot public DAILY closed candles (UTC close).
+  Keep 15m ingestion available as data granularity (cost measurement, later research).
+- Features: daily SMA(20/65/150/200) per asset; sub-signal `close > SMA_n`;
+  point-in-time snapshots from closed candles only; warmup rule (no signal until
+  200 daily closes).
+- Strategy: implement `docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md` —
+  target exposure fraction = mean of the four sub-signals (0/25/50/75/100%),
+  with reason codes per sub-signal and ladder-change events.
+- Portfolio: ladder fraction × asset risk budget → target weight; cash is the
+  default state; churn is naturally limited by the ladder (25% steps).
+- Risk gate: unchanged; add disaster-notice event (single-day close-to-close
+  return <= -20% → forced re-evaluation notification; risk event, NOT a strategy
+  parameter).
 
 ### Done When
 
-- configs load through typed models
-- default initial virtual cash is `1000 USDT`
-- default timeframe is `15m`
-- default mode is `paper`
-- real trading flags are rejected
-- private API flags are rejected
-- short/margin/leverage flags are rejected
-- each run can store a config snapshot
+- daily candles can be ingested, validated, and replayed
+- ensemble features prove no-lookahead in tests (feature at close t uses closes <= t)
+- strategy output is deterministic, long-only, fraction in {0, .25, .5, .75, 1}
+- ladder transitions emit correct delta events with reason codes
+- portfolio targets never negative, never exceed risk budget, respect max exposure
+- 15m path still compiles and passes its tests (not deleted)
+- baseline verification passes
 
 ### Not Now
 
-- no production secret management
-- no live trading config
-- no strategy optimization config
+- no notification delivery channel yet
+- no backtest engine yet (Goal K)
+- no parameter search of any kind — lookbacks are contract-fixed
+- no SOL activation
 
 ---
 
-## Goal D: Public Market Data
+## Goal K: Backtest + Validation Gate Tooling
 
 ### Why
 
-The system needs trustworthy public market data before it can trade virtually.
+The single biggest unverified assumption is post-2023 edge persistence.
+The backtest is the instrument that answers it — but only if every run is
+registered and the gate math is built in from day one. An unregistered backtest
+is worthless by construction.
 
 ### Build
 
-- Binance Spot public historical candles.
-- Binance Spot public runtime candle stream.
-- Closed-candle detection.
-- Candle validation.
-- Gap detection.
-- Duplicate detection.
-- Stale data detection.
-- Public symbol filters.
-- Public book ticker / depth snapshot support for future cost modeling.
-- Universe snapshot.
-
-### MVP Default
-
-```text
-Primary data source: Binance Spot public REST/WebSocket
-Internal symbol format: BTCUSDT
-Display symbol format: BTC/USDT
-Timezone: UTC aware datetimes
-Universe: large, mature, liquid USDT spot pairs
-```
-
-Detailed universe rules belong in:
-
-```text
-docs/contracts/UNIVERSE_CONTRACT.md
-```
+- Historical replay loop over daily candles reusing the same strategy /
+  portfolio / risk / execution / accounting code paths.
+- Later-bar fill rule: a signal generated at close `t` fills no earlier than the
+  next bar; fee + slippage bps from config; no hidden costs.
+- Trial registry: EVERY backtest run persists {UTC time, config hash, code
+  version, parameter set, data span, cost assumptions, headline metrics}.
+  The registry maintains the running trial count N. Runs outside the registry
+  are void and must not be cited.
+- Validation tooling:
+  - CSCV implementation (S=16 blocks, C(16,8)=12,780 splits) producing PBO.
+  - DSR computation (skewness, kurtosis, T, variance of trial Sharpes, effective N).
+  - Holdout ledger: the most recent ~12 months are locked at first backtest;
+    unlocking is a single-use, logged, irreversible event.
+  - Cost-stress rerun mode (2x fee assumption).
+- Reports: config snapshot, signal/target/order/fill logs, equity curve,
+  drawdown curve, metrics, rejected-order report — persisted per run.
 
 ### Done When
 
-- historical closed 15m candles can be fetched or loaded
-- runtime closed candle events can be detected
-- still-open candles are blocked from strategy input
-- gaps, duplicates, and stale data are visible
-- symbol filters are stored or available
-- universe snapshot can be created
+- end-to-end daily backtest runs on BTC/ETH from earliest clean data through
+  the holdout boundary
+- registry contains every run ever executed, with monotonically increasing N
+- PBO and DSR are computable outputs for the pre-registered ensemble
+- holdout lock provably prevents casual OOS reuse (test proves single-use)
+- cost-stress rerun produces a comparable report
+- no same-bar execution; no still-open candle logic (tests prove both)
+- baseline verification passes
 
 ### Not Now
 
-- no private endpoints
-- no API keys
-- no CCXT dependency
-- no multi-exchange adapter implementation
+- no parameter sweep beyond the contract-fixed ensemble (any additional variant
+  requires pre-registration in the research plan and counts toward N)
+- no auto-deployment of anything into runtime
+- no gate PASS/FAIL declaration yet (that consumes the holdout; see Goal O)
 
 ---
 
-## Goal E: Feature Pipeline
+## Goal L: Signal Runtime (Notifications + Parallel Scoreboard)
 
 ### Why
 
-Features turn candles into neutral information that strategies can use.
+This is the product: the loop that watches public daily closes, decides,
+notifies the user, and keeps the scoreboard honest.
 
 ### Build
 
-Initial feature groups:
-
-- return / momentum
-- trend
-- recent high / breakout support
-- volume ratio
-- volatility
-- BTC market condition
+- Load config; connect public data; detect UTC daily close per asset.
+- Compute features → strategy → portfolio targets → risk gate.
+- On ladder change: persist a notification event (content per §2.4), then
+  deliver through the configured channel(s): dashboard "current signal" view is
+  mandatory; one push channel (webhook-based, e.g. Telegram or Discord) behind a
+  config flag.
+- Feed the same approved actions to the paper broker; the virtual account
+  executes them as the scoreboard.
+- Persist everything: config snapshot, candle events, feature snapshots,
+  signals, targets, risk decisions, notifications, virtual orders/fills,
+  account snapshots, health events.
+- Restart safety: idempotency keys make both notifications and virtual orders
+  duplicate-proof across restarts.
+- Stale data: halt new exposure increases; risk-reducing exits remain allowed;
+  emit a stale-data status notification.
 
 ### Done When
 
-- features use only closed candles
-- feature snapshots include timestamp and source candle range
-- feature code does not access account, portfolio, order, or broker state
-- feature tests prove no future data is used
+- runtime processes a recorded closed-candle replay end-to-end
+- runtime processes a manual public-data one-cycle smoke
+- restart produces zero duplicate notifications and zero duplicate orders (test proves it)
+- every notification is persisted with reason codes before delivery
+- scoreboard account state matches the ledger after every cycle
+- no API keys anywhere; no real order path exists
+- baseline verification passes
 
 ### Not Now
 
-- no model training
-- no HMM
-- no neural network
-- no strategy parameter search
+- no multi-channel notification fanout beyond the single configured channel
+- no intraday decision loop
+- no auto-execution, ever
 
 ---
 
-## Goal F: First Strategy
+## Goal M: Read-Only Dashboard
 
 ### Why
 
-Core MVP needs one strategy so the virtual account can make decisions.
+The user needs one place that answers: what is the system telling me to do
+right now, why, and how has following it worked out?
 
 ### Build
 
-First active strategy:
+Read-only views, priority order:
 
-```text
-Large Liquid Trend 15
-大幣高流動性 15 分鐘趨勢策略
-```
+1. Current signal state per asset: ladder position (0-100%), each sub-signal,
+   reason codes, last notification, decision price/time.
+2. Scoreboard: equity curve, USDT cash, positions, realized/unrealized PnL,
+   drawdown vs buy-and-hold reference.
+3. Risk status: active pauses, disaster notices, stale-data state.
+4. Audit: virtual orders, fills, rejected orders with reason codes.
+5. Gate status: trial count N, PBO/DSR when computed, holdout lock state,
+   paper-trading day counter.
+6. Data freshness / runtime health.
 
-Plain behavior:
-
-```text
-Buy only large liquid coins that show clear strength.
-Do not buy weak coins.
-Do not buy just because a candle closed.
-Exit when strength disappears or risk rules trigger.
-```
-
-Detailed formula belongs in:
-
-```text
-docs/contracts/STRATEGY_LARGE_LIQUID_TREND_15.md
-```
+MVP stack unchanged: FastAPI + Jinja2/static page + polling JSON endpoints.
 
 ### Done When
 
-- strategy returns only `LONG` or `FLAT`
-- strategy emits score and reason codes
-- strategy output is deterministic for the same input
-- strategy does not size positions
-- strategy does not create orders
-- strategy does not bypass risk
-- strategy does not use private data
+- dashboard shows current per-asset signal state with reasons
+- dashboard shows why the scoreboard bought or sold, and why orders were rejected
+- gate status page reflects the trial registry truthfully
+- API cannot submit orders, change risk limits, or touch private data
+- baseline verification passes
 
 ### Not Now
 
-- no second active strategy
-- no HMM
-- no neural network
-- no genetic optimizer
-- no automatic parameter search
-
----
-
-## Goal G: Portfolio Targets
-
-### Why
-
-Strategy says what looks attractive; portfolio decides how much to target.
-
-### Build
-
-- select candidates from strategy output
-- build target weights
-- cap single-symbol exposure
-- allow cash
-- reduce unnecessary churn
-
-### MVP Default
-
-```text
-max_active_positions: 3
-max_symbol_weight: 35%
-max_gross_exposure: 100%
-cash_allowed: true
-cooldown_enabled: true
-```
-
-### Done When
-
-- targets are never negative
-- no short exposure is possible
-- portfolio can hold cash
-- portfolio does not create orders directly
-- portfolio output can be inspected and tested
-
-### Not Now
-
-- no Black-Litterman
-- no multi-strategy allocation
-- no risk parity optimizer
-
----
-
-## Goal H: Risk Gate
-
-### Why
-
-Risk gate prevents invalid or dangerous virtual actions before they reach the paper broker.
-
-### Build
-
-Checks for:
-
-- no short exposure
-- no negative quantity
-- sell cannot exceed holdings
-- no stale-data trading
-- no same-bar execution
-- minimum notional
-- exchange filters
-- drawdown pause
-- daily loss pause
-- account stop
-- trailing stop
-
-### Done When
-
-- every rejection has a reason code
-- risk gate can pause new buys while allowing risk-reducing sells
-- risk gate cannot be bypassed by paper broker
-- missing exchange filters make a symbol untradable
-- tests prove invalid actions are rejected
-
-### Not Now
-
-- no advanced portfolio risk model
-- no VaR engine
-- no live exchange kill switch
-
----
-
-## Goal I: Paper Broker And Accounting
-
-### Why
-
-The system must simulate buys and sells and maintain a trustworthy virtual account.
-
-### Build
-
-Paper broker:
-
-- accepts only risk-approved virtual orders
-- applies fee assumption
-- applies slippage assumption
-- validates exchange-like constraints
-- records accepted orders, rejected orders, and fills
-
-Accounting:
-
-- cash
-- positions
-- realized PnL
-- unrealized PnL
-- equity
-- drawdown
-- append-only ledger
-
-### Done When
-
-- paper broker never calls private API
-- paper broker never sends real orders
-- fills update cash and positions correctly
-- ledger explains every cash and position change
-- fees and slippage are recorded
-- negative cash and negative position are rejected
-
-### Not Now
-
-- no real broker
-- no exchange signing
-- no real account reconciliation
-
----
-
-## Goal J: Backtest
-
-### Why
-
-Backtest lets the system replay historical data before running paper runtime.
-
-### Build
-
-- historical replay loop
-- same strategy/portfolio/risk/execution/accounting logic where practical
-- later-bar fill rule
-- cost assumptions
-- report output
-
-### Done When
-
-Backtest outputs:
-
-- config snapshot
-- signal log
-- target log
-- order log
-- fill log
-- equity curve
-- drawdown curve
-- metrics
-- rejected-order report
-
-Rules:
-
-- no same-bar execution
-- no still-open candle logic
-- no hidden cost assumptions
-
-### Not Now
-
-- no full research lab
-- no parameter optimizer
-- no ML model training
-
----
-
-## Goal K: Paper Runtime
-
-### Why
-
-Paper runtime is the online loop that runs the virtual account against public market data.
-
-### Build
-
-- load config
-- connect public data
-- wait for closed 15m candle
-- compute features
-- generate signals
-- build targets
-- run risk gate
-- create virtual orders/fills
-- update account
-- persist events
-- recover after restart
-
-### Done When
-
-- runtime can process recorded closed-candle replay
-- runtime can process a manual public-data one-cycle smoke
-- runtime does not require API keys
-- runtime does not submit real orders
-- runtime persists decisions and account events
-- runtime does not duplicate orders after restart
-
-### Not Now
-
-- no 14-day certification requirement for Code Complete
-- no live trading
-- no private account sync
-
----
-
-## Goal L: Read-Only Dashboard/API
-
-### Why
-
-The user needs to see what the system is doing and why.
-
-### Build
-
-Read-only views for:
-
-- account equity
-- USDT cash
-- positions
-- realized PnL
-- unrealized PnL
-- latest signals
-- virtual orders
-- virtual fills
-- rejected orders
-- risk status
-- runtime health
-
-MVP stack:
-
-```text
-FastAPI
-Jinja2/static page
-polling JSON endpoints
-```
-
-### Done When
-
-- dashboard can show current account state
-- dashboard can show why the system bought or sold
-- dashboard can show why an order was rejected
-- API cannot manually submit orders
-- API cannot change risk limits
-- API cannot access private exchange data
-
-### Not Now
-
-- no React/Next/Vue full SPA
+- no SPA framework
 - no manual trading controls
-- no real order endpoint
+- no notification-channel management UI (config file only)
 
 ---
 
-## Goal M: Core MVP Complete
-
-### Why
-
-Separate implementation completion from later research and long-running certification.
+## Goal N: Core MVP Complete
 
 ### Done When
-
-Core MVP is complete when:
 
 1. baseline verification passes
-2. public data can be ingested or replayed
-3. one strategy can produce `LONG/FLAT` decisions
-4. portfolio targets are produced
-5. risk gate approves or rejects actions
-6. paper broker creates virtual orders and fills
-7. virtual account updates cash, positions, PnL, and equity
-8. backtest runs end-to-end
-9. runtime replay smoke passes
-10. dashboard is accessible
-11. rejected orders and risk events are visible
-12. no private API path exists
-13. no real order path exists
+2. daily public data can be ingested and replayed
+3. the ensemble strategy produces deterministic ladder decisions on closed daily candles
+4. portfolio targets respect risk budgets; risk gate approves/rejects with reason codes
+5. paper broker + scoreboard update cash, positions, PnL, equity correctly
+6. backtest runs end-to-end with trial registration, PBO/DSR tooling, and locked holdout
+7. runtime replay smoke passes; restart duplicates nothing
+8. notifications are persisted, idempotent, and visible on the dashboard
+9. dashboard shows signal state, scoreboard, rejections, and gate status
+10. no private API path exists; no real order path exists
+11. 15m legacy path still present and passing its tests, inactive
 
-### Verification
+### Explicitly NOT Required For Core MVP Complete
 
-```bash
-ruff check .
-ruff format --check .
-mypy --strict src/
-lint-imports
-pytest -m "not network" tests -q
-python -m scripts.run_backtest --config configs/runtime/paper_runtime.yaml
-python -m scripts.run_paper_runtime --config configs/runtime/paper_runtime.yaml --replay-smoke
-```
-
-### Not Required For Core MVP Complete
-
-- 14-day wall-clock paper runtime
-- research lab
-- walk-forward study
-- Monte Carlo
-- PBO/DSR diagnostics
-- HMM
-- neural network
-- genetic algorithm
-- multi-strategy studio
-- live trading
+- gate PASS declaration (Goal O — needs the holdout spend and 3 months of paper time)
+- external push channel beyond one config-gated webhook
+- research lab, HMM, GA, multi-strategy, live anything
 
 ---
 
-## Goal N: Paper Runtime Stability Run
+## Goal O: Signal-Live Qualification
 
 ### Status
 
-Post-MVP validation gate.
+Post-MVP validation gate. The moment of truth.
 
 ### Why
 
-Prove the system can run continuously after Core MVP is built.
+Core MVP completion means the machine works. This goal answers whether the
+strategy deserves real money — by spending the single-use holdout and the
+3-month paper run, then publishing the verdict.
+
+### Procedure
+
+1. Freeze code + config; register the final pre-registered trial set (N frozen).
+2. Compute PBO (CSCV S=16) and DSR over the registered trials → require
+   PBO <= 0.05 and DSR >= 0.95.
+3. Unlock and spend the holdout (single use, logged): walk-forward the frozen
+   strategy over the held-out ~12 months. No iteration. If it fails, the
+   strategy family goes back to research with a fresh N and a new holdout
+   accumulation period.
+4. Run >=3 calendar months of signal runtime paper trading:
+   - 0 real order attempts, 0 private API usage, 0 critical crashes
+   - ledger reconciliation passes; every fill has fee/slippage; every reject has a reason code
+   - measure notification→(simulated) execution delay and real spread/fees;
+     if measured round-trip cost > 1.5x the 25-30bps assumption, recalibrate
+     costs and return to step 2.
+5. Publish the gate report (pass or fail) to `docs/reports/`.
 
 ### Done When
 
-A true wall-clock paper runtime run completes the chosen certification period and meets its contract.
+All six gates have recorded outcomes, and the report exists — whatever the verdict.
 
-Recommended future default:
+Plain language:
 
 ```text
-14 calendar days
-0 real order attempts
-0 private API usage
-0 critical runtime crashes
-ledger reconciliation passes
-all fills have fee/slippage records
-all rejects have reason codes
+就算結果是「不合格」，這個目標也算完成。
+閘門的工作是說真話，不是放行。
 ```
-
-This goal is not required for Core MVP implementation completion.
 
 ---
 
-## Goal O: Research Lab
+## Goal P: Research Lab (Pre-Registered Experiments Only)
 
 ### Status
 
-Post-MVP extension.
+Post-MVP extension. Every experiment counts toward N.
 
-### Why
+### Backlog (each requires pre-registration before any backtest)
 
-Research should improve and reject parameters after the trading system already runs end-to-end.
-
-### Build Later
-
-Possible research features:
-
-- bounded parameter search
-- walk-forward validation
-- holdout testing
-- cost stress testing
-- Monte Carlo robustness checks
-- trial ledger
-- research report
+- Regime filter v1.1: hold ETH/SOL only when BTC > 200d SMA — adopt only if it
+  passes the gate AND improves both after-cost Sharpe and max drawdown.
+- Stop overlays: trailing / volatility-scaled / time stops vs pure signal-exit.
+- Donchian ensemble vs MA ensemble (pick one, never run both live).
+- SOL admission: SOL passes the full gate on its own data, or stays out.
+- Execution-delay sensitivity: simulate 5min / 1h / 8h delays on daily signals.
+- Cost stress: full report at 2x fees.
+- Universe v2 exploration: top-N liquidity rotation (only with survivorship-bias-free
+  local data including delisted symbols).
 
 ### Rules
 
-- research must not auto-deploy results into runtime
-- research must not hide failed trials
-- research must not expand search space after seeing results without recording a new experiment
-
-This goal is not required for Core MVP implementation completion.
+- Research must not auto-deploy results into runtime.
+- Research must not hide failed trials — the registry is append-only.
+- Expanding the search space after seeing results requires a new registered
+  experiment; silent expansion voids the gate.
 
 ---
 
-## Future Goals
+## Future Goals (by contract only)
 
-### Future Goal P: HMM / ML Regime Research
-
-Research-only until a new contract authorizes runtime use.
-
-### Future Goal Q: Genetic Algorithm Parameter Research
-
-Allowed only after research logging and backtest reproducibility are reliable.
-
-### Future Goal R: Multi-Strategy Studio
-
-Allowed only after one strategy runs end-to-end in paper runtime.
-
-### Future Goal S: Read-Only Real Account Reconciliation
-
-Requires private API and therefore requires a new explicit contract.
-
-### Future Goal T: Live Trading Contract
-
-Not authorized by this MVP. Requires a separate written contract, safety review, and explicit human approval.
+### Future Goal Q: HMM / ML Regime Research — research-only until a new contract.
+### Future Goal R: Genetic Algorithm Parameter Research — only after the trial
+registry and backtest reproducibility have proven reliable through Goal O.
+### Future Goal S: Multi-Strategy Studio — only after one strategy passes Goal O.
+### Future Goal T: Manual Fill Journal — user manually records real fills;
+system compares them to scoreboard fills for execution-quality tracking.
+No private API; the journal is user-entered data.
 
 ---
 
@@ -821,6 +477,7 @@ Not authorized by this MVP. Requires a separate written contract, safety review,
 
 ```text
 Core MVP should be small enough to finish.
-Architecture should be open enough to extend.
+The gate should be strict enough to trust.
+Signals earn belief by surviving verification, not by looking good in-sample.
 Advanced features must be added by contract, not by quietly expanding scope.
 ```
