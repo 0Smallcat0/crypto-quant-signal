@@ -17,6 +17,7 @@ forbidden_modules =
     src.execution
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -36,6 +37,7 @@ forbidden_modules =
     src.execution
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -55,6 +57,7 @@ forbidden_modules =
     src.execution
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -73,6 +76,7 @@ forbidden_modules =
     src.execution
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -92,6 +96,7 @@ forbidden_modules =
     src.execution
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -111,6 +116,7 @@ forbidden_modules =
     src.execution
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -130,6 +136,7 @@ forbidden_modules =
     src.execution
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -149,6 +156,7 @@ forbidden_modules =
     src.risk
     src.accounting
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -168,6 +176,7 @@ forbidden_modules =
     src.risk
     src.execution
     src.monitoring
+    src.notify
     src.backtest
     src.runtime
     src.api
@@ -180,6 +189,38 @@ source_modules =
     src.backtest
 forbidden_modules =
     src.runtime
+    src.api
+    src.monitoring
+    src.notify
+    scripts
+
+[importlinter:contract:notify_boundary]
+name = Notify must stay a pure event/channel layer on top of domain only
+type = forbidden
+source_modules =
+    src.notify
+forbidden_modules =
+    src.config
+    src.data
+    src.features
+    src.strategies
+    src.portfolio
+    src.risk
+    src.execution
+    src.accounting
+    src.monitoring
+    src.backtest
+    src.runtime
+    src.api
+    scripts
+
+[importlinter:contract:runtime_boundary]
+name = Runtime composes business packages but must not touch backtest, API, or scripts
+type = forbidden
+source_modules =
+    src.runtime
+forbidden_modules =
+    src.backtest
     src.api
     src.monitoring
     scripts

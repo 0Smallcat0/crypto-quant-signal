@@ -399,6 +399,7 @@ class StorageConfig(CoreConfigModel):
     holdout_lock_path: str = "docs/reports/research/holdout_lock.json"
     backtest_reports_directory: str = "docs/reports/backtests"
     candle_files_directory: str = "data/candles"
+    runtime_events_path: str = "data/runtime/events.jsonl"
 
     @field_validator(
         "host",
@@ -410,6 +411,7 @@ class StorageConfig(CoreConfigModel):
         "holdout_lock_path",
         "backtest_reports_directory",
         "candle_files_directory",
+        "runtime_events_path",
     )
     @classmethod
     def _validate_storage_strings(cls, value: str, info: object) -> str:
@@ -420,6 +422,29 @@ class StorageConfig(CoreConfigModel):
     @classmethod
     def _validate_port(cls, value: int) -> int:
         return _require_positive_int("port", value)
+
+
+class NotificationConfig(CoreConfigModel):
+    """Advisory notification delivery configuration.
+
+    Notifications are persisted before delivery and are never execution
+    instructions; the webhook channel is config-gated and https-only.
+    """
+
+    enabled: bool = True
+    channel: Literal["log", "webhook"] = "log"
+    webhook_url: str = ""
+
+    @model_validator(mode="after")
+    def _webhook_channel_requires_https_url(self) -> NotificationConfig:
+        if self.channel == "webhook":
+            if not self.webhook_url.startswith("https://"):
+                msg = "webhook channel requires an https webhook_url"
+                raise ValueError(msg)
+        elif self.webhook_url:
+            msg = "webhook_url is only allowed when channel is webhook"
+            raise ValueError(msg)
+        return self
 
 
 class ApiDashboardConfig(CoreConfigModel):
@@ -472,6 +497,7 @@ class AppConfig(CoreConfigModel):
     account: VirtualAccountConfig = Field(default_factory=VirtualAccountConfig)
     runtime: RuntimeConfig = Field(default_factory=RuntimeConfig)
     storage: StorageConfig = Field(default_factory=StorageConfig)
+    notifications: NotificationConfig = Field(default_factory=NotificationConfig)
     api_dashboard: ApiDashboardConfig = Field(default_factory=ApiDashboardConfig)
 
 

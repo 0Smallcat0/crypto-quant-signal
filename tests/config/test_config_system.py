@@ -161,6 +161,30 @@ def test_invalid_risk_budgets_are_rejected(risk_budgets: dict[str, str]) -> None
         AppConfig.model_validate(_with_nested_value(("portfolio", "risk_budgets"), risk_budgets))
 
 
+def test_notification_defaults_are_log_channel() -> None:
+    config = AppConfig()
+
+    assert config.notifications.enabled is True
+    assert config.notifications.channel == "log"
+    assert config.notifications.webhook_url == ""
+
+
+@pytest.mark.parametrize(
+    ("channel", "webhook_url"),
+    (
+        ("webhook", ""),
+        ("webhook", "http://insecure.example/hook"),
+        ("log", "https://hook.example/x"),
+    ),
+)
+def test_invalid_notification_configs_are_rejected(channel: str, webhook_url: str) -> None:
+    data = _base_config_data()
+    data["notifications"] = {"enabled": True, "channel": channel, "webhook_url": webhook_url}
+
+    with pytest.raises(ValidationError):
+        AppConfig.model_validate(data)
+
+
 def test_config_file_values_override_model_defaults(tmp_path: Path) -> None:
     data = _base_config_data()
     strategy = data["strategy"]

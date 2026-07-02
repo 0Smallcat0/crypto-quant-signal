@@ -1,0 +1,750 @@
+"""Daily signal runtime: notify the human, keep the scoreboard honest.
+
+One cycle per closed daily candle:
+
+1. Execute the previous cycle's ladder changes on the scoreboard at THIS
+   candle's open (same next-bar-open rule as the backtest engine).
+2. Evaluate the ensemble at this close; persist signals, targets, and any
+   ladder-change notification (persisted BEFORE delivery, idempotent by key).
+3. Mark the scoreboard at this close and persist the cycle state so a restart
+   resumes exactly here without duplicating anything.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Mapping
+from datetime import datetime, timedelta
+from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal
+
+from src.accounting import AccountingPosition, AccountState, VirtualAccountLedger
+from src.domain import (
+    Candle,
+    OrderIntent,
+    OrderSide,
+    Position,
+    RiskDecisionStatus,
+    Symbol,
+    VirtualAccountSnapshot,
+    VirtualFill,
+    VirtualOrder,
+)
+from src.execution import (
+    BrokerAccountView,
+    PaperBroker,
+    PaperBrokerParameters,
+    PaperMarketPrice,
+)
+from src.features import DAILY_TREND_WARMUP_CANDLES, build_daily_trend_snapshots
+from src.notify import (
+    DECREASE_EXPOSURE,
+    INCREASE_EXPOSURE,
+    NotificationChannel,
+    NotificationEvent,
+    ladder_notification_id,
+)
+from src.portfolio import LadderPortfolioParameters, build_ladder_targets
+from src.risk import (
+    EXCHANGE_MIN_NOTIONAL_NOT_MET,
+    MIN_NOTIONAL_NOT_MET,
+    RiskEvent,
+    RiskExchangeFilters,
+    RiskGateContext,
+    RiskGateParameters,
+    RiskState,
+    detect_single_day_disaster,
+    evaluate_order_intent,
+)
+from src.runtime.store import JsonlEventStore
+from src.runtime.types import CycleResult, RuntimeEngineError, RuntimeParameters
+from src.strategies import DailyTrendEnsembleDecision, evaluate_daily_trend_ensemble
+
+_BPS = Decimal("10000")
+
+WARMUP_INSUFFICIENT_HISTORY = "WARMUP_INSUFFICIENT_HISTORY"
+STALE_DATA_HALT = "STALE_DATA_HALT"
+ZERO_QUANTITY_AFTER_ROUNDING = "ZERO_QUANTITY_AFTER_ROUNDING"
+
+_NON_RETRIABLE_REJECTION_CODES = frozenset(
+    {MIN_NOTIONAL_NOT_MET, EXCHANGE_MIN_NOTIONAL_NOT_MET, ZERO_QUANTITY_AFTER_ROUNDING}
+)
+
+
+class SignalRuntime:
+    """Restartable daily signal engine over an idempotent event store."""
+
+    def __init__(
+        self,
+        *,
+        parameters: RuntimeParameters,
+        store: JsonlEventStore,
+        channel: NotificationChannel,
+    ) -> None:
+        self._parameters = parameters
+        self._store = store
+        self._channel = channel
+        self._ledger: VirtualAccountLedger | None = None
+        self._executed_fractions: dict[str, Decimal] = dict.fromkeys(
+            parameters.risk_budgets, Decimal("0")
+        )
+        self._decision_fractions: dict[str, Decimal] = dict.fromkeys(
+            parameters.risk_budgets, Decimal("0")
+        )
+        self._last_processed: datetime | None = None
+        self._start_of_day_equity: Decimal = parameters.initial_cash
+        self._restore()
+
+    @property
+    def last_processed(self) -> datetime | None:
+        return self._last_processed
+
+    def process_closed_candles(
+        self,
+        candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+        *,
+        observed_at: datetime | None = None,
+    ) -> CycleResult:
+        """Run one decision cycle on the latest closed daily candle."""
+
+        self._require_universe(candles_by_symbol)
+        ordered = {
+            symbol_value: _closed_sorted(candles, symbol_value)
+            for symbol_value, candles in candles_by_symbol.items()
+        }
+        latest = self._aligned_latest_candles(ordered)
+        close_time = next(iter(latest.values())).close_time
+
+        if self._last_processed is not None and close_time <= self._last_processed:
+            return _skipped("ALREADY_PROCESSED")
+
+        short_history = [
+            symbol_value
+            for symbol_value, candles in ordered.items()
+            if len(candles) < DAILY_TREND_WARMUP_CANDLES
+        ]
+        if short_history:
+            self._append_health(
+                close_time,
+                WARMUP_INSUFFICIENT_HISTORY,
+                {"symbols": sorted(short_history)},
+            )
+            return _skipped(WARMUP_INSUFFICIENT_HISTORY, health=(WARMUP_INSUFFICIENT_HISTORY,))
+
+        decision_time = observed_at or close_time
+        health_codes: list[str] = []
+        is_stale = decision_time - close_time > timedelta(
+            seconds=self._parameters.stale_data_max_age_seconds
+        )
+        if is_stale:
+            health_codes.append(STALE_DATA_HALT)
+            self._append_health(
+                close_time, STALE_DATA_HALT, {"decision_time": decision_time.isoformat()}
+            )
+
+        symbols = {symbol_value: candles[-1].symbol for symbol_value, candles in ordered.items()}
+        open_prices = {symbol_value: candle.open_price for symbol_value, candle in latest.items()}
+        close_prices = {symbol_value: candle.close_price for symbol_value, candle in latest.items()}
+        execution_time = next(iter(latest.values())).open_time
+
+        if self._ledger is None:
+            self._ledger = VirtualAccountLedger.open(
+                account_id=self._parameters.account_id,
+                initial_cash=self._parameters.initial_cash,
+                opened_at=execution_time,
+            )
+        ledger = self._ledger
+
+        # Step 1: execute yesterday's ladder changes at today's open.
+        fills, rejections = self._execute_pending(
+            ledger=ledger,
+            symbols=symbols,
+            open_prices=open_prices,
+            execution_time=execution_time,
+            latest_market_data_at=execution_time,
+            stale=is_stale,
+        )
+
+        # Step 2: today's decisions, signals, and notifications.
+        notifications: list[NotificationEvent] = []
+        decisions: dict[str, DailyTrendEnsembleDecision] = {}
+        for symbol_value in sorted(symbols):
+            snapshot = build_daily_trend_snapshots(
+                ordered[symbol_value][-DAILY_TREND_WARMUP_CANDLES:]
+            )[0]
+            previous_fraction = self._decision_fractions[symbol_value]
+            decision = evaluate_daily_trend_ensemble(snapshot, previous_fraction=previous_fraction)
+            decisions[symbol_value] = decision
+            self._decision_fractions[symbol_value] = decision.exposure_fraction
+            self._store.append(
+                kind="signal",
+                key=f"signal:{symbol_value}:{close_time.isoformat()}",
+                recorded_at=decision_time,
+                payload={
+                    "symbol": symbol_value,
+                    "as_of": close_time.isoformat(),
+                    "exposure_fraction": str(decision.exposure_fraction),
+                    "reason_codes": list(decision.reason_codes),
+                },
+            )
+            notification = self._notify_ladder_change(
+                symbol_value=symbol_value,
+                previous_fraction=previous_fraction,
+                decision_fraction=decision.exposure_fraction,
+                decision_price=close_prices[symbol_value],
+                decision_time=close_time,
+                reason_codes=decision.reason_codes,
+                ledger=ledger,
+                stale=is_stale,
+            )
+            if notification is not None:
+                notifications.append(notification)
+
+            disaster = _disaster_for(ordered[symbol_value], symbols[symbol_value], self._parameters)
+            if disaster is not None:
+                self._store.append(
+                    kind="risk_event",
+                    key=f"risk_event:{symbol_value}:{close_time.isoformat()}",
+                    recorded_at=decision_time,
+                    payload={
+                        "symbol": symbol_value,
+                        "event_type": disaster.event_type,
+                        "observed_fraction": str(disaster.observed_fraction),
+                        "reason_codes": list(disaster.reason_codes),
+                    },
+                )
+                health_codes.append(disaster.event_type)
+
+        target_set = build_ladder_targets(
+            tuple(decisions[symbol_value] for symbol_value in sorted(symbols)),
+            parameters=LadderPortfolioParameters(risk_budgets=self._parameters.risk_budgets),
+        )
+        self._store.append(
+            kind="target",
+            key=f"target:{close_time.isoformat()}",
+            recorded_at=decision_time,
+            payload={
+                "as_of": close_time.isoformat(),
+                "target_weights": {
+                    target.symbol.value: str(target.target_weight) for target in target_set.targets
+                },
+                "cash_weight": str(target_set.cash_weight),
+                "reason_codes": list(target_set.reason_codes),
+            },
+        )
+
+        # Step 3: mark the scoreboard at this close and persist cycle state.
+        close_snapshot = ledger.snapshot(
+            mark_prices={symbols[value]: close_prices[value] for value in symbols},
+            captured_at=close_time,
+        )
+        self._start_of_day_equity = close_snapshot.equity
+        self._last_processed = close_time
+        self._persist_cycle(close_time, decision_time)
+
+        return CycleResult(
+            processed=True,
+            reason="PROCESSED",
+            close_time=close_time,
+            notifications=tuple(notifications),
+            fills=fills,
+            rejection_reason_codes=rejections,
+            health_codes=tuple(health_codes),
+            equity=close_snapshot.equity,
+        )
+
+    # ── execution ──────────────────────────────────────────────────────
+
+    def _execute_pending(
+        self,
+        *,
+        ledger: VirtualAccountLedger,
+        symbols: Mapping[str, Symbol],
+        open_prices: Mapping[str, Decimal],
+        execution_time: datetime,
+        latest_market_data_at: datetime,
+        stale: bool,
+    ) -> tuple[tuple[VirtualFill, ...], tuple[tuple[str, tuple[str, ...]], ...]]:
+        broker = PaperBroker(
+            PaperBrokerParameters(
+                fee_bps=self._parameters.fee_bps,
+                slippage_bps=self._parameters.slippage_bps,
+                quantity_step=self._parameters.quantity_step,
+                price_tick=self._parameters.price_tick,
+                min_notional=self._parameters.min_notional_usdt,
+            )
+        )
+        fills: list[VirtualFill] = []
+        rejections: list[tuple[str, tuple[str, ...]]] = []
+        pending = sorted(
+            (
+                symbol_value
+                for symbol_value in symbols
+                if self._decision_fractions[symbol_value] != self._executed_fractions[symbol_value]
+            ),
+            key=lambda value: (
+                self._decision_fractions[value] >= self._executed_fractions[value],
+                value,
+            ),
+        )
+        for symbol_value in pending:
+            desired = self._decision_fractions[symbol_value]
+            if stale and desired > self._executed_fractions[symbol_value]:
+                # Stale data halts new exposure; risk-reducing sells continue.
+                rejections.append((symbol_value, (STALE_DATA_HALT,)))
+                continue
+            order_key = (
+                f"order:{self._parameters.idempotency_namespace}"
+                f":{symbol_value}:{execution_time.date().isoformat()}"
+            )
+            if self._store.has(order_key):
+                # A previous run already executed this ladder change today.
+                self._executed_fractions[symbol_value] = desired
+                continue
+            outcome = self._execute_one(
+                ledger=ledger,
+                broker=broker,
+                symbol=symbols[symbol_value],
+                desired=desired,
+                current=self._executed_fractions[symbol_value],
+                reference_price=open_prices[symbol_value],
+                open_prices=open_prices,
+                symbols=symbols,
+                execution_time=execution_time,
+                latest_market_data_at=latest_market_data_at,
+                order_key=order_key,
+            )
+            if outcome is None:
+                self._executed_fractions[symbol_value] = desired
+                fills.extend(broker.fills[len(fills) :])
+            else:
+                rejections.append((symbol_value, outcome))
+                self._store.append(
+                    kind="rejection",
+                    key=f"rejection:{symbol_value}:{execution_time.isoformat()}",
+                    recorded_at=execution_time,
+                    payload={"symbol": symbol_value, "reason_codes": list(outcome)},
+                )
+                if _NON_RETRIABLE_REJECTION_CODES.intersection(outcome):
+                    self._executed_fractions[symbol_value] = desired
+        return tuple(fills), tuple(rejections)
+
+    def _execute_one(
+        self,
+        *,
+        ledger: VirtualAccountLedger,
+        broker: PaperBroker,
+        symbol: Symbol,
+        desired: Decimal,
+        current: Decimal,
+        reference_price: Decimal,
+        open_prices: Mapping[str, Decimal],
+        symbols: Mapping[str, Symbol],
+        execution_time: datetime,
+        latest_market_data_at: datetime,
+        order_key: str,
+    ) -> tuple[str, ...] | None:
+        parameters = self._parameters
+        state = ledger.state
+        budget = parameters.risk_budgets[symbol.value]
+        current_position = _domain_position(state, symbol)
+        delta = desired - current
+        equity_at_open = state.cash
+        for position in state.positions:
+            equity_at_open += position.quantity * open_prices[position.symbol.value]
+
+        if delta < Decimal("0"):
+            side = OrderSide.SELL
+            held = current_position.quantity if current_position is not None else Decimal("0")
+            if desired == Decimal("0"):
+                quantity = held
+            else:
+                quantity = min(
+                    _round_down(
+                        abs(delta) * budget * equity_at_open / reference_price,
+                        parameters.quantity_step,
+                    ),
+                    held,
+                )
+        else:
+            side = OrderSide.BUY
+            fee_rate = parameters.fee_bps / _BPS
+            estimated_fill = _round_up(
+                reference_price * (Decimal("1") + parameters.slippage_bps / _BPS),
+                parameters.price_tick,
+            )
+            target_quantity = _round_down(
+                delta * budget * equity_at_open / reference_price,
+                parameters.quantity_step,
+            )
+            affordable_quantity = _round_down(
+                state.cash / (estimated_fill * (Decimal("1") + fee_rate)),
+                parameters.quantity_step,
+            )
+            quantity = min(target_quantity, affordable_quantity)
+
+        if quantity <= Decimal("0"):
+            ledger.record_rejected_order(
+                order_id=None,
+                symbol=symbol,
+                occurred_at=execution_time,
+                reason_codes=(ZERO_QUANTITY_AFTER_ROUNDING,),
+            )
+            return (ZERO_QUANTITY_AFTER_ROUNDING,)
+
+        intent = OrderIntent(symbol=symbol, side=side, quantity=quantity, created_at=execution_time)
+        context = RiskGateContext(
+            current_position=current_position,
+            account_snapshot=VirtualAccountSnapshot(
+                account_id=state.account_id,
+                cash=state.cash,
+                equity=equity_at_open,
+                positions=_domain_positions(state),
+                captured_at=execution_time,
+            ),
+            reference_price=reference_price,
+            latest_market_data_at=latest_market_data_at,
+            decision_time=execution_time,
+            earliest_execution_time=execution_time,
+            exchange_filters=RiskExchangeFilters(
+                symbol=symbol,
+                status="TRADING",
+                is_spot_trading_allowed=True,
+                price_tick_size=parameters.price_tick,
+                quantity_step_size=parameters.quantity_step,
+                min_quantity=parameters.quantity_step,
+                min_notional=parameters.min_notional_usdt,
+            ),
+            risk_state=RiskState(
+                peak_equity=ledger.state.peak_equity,
+                start_of_day_equity=self._start_of_day_equity,
+            ),
+        )
+        gate_parameters = RiskGateParameters(
+            min_notional_usdt=parameters.min_notional_usdt,
+            stale_data_max_age_seconds=parameters.stale_data_max_age_seconds,
+            max_drawdown_fraction=parameters.max_drawdown_fraction,
+            daily_loss_pause_fraction=parameters.daily_loss_pause_fraction,
+        )
+        risk_decision = evaluate_order_intent(intent, context=context, parameters=gate_parameters)
+        self._store.append(
+            kind="risk_decision",
+            key=f"risk_decision:{symbol.value}:{execution_time.isoformat()}",
+            recorded_at=execution_time,
+            payload={
+                "symbol": symbol.value,
+                "status": risk_decision.status.value,
+                "reason_codes": list(risk_decision.reason_codes),
+            },
+        )
+        if risk_decision.status is not RiskDecisionStatus.APPROVED:
+            ledger.record_rejected_order(
+                order_id=order_key,
+                symbol=symbol,
+                occurred_at=execution_time,
+                reason_codes=risk_decision.reason_codes,
+            )
+            return risk_decision.reason_codes
+
+        if not self._store.append(
+            kind="order",
+            key=order_key,
+            recorded_at=execution_time,
+            payload={
+                "symbol": symbol.value,
+                "side": side.value,
+                "quantity": str(quantity),
+                "desired_fraction": str(desired),
+            },
+        ):
+            return None
+
+        order = VirtualOrder(
+            order_id=order_key,
+            intent=intent,
+            risk_decision=risk_decision,
+            approved_at=execution_time,
+        )
+        result = broker.submit_order(
+            order,
+            market_price=PaperMarketPrice(
+                symbol=symbol, price=reference_price, observed_at=execution_time
+            ),
+            account_view=BrokerAccountView(cash=state.cash, positions=_domain_positions(state)),
+            submitted_at=execution_time,
+        )
+        if result.fill is None:
+            rejected = result.rejected_order
+            reason_codes = rejected.reason_codes if rejected is not None else ("BROKER_REJECTED",)
+            ledger.record_rejected_order(
+                order_id=order_key,
+                symbol=symbol,
+                occurred_at=execution_time,
+                reason_codes=reason_codes,
+            )
+            return reason_codes
+
+        ledger.apply_fill(
+            result.fill,
+            mark_prices={symbols[value]: open_prices[value] for value in symbols},
+        )
+        self._store.append(
+            kind="fill",
+            key=f"fill:{order_key}",
+            recorded_at=execution_time,
+            payload={
+                "symbol": symbol.value,
+                "side": side.value,
+                "quantity": str(result.fill.quantity),
+                "price": str(result.fill.price),
+                "fee": str(result.fill.fee),
+                "slippage": str(result.fill.slippage),
+            },
+        )
+        return None
+
+    # ── notifications ──────────────────────────────────────────────────
+
+    def _notify_ladder_change(
+        self,
+        *,
+        symbol_value: str,
+        previous_fraction: Decimal,
+        decision_fraction: Decimal,
+        decision_price: Decimal,
+        decision_time: datetime,
+        reason_codes: tuple[str, ...],
+        ledger: VirtualAccountLedger,
+        stale: bool,
+    ) -> NotificationEvent | None:
+        if decision_fraction == previous_fraction:
+            return None
+        risk_codes: list[str] = []
+        if stale:
+            risk_codes.append(STALE_DATA_HALT)
+        if ledger.state.drawdown >= self._parameters.max_drawdown_fraction:
+            risk_codes.append("DRAWDOWN_PAUSE")
+        event = NotificationEvent(
+            notification_id=ladder_notification_id(
+                namespace=self._parameters.idempotency_namespace,
+                symbol_value=symbol_value,
+                decision_time=decision_time,
+                previous_fraction=previous_fraction,
+                target_fraction=decision_fraction,
+            ),
+            symbol_value=symbol_value,
+            action=(
+                INCREASE_EXPOSURE if decision_fraction > previous_fraction else DECREASE_EXPOSURE
+            ),
+            previous_fraction=previous_fraction,
+            target_fraction=decision_fraction,
+            delta_fraction=abs(decision_fraction - previous_fraction),
+            decision_price=decision_price,
+            decision_time=decision_time,
+            reason_codes=reason_codes,
+            risk_status=",".join(risk_codes) if risk_codes else "OK",
+            created_at=decision_time,
+        )
+        newly_persisted = self._store.append(
+            kind="notification",
+            key=event.notification_id,
+            recorded_at=decision_time,
+            payload=event.to_json_dict(),
+        )
+        if not newly_persisted:
+            return None
+        self._channel.deliver(event)
+        return event
+
+    # ── state persistence and restore ──────────────────────────────────
+
+    def _persist_cycle(self, close_time: datetime, decision_time: datetime) -> None:
+        ledger = self._ledger
+        if ledger is None:  # pragma: no cover - guarded by callers
+            msg = "cycle cannot persist before the ledger exists"
+            raise RuntimeEngineError(msg)
+        state = ledger.state
+        self._store.append(
+            kind="cycle",
+            key=f"cycle:{close_time.isoformat()}",
+            recorded_at=decision_time,
+            payload={
+                "close_time": close_time.isoformat(),
+                "start_of_day_equity": str(self._start_of_day_equity),
+                "executed_fractions": {
+                    key: str(value) for key, value in self._executed_fractions.items()
+                },
+                "decision_fractions": {
+                    key: str(value) for key, value in self._decision_fractions.items()
+                },
+                "account": {
+                    "account_id": state.account_id,
+                    "cash": str(state.cash),
+                    "realized_pnl": str(state.realized_pnl),
+                    "unrealized_pnl": str(state.unrealized_pnl),
+                    "equity": str(state.equity),
+                    "peak_equity": str(state.peak_equity),
+                    "drawdown": str(state.drawdown),
+                    "updated_at": state.updated_at.isoformat(),
+                    "positions": [
+                        {
+                            "symbol": position.symbol.value,
+                            "base_asset": position.symbol.base_asset,
+                            "quote_asset": position.symbol.quote_asset,
+                            "quantity": str(position.quantity),
+                            "average_entry_price": str(position.average_entry_price),
+                            "cost_basis": str(position.cost_basis),
+                        }
+                        for position in state.positions
+                    ],
+                },
+            },
+        )
+
+    def _restore(self) -> None:
+        latest_cycle = self._store.latest_of_kind("cycle")
+        if latest_cycle is None:
+            return
+        payload = latest_cycle.payload
+        close_time = datetime.fromisoformat(str(payload["close_time"]))
+        account = payload["account"]
+        if not isinstance(account, dict):
+            msg = "cycle payload account must be an object"
+            raise RuntimeEngineError(msg)
+        positions_raw = account.get("positions", [])
+        if not isinstance(positions_raw, list):
+            msg = "cycle payload positions must be a list"
+            raise RuntimeEngineError(msg)
+        positions = tuple(
+            AccountingPosition(
+                symbol=Symbol(
+                    value=str(row["symbol"]),
+                    base_asset=str(row["base_asset"]),
+                    quote_asset=str(row["quote_asset"]),
+                ),
+                quantity=Decimal(str(row["quantity"])),
+                average_entry_price=Decimal(str(row["average_entry_price"])),
+                cost_basis=Decimal(str(row["cost_basis"])),
+            )
+            for row in positions_raw
+            if isinstance(row, dict)
+        )
+        self._ledger = VirtualAccountLedger(
+            account_id=str(account["account_id"]),
+            cash=Decimal(str(account["cash"])),
+            positions=positions,
+            realized_pnl=Decimal(str(account["realized_pnl"])),
+            unrealized_pnl=Decimal(str(account["unrealized_pnl"])),
+            equity=Decimal(str(account["equity"])),
+            peak_equity=Decimal(str(account["peak_equity"])),
+            drawdown=Decimal(str(account["drawdown"])),
+            updated_at=datetime.fromisoformat(str(account["updated_at"])),
+            events=(),
+        )
+        self._last_processed = close_time
+        self._start_of_day_equity = Decimal(str(payload["start_of_day_equity"]))
+        executed = payload.get("executed_fractions", {})
+        decisions = payload.get("decision_fractions", {})
+        if isinstance(executed, dict):
+            for key, value in executed.items():
+                if key in self._executed_fractions:
+                    self._executed_fractions[key] = Decimal(str(value))
+        if isinstance(decisions, dict):
+            for key, value in decisions.items():
+                if key in self._decision_fractions:
+                    self._decision_fractions[key] = Decimal(str(value))
+
+    # ── validation helpers ─────────────────────────────────────────────
+
+    def _require_universe(self, candles_by_symbol: Mapping[str, tuple[Candle, ...]]) -> None:
+        if set(candles_by_symbol) != set(self._parameters.risk_budgets):
+            msg = (
+                "candles must cover exactly the budgeted decision universe; "
+                f"candles={sorted(candles_by_symbol)} "
+                f"budgets={sorted(self._parameters.risk_budgets)}"
+            )
+            raise RuntimeEngineError(msg)
+
+    def _aligned_latest_candles(
+        self, ordered: Mapping[str, tuple[Candle, ...]]
+    ) -> dict[str, Candle]:
+        latest = {symbol_value: candles[-1] for symbol_value, candles in ordered.items()}
+        close_times = {candle.close_time for candle in latest.values()}
+        if len(close_times) != 1:
+            msg = "latest closed candles must align across all budgeted symbols"
+            raise RuntimeEngineError(msg)
+        return latest
+
+    def _append_health(self, close_time: datetime, code: str, payload: dict[str, object]) -> None:
+        self._store.append(
+            kind="health",
+            key=f"health:{code}:{close_time.isoformat()}",
+            recorded_at=close_time,
+            payload={"code": code, **payload},
+        )
+
+
+def _skipped(reason: str, *, health: tuple[str, ...] = ()) -> CycleResult:
+    return CycleResult(
+        processed=False,
+        reason=reason,
+        close_time=None,
+        notifications=(),
+        fills=(),
+        rejection_reason_codes=(),
+        health_codes=health,
+        equity=None,
+    )
+
+
+def _closed_sorted(candles: tuple[Candle, ...], symbol_value: str) -> tuple[Candle, ...]:
+    if not candles:
+        msg = f"candles for {symbol_value} must not be empty"
+        raise RuntimeEngineError(msg)
+    open_candles = [candle for candle in candles if not candle.is_closed]
+    if open_candles:
+        msg = f"still-open candles are forbidden for decisions ({symbol_value})"
+        raise RuntimeEngineError(msg)
+    return tuple(sorted(candles, key=lambda candle: candle.open_time))
+
+
+def _disaster_for(
+    candles: tuple[Candle, ...],
+    symbol: Symbol,
+    parameters: RuntimeParameters,
+) -> RiskEvent | None:
+    if len(candles) < 2:
+        return None
+    return detect_single_day_disaster(
+        symbol=symbol,
+        previous_close=candles[-2].close_price,
+        current_close=candles[-1].close_price,
+        occurred_at=candles[-1].close_time,
+        threshold_fraction=parameters.disaster_single_day_drop_fraction,
+    )
+
+
+def _domain_positions(state: AccountState) -> tuple[Position, ...]:
+    return tuple(
+        Position(
+            symbol=position.symbol,
+            quantity=position.quantity,
+            average_entry_price=position.average_entry_price,
+        )
+        for position in state.positions
+    )
+
+
+def _domain_position(state: AccountState, symbol: Symbol) -> Position | None:
+    for position in _domain_positions(state):
+        if position.symbol == symbol:
+            return position
+    return None
+
+
+def _round_down(value: Decimal, step: Decimal) -> Decimal:
+    units = (value / step).to_integral_value(rounding=ROUND_FLOOR)
+    return units * step
+
+
+def _round_up(value: Decimal, step: Decimal) -> Decimal:
+    units = (value / step).to_integral_value(rounding=ROUND_CEILING)
+    return units * step

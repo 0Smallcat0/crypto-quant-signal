@@ -79,6 +79,15 @@ storage:
   username: crypto
   password: crypto_dev_only
   snapshot_directory: docs/reports/config-snapshots
+  trial_registry_path: docs/reports/research/trial_registry.jsonl
+  holdout_lock_path: docs/reports/research/holdout_lock.json
+  backtest_reports_directory: docs/reports/backtests
+  candle_files_directory: data/candles
+  runtime_events_path: data/runtime/events.jsonl
+notifications:
+  enabled: true
+  channel: log
+  webhook_url: ""
 api_dashboard:
   enabled: true
   host: 127.0.0.1
