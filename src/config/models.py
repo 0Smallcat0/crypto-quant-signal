@@ -82,7 +82,7 @@ class DataSourceConfig(CoreConfigModel):
 
     provider: Literal["binance_spot_public"] = "binance_spot_public"
     symbols: tuple[str, ...] = ("BTCUSDT", "ETHUSDT", "SOLUSDT")
-    timeframe: Literal["15m"] = "15m"
+    timeframe: Literal["1d", "15m"] = "1d"
     rest_base_url_candidates: tuple[str, ...] = BINANCE_PUBLIC_REST_BASE_URL_CANDIDATES
     ws_stream_base_url_candidates: tuple[str, ...] = BINANCE_PUBLIC_WS_STREAM_BASE_URL_CANDIDATES
     timeout_seconds: Decimal = Decimal("10")
@@ -171,9 +171,14 @@ class StrategyParametersConfig(CoreConfigModel):
 
 
 class StrategyConfig(CoreConfigModel):
-    """Strategy selection and parameter configuration."""
+    """Strategy selection and parameter configuration.
 
-    name: Literal["large_liquid_trend_15"] = "large_liquid_trend_15"
+    The Daily Trend Ensemble has no tunable parameters by contract
+    (docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md); the ``parameters``
+    block only applies to the superseded ``large_liquid_trend_15`` strategy.
+    """
+
+    name: Literal["daily_trend_ensemble", "large_liquid_trend_15"] = "daily_trend_ensemble"
     allowed_signals: tuple[Signal, ...] = (Signal.LONG, Signal.FLAT)
     allow_short: bool = False
     parameters: StrategyParametersConfig = Field(default_factory=StrategyParametersConfig)
@@ -192,8 +197,17 @@ class StrategyConfig(CoreConfigModel):
         return _reject_enabled_flag("allow_short", value)
 
 
+def _default_risk_budgets() -> dict[str, Decimal]:
+    return {"BTCUSDT": Decimal("0.5"), "ETHUSDT": Decimal("0.5")}
+
+
 class PortfolioConfig(CoreConfigModel):
-    """Long-only portfolio target configuration."""
+    """Long-only portfolio target configuration.
+
+    ``risk_budgets`` defines the v0.9 decision universe: only budgeted symbols
+    reach the strategy layer. SOLUSDT stays out until it independently passes
+    the validation gate (docs/contracts/UNIVERSE_CONTRACT.md).
+    """
 
     max_active_positions: int = 3
     max_symbol_weight: Decimal = Decimal("0.35")
@@ -201,11 +215,31 @@ class PortfolioConfig(CoreConfigModel):
     cash_allowed: bool = True
     cooldown_enabled: bool = True
     allow_short: bool = False
+    risk_budgets: dict[str, Decimal] = Field(default_factory=_default_risk_budgets)
 
     @field_validator("max_active_positions")
     @classmethod
     def _validate_max_active_positions(cls, value: int) -> int:
         return _require_positive_int("max_active_positions", value)
+
+    @field_validator("risk_budgets")
+    @classmethod
+    def _validate_risk_budgets(cls, value: dict[str, Decimal]) -> dict[str, Decimal]:
+        if not value:
+            msg = "risk_budgets must not be empty"
+            raise ValueError(msg)
+        total_budget = Decimal("0")
+        for symbol, budget in value.items():
+            _require_non_empty_string("risk budget symbol", symbol)
+            if "/" in symbol:
+                msg = "risk budget symbols must use Binance-native format, for example BTCUSDT"
+                raise ValueError(msg)
+            _require_fraction(f"risk budget for {symbol}", budget)
+            total_budget += budget
+        if total_budget > Decimal("1"):
+            msg = "risk_budgets must not exceed 1 in total"
+            raise ValueError(msg)
+        return value
 
     @field_validator("max_symbol_weight", "max_gross_exposure")
     @classmethod
@@ -225,12 +259,17 @@ class PortfolioConfig(CoreConfigModel):
 
 
 class RiskConfig(CoreConfigModel):
-    """Risk gate thresholds and safety flags."""
+    """Risk gate thresholds and safety flags.
+
+    The stale-data default fits the daily decision cadence: a daily close
+    older than 36 hours means the feed is broken, so new exposure halts.
+    """
 
     min_notional_usdt: Decimal = Decimal("10")
-    stale_data_max_age_seconds: int = 120
+    stale_data_max_age_seconds: int = 129600
     max_drawdown_fraction: Decimal = Decimal("0.20")
     daily_loss_pause_fraction: Decimal = Decimal("0.05")
+    disaster_single_day_drop_fraction: Decimal = Decimal("0.20")
     short_exposure_enabled: bool = False
     margin_enabled: bool = False
     leverage_enabled: bool = False
@@ -245,7 +284,11 @@ class RiskConfig(CoreConfigModel):
     def _validate_stale_data_window(cls, value: int) -> int:
         return _require_positive_int("stale_data_max_age_seconds", value)
 
-    @field_validator("max_drawdown_fraction", "daily_loss_pause_fraction")
+    @field_validator(
+        "max_drawdown_fraction",
+        "daily_loss_pause_fraction",
+        "disaster_single_day_drop_fraction",
+    )
     @classmethod
     def _validate_risk_fraction(cls, value: Decimal, info: object) -> Decimal:
         field_name = getattr(info, "field_name", "risk fraction")
@@ -317,7 +360,7 @@ class RuntimeConfig(CoreConfigModel):
     """Runtime mode, cadence, and restart behavior configuration."""
 
     mode: Literal["paper"] = "paper"
-    decision_timeframe: Literal["15m"] = "15m"
+    decision_timeframe: Literal["1d", "15m"] = "1d"
     config_snapshot_required: bool = True
     halt_on_stale_data: bool = True
     idempotency_key_namespace: str = "paper-runtime"

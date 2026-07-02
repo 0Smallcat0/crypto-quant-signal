@@ -16,6 +16,7 @@ from src.domain import Candle, Timeframe
 
 _TIMEFRAME_DELTAS = {
     "15m": timedelta(minutes=15),
+    "1d": timedelta(days=1),
 }
 
 

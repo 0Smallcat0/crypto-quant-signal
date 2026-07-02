@@ -1,5 +1,12 @@
 """Risk gate public surface."""
 
+from src.risk.events import (
+    DEFAULT_DISASTER_DROP_FRACTION,
+    DISASTER_SINGLE_DAY_DROP,
+    REEVALUATE_REQUIRED,
+    RiskEvent,
+    detect_single_day_disaster,
+)
 from src.risk.gate import (
     ACCOUNT_STOP,
     DAILY_LOSS_PAUSE,
@@ -34,6 +41,8 @@ from src.risk.types import (
 __all__ = [
     "ACCOUNT_STOP",
     "DAILY_LOSS_PAUSE",
+    "DEFAULT_DISASTER_DROP_FRACTION",
+    "DISASTER_SINGLE_DAY_DROP",
     "DRAWDOWN_PAUSE",
     "EXCHANGE_MIN_NOTIONAL_NOT_MET",
     "MIN_NOTIONAL_NOT_MET",
@@ -43,8 +52,10 @@ __all__ = [
     "NEGATIVE_QUANTITY",
     "PRICE_TICK_VIOLATION",
     "QUANTITY_STEP_VIOLATION",
+    "REEVALUATE_REQUIRED",
     "RISK_APPROVED",
     "RISK_REDUCING_SELL_ALLOWED_DURING_PAUSE",
+    "RiskEvent",
     "RiskExchangeFilters",
     "RiskGateContext",
     "RiskGateError",
@@ -57,5 +68,6 @@ __all__ = [
     "STALE_DATA",
     "SYMBOL_NOT_TRADABLE",
     "TRAILING_STOP",
+    "detect_single_day_disaster",
     "evaluate_order_intent",
 ]

@@ -5,7 +5,7 @@ data_source:
     - BTCUSDT
     - ETHUSDT
     - SOLUSDT
-  timeframe: 15m
+  timeframe: 1d
   rest_base_url_candidates:
     - https://data-api.binance.vision
     - https://api.binance.com
@@ -22,19 +22,13 @@ data_source:
   private_api_enabled: false
   api_key_required: false
 strategy:
-  name: large_liquid_trend_15
+  # Daily Trend Ensemble has no tunable parameters by contract:
+  # docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md fixes SMA 20/65/150/200.
+  name: daily_trend_ensemble
   allowed_signals:
     - LONG
     - FLAT
   allow_short: false
-  parameters:
-    momentum_lookback_candles: 12
-    trend_lookback_candles: 48
-    breakout_lookback_candles: 96
-    volume_lookback_candles: 96
-    volatility_lookback_candles: 48
-    minimum_entry_score: "0.70"
-    exit_score: "0.40"
 portfolio:
   max_active_positions: 3
   max_symbol_weight: "0.35"
@@ -42,11 +36,16 @@ portfolio:
   cash_allowed: true
   cooldown_enabled: true
   allow_short: false
+  # v0.9 decision universe: SOLUSDT stays out until it passes the validation gate.
+  risk_budgets:
+    BTCUSDT: "0.5"
+    ETHUSDT: "0.5"
 risk:
   min_notional_usdt: "10"
-  stale_data_max_age_seconds: 120
+  stale_data_max_age_seconds: 129600
   max_drawdown_fraction: "0.20"
   daily_loss_pause_fraction: "0.05"
+  disaster_single_day_drop_fraction: "0.20"
   short_exposure_enabled: false
   margin_enabled: false
   leverage_enabled: false
@@ -66,7 +65,7 @@ account:
   quote_asset: USDT
 runtime:
   mode: paper
-  decision_timeframe: 15m
+  decision_timeframe: 1d
   config_snapshot_required: true
   halt_on_stale_data: true
   idempotency_key_namespace: paper-runtime

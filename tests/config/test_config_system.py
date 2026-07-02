@@ -110,14 +110,23 @@ def test_default_config_model_has_core_mvp_defaults() -> None:
 
     assert config.account.initial_cash == Decimal("1000")
     assert config.account.quote_asset == "USDT"
-    assert config.data_source.timeframe == "15m"
+    assert config.data_source.timeframe == "1d"
     assert config.data_source.rest_base_url_candidates == BINANCE_PUBLIC_REST_BASE_URL_CANDIDATES
     assert (
         config.data_source.ws_stream_base_url_candidates
         == BINANCE_PUBLIC_WS_STREAM_BASE_URL_CANDIDATES
     )
     assert config.data_source.timeout_seconds == Decimal("10")
+    assert config.strategy.name == "daily_trend_ensemble"
+    assert config.portfolio.risk_budgets == {
+        "BTCUSDT": Decimal("0.5"),
+        "ETHUSDT": Decimal("0.5"),
+    }
+    assert "SOLUSDT" not in config.portfolio.risk_budgets
+    assert config.risk.disaster_single_day_drop_fraction == Decimal("0.20")
+    assert config.risk.stale_data_max_age_seconds == 129600
     assert config.runtime.mode == "paper"
+    assert config.runtime.decision_timeframe == "1d"
     assert config.execution.mode == "paper"
 
 
@@ -125,10 +134,31 @@ def test_default_paper_runtime_config_loads_through_typed_model() -> None:
     config = load_config(DEFAULT_CONFIG_PATH)
 
     assert config.account.initial_cash == Decimal("1000")
-    assert config.data_source.timeframe == "15m"
+    assert config.data_source.timeframe == "1d"
+    assert config.strategy.name == "daily_trend_ensemble"
+    assert config.portfolio.risk_budgets == {
+        "BTCUSDT": Decimal("0.5"),
+        "ETHUSDT": Decimal("0.5"),
+    }
     assert config.runtime.mode == "paper"
+    assert config.runtime.decision_timeframe == "1d"
     assert config.execution.fee_bps == Decimal("10")
     assert config.strategy.parameters.minimum_entry_score == Decimal("0.70")
+
+
+@pytest.mark.parametrize(
+    "risk_budgets",
+    (
+        {},
+        {"BTCUSDT": "0.7", "ETHUSDT": "0.4"},
+        {"BTC/USDT": "0.5"},
+        {"BTCUSDT": "0"},
+        {"BTCUSDT": "1.5"},
+    ),
+)
+def test_invalid_risk_budgets_are_rejected(risk_budgets: dict[str, str]) -> None:
+    with pytest.raises(ValidationError):
+        AppConfig.model_validate(_with_nested_value(("portfolio", "risk_budgets"), risk_budgets))
 
 
 def test_config_file_values_override_model_defaults(tmp_path: Path) -> None:
