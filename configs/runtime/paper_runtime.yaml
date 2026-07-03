@@ -92,7 +92,9 @@ notifications:
   # channel: log | webhook | discord
   #   discord loads DISCORD_BOT_TOKEN + DISCORD_CHANNEL_ID from environment
   #   variables (never stored here); the bot token must never be committed.
-  channel: log
+  #   Missing env vars degrade to log with a warning; pending notifications
+  #   flush automatically once credentials appear.
+  channel: discord
   webhook_url: ""
   # Your stated follow capital: sizes push messages ("buy ~125 USDT") and is
   # the dashboard default. Does NOT change the fixed 1000 USDT virtual account.

@@ -62,6 +62,14 @@ The daily task (`scripts/run_daily_cycle.cmd`, 08:05 Asia/Taipei) runs the same
 task's user account (the `setx` above handles the interactive user; for a task
 running as SYSTEM, set machine-level vars instead).
 
+## Missing credentials never cost a decision day
+
+If `channel: discord` is set but the env vars are absent for a given run, the
+cycle still executes (decisions, scoreboard, persistence) with a stderr
+warning; the push is skipped. Because delivery is exactly-once-with-retry,
+every undelivered notification stays queued in the event store and flushes
+automatically on the first run that does have credentials.
+
 ## Follow capital vs the virtual account
 
 `follow_principal_usdt` only sizes the push message and the dashboard default.

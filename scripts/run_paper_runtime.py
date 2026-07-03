@@ -247,11 +247,19 @@ def _channel_from_config(config: AppConfig) -> NotificationChannel:
         token = os.environ.get("DISCORD_BOT_TOKEN", "")
         channel_id = os.environ.get("DISCORD_CHANNEL_ID", "")
         if not token or not channel_id:
-            msg = (
-                "notifications.channel is 'discord' but DISCORD_BOT_TOKEN / "
-                "DISCORD_CHANNEL_ID environment variables are not set"
+            # Never let missing push credentials cost a decision day: the cycle
+            # matters more than the ping. The stand-in channel RAISES on
+            # deliver, so no delivered-marker is written and every pending
+            # notification flushes automatically on the first run that does
+            # have credentials.
+            print(
+                "WARNING: notifications.channel is 'discord' but DISCORD_BOT_TOKEN / "
+                "DISCORD_CHANNEL_ID are not set for this process; running the cycle "
+                "without push. Pending notifications stay queued and will deliver "
+                "once the environment variables are available.",
+                file=sys.stderr,
             )
-            raise NotificationValidationError(msg)
+            return _MissingCredentialsChannel()
         return DiscordBotNotificationChannel(
             token=token,
             channel_id=channel_id,
@@ -259,6 +267,20 @@ def _channel_from_config(config: AppConfig) -> NotificationChannel:
             principal=config.notifications.follow_principal_usdt,
         )
     return CollectingNotificationChannel()
+
+
+class _MissingCredentialsChannel:
+    """Raises on delivery so pending notifications keep their retry claim."""
+
+    def deliver(self, event: object) -> None:
+        _ = event
+        msg = "discord credentials missing; delivery deferred"
+        raise NotificationValidationError(msg)
+
+    def send_text(self, text: str) -> None:
+        _ = text
+        msg = "discord credentials missing; delivery deferred"
+        raise NotificationValidationError(msg)
 
 
 def _push_disaster_alerts(channel: NotificationChannel, result: CycleResult) -> None:
