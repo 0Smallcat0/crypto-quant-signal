@@ -126,7 +126,11 @@ class NotificationChannel(Protocol):
     """Delivery transport for already-persisted notification events."""
 
     def deliver(self, event: NotificationEvent) -> None:
-        """Deliver one event; raising is safe because the event is persisted."""
+        """Deliver one ladder-change event; raising is safe (event is persisted)."""
+        ...
+
+    def send_text(self, text: str) -> None:
+        """Deliver a plain out-of-band message (alerts, digests)."""
         ...
 
 

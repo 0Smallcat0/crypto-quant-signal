@@ -129,7 +129,8 @@ def test_dashboard_page_serves_static_html(tmp_path: Path) -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "read-only" in response.text
+    assert "唯讀記分板" in response.text  # read-only disclosure, humanized
+    assert "今日指令" in response.text  # command-card first screen
     assert "/api/signals/current" in response.text
 
 
@@ -141,6 +142,7 @@ def test_current_signals_return_latest_per_symbol(tmp_path: Path) -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["risk_budgets"] == {"BTCUSDT": "0.5", "ETHUSDT": "0.5"}
+    assert body["follow_principal"] == "1000"
     (signal,) = body["signals"]
     assert signal["symbol"] == "BTCUSDT"
     assert signal["exposure_fraction"] == "0.75"

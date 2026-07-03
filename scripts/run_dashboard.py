@@ -43,6 +43,7 @@ def main() -> None:
             symbol: str(budget) for symbol, budget in config.portfolio.risk_budgets.items()
         },
         initial_cash=str(config.account.initial_cash),
+        follow_principal=str(config.notifications.follow_principal_usdt),
     )
     uvicorn.run(app, host=config.api_dashboard.host, port=args.port or config.api_dashboard.port)
 

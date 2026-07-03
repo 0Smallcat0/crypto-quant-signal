@@ -89,8 +89,14 @@ storage:
   runtime_events_path: data/runtime/events.jsonl
 notifications:
   enabled: true
+  # channel: log | webhook | discord
+  #   discord loads DISCORD_BOT_TOKEN + DISCORD_CHANNEL_ID from environment
+  #   variables (never stored here); the bot token must never be committed.
   channel: log
   webhook_url: ""
+  # Your stated follow capital: sizes push messages ("buy ~125 USDT") and is
+  # the dashboard default. Does NOT change the fixed 1000 USDT virtual account.
+  follow_principal_usdt: "1000"
 api_dashboard:
   enabled: true
   host: 127.0.0.1

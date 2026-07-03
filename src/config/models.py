@@ -435,20 +435,34 @@ class NotificationConfig(CoreConfigModel):
     """Advisory notification delivery configuration.
 
     Notifications are persisted before delivery and are never execution
-    instructions; the webhook channel is config-gated and https-only.
+    instructions. The webhook channel is https-only. The discord channel takes
+    NO secret here: the bot token and channel id load from the DISCORD_BOT_TOKEN
+    and DISCORD_CHANNEL_ID environment variables at runtime, never from config.
+
+    ``follow_principal_usdt`` is the user's stated follow capital, used only to
+    size push messages ("buy ~125 USDT") and as the dashboard default. It does
+    NOT change the fixed 1000 USDT virtual scoreboard that the validation gate
+    depends on.
     """
 
     enabled: bool = True
-    channel: Literal["log", "webhook"] = "log"
+    channel: Literal["log", "webhook", "discord"] = "log"
     webhook_url: str = ""
+    follow_principal_usdt: Decimal = Decimal("1000")
+
+    @field_validator("follow_principal_usdt")
+    @classmethod
+    def _validate_follow_principal(cls, value: Decimal) -> Decimal:
+        return _require_positive_decimal("follow_principal_usdt", value)
 
     @model_validator(mode="after")
-    def _webhook_channel_requires_https_url(self) -> NotificationConfig:
+    def _channel_and_url_are_consistent(self) -> NotificationConfig:
         if self.channel == "webhook":
             if not self.webhook_url.startswith("https://"):
                 msg = "webhook channel requires an https webhook_url"
                 raise ValueError(msg)
         elif self.webhook_url:
+            # discord/log carry no url; credentials (discord) come from env.
             msg = "webhook_url is only allowed when channel is webhook"
             raise ValueError(msg)
         return self

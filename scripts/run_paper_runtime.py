@@ -29,11 +29,14 @@ from src.data import (
 from src.domain import Candle, Timeframe
 from src.notify import (
     CollectingNotificationChannel,
+    DiscordBotNotificationChannel,
     NotificationChannel,
     NotificationValidationError,
     WebhookNotificationChannel,
 )
+from src.risk import DISASTER_SINGLE_DAY_DROP
 from src.runtime import (
+    CycleResult,
     JsonlEventStore,
     RuntimeEngineError,
     RuntimeParameters,
@@ -105,7 +108,7 @@ def main() -> None:
         )
         raise SystemExit(2)
 
-    channel = _channel_from_config(config.notifications.channel, config.notifications.webhook_url)
+    channel = _channel_from_config(config)
     runtime = SignalRuntime(
         parameters=_runtime_parameters(config),
         store=JsonlEventStore(store_path, durable_fsync=args.once),
@@ -114,7 +117,7 @@ def main() -> None:
 
     if args.once:
         with _single_instance_lock(store_path):
-            _run_live_cycle(config, runtime, store_path)
+            _run_live_cycle(config, runtime, store_path, channel)
         return
 
     candles_dir = Path(args.candles_dir or config.storage.candle_files_directory)
@@ -144,10 +147,16 @@ def main() -> None:
     )
 
 
-def _run_live_cycle(config: AppConfig, runtime: SignalRuntime, store_path: Path) -> None:
+def _run_live_cycle(
+    config: AppConfig,
+    runtime: SignalRuntime,
+    store_path: Path,
+    channel: NotificationChannel,
+) -> None:
     observed_at = datetime.now(UTC)
     candles_by_symbol = asyncio.run(_fetch_latest_candles(config, observed_at))
     result = runtime.process_closed_candles(candles_by_symbol, observed_at=observed_at)
+    _push_disaster_alerts(channel, result)
 
     print(
         json.dumps(
@@ -230,10 +239,46 @@ def _runtime_parameters(config: AppConfig) -> RuntimeParameters:
     )
 
 
-def _channel_from_config(channel: str, webhook_url: str) -> NotificationChannel:
+def _channel_from_config(config: AppConfig) -> NotificationChannel:
+    channel = config.notifications.channel
     if channel == "webhook":
-        return WebhookNotificationChannel(webhook_url)
+        return WebhookNotificationChannel(config.notifications.webhook_url)
+    if channel == "discord":
+        token = os.environ.get("DISCORD_BOT_TOKEN", "")
+        channel_id = os.environ.get("DISCORD_CHANNEL_ID", "")
+        if not token or not channel_id:
+            msg = (
+                "notifications.channel is 'discord' but DISCORD_BOT_TOKEN / "
+                "DISCORD_CHANNEL_ID environment variables are not set"
+            )
+            raise NotificationValidationError(msg)
+        return DiscordBotNotificationChannel(
+            token=token,
+            channel_id=channel_id,
+            budgets=dict(config.portfolio.risk_budgets),
+            principal=config.notifications.follow_principal_usdt,
+        )
     return CollectingNotificationChannel()
+
+
+def _push_disaster_alerts(channel: NotificationChannel, result: CycleResult) -> None:
+    """Best-effort push for single-day crash warnings (no-change days included).
+
+    Ladder-change commands ride the engine's exactly-once delivery; disaster
+    alerts are same-day best-effort — a missed one is still on the dashboard.
+    """
+
+    disasters = [code for code in result.health_codes if code == DISASTER_SINGLE_DAY_DROP]
+    if not disasters or result.close_time is None:
+        return
+    try:
+        channel.send_text(
+            "⚠️ 單日重挫警報\n"
+            f"{result.close_time.date().isoformat()} 有標的單日跌幅達警戒門檻。\n"
+            "系統的長多規則會自動減碼；請留意接下來的每日指令,不要恐慌加碼。"
+        )
+    except Exception as exc:  # noqa: BLE001 - alerts must never break a cycle
+        print(f"disaster alert delivery failed: {type(exc).__name__}", file=sys.stderr)
 
 
 @contextmanager

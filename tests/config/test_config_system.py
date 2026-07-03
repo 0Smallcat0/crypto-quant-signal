@@ -167,6 +167,15 @@ def test_notification_defaults_are_log_channel() -> None:
     assert config.notifications.enabled is True
     assert config.notifications.channel == "log"
     assert config.notifications.webhook_url == ""
+    assert config.notifications.follow_principal_usdt == Decimal("1000")
+
+
+def test_discord_channel_carries_no_secret_in_config() -> None:
+    config = AppConfig.model_validate(_with_nested_value(("notifications", "channel"), "discord"))
+
+    # The discord channel is valid with no webhook_url; credentials load from env.
+    assert config.notifications.channel == "discord"
+    assert config.notifications.webhook_url == ""
 
 
 @pytest.mark.parametrize(
@@ -175,6 +184,7 @@ def test_notification_defaults_are_log_channel() -> None:
         ("webhook", ""),
         ("webhook", "http://insecure.example/hook"),
         ("log", "https://hook.example/x"),
+        ("discord", "https://hook.example/x"),
     ),
 )
 def test_invalid_notification_configs_are_rejected(channel: str, webhook_url: str) -> None:
@@ -183,6 +193,13 @@ def test_invalid_notification_configs_are_rejected(channel: str, webhook_url: st
 
     with pytest.raises(ValidationError):
         AppConfig.model_validate(data)
+
+
+def test_negative_follow_principal_is_rejected() -> None:
+    with pytest.raises(ValidationError):
+        AppConfig.model_validate(
+            _with_nested_value(("notifications", "follow_principal_usdt"), "0")
+        )
 
 
 def test_config_file_values_override_model_defaults(tmp_path: Path) -> None:

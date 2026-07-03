@@ -8,7 +8,7 @@
         "-m",
         "scripts.run_dashboard",
         "--store",
-        "data/runtime/replay_smoke.jsonl",
+        "data/runtime/events.jsonl",
         "--port",
         "8010"
       ],

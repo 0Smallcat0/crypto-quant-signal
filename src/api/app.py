@@ -29,6 +29,7 @@ def create_dashboard_app(
     holdout_lock_path: str | Path,
     risk_budgets: dict[str, str],
     initial_cash: str = "1000",
+    follow_principal: str = "1000",
 ) -> FastAPI:
     """Build the read-only dashboard app bound to artifact paths."""
 
@@ -54,6 +55,7 @@ def create_dashboard_app(
             latest[symbol] = payload
         return {
             "risk_budgets": risk_budgets,
+            "follow_principal": follow_principal,
             "signals": [latest[symbol] for symbol in sorted(latest)],
         }
 
