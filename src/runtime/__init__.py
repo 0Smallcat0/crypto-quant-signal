@@ -5,11 +5,13 @@ from src.runtime.engine import (
     WARMUP_INSUFFICIENT_HISTORY,
     SignalRuntime,
 )
+from src.runtime.quotes import EXEC_QUOTE_KIND, record_execution_quotes
 from src.runtime.replay import ReplaySummary, run_replay
 from src.runtime.store import JsonlEventStore, RuntimeStoreError, StoredEvent
 from src.runtime.types import CycleResult, RuntimeEngineError, RuntimeParameters
 
 __all__ = [
+    "EXEC_QUOTE_KIND",
     "STALE_DATA_HALT",
     "WARMUP_INSUFFICIENT_HISTORY",
     "CycleResult",
@@ -20,5 +22,6 @@ __all__ = [
     "RuntimeStoreError",
     "SignalRuntime",
     "StoredEvent",
+    "record_execution_quotes",
     "run_replay",
 ]

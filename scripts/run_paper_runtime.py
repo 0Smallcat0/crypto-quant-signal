@@ -18,6 +18,7 @@ import httpx
 from src.config import AppConfig, load_config
 from src.data import (
     BinanceSpotPublicClient,
+    BookTickerSnapshot,
     MarketDataError,
     MarketDataValidationError,
     candle_file_name,
@@ -42,6 +43,7 @@ from src.runtime import (
     RuntimeParameters,
     RuntimeStoreError,
     SignalRuntime,
+    record_execution_quotes,
     run_replay,
 )
 
@@ -109,15 +111,16 @@ def main() -> None:
         raise SystemExit(2)
 
     channel = _channel_from_config(config)
+    store = JsonlEventStore(store_path, durable_fsync=args.once)
     runtime = SignalRuntime(
         parameters=_runtime_parameters(config),
-        store=JsonlEventStore(store_path, durable_fsync=args.once),
+        store=store,
         channel=channel,
     )
 
     if args.once:
         with _single_instance_lock(store_path):
-            _run_live_cycle(config, runtime, store_path, channel)
+            _run_live_cycle(config, runtime, store, channel)
         return
 
     candles_dir = Path(args.candles_dir or config.storage.candle_files_directory)
@@ -150,13 +153,15 @@ def main() -> None:
 def _run_live_cycle(
     config: AppConfig,
     runtime: SignalRuntime,
-    store_path: Path,
+    store: JsonlEventStore,
     channel: NotificationChannel,
 ) -> None:
     observed_at = datetime.now(UTC)
-    candles_by_symbol = asyncio.run(_fetch_latest_candles(config, observed_at))
+    rest_base_url = _resolve_rest_base_url(config)
+    candles_by_symbol = asyncio.run(_fetch_latest_candles(config, observed_at, rest_base_url))
     result = runtime.process_closed_candles(candles_by_symbol, observed_at=observed_at)
     _push_disaster_alerts(channel, result)
+    exec_quotes = _record_exec_quotes_best_effort(config, rest_base_url, store, result)
 
     print(
         json.dumps(
@@ -183,7 +188,8 @@ def _run_live_cycle(
                     {"symbol": symbol, "reason_codes": list(codes)}
                     for symbol, codes in result.rejection_reason_codes
                 ],
-                "store_path": str(store_path),
+                "exec_quotes": exec_quotes,
+                "store_path": str(store.path),
             },
             indent=2,
             sort_keys=True,
@@ -191,19 +197,22 @@ def _run_live_cycle(
     )
 
 
-async def _fetch_latest_candles(
-    config: AppConfig, observed_at: datetime
-) -> dict[str, tuple[Candle, ...]]:
-    timeout_seconds = float(config.data_source.timeout_seconds)
+def _resolve_rest_base_url(config: AppConfig) -> str:
     preflight_results = run_public_rest_smoke(
         config.data_source.rest_base_url_candidates,
-        timeout_seconds=timeout_seconds,
+        timeout_seconds=float(config.data_source.timeout_seconds),
     )
     rest_base_url = first_passing_public_rest_base_url(preflight_results)
     if rest_base_url is None:
         msg = "no public Binance REST base URL is reachable from this environment"
         raise MarketDataError(msg)
+    return rest_base_url
 
+
+async def _fetch_latest_candles(
+    config: AppConfig, observed_at: datetime, rest_base_url: str
+) -> dict[str, tuple[Candle, ...]]:
+    timeout_seconds = float(config.data_source.timeout_seconds)
     timeframe = Timeframe(config.data_source.timeframe)
     candles_by_symbol: dict[str, tuple[Candle, ...]] = {}
     async with BinanceSpotPublicClient(
@@ -301,6 +310,38 @@ def _push_disaster_alerts(channel: NotificationChannel, result: CycleResult) -> 
         )
     except Exception as exc:  # noqa: BLE001 - alerts must never break a cycle
         print(f"disaster alert delivery failed: {type(exc).__name__}", file=sys.stderr)
+
+
+def _record_exec_quotes_best_effort(
+    config: AppConfig,
+    rest_base_url: str,
+    store: JsonlEventStore,
+    result: CycleResult,
+) -> int:
+    """Gate 6 cost measurement: snapshot bid/ask right after the decision.
+
+    Best-effort by design — a capture failure must never cost a decision day,
+    and a same-day rerun dedups on the (symbol, decision day) key.
+    """
+
+    if not result.processed or result.close_time is None:
+        return 0
+    try:
+        tickers = asyncio.run(_fetch_book_tickers(config, rest_base_url))
+        return record_execution_quotes(store, tickers, close_time=result.close_time)
+    except Exception as exc:  # noqa: BLE001 - measurement must never break a cycle
+        print(f"exec quote capture failed: {type(exc).__name__}", file=sys.stderr)
+        return 0
+
+
+async def _fetch_book_tickers(
+    config: AppConfig, rest_base_url: str
+) -> tuple[BookTickerSnapshot, ...]:
+    async with BinanceSpotPublicClient(
+        rest_base_url=rest_base_url,
+        timeout_seconds=float(config.data_source.timeout_seconds),
+    ) as client:
+        return await client.fetch_book_tickers(sorted(config.portfolio.risk_budgets))
 
 
 @contextmanager
