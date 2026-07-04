@@ -467,7 +467,8 @@ def _symbols_params(symbols: Iterable[str] | None) -> dict[str, str]:
     if len(symbol_tuple) == 1:
         return {"symbol": symbol_tuple[0]}
     if len(symbol_tuple) > 1:
-        return {"symbols": json.dumps(symbol_tuple)}
+        # Binance rejects the query when the JSON list contains spaces.
+        return {"symbols": json.dumps(symbol_tuple, separators=(",", ":"))}
     return {}
 
 

@@ -444,7 +444,8 @@ def test_client_fetches_public_book_ticker_and_depth_without_auth_headers() -> N
         def handler(request: httpx.Request) -> httpx.Response:
             assert "authorization" not in request.headers
             if request.url.path == "/api/v3/ticker/bookTicker":
-                assert json.loads(request.url.params["symbols"]) == ["BTCUSDT", "ETHUSDT"]
+                # Exact-string assert: Binance 400s on a JSON list with spaces.
+                assert request.url.params["symbols"] == '["BTCUSDT","ETHUSDT"]'
                 return httpx.Response(
                     200,
                     json=[

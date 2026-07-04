@@ -161,7 +161,12 @@ def _run_live_cycle(
     candles_by_symbol = asyncio.run(_fetch_latest_candles(config, observed_at, rest_base_url))
     result = runtime.process_closed_candles(candles_by_symbol, observed_at=observed_at)
     _push_disaster_alerts(channel, result)
-    exec_quotes = _record_exec_quotes_best_effort(config, rest_base_url, store, result)
+    # Same-day reruns (ALREADY_PROCESSED) still attempt the capture so a
+    # failed morning snapshot can be backfilled; the store key dedups.
+    quote_close_time = result.close_time
+    if quote_close_time is None and result.reason == "ALREADY_PROCESSED":
+        quote_close_time = runtime.last_processed
+    exec_quotes = _record_exec_quotes_best_effort(config, rest_base_url, store, quote_close_time)
 
     print(
         json.dumps(
@@ -316,7 +321,7 @@ def _record_exec_quotes_best_effort(
     config: AppConfig,
     rest_base_url: str,
     store: JsonlEventStore,
-    result: CycleResult,
+    close_time: datetime | None,
 ) -> int:
     """Gate 6 cost measurement: snapshot bid/ask right after the decision.
 
@@ -324,11 +329,11 @@ def _record_exec_quotes_best_effort(
     and a same-day rerun dedups on the (symbol, decision day) key.
     """
 
-    if not result.processed or result.close_time is None:
+    if close_time is None:
         return 0
     try:
         tickers = asyncio.run(_fetch_book_tickers(config, rest_base_url))
-        return record_execution_quotes(store, tickers, close_time=result.close_time)
+        return record_execution_quotes(store, tickers, close_time=close_time)
     except Exception as exc:  # noqa: BLE001 - measurement must never break a cycle
         print(f"exec quote capture failed: {type(exc).__name__}", file=sys.stderr)
         return 0

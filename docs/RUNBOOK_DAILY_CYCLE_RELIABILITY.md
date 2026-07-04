@@ -89,3 +89,7 @@ best-effort: a failure logs to stderr and never breaks the cycle; a same-day
 rerun dedups on the `(symbol, decision day)` key.
 
 Nothing to operate — this note exists so the event kind is documented.
+If a morning capture fails (stderr shows `exec quote capture failed`), any
+same-day rerun of the cycle backfills it: the decision path is an
+`ALREADY_PROCESSED` no-op while the quote capture retries, and the
+`(symbol, decision day)` key keeps the first successful snapshot.
