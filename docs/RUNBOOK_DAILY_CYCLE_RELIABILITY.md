@@ -30,6 +30,29 @@ as soon as the machine is next on — the `--once` path is idempotent and a late
 run is an honest late run — and the dead man's switch (below) tells you it was
 late.
 
+### Incident 2026-07-07: missed run, and the fix
+
+The 07-07 08:05 run was missed: the machine was asleep (S3) and `WakeToRun`
+did nothing because the OS-level **"Allow wake timers" gate was off**, so no
+RTC wake was ever armed; `StartWhenAvailable` also did not catch up on unlock.
+The 07-06 close was recovered by a manual `--once` run (idempotent; no ladder
+change that day, so zero economic impact) and the paper clock stayed
+continuous (07-02..07-06).
+
+The hardening script now closes this with three independent lines of defense:
+(1) it enables "Allow wake timers" so `WakeToRun` can arm an RTC wake;
+(2) it adds **at-logon and on-unlock triggers** — a catch-up that does not
+depend on RTC wake at all, because the idempotent cycle runs the moment you
+next touch the machine (a no-op if 08:05 already succeeded); (3) it re-asserts
+the daily settings. **Re-run `scripts/harden_daily_task.ps1` (elevated) once**
+to apply. Expect three triggers afterward (daily / logon / unlock) and
+"Allow wake timers" reading 0x1.
+
+If reliable local wake keeps failing, the research-flagged upgrade is to move
+the decision cycle to a cloud cron (it needs only public data + the Discord
+push, no keys) and leave the local machine as the dashboard — deferred unless
+the catch-up triggers prove insufficient.
+
 ## 2. One-time: dead man's switch (heartbeat monitor)
 
 Pattern (standard practice, healthchecks.io docs): the daily task pings a
