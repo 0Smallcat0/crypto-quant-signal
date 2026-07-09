@@ -1,38 +1,87 @@
 # Crypto Quant Signal MVP
 
-A crypto spot, long-only, public-data, DAILY signal notification system.
+A crypto **spot, long-only, public-data, daily signal** notification system with an honest paper-trading scoreboard.
 
-Every day after the UTC close, the system tells the user what to buy or sell and why;
-the user executes manually. A `1000 USDT` virtual account follows every signal in
-parallel as the honest scoreboard, recording virtual decisions, orders, fills,
-positions, cash, PnL, rejected orders, and risk events. The system never submits real
-exchange orders, never reads private account balances, and never requires API keys —
-permanently, by product definition.
+Every day after the UTC close, the system decides what to buy or sell and why, and notifies the user — **the user executes manually**. A `1000 USDT` virtual account follows every signal in parallel as the scoreboard, recording virtual decisions, orders, fills, positions, cash, PnL, rejected orders, and risk events.
 
-Design decisions are grounded in adversarially verified research:
-`docs/research/SIGNAL_DESIGN_RESEARCH.md`. Work queue: `GOALS.md` (v0.9).
-Qualification standard: `docs/contracts/VALIDATION_GATE_CONTRACT.md`.
+The system **never submits real exchange orders, never reads private balances, and never requires API keys — permanently, by product definition.** The human is the only executor.
 
-## Goal A Status
+> ⚠️ **Disclaimer:** This is a research and paper-trading project. It is **not financial advice**, produces no guaranteed returns, and executes no real trades. Signals are advisory output only.
 
-This repository currently contains the foundation scaffold only:
+---
 
-- Python 3.12 project configuration.
-- Source, config, docs, scripts, and test directories.
-- Local TimescaleDB/PostgreSQL-compatible Docker Compose file.
-- Baseline lint, format, type, import-boundary, and test tooling.
+## Why this project is interesting
 
-No strategy, data fetching, execution, runtime loop, dashboard behavior, research lab, real
-exchange API, or private API code is implemented in Goal A.
+Most retail "trading bot" repos backtest a strategy until the equity curve looks good and call it done. This project is built around the opposite thesis: **a strategy earns belief by surviving verification, not by looking good in-sample.** The engineering reflects that.
 
-## Local Setup
+- **A real anti-overfitting validation gate**, not a single backtest. Six gates must pass before any signal is called "qualified":
+  1. **Trial registry** — every backtest run is recorded; unregistered results are void by construction.
+  2. **Data floor** — ≥1,000 daily observations spanning bull, bear, and recovery.
+  3. **PBO ≤ 0.05** via CSCV (S=16 blocks, 12,870 splits) — probability of backtest overfitting.
+  4. **DSR ≥ 0.95** — Deflated Sharpe Ratio adjusted for the effective number of trials.
+  5. **Single-use locked holdout** — the most recent ~12 months, locked at first backtest, spendable exactly once. Iterated out-of-sample is not out-of-sample.
+  6. **≥3 months paper trading** with measured real costs within 1.5× the assumption.
+- **Safety encoded in the type system.** `Signal` is `LONG`/`FLAT` only — `SHORT` is unrepresentable. Position quantities can't go negative. Money is `Decimal`. Timestamps are UTC-aware; naive datetimes are rejected.
+- **Restartable, idempotent runtime.** Notifications and virtual orders are duplicate-proof across restarts via idempotency keys; every fill embeds a state checkpoint so a crash between a fill and the end-of-cycle snapshot can't lose the fill.
+- **No-lookahead by design and by test.** Decisions use only closed daily candles; a signal from candle `t` can never fill on candle `t`; features at close `t` use only closes ≤ `t`. Tests prove each rule.
+- **Enforced architecture boundaries.** `import-linter` keeps the domain layer dependency-free and prevents business packages from reaching into each other; `mypy --strict` over all of `src/`.
 
-Use Python 3.12 explicitly. On this machine, `python` may point at a newer interpreter.
+## The strategy
+
+`Daily Trend Ensemble` — a readable, long-only time-series trend rule. Per asset, target exposure equals the fraction of four SMAs (20 / 65 / 150 / 200-day) the close sits above → a `{0, 25, 50, 75, 100}%` exposure ladder.
+
+```
+Check once per day after the UTC daily close.
+Ladder up when more trend lines are reclaimed.
+Ladder down toward cash when they break.
+No shorting. No dip-buying. No cross-sectional rotation.
+Long silences are correct behavior — a handful of signals per year is expected.
+```
+
+The four lookbacks are **contract-fixed** (`docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md`). Changing them is a new strategy variant that must be pre-registered in the trial registry and counts toward the overfitting math — you cannot quietly tune parameters into looking good.
+
+## Architecture
+
+```
+Binance Spot public data (REST/WebSocket, no keys)
+  → closed daily-candle gate (UTC close)
+  → feature pipeline (SMA ensemble, point-in-time)
+  → strategy (Daily Trend Ensemble → exposure ladder)
+  → portfolio targets (ladder × per-asset risk budget)
+  → risk gate (no short / no negative / min notional / stale-data / drawdown pause / disaster brake)
+  → signal notification (persisted before delivery, idempotent, advisory)
+  → paper broker → virtual account ledger (the scoreboard)
+  → read-only dashboard / JSON API
+```
+
+Responsibilities stay separated: **strategy** decides what looks attractive, **portfolio** decides how much, **risk** decides whether it's allowed, **paper broker** simulates execution, **accounting** records what happened. Composition lives only in `src/backtest/` and `src/runtime/`.
+
+## Project status
+
+The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The project is currently in the post-MVP **signal-live qualification** phase (Goal O): spending the single-use holdout and running the ≥3-month paper trade before publishing a pass/fail gate report.
+
+- **233 tests** across 23 files (`pytest -m "not network"`, no external network in CI).
+- **39 source modules**, ~9,300 lines, `mypy --strict` clean.
+- Full goal roadmap and rationale: [`GOALS.md`](GOALS.md). Agent/contributor contract: [`AGENTS.md`](AGENTS.md). Design evidence: [`docs/research/SIGNAL_DESIGN_RESEARCH.md`](docs/research/SIGNAL_DESIGN_RESEARCH.md).
+
+## Tech stack
+
+Python 3.12 · FastAPI + Jinja/static dashboard · Pydantic config · Binance Spot public market data · PostgreSQL / TimescaleDB event store · pytest · mypy (strict) · ruff · import-linter · Docker Compose.
+
+## Local setup
+
+Python 3.12 is required. On Windows:
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]" -c requirements\constraints-dev.txt
+```
+
+Start the local event store (dummy dev credentials only — see below):
+
+```powershell
+docker compose up -d --wait
 ```
 
 ## Verification
@@ -43,22 +92,59 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m mypy --strict src/
 .\.venv\Scripts\lint-imports
 .\.venv\Scripts\python.exe -m pytest -m "not network" tests -q
-docker compose config
-docker compose up -d --wait
-docker compose down
-git remote -v
 ```
 
-`git remote -v` should print nothing for Goal A.
+Public-network smoke tests hit Binance and are excluded from the default run; they are explicitly marked `pytest.mark.network`.
 
-## Local Database
+## Running it
 
-The local database service uses dummy development credentials only:
+```powershell
+# One paper-runtime cycle against live public data
+.\.venv\Scripts\python.exe -m scripts.run_paper_runtime
 
-- Host port: `54320`
-- Database: `crypto_quant`
-- User: `crypto`
-- Password: `crypto_dev_only`
+# Backtest with trial registration + validation-gate metrics
+.\.venv\Scripts\python.exe -m scripts.run_backtest
 
-These are local Docker credentials, not production secrets.
+# Read-only dashboard (http://127.0.0.1:8010)
+.\.venv\Scripts\python.exe -m scripts.run_dashboard --store data/runtime/events.jsonl --port 8010
+```
 
+## Repository layout
+
+```
+src/
+  domain/        shared types (LONG/FLAT signal, Decimal money, UTC time)
+  data/          Binance Spot public client, closed-candle gate, quality checks
+  features/      daily SMA ensemble, point-in-time feature snapshots
+  strategies/    Daily Trend Ensemble (active) + Large Liquid Trend 15 (inactive reference)
+  portfolio/     exposure ladder → target weights within risk budgets
+  risk/          risk gate + disaster event
+  execution/     paper broker
+  accounting/    virtual account ledger
+  notify/        persisted, idempotent notification events
+  backtest/      replay engine, trial registry, holdout lock, CSCV/PBO + DSR
+  runtime/       signal runtime loop, event store, exec-quote capture
+  api/           read-only FastAPI dashboard
+configs/         runtime YAML config
+docs/
+  contracts/     strategy / risk / validation-gate specifications
+  research/       adversarially verified signal-design research
+  reports/        completion + audit reports, trial provenance
+tests/           233 tests mirroring the src layout
+```
+
+## Local database credentials
+
+`docker-compose.yml` uses explicit **dummy development credentials** bound to `localhost:54320`:
+
+| | |
+|---|---|
+| Database | `crypto_quant` |
+| User | `crypto` |
+| Password | `crypto_dev_only` |
+
+These are local Docker credentials, **not production secrets**. The application requires no API keys of any kind.
+
+## License
+
+[MIT](LICENSE) © 0Smallcat0

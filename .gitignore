@@ -29,9 +29,11 @@ dist/
 timescaledb-data/
 postgres-data/
 
-# Editor and OS noise
+# Editor, agent, and OS noise
 .idea/
 .vscode/
+# Local agent launch config carries machine-specific absolute paths
+.claude/
 *.swp
 Thumbs.db
 Desktop.ini
