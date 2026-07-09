@@ -60,7 +60,7 @@ Responsibilities stay separated: **strategy** decides what looks attractive, **p
 
 The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The project is currently in the post-MVP **signal-live qualification** phase (Goal O): spending the single-use holdout and running the ≥3-month paper trade before publishing a pass/fail gate report.
 
-- **233 tests** across 23 files (`pytest -m "not network"`, no external network in CI).
+- **281 passing tests** across 23 files (`pytest -m "not network"`, no external network in CI).
 - **39 source modules**, ~9,300 lines, `mypy --strict` clean.
 - Full goal roadmap and rationale: [`GOALS.md`](GOALS.md). Agent/contributor contract: [`AGENTS.md`](AGENTS.md). Design evidence: [`docs/research/SIGNAL_DESIGN_RESEARCH.md`](docs/research/SIGNAL_DESIGN_RESEARCH.md).
 
@@ -130,7 +130,7 @@ docs/
   contracts/     strategy / risk / validation-gate specifications
   research/       adversarially verified signal-design research
   reports/        completion + audit reports, trial provenance
-tests/           233 tests mirroring the src layout
+tests/           281 tests mirroring the src layout
 ```
 
 ## Local database credentials
