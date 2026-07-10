@@ -1,5 +1,11 @@
 # Crypto Quant Signal MVP
 
+[![CI](https://github.com/0Smallcat0/crypto-quant-signal/actions/workflows/ci.yml/badge.svg)](https://github.com/0Smallcat0/crypto-quant-signal/actions/workflows/ci.yml)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![mypy: strict](https://img.shields.io/badge/mypy-strict-blue.svg)](https://mypy.readthedocs.io/)
+[![lint: ruff](https://img.shields.io/badge/lint-ruff-261230.svg)](https://github.com/astral-sh/ruff)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 A crypto **spot, long-only, public-data, daily signal** notification system with an honest paper-trading scoreboard.
 
 Every day after the UTC close, the system decides what to buy or sell and why, and notifies the user — **the user executes manually**. A `1000 USDT` virtual account follows every signal in parallel as the scoreboard, recording virtual decisions, orders, fills, positions, cash, PnL, rejected orders, and risk events.
@@ -21,6 +27,18 @@ Most retail "trading bot" repos backtest a strategy until the equity curve looks
   4. **DSR ≥ 0.95** — Deflated Sharpe Ratio adjusted for the effective number of trials.
   5. **Single-use locked holdout** — the most recent ~12 months, locked at first backtest, spendable exactly once. Iterated out-of-sample is not out-of-sample.
   6. **≥3 months paper trading** with measured real costs within 1.5× the assumption.
+
+  ```mermaid
+  flowchart LR
+      BT["Every backtest run"] --> G1["1 · Trial registry<br/>unregistered = void"]
+      G1 --> G2["2 · Data floor<br/>≥ 1,000 daily obs"]
+      G2 --> G3["3 · PBO ≤ 0.05<br/>CSCV, S=16"]
+      G3 --> G4["4 · DSR ≥ 0.95<br/>deflated for N trials"]
+      G4 --> G5["5 · Locked holdout<br/>single-use, irreversible"]
+      G5 --> G6["6 · ≥ 3 months paper<br/>real costs ≤ 1.5× assumed"]
+      G6 --> OK(["Qualified signal"])
+      G2 & G3 & G4 & G5 & G6 -. any failure .-> BACK["Strategy family goes<br/>back to research"]
+  ```
 - **Safety encoded in the type system.** `Signal` is `LONG`/`FLAT` only — `SHORT` is unrepresentable. Position quantities can't go negative. Money is `Decimal`. Timestamps are UTC-aware; naive datetimes are rejected.
 - **Restartable, idempotent runtime.** Notifications and virtual orders are duplicate-proof across restarts via idempotency keys; every fill embeds a state checkpoint so a crash between a fill and the end-of-cycle snapshot can't lose the fill.
 - **No-lookahead by design and by test.** Decisions use only closed daily candles; a signal from candle `t` can never fill on candle `t`; features at close `t` use only closes ≤ `t`. Tests prove each rule.
@@ -42,27 +60,35 @@ The four lookbacks are **contract-fixed** (`docs/contracts/STRATEGY_DAILY_TREND_
 
 ## Architecture
 
-```
-Binance Spot public data (REST/WebSocket, no keys)
-  → closed daily-candle gate (UTC close)
-  → feature pipeline (SMA ensemble, point-in-time)
-  → strategy (Daily Trend Ensemble → exposure ladder)
-  → portfolio targets (ladder × per-asset risk budget)
-  → risk gate (no short / no negative / min notional / stale-data / drawdown pause / disaster brake)
-  → signal notification (persisted before delivery, idempotent, advisory)
-  → paper broker → virtual account ledger (the scoreboard)
-  → read-only dashboard / JSON API
+```mermaid
+flowchart TD
+    DATA["Binance Spot public data<br/>REST / WebSocket · no API keys"] --> GATE["Closed daily-candle gate<br/>UTC close only"]
+    GATE --> FEAT["Feature pipeline<br/>SMA ensemble · point-in-time"]
+    FEAT --> STRAT["Strategy: Daily Trend Ensemble<br/>exposure ladder 0 / 25 / 50 / 75 / 100%"]
+    STRAT --> PORT["Portfolio targets<br/>ladder × per-asset risk budget"]
+    PORT --> RISK["Risk gate<br/>no short · no negative · min notional<br/>stale data · drawdown pause · disaster brake"]
+    RISK --> NOTIFY["Signal notification<br/>persisted before delivery · idempotent · advisory"]
+    RISK --> BROKER["Paper broker"]
+    NOTIFY --> HUMAN(["Human executes manually<br/>the only executor"])
+    BROKER --> LEDGER["Virtual account ledger<br/>the honest scoreboard"]
+    LEDGER --> DASH["Read-only dashboard / JSON API"]
 ```
 
 Responsibilities stay separated: **strategy** decides what looks attractive, **portfolio** decides how much, **risk** decides whether it's allowed, **paper broker** simulates execution, **accounting** records what happened. Composition lives only in `src/backtest/` and `src/runtime/`.
+
+## The scoreboard dashboard
+
+Live view of the qualification run: today's command card, per-asset ladder state, the virtual account's equity curve, and validation-gate progress (registered trials, holdout lock status, paper-day counter). The UI is in Traditional Chinese — it is the single operator's daily instrument, not a public product.
+
+![Read-only dashboard during the 90-day paper qualification run](docs/assets/dashboard.png)
 
 ## Project status
 
 The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The project is currently in the post-MVP **signal-live qualification** phase (Goal O): spending the single-use holdout and running the ≥3-month paper trade before publishing a pass/fail gate report.
 
-- **281 passing tests** across 23 files (`pytest -m "not network"`, no external network in CI).
-- **39 source modules**, ~9,300 lines, `mypy --strict` clean.
-- Full goal roadmap and rationale: [`GOALS.md`](GOALS.md). Agent/contributor contract: [`AGENTS.md`](AGENTS.md). Design evidence: [`docs/research/SIGNAL_DESIGN_RESEARCH.md`](docs/research/SIGNAL_DESIGN_RESEARCH.md).
+- **281 passing tests** across 23 files, ~85% line coverage (`pytest -m "not network"`, no external network in CI).
+- **39 source modules**, ~9,300 lines, `mypy --strict` clean, 13 enforced import-linter contracts.
+- Full goal roadmap and rationale: [`GOALS.md`](GOALS.md). Agent/contributor contract: [`AGENTS.md`](AGENTS.md). Design evidence: [`docs/research/SIGNAL_DESIGN_RESEARCH.md`](docs/research/SIGNAL_DESIGN_RESEARCH.md) ([English summary](docs/research/SIGNAL_DESIGN_RESEARCH_EN.md)).
 
 ## Tech stack
 
