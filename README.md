@@ -39,6 +39,8 @@ Most retail "trading bot" repos backtest a strategy until the equity curve looks
       G6 --> OK(["Qualified signal"])
       G2 & G3 & G4 & G5 & G6 -. any failure .-> BACK["Strategy family goes<br/>back to research"]
   ```
+
+  The gate machinery (trial registry, CSCV/PBO, DSR, holdout lock) is also extracted as a standalone zero-dependency package: [**trialgate**](https://github.com/0Smallcat0/trialgate). The same gates have one registered FAIL on record — the [Taiwan-market adaptation](https://github.com/0Smallcat0/tw-stock-trading) of this strategy family, killed by its own pre-registered claim.
 - **Safety encoded in the type system.** `Signal` is `LONG`/`FLAT` only — `SHORT` is unrepresentable. Position quantities can't go negative. Money is `Decimal`. Timestamps are UTC-aware; naive datetimes are rejected.
 - **Restartable, idempotent runtime.** Notifications and virtual orders are duplicate-proof across restarts via idempotency keys; every fill embeds a state checkpoint so a crash between a fill and the end-of-cycle snapshot can't lose the fill.
 - **No-lookahead by design and by test.** Decisions use only closed daily candles; a signal from candle `t` can never fill on candle `t`; features at close `t` use only closes ≤ `t`. Tests prove each rule.
