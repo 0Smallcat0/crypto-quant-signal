@@ -42,9 +42,19 @@ as compromised and regenerate it** in the Discord Developer Portal
 - **Ladder-change command** (the core): on any day the target exposure changes,
   e.g. `🟢 今日指令 · ETHUSDT / 買入約 125 USDT / 原因：收盤站上 1 條均線…`.
   Delivered exactly-once with persisted retry (survives a webhook outage).
+  Every command closes with the **whole-portfolio target**（整體目標：BTC x%／
+  ETH y%／其餘現金）, so one message is enough to act on without the
+  dashboard; once the scoreboard drawdown reaches 20% a fixed expectation
+  anchor（歷史最大 ~52%，勿恐慌性偏離）rides along.
 - **Single-day crash alert**: on a ≥20% single-day drop (best-effort).
-- **No message on quiet days** — silence is normal for a trend system; the
-  dashboard always shows the current target as the backstop for missed pings.
+- **Weekly digest**（週摘要）: the run that processes the week-ending candle
+  (Sunday morning Taipei; Monday catches up a missed Sunday) sends equity,
+  buy-and-hold comparison, drawdown vs expectation, observation-day progress,
+  and the week's commands. Idempotent per ISO week (`weekly_digest:` event);
+  a failed send retries on the next run.
+- **No message on other quiet days** — silence is normal for a trend system;
+  the dead-man switch covers liveness and the dashboard always shows the
+  current target as the backstop for missed pings.
 
 ## Verify
 
