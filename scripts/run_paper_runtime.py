@@ -286,8 +286,8 @@ def _channel_from_config(config: AppConfig) -> NotificationChannel:
 class _MissingCredentialsChannel:
     """Raises on delivery so pending notifications keep their retry claim."""
 
-    def deliver(self, event: object) -> None:
-        _ = event
+    def deliver(self, event: object, *, portfolio: object | None = None) -> None:
+        _ = event, portfolio
         msg = "discord credentials missing; delivery deferred"
         raise NotificationValidationError(msg)
 

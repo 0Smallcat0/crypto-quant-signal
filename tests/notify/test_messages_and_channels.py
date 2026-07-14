@@ -11,8 +11,10 @@ from src.notify import (
     DiscordBotNotificationChannel,
     NotificationEvent,
     NotificationValidationError,
+    PortfolioTargetState,
     WebhookNotificationChannel,
     format_ladder_command,
+    format_portfolio_target_note,
     ladder_notification_id,
 )
 
@@ -97,6 +99,54 @@ def test_command_message_flags_risk_status() -> None:
     assert "資料過期" in msg
 
 
+def _portfolio(*, drawdown: str = "0.05") -> PortfolioTargetState:
+    return PortfolioTargetState(
+        weights=(("BTCUSDT", Decimal("0.5")), ("ETHUSDT", Decimal("0.125"))),
+        drawdown=Decimal(drawdown),
+    )
+
+
+def test_command_message_carries_whole_portfolio_target() -> None:
+    event = _event(previous="0", target="0.25", action="INCREASE_EXPOSURE")
+
+    msg = format_ladder_command(
+        event, budget=Decimal("0.5"), principal=Decimal("1000"), portfolio=_portfolio()
+    )
+
+    assert "整體目標：BTCUSDT 50%（約 500 USDT）／ETHUSDT 12.5%（約 125 USDT）／其餘現金" in msg
+    assert "沒跟到先前指令" in msg
+    # Calm scoreboard: no drawdown anchoring noise.
+    assert "回撤" not in msg
+
+
+def test_command_message_anchors_expectations_in_deep_drawdown() -> None:
+    event = _event(previous="0.5", target="0.25", action="DECREASE_EXPOSURE")
+
+    msg = format_ladder_command(
+        event,
+        budget=Decimal("0.5"),
+        principal=Decimal("1000"),
+        portfolio=_portfolio(drawdown="0.23"),
+    )
+
+    assert "目前回撤 -23%" in msg
+    assert "~52%" in msg
+    assert "請勿恐慌性偏離" in msg
+
+
+def test_portfolio_note_marks_flat_symbols_and_skips_amounts_without_principal() -> None:
+    state = PortfolioTargetState(
+        weights=(("BTCUSDT", Decimal("0.5")), ("ETHUSDT", Decimal("0"))),
+        drawdown=Decimal("0"),
+    )
+
+    note = format_portfolio_target_note(state)
+
+    assert "BTCUSDT 50%" in note
+    assert "ETHUSDT 不持有" in note
+    assert "約" not in note
+
+
 def test_discord_channel_requires_credentials() -> None:
     with pytest.raises(NotificationValidationError):
         DiscordBotNotificationChannel(
@@ -147,6 +197,39 @@ def test_collecting_channel_records_text_alerts() -> None:
     channel = CollectingNotificationChannel()
     channel.send_text("⚠️ 警報")
     assert channel.texts == ("⚠️ 警報",)
+
+
+def test_collecting_channel_records_portfolio_context() -> None:
+    channel = CollectingNotificationChannel()
+    state = _portfolio()
+
+    channel.deliver(_event(previous="0", target="0.25", action="INCREASE_EXPOSURE"))
+    channel.deliver(
+        _event(previous="0.25", target="0.5", action="INCREASE_EXPOSURE"), portfolio=state
+    )
+
+    assert channel.portfolios == (None, state)
+
+
+def test_webhook_delivery_appends_portfolio_without_amounts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict[str, object] = {}
+
+    def _fake_post(url: str, **kwargs: object) -> httpx.Response:
+        captured["json"] = kwargs.get("json")
+        return httpx.Response(200, request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(httpx, "post", _fake_post)
+    channel = WebhookNotificationChannel("https://hook.example/x")
+    channel.deliver(
+        _event(previous="0", target="0.25", action="INCREASE_EXPOSURE"), portfolio=_portfolio()
+    )
+
+    content = str(captured["json"]["content"])  # type: ignore[index]
+    assert "整體目標：BTCUSDT 50%／ETHUSDT 12.5%／其餘現金" in content
+    # No follow-capital context on the generic webhook: percentages only.
+    assert "約" not in content
 
 
 def test_webhook_channel_sends_content_shaped_payload(monkeypatch: pytest.MonkeyPatch) -> None:

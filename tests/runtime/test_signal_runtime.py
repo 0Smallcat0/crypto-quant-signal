@@ -115,6 +115,25 @@ def test_replay_notifies_ladder_changes_and_fills_the_scoreboard(tmp_path: Path)
     assert ("BTCUSDT", "DECREASE_EXPOSURE") in actions
 
 
+def test_delivery_carries_current_portfolio_target_state(tmp_path: Path) -> None:
+    runtime, channel = _runtime(tmp_path / "events.jsonl")
+
+    run_replay(_universe(), runtime)
+
+    # Every delivered command rode with a whole-portfolio snapshot (P1-5).
+    assert len(channel.portfolios) == len(channel.delivered) == 4
+    assert all(state is not None for state in channel.portfolios)
+    first = channel.portfolios[0]
+    assert first is not None
+    # Trend-on day: both symbols at full ladder x 0.5 budget.
+    assert first.weights == (("BTCUSDT", Decimal("0.5")), ("ETHUSDT", Decimal("0.5")))
+    last = channel.portfolios[-1]
+    assert last is not None
+    # Crash day: everything back to cash, scoreboard in a deep drawdown.
+    assert last.weights == (("BTCUSDT", Decimal("0")), ("ETHUSDT", Decimal("0")))
+    assert last.drawdown > Decimal("0.2")
+
+
 def test_notifications_are_persisted_before_delivery(tmp_path: Path) -> None:
     store_path = tmp_path / "events.jsonl"
     runtime, channel = _runtime(store_path)
@@ -232,7 +251,8 @@ class _FlakyChannel:
         self.failures = failures
         self.delivered: list[object] = []
 
-    def deliver(self, event: object) -> None:
+    def deliver(self, event: object, *, portfolio: object | None = None) -> None:
+        _ = portfolio
         if self.failures > 0:
             self.failures -= 1
             msg = "simulated webhook outage"

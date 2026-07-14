@@ -5,13 +5,14 @@ from src.notify.channels import (
     DiscordBotNotificationChannel,
     WebhookNotificationChannel,
 )
-from src.notify.messages import format_ladder_command
+from src.notify.messages import format_ladder_command, format_portfolio_target_note
 from src.notify.types import (
     DECREASE_EXPOSURE,
     INCREASE_EXPOSURE,
     NotificationChannel,
     NotificationEvent,
     NotificationValidationError,
+    PortfolioTargetState,
     ladder_notification_id,
 )
 
@@ -23,7 +24,9 @@ __all__ = [
     "NotificationChannel",
     "NotificationEvent",
     "NotificationValidationError",
+    "PortfolioTargetState",
     "WebhookNotificationChannel",
     "format_ladder_command",
+    "format_portfolio_target_note",
     "ladder_notification_id",
 ]

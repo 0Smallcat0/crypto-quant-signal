@@ -40,6 +40,7 @@ from src.notify import (
     INCREASE_EXPOSURE,
     NotificationChannel,
     NotificationEvent,
+    PortfolioTargetState,
     ladder_notification_id,
 )
 from src.portfolio import LadderPortfolioParameters, build_ladder_targets
@@ -616,13 +617,17 @@ class SignalRuntime:
         """
 
         delivered: list[NotificationEvent] = []
+        # One snapshot for the whole flush: every message (including a retried
+        # older one) carries the target state that is true NOW, which is what
+        # a follower acting late should converge to.
+        portfolio = self._portfolio_target_state()
         for event in self._store.events_of_kind("notification"):
             marker_key = f"delivered:{event.key}"
             if self._store.has(marker_key):
                 continue
             try:
                 notification = _notification_from_payload(event.payload)
-                self._channel.deliver(notification)
+                self._channel.deliver(notification, portfolio=portfolio)
             except Exception as exc:  # noqa: BLE001 - delivery must never kill a cycle
                 self._store.append(
                     kind="health",
@@ -643,6 +648,27 @@ class SignalRuntime:
             )
             delivered.append(notification)
         return tuple(delivered)
+
+    def _portfolio_target_state(self) -> PortfolioTargetState | None:
+        """Delivery-time whole-portfolio snapshot for self-sufficient messages.
+
+        Account-level weight per symbol is the latest decision fraction times
+        its risk budget. None before the first cycle ever completes (no ledger
+        yet) — the message then simply omits the portfolio block.
+        """
+
+        ledger = self._ledger
+        if ledger is None:
+            return None
+        weights = tuple(
+            (
+                symbol_value,
+                self._decision_fractions[symbol_value]
+                * self._parameters.risk_budgets[symbol_value],
+            )
+            for symbol_value in sorted(self._parameters.risk_budgets)
+        )
+        return PortfolioTargetState(weights=weights, drawdown=ledger.state.drawdown)
 
     # ── state persistence and restore ──────────────────────────────────
 
