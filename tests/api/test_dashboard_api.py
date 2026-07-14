@@ -132,6 +132,11 @@ def test_dashboard_page_serves_static_html(tmp_path: Path) -> None:
     assert "唯讀記分板" in response.text  # read-only disclosure, humanized
     assert "今日指令" in response.text  # command-card first screen
     assert "/api/signals/current" in response.text
+    # P1-4: config is the single source of truth for the follow principal.
+    assert "principalWarn" in response.text
+    assert "Discord 推播金額以 config 本金" in response.text
+    # P1-7: the drawdown expectation anchor is always visible.
+    assert "歷史最大回撤約 52%" in response.text
 
 
 def test_current_signals_return_latest_per_symbol(tmp_path: Path) -> None:

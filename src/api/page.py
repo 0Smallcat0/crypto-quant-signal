@@ -135,6 +135,7 @@ DASHBOARD_HTML = r"""<!doctype html>
   <input id="principalInput" class="num" type="number" min="1" step="1" value="1000">
   USDT
   <span class="hint">— 改一次即可，之後所有金額用它換算（只影響顯示，不影響驗證帳戶）</span>
+  <span class="hint" id="principalWarn" style="color:var(--warn)"></span>
 </div>
 
 <div class="command" id="commandCard"><div class="empty">載入中…</div></div>
@@ -156,7 +157,8 @@ DASHBOARD_HTML = r"""<!doctype html>
     <div class="score-row" id="scoreRow"><div class="empty">載入中…</div></div>
     <svg class="spark" id="spark" preserveAspectRatio="none" viewBox="0 0 600 70"></svg>
     <div id="positionsWrap"></div>
-    <div class="scoreboard-note">此為系統的虛擬驗證帳戶（假設從觀察期第一天起完全照做）。%報酬與本金無關；金額已按你的本金估算。</div>
+    <div class="scoreboard-note">此為系統的虛擬驗證帳戶（假設從觀察期第一天起完全照做）。%報酬與本金無關；金額已按你的本金估算。<br>
+      此策略歷史最大回撤約 52%——這是預期內的正常範圍，規則會在回撤中自動減碼。若無法承受這種浮虧，唯一該做的決定是把跟單本金降到能承受的水位。</div>
   </div>
 </section>
 
@@ -210,6 +212,15 @@ const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000)
 function getPrincipal() {
   const v = Number(localStorage.getItem("followPrincipal"));
   return v > 0 ? v : (window.__defaultPrincipal || 1000);
+}
+/* P1-4 本金單一來源：config 是唯一真相。本頁輸入只改顯示；
+   與 config 不一致時明講 Discord 推播金額照 config 算，避免兩邊數字對不上。 */
+function renderPrincipalWarn() {
+  const el = document.getElementById("principalWarn");
+  if (!el || !window.__defaultPrincipal) return;
+  el.textContent = getPrincipal() !== window.__defaultPrincipal
+    ? `⚠ Discord 推播金額以 config 本金（${money(window.__defaultPrincipal)} USDT）計算；此處輸入只影響本頁顯示`
+    : "";
 }
 async function getJson(p) { const r = await fetch(p); if (!r.ok) throw new Error(`${p} → HTTP ${r.status}`); return r.json(); }
 
@@ -418,6 +429,7 @@ async function refresh() {
     _budgets = signals.risk_budgets;
     window.__defaultPrincipal = Number(signals.follow_principal) || 1000;
     if (!localStorage.getItem("followPrincipal")) document.getElementById("principalInput").value = window.__defaultPrincipal;
+    renderPrincipalWarn();
     renderStatus(account, risk);
     renderCommand(notifications.notifications, signals.signals, account, _budgets);
     renderObs(gate);
@@ -439,6 +451,7 @@ async function refresh() {
 document.getElementById("principalInput").addEventListener("input", (e) => {
   const v = Number(e.target.value);
   if (v > 0) { localStorage.setItem("followPrincipal", String(v));
+    renderPrincipalWarn();
     if (window.__last) { renderCommand(window.__last.notifications, window.__last.signals, window.__last.account, _budgets);
       renderScoreboard(window.__last.account, window.__last.equity); } }
 });
