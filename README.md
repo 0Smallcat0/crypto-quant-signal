@@ -16,6 +16,35 @@ The system **never submits real exchange orders, never reads private balances, a
 
 ---
 
+## Try it in two minutes
+
+No API keys, no Docker, no network — the repo bundles 2.5 years of real BTC/ETH daily candles (2024-01 → 2026-06) and replays them through the exact engine the live qualification run uses:
+
+```bash
+git clone https://github.com/0Smallcat0/crypto-quant-signal
+cd crypto-quant-signal
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e .
+python -m scripts.run_demo
+```
+
+You get the full scoreboard in seconds — 713 daily decision cycles, 248 ladder commands, every paper fill with fees and slippage — and the read-only dashboard at `http://127.0.0.1:8010`:
+
+```json
+{
+  "cycles_processed": 713,
+  "notifications": 248,
+  "fills": 248,
+  "initial_cash": "1000",
+  "final_equity": "1145.05288738567",
+  "return_pct": "14.5"
+}
+```
+
+That `+14.5%` ends inside a `−27%` drawdown, because the bundled window ends in a bear stretch. The demo does not cherry-pick a flattering period — honest output is the whole point of this project.
+
+---
+
 ## Why this project is interesting
 
 Most retail "trading bot" repos backtest a strategy until the equity curve looks good and call it done. This project is built around the opposite thesis: **a strategy earns belief by surviving verification, not by looking good in-sample.** The engineering reflects that.
@@ -127,8 +156,11 @@ Public-network smoke tests hit Binance and are excluded from the default run; th
 ## Running it
 
 ```powershell
+# Offline demo: bundled candles -> real engine -> dashboard (no keys, no network)
+.\.venv\Scripts\python.exe -m scripts.run_demo
+
 # One paper-runtime cycle against live public data
-.\.venv\Scripts\python.exe -m scripts.run_paper_runtime
+.\.venv\Scripts\python.exe -m scripts.run_paper_runtime --once
 
 # Backtest with trial registration + validation-gate metrics
 .\.venv\Scripts\python.exe -m scripts.run_backtest
@@ -154,6 +186,7 @@ src/
   runtime/       signal runtime loop, event store, exec-quote capture
   api/           read-only FastAPI dashboard
 configs/         runtime YAML config
+demo/candles/    bundled BTC/ETH daily candles for the offline demo
 docs/
   contracts/     strategy / risk / validation-gate specifications
   research/       adversarially verified signal-design research
