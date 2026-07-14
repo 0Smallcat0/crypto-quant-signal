@@ -137,6 +137,9 @@ def test_dashboard_page_serves_static_html(tmp_path: Path) -> None:
     assert "Discord 推播金額以 config 本金" in response.text
     # P1-7: the drawdown expectation anchor is always visible.
     assert "歷史最大回撤約 52%" in response.text
+    # Demo replay mode has honest labeling wired into the page.
+    assert "demo_replay" in response.text
+    assert "非 90 天正式觀察期" in response.text
 
 
 def test_current_signals_return_latest_per_symbol(tmp_path: Path) -> None:
@@ -186,6 +189,25 @@ def test_notifications_rejections_and_gate_views(tmp_path: Path) -> None:
     assert gate["paper_trading"]["cycles"] == 1
     assert gate["paper_trading"]["started"] is not None
     assert gate["paper_trading"]["days"] >= 0
+    # The live dashboard is never a demo replay.
+    assert gate["demo_replay"] is False
+
+
+def test_demo_replay_flag_reaches_the_gate_view(tmp_path: Path) -> None:
+    store_path = tmp_path / "events.jsonl"
+    _seed_store(store_path)
+    app = create_dashboard_app(
+        store_path=store_path,
+        trial_registry_path=tmp_path / "missing-registry.jsonl",
+        holdout_lock_path=tmp_path / "missing-holdout.json",
+        risk_budgets={"BTCUSDT": "0.5", "ETHUSDT": "0.5"},
+        demo_replay=True,
+    )
+    gate = TestClient(app).get("/api/gate").json()
+
+    # Replayed cycles must never masquerade as live qualification days.
+    assert gate["demo_replay"] is True
+    assert gate["paper_trading"]["cycles"] == 1
 
 
 def test_empty_store_yields_graceful_defaults(tmp_path: Path) -> None:

@@ -113,6 +113,7 @@ def main() -> None:
         },
         initial_cash=str(initial_cash),
         follow_principal=str(config.notifications.follow_principal_usdt),
+        demo_replay=True,
     )
     print(f"demo dashboard: http://127.0.0.1:{args.port}  (Ctrl+C to stop)")
     uvicorn.run(app, host="127.0.0.1", port=args.port)

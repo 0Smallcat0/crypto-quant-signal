@@ -290,6 +290,13 @@ function renderCommand(notifications, signals, account, budgets) {
 function renderObs(gate) {
   const paper = gate.paper_trading || {};
   const days = paper.days || 0, target = 90;
+  if (gate.demo_replay) {
+    // Demo store replays bundled history: cycle count is NOT live paper days.
+    document.getElementById("obsPill").textContent = "離線 Demo";
+    document.getElementById("obsText").innerHTML =
+      `<span class="grow">本頁由內建歷史資料重播產生（${paper.cycles || 0} 個決策循環），非 90 天正式觀察期。</span>`;
+    return;
+  }
   document.getElementById("obsPill").textContent = `觀察期 ${days}/${target} 天`;
   document.getElementById("obsText").innerHTML =
     days >= target
@@ -360,10 +367,14 @@ function renderGate(gate) {
   const h = gate.holdout;
   const badge = !h ? `<span class="badge warn">未鎖定</span>`
     : h.spent ? `<span class="badge warn">已使用</span>` : `<span class="badge ok">已鎖定·未動用</span>`;
+  const paperBlock = gate.demo_replay
+    ? `<div class="num" style="font-size:1.3rem;font-weight:700">${paper.cycles || 0} <span style="font-size:.9rem;color:var(--muted)">個重播決策循環</span></div>
+       <div class="kv"><span class="k">觀察期進度</span><span style="color:var(--muted)">不適用——此為離線 Demo 重播，非正式 90 天 paper</span></div>`
+    : `<div class="num" style="font-size:1.3rem;font-weight:700">${days} <span style="font-size:.9rem;color:var(--muted)">/ ${target} 天 paper</span></div>
+       <div class="bar"><div style="width:${Math.min(100, (days / target) * 100).toFixed(1)}%"></div></div>`;
   document.getElementById("gateBody").innerHTML = `
     <h2 style="margin-bottom:8px">驗證閘門（六關，全過才算合格）</h2>
-    <div class="num" style="font-size:1.3rem;font-weight:700">${days} <span style="font-size:.9rem;color:var(--muted)">/ ${target} 天 paper</span></div>
-    <div class="bar"><div style="width:${Math.min(100, (days / target) * 100).toFixed(1)}%"></div></div>
+    ${paperBlock}
     <div class="kv"><span class="k">已登記試驗 N</span><b class="num">${gate.registered_trials_n}</b></div>
     <div class="kv"><span class="k">樣本外 Holdout</span>${badge}</div>
     <div class="kv"><span class="k">過關門檻</span><span class="num" style="color:var(--muted)">PBO ≤ ${gate.thresholds.pbo_max} · DSR ≥ ${gate.thresholds.dsr_min}</span></div>`;
