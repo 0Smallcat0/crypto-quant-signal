@@ -30,8 +30,14 @@ def create_dashboard_app(
     risk_budgets: dict[str, str],
     initial_cash: str = "1000",
     follow_principal: str = "1000",
+    demo_replay: bool = False,
 ) -> FastAPI:
-    """Build the read-only dashboard app bound to artifact paths."""
+    """Build the read-only dashboard app bound to artifact paths.
+
+    ``demo_replay`` marks a store rebuilt from bundled historical candles:
+    the gate view then labels itself as a replay instead of presenting the
+    replayed cycle count as live qualification paper days.
+    """
 
     app = FastAPI(
         title="Crypto Quant Signal MVP - read-only dashboard",
@@ -160,6 +166,7 @@ def create_dashboard_app(
         return {
             "registered_trials_n": _count_jsonl_lines(trial_registry_path),
             "holdout": _read_json_or_none(holdout_lock_path),
+            "demo_replay": demo_replay,
             "paper_trading": {
                 "started": paper_started.isoformat() if paper_started else None,
                 "days": paper_days,
