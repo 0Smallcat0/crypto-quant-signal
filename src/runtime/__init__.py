@@ -1,5 +1,11 @@
 """Signal runtime composition layer: notify the human, keep the scoreboard honest."""
 
+from src.runtime.digest import (
+    WEEKLY_DIGEST_KIND,
+    build_weekly_digest,
+    send_weekly_digest,
+    weekly_digest_key,
+)
 from src.runtime.engine import (
     STALE_DATA_HALT,
     WARMUP_INSUFFICIENT_HISTORY,
@@ -14,6 +20,7 @@ __all__ = [
     "EXEC_QUOTE_KIND",
     "STALE_DATA_HALT",
     "WARMUP_INSUFFICIENT_HISTORY",
+    "WEEKLY_DIGEST_KIND",
     "CycleResult",
     "JsonlEventStore",
     "ReplaySummary",
@@ -22,6 +29,9 @@ __all__ = [
     "RuntimeStoreError",
     "SignalRuntime",
     "StoredEvent",
+    "build_weekly_digest",
     "record_execution_quotes",
     "run_replay",
+    "send_weekly_digest",
+    "weekly_digest_key",
 ]
