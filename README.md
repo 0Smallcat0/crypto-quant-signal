@@ -6,9 +6,11 @@
 [![lint: ruff](https://img.shields.io/badge/lint-ruff-261230.svg)](https://github.com/astral-sh/ruff)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-A crypto **spot, long-only, public-data, daily signal** notification system with an honest paper-trading scoreboard.
+**A trading-signal system engineered to prove itself wrong before anyone risks money on it.**
 
-Every day after the UTC close, the system decides what to buy or sell and why, and notifies the user — **the user executes manually**. A `1000 USDT` virtual account follows every signal in parallel as the scoreboard, recording virtual decisions, orders, fills, positions, cash, PnL, rejected orders, and risk events.
+Most strategy repos exist to convince you they work. This one runs its own strategy through a six-gate falsification pipeline — registered trials, deflated Sharpe, a single-use locked holdout, ninety days of live paper trading — and publishes the scoreboard either way. A sibling strategy family has [already been killed by its own pre-registered gate](https://github.com/0Smallcat0/tw-stock-trading).
+
+Concretely, it is a crypto **spot, long-only, public-data, daily signal** notification system with an honest paper-trading scoreboard. Every day after the UTC close, the system decides what to buy or sell and why, and notifies the user — **the user executes manually**. A `1000 USDT` virtual account follows every signal in parallel as the scoreboard, recording virtual decisions, orders, fills, positions, cash, PnL, rejected orders, and risk events.
 
 The system **never submits real exchange orders, never reads private balances, and never requires API keys — permanently, by product definition.** The human is the only executor.
 
@@ -41,7 +43,9 @@ You get the full scoreboard in seconds — 713 daily decision cycles, 248 ladder
 }
 ```
 
-That `+14.5%` ends inside a `−27%` drawdown, because the bundled window ends in a bear stretch. The demo does not cherry-pick a flattering period — honest output is the whole point of this project.
+That `+14.5%` ends inside a `−27.1%` drawdown, because the bundled window ends in a bear stretch. The demo does not cherry-pick a flattering period — honest output is the whole point of this project.
+
+![Demo scoreboard: +14.5% cumulative, sitting in a −27.1% drawdown, ladder fully in cash](docs/assets/demo-dashboard.png)
 
 ---
 
