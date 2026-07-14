@@ -12,8 +12,13 @@ from decimal import Decimal
 
 import httpx
 
-from src.notify.messages import format_ladder_command
-from src.notify.types import INCREASE_EXPOSURE, NotificationEvent, NotificationValidationError
+from src.notify.messages import format_ladder_command, format_portfolio_target_note
+from src.notify.types import (
+    INCREASE_EXPOSURE,
+    NotificationEvent,
+    NotificationValidationError,
+    PortfolioTargetState,
+)
 
 _DISCORD_API = "https://discord.com/api/v10"
 _DISCORD_MAX_CONTENT = 2000
@@ -25,6 +30,7 @@ class CollectingNotificationChannel:
     def __init__(self) -> None:
         self._delivered: list[NotificationEvent] = []
         self._texts: list[str] = []
+        self._portfolios: list[PortfolioTargetState | None] = []
 
     @property
     def delivered(self) -> tuple[NotificationEvent, ...]:
@@ -34,8 +40,15 @@ class CollectingNotificationChannel:
     def texts(self) -> tuple[str, ...]:
         return tuple(self._texts)
 
-    def deliver(self, event: NotificationEvent) -> None:
+    @property
+    def portfolios(self) -> tuple[PortfolioTargetState | None, ...]:
+        return tuple(self._portfolios)
+
+    def deliver(
+        self, event: NotificationEvent, *, portfolio: PortfolioTargetState | None = None
+    ) -> None:
         self._delivered.append(event)
+        self._portfolios.append(portfolio)
 
     def send_text(self, text: str) -> None:
         self._texts.append(text)
@@ -55,15 +68,20 @@ class WebhookNotificationChannel:
         self._url = url
         self._timeout_seconds = timeout_seconds
 
-    def deliver(self, event: NotificationEvent) -> None:
+    def deliver(
+        self, event: NotificationEvent, *, portfolio: PortfolioTargetState | None = None
+    ) -> None:
         # Generic webhook has no follow-capital context; send the event as a
         # readable line without USDT sizing (the Discord bot channel sizes it).
         verb = "買入" if event.action == INCREASE_EXPOSURE else "賣出"
-        self.send_text(
+        text = (
             f"今日指令 · {event.symbol_value} {verb}"
             f"（目標曝險 {(event.target_fraction * 100).quantize(Decimal('1'))}% 預算）"
             f" · 決策價 {event.decision_price.quantize(Decimal('0.01'))}"
         )
+        if portfolio is not None:
+            text += "\n" + format_portfolio_target_note(portfolio)
+        self.send_text(text)
 
     def send_text(self, text: str) -> None:
         response = httpx.post(
@@ -98,9 +116,15 @@ class DiscordBotNotificationChannel:
         self._principal = principal
         self._timeout_seconds = timeout_seconds
 
-    def deliver(self, event: NotificationEvent) -> None:
+    def deliver(
+        self, event: NotificationEvent, *, portfolio: PortfolioTargetState | None = None
+    ) -> None:
         budget = self._budgets.get(event.symbol_value, Decimal("0"))
-        self.send_text(format_ladder_command(event, budget=budget, principal=self._principal))
+        self.send_text(
+            format_ladder_command(
+                event, budget=budget, principal=self._principal, portfolio=portfolio
+            )
+        )
 
     def send_text(self, text: str) -> None:
         response = httpx.post(

@@ -121,11 +121,43 @@ class NotificationEvent:
         }
 
 
+@dataclass(frozen=True, slots=True)
+class PortfolioTargetState:
+    """Whole-portfolio target snapshot attached to deliveries (advisory only).
+
+    ``weights`` are account-level target fractions (ladder fraction × risk
+    budget) for every budgeted symbol, in a fixed symbol order. Riding along
+    with each ladder-change message makes one push self-sufficient: a follower
+    who missed earlier commands rebuilds the full position from any single
+    message instead of replaying history. ``drawdown`` is the scoreboard
+    drawdown fraction, used to anchor expectations during deep drawdowns.
+    """
+
+    weights: tuple[tuple[str, Decimal], ...]
+    drawdown: Decimal
+
+    def __post_init__(self) -> None:
+        for symbol_value, weight in self.weights:
+            if not isinstance(symbol_value, str) or not symbol_value.strip():
+                msg = "portfolio weight symbols must not be empty"
+                raise NotificationValidationError(msg)
+            if not isinstance(weight, Decimal) or not Decimal("0") <= weight <= Decimal("1"):
+                msg = "portfolio weights must be Decimals within [0, 1]"
+                raise NotificationValidationError(msg)
+        if not isinstance(self.drawdown, Decimal) or not (
+            Decimal("0") <= self.drawdown < Decimal("1")
+        ):
+            msg = "drawdown must be a Decimal within [0, 1)"
+            raise NotificationValidationError(msg)
+
+
 @runtime_checkable
 class NotificationChannel(Protocol):
     """Delivery transport for already-persisted notification events."""
 
-    def deliver(self, event: NotificationEvent) -> None:
+    def deliver(
+        self, event: NotificationEvent, *, portfolio: PortfolioTargetState | None = None
+    ) -> None:
         """Deliver one ladder-change event; raising is safe (event is persisted)."""
         ...
 
