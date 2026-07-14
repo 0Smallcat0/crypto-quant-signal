@@ -170,6 +170,12 @@ Set-ScheduledTask -TaskName CryptoQuantDailySignalCycle -Settings $s
 
 ### P1 — 兩週內（跟單 UX 補強）
 
+> **狀態（2026-07-14）：P1-4／P1-5／P1-6／P1-7 全部落地。**
+> P1-5+P1-7：每則推播附整體目標與回撤錨定（`PortfolioTargetState`，投遞時快照）；
+> P1-6：週摘要 `src/runtime/digest.py`（ISO 週幂等、send-then-mark、週日 08:05 台北首發 2026-07-19）；
+> P1-4：儀表板本金與 config 不一致時顯示警告，config 為唯一真相。
+> 儀表板遠端可達（Tailscale）依計畫降為選配，未實作。
+
 **P1-4. 本金單一來源**（修 L4）
 config 為唯一真相：儀表板輸入框改為顯示 config 值並唯讀化，或保留輸入但在
 與 config 不一致時顯示「⚠ Discord 推播金額以 config（1000）計算」。
