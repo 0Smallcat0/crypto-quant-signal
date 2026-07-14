@@ -45,6 +45,7 @@ from src.runtime import (
     SignalRuntime,
     record_execution_quotes,
     run_replay,
+    send_weekly_digest,
 )
 
 # 200-close warmup plus margin; Binance caps one request at 1000 anyway.
@@ -167,6 +168,14 @@ def _run_live_cycle(
     if quote_close_time is None and result.reason == "ALREADY_PROCESSED":
         quote_close_time = runtime.last_processed
     exec_quotes = _record_exec_quotes_best_effort(config, rest_base_url, store, quote_close_time)
+    digest_sent = _send_weekly_digest_best_effort(
+        config=config,
+        store=store,
+        channel=channel,
+        candles_by_symbol=candles_by_symbol,
+        close_time=quote_close_time,
+        observed_at=observed_at,
+    )
 
     print(
         json.dumps(
@@ -194,6 +203,7 @@ def _run_live_cycle(
                     for symbol, codes in result.rejection_reason_codes
                 ],
                 "exec_quotes": exec_quotes,
+                "weekly_digest_sent": digest_sent,
                 "store_path": str(store.path),
             },
             indent=2,
@@ -337,6 +347,39 @@ def _record_exec_quotes_best_effort(
     except Exception as exc:  # noqa: BLE001 - measurement must never break a cycle
         print(f"exec quote capture failed: {type(exc).__name__}", file=sys.stderr)
         return 0
+
+
+def _send_weekly_digest_best_effort(
+    *,
+    config: AppConfig,
+    store: JsonlEventStore,
+    channel: NotificationChannel,
+    candles_by_symbol: dict[str, tuple[Candle, ...]],
+    close_time: datetime | None,
+    observed_at: datetime,
+) -> bool:
+    """P1-6 weekly trust digest: best-effort, never allowed to cost a cycle.
+
+    A failed send is only logged — the digest module's send-then-mark protocol
+    leaves the week unclaimed so the next run (same-day rerun or the Sunday
+    candle's catch-up) retries automatically.
+    """
+
+    if close_time is None:
+        return False
+    try:
+        return send_weekly_digest(
+            store=store,
+            channel=channel,
+            budgets=config.portfolio.risk_budgets,
+            initial_cash=config.account.initial_cash,
+            candles_by_symbol=candles_by_symbol,
+            close_time=close_time,
+            recorded_at=observed_at,
+        )
+    except Exception as exc:  # noqa: BLE001 - digest must never break a cycle
+        print(f"weekly digest delivery failed: {type(exc).__name__}", file=sys.stderr)
+        return False
 
 
 async def _fetch_book_tickers(

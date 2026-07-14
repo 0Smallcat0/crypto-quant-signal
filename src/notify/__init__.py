@@ -5,7 +5,12 @@ from src.notify.channels import (
     DiscordBotNotificationChannel,
     WebhookNotificationChannel,
 )
-from src.notify.messages import format_ladder_command, format_portfolio_target_note
+from src.notify.messages import (
+    DRAWDOWN_NOTE_THRESHOLD,
+    HISTORICAL_MAX_DRAWDOWN_TEXT,
+    format_ladder_command,
+    format_portfolio_target_note,
+)
 from src.notify.types import (
     DECREASE_EXPOSURE,
     INCREASE_EXPOSURE,
@@ -18,6 +23,8 @@ from src.notify.types import (
 
 __all__ = [
     "DECREASE_EXPOSURE",
+    "DRAWDOWN_NOTE_THRESHOLD",
+    "HISTORICAL_MAX_DRAWDOWN_TEXT",
     "INCREASE_EXPOSURE",
     "CollectingNotificationChannel",
     "DiscordBotNotificationChannel",
