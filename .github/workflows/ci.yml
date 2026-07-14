@@ -42,3 +42,30 @@ jobs:
           rate = float(ET.parse("coverage.xml").getroot().get("line-rate")) * 100
           print(f"**Line coverage: {rate:.1f}%**")
           EOF
+
+  # The README "Try it in two minutes" promise, verified on every push:
+  # plain `pip install -e .` (no dev extras, no constraints, no Docker,
+  # no network data) must replay the bundled candles through the real engine.
+  quickstart-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install exactly like the README quickstart
+        run: python -m pip install -e .
+
+      - name: Run the offline demo
+        run: |
+          python -m scripts.run_demo --no-serve | tee demo.json
+          python - <<'EOF'
+          import json
+          summary = json.load(open("demo.json"))
+          assert summary["cycles_processed"] == 713, summary
+          assert summary["notifications"] == 248, summary
+          assert summary["final_equity"] == "1145.05288738567", summary
+          EOF
