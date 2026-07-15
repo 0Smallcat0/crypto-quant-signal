@@ -79,6 +79,8 @@ Most retail "trading bot" repos backtest a strategy until the equity curve looks
 - **No-lookahead by design and by test.** Decisions use only closed daily candles; a signal from candle `t` can never fill on candle `t`; features at close `t` use only closes ≤ `t`. Tests prove each rule.
 - **Enforced architecture boundaries.** `import-linter` keeps the domain layer dependency-free and prevents business packages from reaching into each other; `mypy --strict` over all of `src/`.
 
+Each of these is a deliberate trade-off with a verifiable paper trail — problem, decision, and exactly where to check it: [**docs/ENGINEERING_DECISIONS.md**](docs/ENGINEERING_DECISIONS.md).
+
 ## The strategy
 
 `Daily Trend Ensemble` — a readable, long-only time-series trend rule. Per asset, target exposure equals the fraction of four SMAs (20 / 65 / 150 / 200-day) the close sits above → a `{0, 25, 50, 75, 100}%` exposure ladder.
