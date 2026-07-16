@@ -21,4 +21,9 @@ if defined HEALTHCHECK_PING_URL (
     echo NOTE: HEALTHCHECK_PING_URL not set; dead-man-switch ping skipped >> data\runtime\daily_cycle.log
 )
 
+rem Off-disk backup of the runtime store (best-effort; never alters CYCLE_EXIT
+rem so the dead-man-switch signal stays a pure cycle-health signal). Failures
+rem are visible in C:\Backups\CryptoTrading\backup.log.
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\backup_runtime_store.ps1 >nul 2>&1
+
 exit /b %CYCLE_EXIT%
