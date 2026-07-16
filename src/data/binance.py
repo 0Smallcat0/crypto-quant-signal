@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from collections.abc import AsyncIterator, Iterable, Mapping, Sequence
 from datetime import UTC, datetime
@@ -31,6 +32,11 @@ from src.domain import Candle, Symbol, Timeframe
 
 BINANCE_SOURCE = "binance_spot_public"
 
+# Transient conditions worth one bounded retry round: rate limit and server-side
+# errors. Client errors (4xx) are never retried — they mean the request itself
+# is wrong and a retry cannot fix it.
+_RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
+
 _COMMON_QUOTE_ASSETS = ("USDT", "FDUSD", "USDC", "TUSD", "BUSD", "BTC", "ETH", "BNB")
 _EXCLUDED_STABLE_BASE_ASSETS = frozenset({"USDT", "USDC", "FDUSD", "TUSD", "BUSD", "DAI", "USDP"})
 _EXCLUDED_FIAT_PROXY_BASE_ASSETS = frozenset(
@@ -48,12 +54,22 @@ class BinanceSpotPublicClient:
         http_client: httpx.AsyncClient | None = None,
         rest_base_url: str = BINANCE_REST_BASE_URL,
         timeout_seconds: float = 10.0,
+        max_request_attempts: int = 3,
+        retry_backoff_seconds: float = 0.5,
     ) -> None:
+        if max_request_attempts < 1:
+            msg = "max_request_attempts must be at least 1"
+            raise MarketDataValidationError(msg)
+        if retry_backoff_seconds < 0:
+            msg = "retry_backoff_seconds must not be negative"
+            raise MarketDataValidationError(msg)
         self._owns_http_client = http_client is None
         self._http_client = http_client or httpx.AsyncClient(
             base_url=rest_base_url,
             timeout=timeout_seconds,
         )
+        self._max_request_attempts = max_request_attempts
+        self._retry_backoff_seconds = retry_backoff_seconds
 
     async def __aenter__(self) -> BinanceSpotPublicClient:
         return self
@@ -66,6 +82,36 @@ class BinanceSpotPublicClient:
 
         if self._owns_http_client:
             await self._http_client.aclose()
+
+    async def _get_with_retry(
+        self, path: str, params: Mapping[str, str | int] | None
+    ) -> httpx.Response:
+        """GET with bounded exponential backoff on transient failures.
+
+        Retries transport errors and 429/5xx up to ``max_request_attempts`` so a
+        momentary Binance blip does not cost the daily cycle a 30-minute Task
+        Scheduler restart. Non-retryable statuses raise immediately via
+        ``raise_for_status`` and 4xx is never retried.
+        """
+
+        last_transport_error: httpx.TransportError | None = None
+        for attempt in range(self._max_request_attempts):
+            if attempt:
+                await asyncio.sleep(self._retry_backoff_seconds * (2 ** (attempt - 1)))
+            try:
+                response = await self._http_client.get(path, params=params)
+            except httpx.TransportError as error:
+                last_transport_error = error
+                continue
+            is_last_attempt = attempt == self._max_request_attempts - 1
+            if response.status_code in _RETRYABLE_STATUS_CODES and not is_last_attempt:
+                continue
+            response.raise_for_status()
+            return response
+        if last_transport_error is None:  # pragma: no cover - defensive
+            msg = "retry loop exited without a response or transport error"
+            raise MarketDataError(msg)
+        raise last_transport_error
 
     async def fetch_historical_candles(
         self,
@@ -95,8 +141,7 @@ class BinanceSpotPublicClient:
             _require_utc("end_time", end_time)
             params["endTime"] = _to_milliseconds(end_time)
 
-        response = await self._http_client.get("/api/v3/klines", params=params)
-        response.raise_for_status()
+        response = await self._get_with_retry("/api/v3/klines", params)
         payload = cast(object, response.json())
         rows = _expect_sequence(payload, "klines response")
         parsed_received_at = received_at or datetime.now(UTC)
@@ -164,8 +209,7 @@ class BinanceSpotPublicClient:
             # Binance rejects the query when the JSON list contains spaces.
             params["symbols"] = json.dumps(symbol_tuple, separators=(",", ":"))
 
-        response = await self._http_client.get("/api/v3/exchangeInfo", params=params)
-        response.raise_for_status()
+        response = await self._get_with_retry("/api/v3/exchangeInfo", params)
         payload = cast(object, response.json())
         return parse_exchange_info_symbol_filters(payload)
 
@@ -178,8 +222,7 @@ class BinanceSpotPublicClient:
         """Fetch public best bid/ask snapshots from Binance Spot."""
 
         params = _symbols_params(symbols)
-        response = await self._http_client.get("/api/v3/ticker/bookTicker", params=params)
-        response.raise_for_status()
+        response = await self._get_with_retry("/api/v3/ticker/bookTicker", params)
         payload = cast(object, response.json())
         return parse_book_ticker_payload(payload, captured_at=captured_at or datetime.now(UTC))
 
@@ -195,11 +238,10 @@ class BinanceSpotPublicClient:
         if limit <= 0 or limit > 5000:
             msg = "limit must be between 1 and 5000"
             raise MarketDataValidationError(msg)
-        response = await self._http_client.get(
+        response = await self._get_with_retry(
             "/api/v3/depth",
-            params={"symbol": symbol.value, "limit": limit},
+            {"symbol": symbol.value, "limit": limit},
         )
-        response.raise_for_status()
         payload = cast(object, response.json())
         return parse_depth_snapshot_payload(
             payload,

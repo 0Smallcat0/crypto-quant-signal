@@ -503,3 +503,94 @@ def test_closed_kline_stream_url_uses_public_combined_stream_format() -> None:
     assert url == (
         "wss://data-stream.binance.vision/stream?streams=btcusdt@kline_15m/ethusdt@kline_15m"
     )
+
+
+def test_client_retries_transient_failures_then_succeeds() -> None:
+    attempts = {"count": 0}
+
+    async def run_client() -> tuple[Candle, ...]:
+        def handler(request: httpx.Request) -> httpx.Response:
+            attempts["count"] += 1
+            if attempts["count"] == 1:
+                msg = "simulated connect failure"
+                raise httpx.ConnectError(msg, request=request)
+            if attempts["count"] == 2:
+                return httpx.Response(503)
+            return httpx.Response(
+                200,
+                json=[_rest_row(datetime(2026, 5, 20, 0, 0, tzinfo=UTC))],
+            )
+
+        transport = httpx.MockTransport(handler)
+        async with httpx.AsyncClient(
+            base_url="https://api.binance.com",
+            transport=transport,
+        ) as http_client:
+            client = BinanceSpotPublicClient(
+                http_client=http_client,
+                max_request_attempts=3,
+                retry_backoff_seconds=0.0,
+            )
+            return await client.fetch_historical_candles(
+                symbol=_symbol(),
+                timeframe=_timeframe(),
+                received_at=datetime(2026, 5, 20, 0, 16, tzinfo=UTC),
+            )
+
+    candles = asyncio.run(run_client())
+
+    assert attempts["count"] == 3
+    assert len(candles) == 1
+
+
+def test_client_never_retries_client_errors() -> None:
+    attempts = {"count": 0}
+
+    async def run_client() -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            attempts["count"] += 1
+            return httpx.Response(400)
+
+        transport = httpx.MockTransport(handler)
+        async with httpx.AsyncClient(
+            base_url="https://api.binance.com",
+            transport=transport,
+        ) as http_client:
+            client = BinanceSpotPublicClient(
+                http_client=http_client,
+                max_request_attempts=3,
+                retry_backoff_seconds=0.0,
+            )
+            await client.fetch_historical_candles(symbol=_symbol(), timeframe=_timeframe())
+
+    with pytest.raises(httpx.HTTPStatusError):
+        asyncio.run(run_client())
+
+    assert attempts["count"] == 1
+
+
+def test_client_raises_after_exhausting_retry_attempts() -> None:
+    attempts = {"count": 0}
+
+    async def run_client() -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            attempts["count"] += 1
+            msg = "simulated persistent outage"
+            raise httpx.ConnectError(msg, request=request)
+
+        transport = httpx.MockTransport(handler)
+        async with httpx.AsyncClient(
+            base_url="https://api.binance.com",
+            transport=transport,
+        ) as http_client:
+            client = BinanceSpotPublicClient(
+                http_client=http_client,
+                max_request_attempts=3,
+                retry_backoff_seconds=0.0,
+            )
+            await client.fetch_historical_candles(symbol=_symbol(), timeframe=_timeframe())
+
+    with pytest.raises(httpx.ConnectError):
+        asyncio.run(run_client())
+
+    assert attempts["count"] == 3
