@@ -8,9 +8,10 @@ import json
 import os
 import sys
 import time
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from datetime import UTC, datetime
+from decimal import Decimal
 from pathlib import Path
 
 import httpx
@@ -160,6 +161,7 @@ def _run_live_cycle(
     observed_at = datetime.now(UTC)
     rest_base_url = _resolve_rest_base_url(config)
     candles_by_symbol = asyncio.run(_fetch_latest_candles(config, observed_at, rest_base_url))
+    _push_data_anomaly_alerts(channel, candles_by_symbol)
     result = runtime.process_closed_candles(candles_by_symbol, observed_at=observed_at)
     _push_disaster_alerts(channel, result)
     # Same-day reruns (ALREADY_PROCESSED) still attempt the capture so a
@@ -305,6 +307,77 @@ class _MissingCredentialsChannel:
         _ = text
         msg = "discord credentials missing; delivery deferred"
         raise NotificationValidationError(msg)
+
+
+# A close-to-close move beyond this fraction on a daily bar is treated as a
+# suspect print from the single upstream source, not as market reality.
+_EXTREME_DAILY_MOVE_FRACTION = Decimal("0.40")
+
+
+def _candle_anomaly_lines(candles_by_symbol: Mapping[str, tuple[Candle, ...]]) -> list[str]:
+    """Sanity-check the latest fetched candle per symbol; return warning lines.
+
+    Two checks: OHLC coherence (high/low must bracket open/close — the domain
+    type does not enforce this) and an implausible close-to-close move. Pure
+    function, alert-only: it never blocks or alters the decision path, so the
+    running qualification is untouched.
+    """
+
+    lines: list[str] = []
+    for symbol_value in sorted(candles_by_symbol):
+        candles = candles_by_symbol[symbol_value]
+        if not candles:
+            continue
+        latest = candles[-1]
+        day = latest.open_time.date().isoformat()
+        body_low = min(latest.open_price, latest.close_price)
+        body_high = max(latest.open_price, latest.close_price)
+        incoherent = (
+            latest.high_price < latest.low_price
+            or latest.low_price > body_low
+            or latest.high_price < body_high
+        )
+        if incoherent:
+            lines.append(
+                f"{symbol_value} {day} OHLC 不一致 "
+                f"(O={latest.open_price} H={latest.high_price} "
+                f"L={latest.low_price} C={latest.close_price})"
+            )
+        if len(candles) >= 2:
+            previous_close = candles[-2].close_price
+            move = abs(latest.close_price / previous_close - 1)
+            if move > _EXTREME_DAILY_MOVE_FRACTION:
+                lines.append(
+                    f"{symbol_value} {day} 單日收對收變動 {move:.1%} 超過 40% 警戒線 "
+                    f"(prev_close={previous_close} close={latest.close_price})"
+                )
+    return lines
+
+
+def _push_data_anomaly_alerts(
+    channel: NotificationChannel, candles_by_symbol: Mapping[str, tuple[Candle, ...]]
+) -> None:
+    """Alert-only guard against a bad print becoming an executed command.
+
+    Single data source means a corrupt candle would flow straight into a
+    ladder command the operator executes with real funds. This warns the
+    operator and never pauses anything — an auto-pause variant is deliberately
+    deferred until the qualification run concludes.
+    """
+
+    lines = _candle_anomaly_lines(candles_by_symbol)
+    if not lines:
+        return
+    for line in lines:
+        print(f"DATA ANOMALY: {line}", file=sys.stderr)
+    try:
+        channel.send_text(
+            "⚠️ 資料異常警報（僅提醒，未阻斷）\n"
+            + "\n".join(lines)
+            + "\n執行今日指令前，請先人工核對交易所實際價格。"
+        )
+    except Exception as exc:  # noqa: BLE001 - alerts must never break a cycle
+        print(f"data anomaly alert delivery failed: {type(exc).__name__}", file=sys.stderr)
 
 
 def _push_disaster_alerts(channel: NotificationChannel, result: CycleResult) -> None:
