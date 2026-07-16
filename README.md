@@ -123,13 +123,13 @@ Live view of the qualification run: today's command card, per-asset ladder state
 
 The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The project is currently in the post-MVP **signal-live qualification** phase (Goal O): spending the single-use holdout and running the ≥3-month paper trade before publishing a pass/fail gate report.
 
-- **281 passing tests** across 23 files, ~85% line coverage (`pytest -m "not network"`, no external network in CI).
+- **312 passing tests** across 28 files, ~85% line coverage (`pytest -m "not network"`, no external network in CI).
 - **39 source modules**, ~9,300 lines, `mypy --strict` clean, 13 enforced import-linter contracts.
 - Full goal roadmap and rationale: [`GOALS.md`](GOALS.md). Agent/contributor contract: [`AGENTS.md`](AGENTS.md). Design evidence: [`docs/research/SIGNAL_DESIGN_RESEARCH.md`](docs/research/SIGNAL_DESIGN_RESEARCH.md) ([English summary](docs/research/SIGNAL_DESIGN_RESEARCH_EN.md)).
 
 ## Tech stack
 
-Python 3.12 · FastAPI + Jinja/static dashboard · Pydantic config · Binance Spot public market data · PostgreSQL / TimescaleDB event store · pytest · mypy (strict) · ruff · import-linter · Docker Compose.
+Python 3.12 · FastAPI + Jinja/static dashboard · Pydantic config · Binance Spot public market data · append-only JSONL event store (a PostgreSQL/TimescaleDB dev container is configured but not yet wired into the runtime) · pytest · mypy (strict) · ruff · import-linter · Docker Compose.
 
 ## Local setup
 
@@ -197,7 +197,7 @@ docs/
   contracts/     strategy / risk / validation-gate specifications
   research/       adversarially verified signal-design research
   reports/        completion + audit reports, trial provenance
-tests/           281 tests mirroring the src layout
+tests/           312 tests mirroring the src layout
 ```
 
 ## Local database credentials

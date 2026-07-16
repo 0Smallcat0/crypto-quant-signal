@@ -80,6 +80,9 @@ storage:
   port: 54320
   database: crypto_quant
   username: crypto
+  # Dev-container placeholder only (mirrors docker-compose); the paper runtime
+  # never reads it. Any real deployment must inject credentials via environment
+  # or secret management, never this file.
   password: crypto_dev_only
   snapshot_directory: docs/reports/config-snapshots
   trial_registry_path: docs/reports/research/trial_registry.jsonl
