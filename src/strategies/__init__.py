@@ -1,5 +1,10 @@
 """Strategy package entry points."""
 
+from src.strategies.confirmed_trend_ensemble import (
+    DEFAULT_CONFIRM_DAYS,
+    ConfirmationState,
+    evaluate_confirmed_trend_ensemble,
+)
 from src.strategies.daily_trend_ensemble import (
     DAILY_TREND_ENSEMBLE_LOOKBACKS,
     DAILY_TREND_ENSEMBLE_TIMEFRAME,
@@ -25,6 +30,8 @@ __all__ = [
     "ALLOWED_EXPOSURE_FRACTIONS",
     "DAILY_TREND_ENSEMBLE_LOOKBACKS",
     "DAILY_TREND_ENSEMBLE_TIMEFRAME",
+    "DEFAULT_CONFIRM_DAYS",
+    "ConfirmationState",
     "DailyTrendEnsembleDecision",
     "DailyTrendSubSignals",
     "LADDER_DOWN",
@@ -34,6 +41,7 @@ __all__ = [
     "LargeLiquidTrend15Parameters",
     "StrategyDecision",
     "StrategyValidationError",
+    "evaluate_confirmed_trend_ensemble",
     "evaluate_daily_trend_ensemble",
     "evaluate_large_liquid_trend_15",
 ]
