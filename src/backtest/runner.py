@@ -136,6 +136,8 @@ def run_registered_backtest(
             **_ENSEMBLE_PARAMETERS,
             "cost_multiplier": str(parameters.cost_multiplier),
             "holdout_spend": str(spend_holdout_single_use),
+            "strategy_name": parameters.strategy_name,
+            "confirm_days": str(parameters.confirm_days),
         },
         universe=tuple(sorted(parameters.risk_budgets)),
         data_start=report.data_start,

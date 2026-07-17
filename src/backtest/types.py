@@ -34,10 +34,20 @@ class BacktestParameters:
     disaster_single_day_drop_fraction: Decimal
     stale_data_max_age_seconds: int
     cost_multiplier: Decimal = Decimal("1")
+    # Goal P variant selection (backtest-only; the live runtime hardcodes the
+    # original ensemble and has no path to these fields).
+    strategy_name: str = "daily_trend_ensemble"
+    confirm_days: int = 1
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
             msg = "risk_budgets must be a non-empty mapping"
+            raise BacktestError(msg)
+        if self.strategy_name not in ("daily_trend_ensemble", "confirmed_trend_ensemble"):
+            msg = f"unknown backtest strategy_name: {self.strategy_name}"
+            raise BacktestError(msg)
+        if self.confirm_days < 1:
+            msg = "confirm_days must be at least 1"
             raise BacktestError(msg)
         if self.initial_cash <= Decimal("0"):
             msg = "initial_cash must be positive"

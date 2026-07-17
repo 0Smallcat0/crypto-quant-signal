@@ -51,6 +51,18 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Required confirmation flag for --spend-holdout.",
     )
+    parser.add_argument(
+        "--strategy",
+        default="daily_trend_ensemble",
+        choices=["daily_trend_ensemble", "confirmed_trend_ensemble"],
+        help="Backtest strategy variant (Goal P experiments only; live stays original).",
+    )
+    parser.add_argument(
+        "--confirm-days",
+        type=int,
+        default=2,
+        help="Consecutive closes required by confirmed_trend_ensemble (default 2).",
+    )
     return parser.parse_args()
 
 
@@ -87,6 +99,8 @@ def main() -> None:
         disaster_single_day_drop_fraction=config.risk.disaster_single_day_drop_fraction,
         stale_data_max_age_seconds=config.risk.stale_data_max_age_seconds,
         cost_multiplier=Decimal("2") if args.cost_stress else Decimal("1"),
+        strategy_name=args.strategy,
+        confirm_days=args.confirm_days if args.strategy == "confirmed_trend_ensemble" else 1,
     )
 
     result = run_registered_backtest(
@@ -99,6 +113,7 @@ def main() -> None:
         reports_directory=config.storage.backtest_reports_directory,
         recorded_at=datetime.now(UTC),
         operator_note=args.note,
+        strategy_id=args.strategy,
         spend_holdout_single_use=args.spend_holdout,
     )
 
