@@ -49,7 +49,12 @@ from src.risk import (
     detect_single_day_disaster,
     evaluate_order_intent,
 )
-from src.strategies import DailyTrendEnsembleDecision, evaluate_daily_trend_ensemble
+from src.strategies import (
+    ConfirmationState,
+    DailyTrendEnsembleDecision,
+    evaluate_confirmed_trend_ensemble,
+    evaluate_daily_trend_ensemble,
+)
 
 _BPS = Decimal("10000")
 _DAYS_PER_YEAR = 365
@@ -126,14 +131,23 @@ def run_backtest(
     start_of_day_equity = parameters.initial_cash
     benchmark_open_prices: dict[str, Decimal] | None = None
 
+    confirmation_states: dict[str, ConfirmationState] = {}
     for decision_time in decision_times:
         decisions: dict[str, DailyTrendEnsembleDecision] = {}
         for symbol_value in sorted(symbols):
             snapshot = snapshot_lookup[symbol_value][decision_time]
-            decision = evaluate_daily_trend_ensemble(
-                snapshot,
-                previous_fraction=previous_decision_fraction[symbol_value],
-            )
+            if parameters.strategy_name == "confirmed_trend_ensemble":
+                decision, confirmation_states[symbol_value] = evaluate_confirmed_trend_ensemble(
+                    snapshot,
+                    previous_fraction=previous_decision_fraction[symbol_value],
+                    state=confirmation_states.get(symbol_value),
+                    confirm_days=parameters.confirm_days,
+                )
+            else:
+                decision = evaluate_daily_trend_ensemble(
+                    snapshot,
+                    previous_fraction=previous_decision_fraction[symbol_value],
+                )
             decisions[symbol_value] = decision
             previous_decision_fraction[symbol_value] = decision.exposure_fraction
             signals.append(
