@@ -56,6 +56,21 @@ as compromised and regenerate it** in the Discord Developer Portal
   the dead-man switch covers liveness and the dashboard always shows the
   current target as the backstop for missed pings.
 
+## After you execute a command: log the fill (gate 6 evidence)
+
+Every real execution you make should be recorded — this is the only dataset
+measuring notification→execution delay, realized slippage, and compliance:
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.log_fill --list-pending   # what's unlogged
+.\.venv\Scripts\python.exe -m scripts.log_fill <notification_id> --price 65123.5 --fee 0.65
+.\.venv\Scripts\python.exe -m scripts.log_fill --summary        # delay / slippage / compliance
+```
+
+Skipped a command on purpose? Log nothing — the missing row IS the
+compliance measurement. Records live in `data/runtime/manual_fills.csv`
+(append-only, covered by the daily off-disk backup).
+
 ## Verify
 
 ```powershell
