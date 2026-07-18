@@ -38,6 +38,12 @@ class BacktestParameters:
     # original ensemble and has no path to these fields).
     strategy_name: str = "daily_trend_ensemble"
     confirm_days: int = 1
+    # Experiment-2 volatility-target overlay (None = off). Scales the ladder
+    # fraction by min(1, target / realized_vol); a position-size modifier,
+    # never a signal change.
+    vol_target_annualized: Decimal | None = None
+    vol_window_days: int = 20
+    vol_rebalance: str = "daily"
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
@@ -48,6 +54,15 @@ class BacktestParameters:
             raise BacktestError(msg)
         if self.confirm_days < 1:
             msg = "confirm_days must be at least 1"
+            raise BacktestError(msg)
+        if self.vol_target_annualized is not None and self.vol_target_annualized <= Decimal("0"):
+            msg = "vol_target_annualized must be positive when set"
+            raise BacktestError(msg)
+        if self.vol_window_days < 2:
+            msg = "vol_window_days must be at least 2"
+            raise BacktestError(msg)
+        if self.vol_rebalance not in ("daily", "monthly"):
+            msg = "vol_rebalance must be 'daily' or 'monthly'"
             raise BacktestError(msg)
         if self.initial_cash <= Decimal("0"):
             msg = "initial_cash must be positive"

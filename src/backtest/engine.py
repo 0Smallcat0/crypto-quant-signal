@@ -132,8 +132,9 @@ def run_backtest(
     benchmark_open_prices: dict[str, Decimal] | None = None
 
     confirmation_states: dict[str, ConfirmationState] = {}
+    vol_scaler_cache: dict[str, tuple[tuple[int, int], Decimal]] = {}
     for decision_time in decision_times:
-        decisions: dict[str, DailyTrendEnsembleDecision] = {}
+        decisions: dict[str, DailyTrendEnsembleDecision | _SizedDecision] = {}
         for symbol_value in sorted(symbols):
             snapshot = snapshot_lookup[symbol_value][decision_time]
             if parameters.strategy_name == "confirmed_trend_ensemble":
@@ -166,6 +167,16 @@ def run_backtest(
             )
             if risk_event is not None:
                 risk_events.append(risk_event)
+
+        if parameters.vol_target_annualized is not None:
+            decisions = _apply_vol_overlay(
+                decisions,
+                parameters=parameters,
+                candles_by_symbol=candles_by_symbol,
+                candle_lookup=candle_lookup,
+                decision_time=decision_time,
+                scaler_cache=vol_scaler_cache,
+            )
 
         target_set = build_ladder_targets(
             tuple(decisions[symbol_value] for symbol_value in sorted(symbols)),
@@ -203,8 +214,8 @@ def run_backtest(
             ),
         )
         for symbol_value in ordered_symbols:
-            decision = decisions[symbol_value]
-            desired_fraction = decision.exposure_fraction
+            sized_decision = decisions[symbol_value]
+            desired_fraction = sized_decision.exposure_fraction
             if desired_fraction == executed_fraction[symbol_value]:
                 continue
             order_sequence += 1
@@ -214,7 +225,7 @@ def run_backtest(
                 gate_parameters=gate_parameters,
                 parameters=parameters,
                 symbol=symbols[symbol_value],
-                decision=decision,
+                decision=sized_decision,
                 desired_fraction=desired_fraction,
                 current_fraction=executed_fraction[symbol_value],
                 budget=parameters.risk_budgets[symbol_value],
@@ -298,7 +309,7 @@ def _execute_ladder_change(
     gate_parameters: RiskGateParameters,
     parameters: BacktestParameters,
     symbol: Symbol,
-    decision: DailyTrendEnsembleDecision,
+    decision: DailyTrendEnsembleDecision | _SizedDecision,
     desired_fraction: Decimal,
     current_fraction: Decimal,
     budget: Decimal,
@@ -475,6 +486,107 @@ def _aligned_decision_times(
             )
             raise BacktestError(msg)
     return tuple(sorted(reference or ()))
+
+
+@dataclass(frozen=True, slots=True)
+class _SizedDecision:
+    """Vol-overlay-sized view of a ladder decision.
+
+    The strategy contract pins DailyTrendEnsembleDecision to the five ladder
+    rungs; the overlay is a position-size modifier, so its output is
+    deliberately a DIFFERENT type carrying only what the target builder and
+    execution path consume. The rung-typed decision never leaves the grid.
+    """
+
+    symbol: Symbol
+    exposure_fraction: Decimal
+    reason_codes: tuple[str, ...]
+    executable_from_next_bar: datetime
+
+
+def _apply_vol_overlay(
+    decisions: dict[str, DailyTrendEnsembleDecision | _SizedDecision],
+    *,
+    parameters: BacktestParameters,
+    candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+    candle_lookup: Mapping[str, Mapping[datetime, int]],
+    decision_time: datetime,
+    scaler_cache: dict[str, tuple[tuple[int, int], Decimal]],
+) -> dict[str, DailyTrendEnsembleDecision | _SizedDecision]:
+    """Experiment-2 sizing overlay: scale ladder fractions toward a vol target.
+
+    Uses only closes up to and including the decision close (no lookahead).
+    Monthly rebalance freezes each symbol's scaler at its first decision day
+    of the calendar month; daily recomputes every decision. The ladder state
+    carried into tomorrow's strategy call keeps the RAW fraction — the
+    overlay resizes positions, it never rewrites the signal.
+    """
+
+    target = parameters.vol_target_annualized
+    if target is None:  # pragma: no cover - guarded by the caller
+        return decisions
+    sized: dict[str, DailyTrendEnsembleDecision | _SizedDecision] = {}
+    month_key = (decision_time.year, decision_time.month)
+    for symbol_value, decision in decisions.items():
+        if parameters.vol_rebalance == "monthly":
+            cached = scaler_cache.get(symbol_value)
+            if cached is not None and cached[0] == month_key:
+                scaler = cached[1]
+            else:
+                scaler = _vol_scaler(
+                    candles_by_symbol[symbol_value],
+                    candle_lookup[symbol_value][decision_time],
+                    vol_window=parameters.vol_window_days,
+                    target=target,
+                )
+                scaler_cache[symbol_value] = (month_key, scaler)
+        else:
+            scaler = _vol_scaler(
+                candles_by_symbol[symbol_value],
+                candle_lookup[symbol_value][decision_time],
+                vol_window=parameters.vol_window_days,
+                target=target,
+            )
+        if scaler >= Decimal("1"):
+            sized[symbol_value] = decision
+            continue
+        sized[symbol_value] = _SizedDecision(
+            symbol=decision.symbol,
+            exposure_fraction=decision.exposure_fraction * scaler,
+            reason_codes=(*decision.reason_codes, f"VOL_SCALED_{scaler}"),
+            executable_from_next_bar=decision.executable_from_next_bar,
+        )
+    return sized
+
+
+def _vol_scaler(
+    candles: tuple[Candle, ...],
+    end_index: int,
+    *,
+    vol_window: int,
+    target: Decimal,
+) -> Decimal:
+    """min(1, target / realized annualized vol) over closes ending at the decision.
+
+    Warmup (fewer than vol_window prior closes) and degenerate series return 1
+    — no scaling rather than a guessed one.
+    """
+
+    start = end_index - vol_window
+    if start < 0:
+        return Decimal("1")
+    closes = [candles[index].close_price for index in range(start, end_index + 1)]
+    returns = [
+        math.log(float(closes[index + 1]) / float(closes[index]))
+        for index in range(len(closes) - 1)
+        if closes[index] > 0 and closes[index + 1] > 0
+    ]
+    if len(returns) < 2:
+        return Decimal("1")
+    realized = statistics.stdev(returns) * math.sqrt(365.0)
+    if realized <= 0.0:
+        return Decimal("1")
+    return Decimal(str(round(min(1.0, float(target) / realized), 6)))
 
 
 def _execution_candles(

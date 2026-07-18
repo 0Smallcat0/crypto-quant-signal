@@ -138,6 +138,13 @@ def run_registered_backtest(
             "holdout_spend": str(spend_holdout_single_use),
             "strategy_name": parameters.strategy_name,
             "confirm_days": str(parameters.confirm_days),
+            "vol_target_annualized": (
+                str(parameters.vol_target_annualized)
+                if parameters.vol_target_annualized is not None
+                else "none"
+            ),
+            "vol_window_days": str(parameters.vol_window_days),
+            "vol_rebalance": parameters.vol_rebalance,
         },
         universe=tuple(sorted(parameters.risk_budgets)),
         data_start=report.data_start,
