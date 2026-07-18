@@ -5,7 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from scripts.run_gate_report import build_performance_matrix, build_report
+from scripts.run_gate_report import (
+    build_performance_matrix,
+    build_report,
+    candidate_trials,
+)
+from src.backtest import load_trials
 
 
 def _registry_row(trial_id: int, sharpe: str) -> dict[str, object]:
@@ -114,6 +119,43 @@ def test_report_runs_gates_over_the_fixture_registry(tmp_path: Path) -> None:
     # Strongly positive, nearly identical returns: DSR must clear the gate.
     assert all(row["passes_dsr"] for row in rows)
     assert report["holdout_lock"] == {"spent": False}
+
+
+def test_candidate_rule_drops_stress_and_collapses_reruns(tmp_path: Path) -> None:
+    rows = [
+        _registry_row(1, "1.10"),
+        _registry_row(2, "1.05"),
+        _registry_row(3, "1.00"),
+        _registry_row(4, "1.06"),
+    ]
+    # Trial 2 is a cost-stress rerun; trial 4 reruns trial 1's exact
+    # configuration on a newer engine; trial 3 is a distinct overlay config.
+    rows[1]["cost_assumptions"] = {"fee_bps": "20", "cost_multiplier": "2"}
+    rows[2]["parameters"] = {"vol_target_annualized": "0.30"}
+    rows[3]["config_hash"] = rows[0]["config_hash"]
+    registry = tmp_path / "trial_registry.jsonl"
+    registry.write_text(
+        "\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8"
+    )
+
+    candidates = candidate_trials(load_trials(registry))
+
+    assert [trial.trial_id for trial in candidates] == [3, 4]
+
+
+def test_report_carries_both_pbo_numbers(tmp_path: Path) -> None:
+    base = [0.01 if index % 2 == 0 else -0.004 for index in range(1200)]
+    other = [value * 0.98 for value in base]
+    registry, returns_dir, holdout = _write_fixture(
+        tmp_path, returns_by_trial={1: _series(base), 2: _series(other)}
+    )
+
+    report = build_report(registry, returns_dir, holdout)
+
+    gate3 = report["gate_3_pbo"]
+    assert isinstance(gate3, dict)
+    assert gate3["candidate_trial_ids"] == [1, 2]
+    assert "pbo_all_columns" in gate3
 
 
 def test_missing_return_series_is_a_hard_stop(tmp_path: Path) -> None:

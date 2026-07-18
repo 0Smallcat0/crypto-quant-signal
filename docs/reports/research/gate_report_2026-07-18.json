@@ -5,10 +5,32 @@
     "required_days": 1000
   },
   "gate_3_pbo": {
+    "candidate_trial_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
     "combinations_evaluated": 12870,
     "cscv_blocks": 16,
     "passes": false,
-    "pbo": 0.885936,
+    "pbo": 0.913209,
+    "pbo_all_columns": 0.885936,
     "threshold_max": 0.05
   },
   "gate_4_dsr": {
@@ -186,7 +208,7 @@
     "threshold_min": 0.95,
     "trial_sharpe_variance_deannualized": 0.0002560549950411829
   },
-  "generated_at": "2026-07-18T06:59:02.060740+00:00",
+  "generated_at": "2026-07-18T18:05:43.532537+00:00",
   "holdout_lock": {
     "holdout_start": "2025-07-02T23:59:59.999000+00:00",
     "locked_at": "2026-07-03T02:44:47.633808+00:00",

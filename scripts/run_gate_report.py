@@ -26,6 +26,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from src.backtest import (
+    TrialRecord,
     deflated_sharpe_ratio,
     load_trials,
     non_annualized_sharpe_variance,
@@ -52,6 +53,35 @@ def load_return_series(returns_dir: Path, trial_id: int) -> dict[str, object]:
     if not isinstance(loaded, dict):
         raise SystemExit(f"{path} must contain a JSON object")
     return loaded
+
+
+def candidate_trials(trials: tuple[TrialRecord, ...]) -> list[TrialRecord]:
+    """Candidate columns per docs/contracts/PRE_HOLDOUT_PROTOCOL.md §1.
+
+    Mechanical rule over registry fields only: exclude cost-stress reruns and
+    holdout-spend rows; collapse identical configurations (same config hash,
+    strategy name, and variant/overlay parameters) to the highest trial_id so
+    audit/parity reruns count once, on the newest engine.
+    """
+
+    newest_by_key: dict[tuple[str, ...], TrialRecord] = {}
+    for trial in trials:
+        if str(trial.cost_assumptions.get("cost_multiplier", "1")) != "1":
+            continue
+        if str(trial.parameters.get("holdout_spend", "False")) == "True":
+            continue
+        key = (
+            trial.config_hash,
+            str(trial.parameters.get("strategy_name", "daily_trend_ensemble")),
+            str(trial.parameters.get("confirm_days", "1")),
+            str(trial.parameters.get("vol_target_annualized", "none")),
+            str(trial.parameters.get("vol_window_days", "20")),
+            str(trial.parameters.get("vol_rebalance", "daily")),
+        )
+        existing = newest_by_key.get(key)
+        if existing is None or trial.trial_id > existing.trial_id:
+            newest_by_key[key] = trial
+    return sorted(newest_by_key.values(), key=lambda trial: trial.trial_id)
 
 
 def build_performance_matrix(
@@ -95,7 +125,14 @@ def build_report(registry_path: Path, returns_dir: Path, holdout_path: Path) -> 
     matrix = build_performance_matrix(series_by_trial)
     observations = len(matrix)
 
-    pbo = probability_of_backtest_overfitting(matrix, block_count=CSCV_BLOCKS)
+    pbo_all = probability_of_backtest_overfitting(matrix, block_count=CSCV_BLOCKS)
+    candidates = candidate_trials(trials)
+    candidate_matrix = build_performance_matrix(
+        {trial.trial_id: series_by_trial[trial.trial_id] for trial in candidates}
+    )
+    pbo_candidates = probability_of_backtest_overfitting(
+        candidate_matrix, block_count=CSCV_BLOCKS
+    )
     annualized = [float(trial.metrics["annualized_sharpe"]) for trial in trials]
     variance = non_annualized_sharpe_variance(annualized)
     trial_count = len(trials)
@@ -138,10 +175,14 @@ def build_report(registry_path: Path, returns_dir: Path, holdout_path: Path) -> 
         },
         "gate_3_pbo": {
             "threshold_max": PBO_MAX,
-            "pbo": round(pbo.pbo, 6),
-            "cscv_blocks": pbo.block_count,
-            "combinations_evaluated": pbo.combinations_evaluated,
-            "passes": pbo.pbo <= PBO_MAX,
+            # Verdict input per PRE_HOLDOUT_PROTOCOL.md §1: candidate columns.
+            "pbo": round(pbo_candidates.pbo, 6),
+            "candidate_trial_ids": [trial.trial_id for trial in candidates],
+            "cscv_blocks": pbo_candidates.block_count,
+            "combinations_evaluated": pbo_candidates.combinations_evaluated,
+            "passes": pbo_candidates.pbo <= PBO_MAX,
+            # Conservative upper bound over every registry column, always shown.
+            "pbo_all_columns": round(pbo_all.pbo, 6),
         },
         "gate_4_dsr": {
             "threshold_min": DSR_MIN,
