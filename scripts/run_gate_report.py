@@ -130,9 +130,7 @@ def build_report(registry_path: Path, returns_dir: Path, holdout_path: Path) -> 
     candidate_matrix = build_performance_matrix(
         {trial.trial_id: series_by_trial[trial.trial_id] for trial in candidates}
     )
-    pbo_candidates = probability_of_backtest_overfitting(
-        candidate_matrix, block_count=CSCV_BLOCKS
-    )
+    pbo_candidates = probability_of_backtest_overfitting(candidate_matrix, block_count=CSCV_BLOCKS)
     annualized = [float(trial.metrics["annualized_sharpe"]) for trial in trials]
     variance = non_annualized_sharpe_variance(annualized)
     trial_count = len(trials)
