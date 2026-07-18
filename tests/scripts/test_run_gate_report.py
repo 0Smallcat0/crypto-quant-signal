@@ -134,9 +134,7 @@ def test_candidate_rule_drops_stress_and_collapses_reruns(tmp_path: Path) -> Non
     rows[2]["parameters"] = {"vol_target_annualized": "0.30"}
     rows[3]["config_hash"] = rows[0]["config_hash"]
     registry = tmp_path / "trial_registry.jsonl"
-    registry.write_text(
-        "\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8"
-    )
+    registry.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
 
     candidates = candidate_trials(load_trials(registry))
 
