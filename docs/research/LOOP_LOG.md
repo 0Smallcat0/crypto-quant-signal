@@ -42,3 +42,24 @@
 - **Next step (Q2): run the 16-config experiment-3 family through
   `run_registered_backtest`, register 16 new trials (N: 21 → 37), commit
   registry rows and per-trial return series.**
+
+## 2026-07-21 — iteration 2 (Q2+Q3, operator-triggered "直接接著跑")
+
+- Alignment bug caught BEFORE running: cs decision times started at the
+  lookback floor, so 90d/180d arms would have produced misaligned return
+  series and the gate report would abort. Fixed with
+  `cs_decision_start` (engine floor + validation + 2 tests), pinning all
+  family series to the registry window (2676 returns,
+  2018-03-05 → 2025-07-01). Commit 6163655.
+- Family ran clean (trials 22-37). Winner trial 29 (K=2/180d/monthly/
+  filter-on): Sharpe 1.4109, **DSR 0.962102 — first ≥ 0.95 in project
+  history** — but MDD 75.08% fails criterion 2 by 23.15pp.
+  **Family = registered negative.** Full table + verdict in
+  `docs/research/GOALP_EXPERIMENT3_RESULT.md`.
+- Stop condition NOT met: candidates-PBO 0.5834 > 0.05 (and the cs family
+  folds to one candidates column — defect documented in the result file;
+  runner serialization forward-fixed).
+- **Next step (Q4, NEXT session per drift guard): pre-register the
+  risk-managed combination family (cs momentum signal × drawdown/vol
+  overlay) targeting MDD without killing the deflation-surviving Sharpe.
+  Also compute trial 29 × trial 4 return correlation (queued read-out).**
