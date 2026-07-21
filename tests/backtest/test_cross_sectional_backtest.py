@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 
 import pytest
@@ -280,3 +280,19 @@ def test_ladder_strategy_paths_are_untouched_by_the_dispatch() -> None:
     )
     assert baseline.metrics.final_equity == repeat.metrics.final_equity
     assert len(baseline.fills) == len(repeat.fills)
+
+
+def test_decision_start_floor_pins_the_first_equity_point() -> None:
+    unfloored = run_backtest(_small_universe(), parameters=_parameters())
+    floored = run_backtest(
+        _small_universe(),
+        parameters=replace(_parameters(), cs_decision_start="2024-02-01"),
+    )
+    assert unfloored.equity_curve[0].close_time.date() < date(2024, 2, 1)
+    assert floored.equity_curve[0].close_time.date() == date(2024, 2, 1)
+    assert floored.equity_curve[-1].close_time == unfloored.equity_curve[-1].close_time
+
+
+def test_decision_start_must_be_an_iso_date() -> None:
+    with pytest.raises(BacktestError, match="cs_decision_start"):
+        replace(_parameters(), cs_decision_start="not-a-date")

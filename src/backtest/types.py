@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from decimal import Decimal
 from types import MappingProxyType
 
@@ -53,6 +53,11 @@ class BacktestParameters:
     cs_rebalance_cadence: str = "weekly"
     cs_absolute_filter: bool = False
     cs_min_pool_size: int = 4
+    # First allowed decision date (ISO). The pre-registration pins every
+    # family member's return series to the registry window so the strict
+    # alignment gate in the report can include them; without a floor the
+    # lookback arms would start on different days.
+    cs_decision_start: str | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
@@ -89,6 +94,12 @@ class BacktestParameters:
         if self.cs_min_pool_size < 1:
             msg = "cs_min_pool_size must be at least 1"
             raise BacktestError(msg)
+        if self.cs_decision_start is not None:
+            try:
+                date.fromisoformat(self.cs_decision_start)
+            except ValueError as exc:
+                msg = "cs_decision_start must be an ISO date (YYYY-MM-DD)"
+                raise BacktestError(msg) from exc
         if self.strategy_name == "cross_sectional_momentum":
             if self.cs_top_k > len(self.risk_budgets):
                 msg = "cs_top_k must not exceed the size of the universe"

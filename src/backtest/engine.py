@@ -6,7 +6,7 @@ import math
 import statistics
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal
 
 from src.accounting import AccountState, VirtualAccountLedger
@@ -629,10 +629,16 @@ def _run_cross_sectional_backtest(
         index = candle_lookup[symbol_value].get(close_time)
         return index is not None and index >= lookback
 
+    decision_floor: date | None = (
+        date.fromisoformat(parameters.cs_decision_start)
+        if parameters.cs_decision_start is not None
+        else None
+    )
     decision_times = tuple(
         close_time
         for close_time in all_close_times
-        if any(_has_lookback(symbol_value, close_time) for symbol_value in symbols)
+        if (decision_floor is None or close_time.date() >= decision_floor)
+        and any(_has_lookback(symbol_value, close_time) for symbol_value in symbols)
     )
     if not decision_times:
         msg = "no cross-sectional decision days after the lookback floor; provide more history"
