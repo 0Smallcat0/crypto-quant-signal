@@ -317,6 +317,45 @@ def test_decision_start_must_be_an_iso_date() -> None:
         replace(_parameters(), cs_decision_start="not-a-date")
 
 
+def test_horizon_days_must_be_valid() -> None:
+    with pytest.raises(BacktestError, match="cs_horizon_days entries"):
+        replace(_parameters(), cs_horizon_days=(1, 10))
+    with pytest.raises(BacktestError, match="duplicates"):
+        replace(_parameters(), cs_horizon_days=(10, 10))
+
+
+def test_multi_horizon_score_changes_the_selection() -> None:
+    # E: explosive early rise then a slow bleed — strong on a long lookback,
+    # negative on short horizons. F: steady climb — strong on short horizons.
+    days = 60
+    early_burst = tuple(
+        Decimal("100") + Decimal("6") * Decimal(min(index, 29)) - Decimal(max(index - 29, 0))
+        for index in range(days)
+    )
+    universe = {
+        "EUSDT": _candles_for(_symbol("EUSDT", "E"), early_burst),
+        "FUSDT": _candles_for(
+            _symbol("FUSDT", "F"), _linear_series(Decimal("100"), Decimal("1.5"), days)
+        ),
+        "CUSDT": _candles_for(_symbol("CUSDT", "C"), tuple([Decimal("100")] * days)),
+        "DUSDT": _candles_for(
+            _symbol("DUSDT", "D"),
+            _linear_series(Decimal("100"), Decimal("-1"), days),
+        ),
+    }
+    budgets = dict.fromkeys(universe, Decimal("0.25"))
+    base = replace(_parameters(top_k=2, lookback=55, cadence="weekly"), risk_budgets=budgets)
+
+    long_lookback = run_backtest(universe, parameters=base)
+    short_horizons = run_backtest(universe, parameters=replace(base, cs_horizon_days=(5, 10)))
+
+    long_holders = {symbol for symbol, _ in long_lookback.targets[0].target_weights}
+    short_holders = {symbol for symbol, _ in short_horizons.targets[0].target_weights}
+    assert "EUSDT" in long_holders
+    assert "EUSDT" not in short_holders
+    assert "FUSDT" in short_holders
+
+
 def test_gate_and_vol_overlay_are_mutually_exclusive() -> None:
     with pytest.raises(BacktestError, match="mutually exclusive"):
         replace(
