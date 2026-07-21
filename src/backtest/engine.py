@@ -75,6 +75,8 @@ def run_backtest(
 ) -> BacktestReport:
     """Replay daily candles through the full decision-to-accounting path."""
 
+    if parameters.strategy_name == "cross_sectional_momentum":
+        return _run_cross_sectional_backtest(candles_by_symbol, parameters=parameters)
     _require_symbols_match_budgets(candles_by_symbol, parameters)
     snapshots_by_symbol = {
         symbol_value: build_daily_trend_snapshots(candles)
@@ -587,6 +589,363 @@ def _vol_scaler(
     if realized <= 0.0:
         return Decimal("1")
     return Decimal(str(round(min(1.0, float(target) / realized), 6)))
+
+
+def _run_cross_sectional_backtest(
+    candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+    *,
+    parameters: BacktestParameters,
+) -> BacktestReport:
+    """Cross-sectional momentum: rank on trailing lookback, hold top-K equal weight.
+
+    Pre-registered in docs/research/GOALP_EXPERIMENT3_PREREGISTRATION.md.
+    Universe symbols may have staggered listings; the pre-registration
+    explicitly allows the ranking pool to shrink below the full universe on
+    early days, so this path uses the UNION of candle dates rather than the
+    intersection required by the ladder engine. Signals log every symbol on
+    every decision day (target weight + reason codes) so the audit trail is
+    identical in shape to the ladder path.
+    """
+
+    _require_symbols_match_budgets(candles_by_symbol, parameters)
+    symbols = {
+        symbol_value: candles[0].symbol for symbol_value, candles in candles_by_symbol.items()
+    }
+    candle_lookup: dict[str, dict[datetime, int]] = {
+        symbol_value: {candle.close_time: index for index, candle in enumerate(candles)}
+        for symbol_value, candles in candles_by_symbol.items()
+    }
+
+    all_close_times = sorted(
+        {candle.close_time for candles in candles_by_symbol.values() for candle in candles}
+    )
+    if not all_close_times:
+        msg = "no candles provided"
+        raise BacktestError(msg)
+
+    lookback = parameters.cs_lookback_days
+
+    def _has_lookback(symbol_value: str, close_time: datetime) -> bool:
+        index = candle_lookup[symbol_value].get(close_time)
+        return index is not None and index >= lookback
+
+    decision_times = tuple(
+        close_time
+        for close_time in all_close_times
+        if any(_has_lookback(symbol_value, close_time) for symbol_value in symbols)
+    )
+    if not decision_times:
+        msg = "no cross-sectional decision days after the lookback floor; provide more history"
+        raise BacktestError(msg)
+
+    first_decision_time = decision_times[0]
+    ledger = VirtualAccountLedger.open(
+        account_id=parameters.account_id,
+        initial_cash=parameters.initial_cash,
+        opened_at=first_decision_time,
+    )
+    broker = PaperBroker(
+        PaperBrokerParameters(
+            fee_bps=parameters.effective_fee_bps,
+            slippage_bps=parameters.effective_slippage_bps,
+            quantity_step=parameters.quantity_step,
+            price_tick=parameters.price_tick,
+            min_notional=parameters.min_notional_usdt,
+        )
+    )
+    gate_parameters = RiskGateParameters(
+        min_notional_usdt=parameters.min_notional_usdt,
+        stale_data_max_age_seconds=parameters.stale_data_max_age_seconds,
+        max_drawdown_fraction=parameters.max_drawdown_fraction,
+        daily_loss_pause_fraction=parameters.daily_loss_pause_fraction,
+    )
+
+    target_weights: dict[str, Decimal] = dict.fromkeys(symbols, Decimal("0"))
+    executed_fraction: dict[str, Decimal] = dict.fromkeys(symbols, Decimal("0"))
+    signals: list[SignalLogEntry] = []
+    targets: list[TargetLogEntry] = []
+    risk_rejections: list[tuple[str, datetime, tuple[str, ...]]] = []
+    risk_events: list[RiskEvent] = []
+    equity_curve: list[EquityPoint] = []
+    order_sequence = 0
+    start_of_day_equity = parameters.initial_cash
+    # Benchmark = equal-weight buy-and-hold anchored per-symbol on first
+    # executable open; late-listed symbols contribute cash until they anchor,
+    # so the benchmark starts at initial_cash and grows only as the universe
+    # actually comes online.
+    benchmark_anchor: dict[str, Decimal] = {}
+    last_close_by_symbol: dict[str, Decimal] = {}
+    last_rebalance_key: object | None = None
+
+    for decision_time in decision_times:
+        for symbol_value, lookup in candle_lookup.items():
+            index = lookup.get(decision_time)
+            if index is not None:
+                last_close_by_symbol[symbol_value] = candles_by_symbol[symbol_value][
+                    index
+                ].close_price
+
+        cadence_key = _cs_cadence_key(decision_time, parameters.cs_rebalance_cadence)
+        is_rebalance = cadence_key != last_rebalance_key
+
+        if is_rebalance:
+            pool_returns: dict[str, Decimal] = {}
+            for symbol_value in sorted(symbols):
+                index = candle_lookup[symbol_value].get(decision_time)
+                if index is None or index < lookback:
+                    continue
+                start_close = candles_by_symbol[symbol_value][index - lookback].close_price
+                end_close = candles_by_symbol[symbol_value][index].close_price
+                if start_close <= Decimal("0"):
+                    continue
+                pool_returns[symbol_value] = end_close / start_close - Decimal("1")
+
+            new_weights: dict[str, Decimal] = dict.fromkeys(symbols, Decimal("0"))
+            if len(pool_returns) < parameters.cs_min_pool_size:
+                reason_codes: tuple[str, ...] = (
+                    "CS_REBALANCE",
+                    f"POOL_TOO_SMALL_{len(pool_returns)}_LT_{parameters.cs_min_pool_size}",
+                )
+            else:
+                ranked = sorted(pool_returns.items(), key=lambda pair: (-pair[1], pair[0]))
+                top = ranked[: parameters.cs_top_k]
+                selected: list[str] = []
+                for symbol_value, momentum in top:
+                    if parameters.cs_absolute_filter and momentum <= Decimal("0"):
+                        continue
+                    selected.append(symbol_value)
+                per_slot = Decimal("1") / Decimal(parameters.cs_top_k)
+                for symbol_value in selected:
+                    new_weights[symbol_value] = per_slot
+                reason_codes = (
+                    "CS_REBALANCE",
+                    f"POOL_{len(pool_returns)}",
+                    f"SELECTED_{len(selected)}",
+                )
+            target_weights = new_weights
+            last_rebalance_key = cadence_key
+        else:
+            reason_codes = ("CS_HOLD",)
+
+        for symbol_value in sorted(symbols):
+            signals.append(
+                SignalLogEntry(
+                    symbol=symbol_value,
+                    as_of=decision_time,
+                    exposure_fraction=target_weights[symbol_value],
+                    reason_codes=reason_codes,
+                )
+            )
+
+        active_weights = tuple(
+            (symbol_value, target_weights[symbol_value])
+            for symbol_value in sorted(symbols)
+            if target_weights[symbol_value] > Decimal("0")
+        )
+        gross = sum((weight for _, weight in active_weights), Decimal("0"))
+        targets.append(
+            TargetLogEntry(
+                as_of=decision_time,
+                target_weights=active_weights,
+                cash_weight=Decimal("1") - gross,
+                reason_codes=reason_codes,
+            )
+        )
+
+        for symbol_value in sorted(symbols):
+            index = candle_lookup[symbol_value].get(decision_time)
+            if index is None:
+                continue
+            event = _disaster_event_for(
+                candles_by_symbol[symbol_value],
+                index,
+                symbols[symbol_value],
+                parameters.disaster_single_day_drop_fraction,
+            )
+            if event is not None:
+                risk_events.append(event)
+
+        if is_rebalance:
+            execution_candles: dict[str, Candle] = {}
+            for symbol_value in sorted(symbols):
+                index = candle_lookup[symbol_value].get(decision_time)
+                if index is None:
+                    continue
+                next_index = index + 1
+                if next_index < len(candles_by_symbol[symbol_value]):
+                    execution_candles[symbol_value] = candles_by_symbol[symbol_value][next_index]
+
+            if execution_candles:
+                open_prices: dict[str, Decimal] = {
+                    symbol_value: candle.open_price
+                    for symbol_value, candle in execution_candles.items()
+                }
+                for symbol_value, price in open_prices.items():
+                    benchmark_anchor.setdefault(symbol_value, price)
+                # Pad with last-known close for any symbol we hold that lacks
+                # today's open — ledger.apply_fill demands a mark for every
+                # held position and can't tolerate a gap.
+                padded_open_prices = dict(open_prices)
+                for symbol_value in symbols:
+                    if (
+                        symbol_value not in padded_open_prices
+                        and symbol_value in last_close_by_symbol
+                    ):
+                        padded_open_prices[symbol_value] = last_close_by_symbol[symbol_value]
+                execution_time = next(iter(execution_candles.values())).open_time
+                equity_at_open = _cs_equity_at_marked(ledger, padded_open_prices, symbols)
+
+                ordered_symbols = sorted(
+                    execution_candles,
+                    key=lambda value: (
+                        target_weights[value] >= executed_fraction[value],
+                        value,
+                    ),
+                )
+                for symbol_value in ordered_symbols:
+                    desired_fraction = target_weights[symbol_value]
+                    if desired_fraction == executed_fraction[symbol_value]:
+                        continue
+                    order_sequence += 1
+                    sized = _SizedDecision(
+                        symbol=symbols[symbol_value],
+                        exposure_fraction=desired_fraction,
+                        reason_codes=reason_codes,
+                        executable_from_next_bar=execution_time,
+                    )
+                    outcome = _execute_ladder_change(
+                        ledger=ledger,
+                        broker=broker,
+                        gate_parameters=gate_parameters,
+                        parameters=parameters,
+                        symbol=symbols[symbol_value],
+                        decision=sized,
+                        desired_fraction=desired_fraction,
+                        current_fraction=executed_fraction[symbol_value],
+                        budget=Decimal("1"),
+                        equity_at_open=equity_at_open,
+                        open_prices=padded_open_prices,
+                        symbols=symbols,
+                        execution_time=execution_time,
+                        order_id=f"cs-{order_sequence:06d}-{symbol_value}",
+                        start_of_day_equity=start_of_day_equity,
+                    )
+                    if outcome.achieved is not None:
+                        executed_fraction[symbol_value] = outcome.achieved
+                    else:
+                        if not outcome.broker_recorded:
+                            risk_rejections.append(
+                                (symbol_value, execution_time, outcome.reason_codes)
+                            )
+                        if _NON_RETRIABLE_REJECTION_CODES.intersection(outcome.reason_codes):
+                            executed_fraction[symbol_value] = desired_fraction
+
+        close_marks = {
+            symbols[symbol_value]: price for symbol_value, price in last_close_by_symbol.items()
+        }
+        close_snapshot = ledger.snapshot(mark_prices=close_marks, captured_at=decision_time)
+        benchmark_equity = _cs_benchmark_equity(parameters, benchmark_anchor, last_close_by_symbol)
+        equity_curve.append(
+            EquityPoint(
+                close_time=decision_time,
+                equity=close_snapshot.equity,
+                drawdown=ledger.state.drawdown,
+                benchmark_equity=benchmark_equity,
+            )
+        )
+        start_of_day_equity = close_snapshot.equity
+
+    metrics = _metrics(
+        equity_curve,
+        parameters=parameters,
+        fills=broker.fills,
+        rejected_count=len(broker.rejected_orders) + len(risk_rejections),
+    )
+    return BacktestReport(
+        data_start=decision_times[0],
+        data_end=decision_times[-1],
+        decision_days=len(decision_times),
+        signals=tuple(signals),
+        targets=tuple(targets),
+        accepted_orders=broker.accepted_orders,
+        fills=broker.fills,
+        rejected_orders=broker.rejected_orders,
+        risk_rejections=tuple(risk_rejections),
+        risk_events=tuple(risk_events),
+        equity_curve=tuple(equity_curve),
+        metrics=metrics,
+        cost_assumptions={
+            "fee_bps": str(parameters.effective_fee_bps),
+            "slippage_bps": str(parameters.effective_slippage_bps),
+            "cost_multiplier": str(parameters.cost_multiplier),
+            "fill_rule": "next_bar_open",
+            "cs_top_k": str(parameters.cs_top_k),
+            "cs_lookback_days": str(parameters.cs_lookback_days),
+            "cs_rebalance_cadence": parameters.cs_rebalance_cadence,
+            "cs_absolute_filter": str(parameters.cs_absolute_filter),
+            "cs_min_pool_size": str(parameters.cs_min_pool_size),
+        },
+    )
+
+
+def _cs_cadence_key(close_time: datetime, cadence: str) -> object:
+    """A key that changes when a new rebalance window opens.
+
+    Weekly: ISO year+week; monthly: calendar year+month. The first decision
+    always fires because ``last_rebalance_key`` starts as None.
+    """
+
+    if cadence == "weekly":
+        iso = close_time.isocalendar()
+        return ("week", iso.year, iso.week)
+    if cadence == "monthly":
+        return ("month", close_time.year, close_time.month)
+    msg = f"unknown cs_rebalance_cadence: {cadence}"
+    raise BacktestError(msg)
+
+
+def _cs_equity_at_marked(
+    ledger: VirtualAccountLedger,
+    prices: Mapping[str, Decimal],
+    symbols: Mapping[str, Symbol],
+) -> Decimal:
+    """Sum cash + position marks using a symbol-value-keyed price map."""
+
+    equity = ledger.state.cash
+    for position in ledger.state.positions:
+        for symbol_value, symbol in symbols.items():
+            if symbol == position.symbol:
+                equity += position.quantity * prices[symbol_value]
+                break
+    return equity
+
+
+def _cs_benchmark_equity(
+    parameters: BacktestParameters,
+    anchors: Mapping[str, Decimal],
+    last_close: Mapping[str, Decimal],
+) -> Decimal:
+    """Equal-weight buy-and-hold benchmark anchored per-symbol on first entry.
+
+    Weight per universe slot = 1 / universe_size. Symbols not yet anchored
+    contribute their slot as cash (no growth), so the benchmark starts at
+    ``initial_cash`` and rises as the universe legs come online.
+    """
+
+    universe_size = len(parameters.risk_budgets)
+    if universe_size == 0 or not anchors:
+        return parameters.initial_cash
+    slot = Decimal("1") / Decimal(universe_size)
+    growth = Decimal("0")
+    invested = Decimal("0")
+    for symbol_value, anchor in anchors.items():
+        end_price = last_close.get(symbol_value)
+        if end_price is None or anchor <= Decimal("0"):
+            continue
+        growth += slot * end_price / anchor
+        invested += slot
+    cash_share = Decimal("1") - invested
+    return parameters.initial_cash * (growth + cash_share)
 
 
 def _execution_candles(
