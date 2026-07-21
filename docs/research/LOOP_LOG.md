@@ -109,3 +109,26 @@
   experiment 6 — multi-horizon trend-factor selection (Cambridge JFQA
   2024, already in RESEARCH_LOG) under the proven SMA200/btc/daily gate;
   or K/lookback variation under that gate. Statutory bars unchanged.**
+
+## 2026-07-21/22 — iteration 6 (experiment 6, operator-triggered "continue")
+
+- Third recorded drift-guard override; thresholds statutory as before.
+- Engine: cs_horizon_days multi-horizon score (+ decision-floor semantics
+  fix so short/long-horizon arms share the 2676-return window). Commit
+  2e9142f.
+- Family ran (trials 70-85, N: 69 → 85). Winner trials 78/79 (exact tie,
+  filter arm never triggered — grid design lesson recorded): blend
+  28+56+112+224, K=2, weekly. Sharpe 0.9855, DSR 0.8345, MDD 53.49% —
+  criteria 1 and 2 fail; **sixth registered negative.** Full table in
+  `docs/research/GOALP_EXPERIMENT6_RESULT.md`.
+- **Lineage closed**: JFQA multi-horizon did not replicate (blend ≈
+  exp-5's single lookback); four arms now inside the MDD bar but best
+  in-bar Sharpe 0.917 vs the ~1.3 the N=85 deflation demands. 64
+  registered cs-momentum arms cannot satisfy both statutory bars at once.
+- Trial 29 at N=85: DSR 0.9856 (fourth consecutive non-monotone rise);
+  trial 37 at 0.9494. PBO candidates 0.8241.
+- **Next step (Q4, NEXT sitting unless operator overrides): pick the fork
+  recorded in the result file — (1) Donchian breakout ensemble
+  pre-registration (new signal space, SSRN 2025 in RESEARCH_LOG), or
+  (2) consolidate: stop spending N, redirect iterations to gate-6
+  evidence until the October holdout. One choice, pre-registered.**
