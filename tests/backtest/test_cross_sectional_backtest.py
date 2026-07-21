@@ -315,3 +315,80 @@ def test_decision_start_floor_pins_the_first_equity_point() -> None:
 def test_decision_start_must_be_an_iso_date() -> None:
     with pytest.raises(BacktestError, match="cs_decision_start"):
         replace(_parameters(), cs_decision_start="not-a-date")
+
+
+def test_gate_and_vol_overlay_are_mutually_exclusive() -> None:
+    with pytest.raises(BacktestError, match="mutually exclusive"):
+        replace(
+            _parameters(),
+            cs_gate_sma_window=10,
+            vol_target_annualized=Decimal("0.30"),
+        )
+
+
+def test_per_symbol_gate_blocks_symbols_below_their_sma() -> None:
+    days = 40
+    falling_universe = {
+        symbol_value: _candles_for(
+            _symbol(symbol_value, symbol_value[0]),
+            _linear_series(Decimal("100"), Decimal("-1"), days),
+        )
+        for symbol_value in ("AUSDT", "BUSDT", "CUSDT", "DUSDT")
+    }
+    ungated = run_backtest(falling_universe, parameters=_parameters(top_k=2))
+    gated = run_backtest(
+        falling_universe,
+        parameters=replace(
+            _parameters(top_k=2),
+            cs_gate_sma_window=10,
+            cs_gate_basis="per_symbol",
+        ),
+    )
+    assert len(ungated.fills) > 0
+    assert len(gated.fills) == 0
+    assert gated.equity_curve[-1].equity == Decimal("10000")
+
+
+def test_btc_basis_gates_the_whole_book() -> None:
+    def _universe(btc_step: Decimal) -> dict[str, tuple[Candle, ...]]:
+        return {
+            "BTCUSDT": _candles_for(
+                _symbol("BTCUSDT", "BTC"),
+                _linear_series(Decimal("100"), btc_step, 60),
+            ),
+            "BUSDT": _candles_for(
+                _symbol("BUSDT", "B"), _linear_series(Decimal("100"), Decimal("2"), 60)
+            ),
+            "CUSDT": _candles_for(_symbol("CUSDT", "C"), tuple([Decimal("100")] * 60)),
+            "DUSDT": _candles_for(
+                _symbol("DUSDT", "D"),
+                _linear_series(Decimal("100"), Decimal("-1"), 60),
+            ),
+        }
+
+    def _gated_parameters() -> BacktestParameters:
+        base = BacktestParameters(
+            risk_budgets=dict.fromkeys(("BTCUSDT", "BUSDT", "CUSDT", "DUSDT"), Decimal("0.25")),
+            initial_cash=Decimal("10000"),
+            account_id="cs-test",
+            fee_bps=Decimal("10"),
+            slippage_bps=Decimal("5"),
+            quantity_step=Decimal("0.000001"),
+            price_tick=Decimal("0.01"),
+            min_notional_usdt=Decimal("10"),
+            max_drawdown_fraction=Decimal("0.50"),
+            daily_loss_pause_fraction=Decimal("0.10"),
+            disaster_single_day_drop_fraction=Decimal("0.20"),
+            stale_data_max_age_seconds=129600,
+            strategy_name="cross_sectional_momentum",
+            cs_top_k=2,
+            cs_lookback_days=10,
+            cs_rebalance_cadence="weekly",
+            cs_min_pool_size=4,
+        )
+        return replace(base, cs_gate_sma_window=10, cs_gate_basis="btc")
+
+    bull = run_backtest(_universe(Decimal("5")), parameters=_gated_parameters())
+    bear = run_backtest(_universe(Decimal("-1")), parameters=_gated_parameters())
+    assert len(bull.fills) > 0
+    assert len(bear.fills) == 0

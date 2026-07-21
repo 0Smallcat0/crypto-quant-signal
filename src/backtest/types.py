@@ -58,6 +58,13 @@ class BacktestParameters:
     # alignment gate in the report can include them; without a floor the
     # lookback arms would start on different days.
     cs_decision_start: str | None = None
+    # Experiment-5 directional regime gate (None = off). Multiplies cs
+    # weights by 0/1 from an SMA state machine; consulted only when
+    # strategy_name == "cross_sectional_momentum".
+    cs_gate_sma_window: int | None = None
+    cs_gate_basis: str = "btc"
+    cs_gate_hysteresis: Decimal = Decimal("0")
+    cs_gate_cadence: str = "daily"
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
@@ -100,6 +107,18 @@ class BacktestParameters:
             except ValueError as exc:
                 msg = "cs_decision_start must be an ISO date (YYYY-MM-DD)"
                 raise BacktestError(msg) from exc
+        if self.cs_gate_sma_window is not None and self.cs_gate_sma_window < 2:
+            msg = "cs_gate_sma_window must be at least 2 when set"
+            raise BacktestError(msg)
+        if self.cs_gate_basis not in ("btc", "per_symbol"):
+            msg = "cs_gate_basis must be 'btc' or 'per_symbol'"
+            raise BacktestError(msg)
+        if self.cs_gate_hysteresis < Decimal("0"):
+            msg = "cs_gate_hysteresis must not be negative"
+            raise BacktestError(msg)
+        if self.cs_gate_cadence not in ("daily", "monthly"):
+            msg = "cs_gate_cadence must be 'daily' or 'monthly'"
+            raise BacktestError(msg)
         if self.strategy_name == "cross_sectional_momentum":
             if self.cs_top_k > len(self.risk_budgets):
                 msg = "cs_top_k must not exceed the size of the universe"
@@ -107,6 +126,12 @@ class BacktestParameters:
             # Experiment 4 lifted the earlier vol-overlay refusal: the
             # overlay resizes execution targets per symbol (de-risk only);
             # raw cross-sectional weights still drive selection state.
+            if self.cs_gate_sma_window is not None and self.vol_target_annualized is not None:
+                msg = (
+                    "regime gate and vol overlay are mutually exclusive "
+                    "(experiment-5 pre-registration scope)"
+                )
+                raise BacktestError(msg)
         if self.initial_cash <= Decimal("0"):
             msg = "initial_cash must be positive"
             raise BacktestError(msg)
