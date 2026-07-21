@@ -104,12 +104,9 @@ class BacktestParameters:
             if self.cs_top_k > len(self.risk_budgets):
                 msg = "cs_top_k must not exceed the size of the universe"
                 raise BacktestError(msg)
-            if self.vol_target_annualized is not None:
-                msg = (
-                    "vol overlay is not supported for cross_sectional_momentum "
-                    "(the family's weights are already cross-sectionally normalized)"
-                )
-                raise BacktestError(msg)
+            # Experiment 4 lifted the earlier vol-overlay refusal: the
+            # overlay resizes execution targets per symbol (de-risk only);
+            # raw cross-sectional weights still drive selection state.
         if self.initial_cash <= Decimal("0"):
             msg = "initial_cash must be positive"
             raise BacktestError(msg)
