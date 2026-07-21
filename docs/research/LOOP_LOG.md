@@ -86,3 +86,26 @@
   fixed cs architecture; grid over gate window/hysteresis arms; criteria
   anchored to the same statutory bars (DSR ≥ 0.95, MDD ≤ 51.93%,
   turnover ≤ 53.1).**
+
+## 2026-07-21 — iteration 5 (experiment 5, operator-triggered same-sitting)
+
+- Second recorded drift-guard override; thresholds statutory as before.
+- Engine: cs_gate_* parameters + prefix-sum SMA state machine with
+  hysteresis (btc-proxy or per-symbol basis, daily or monthly-frozen
+  cadence), mutually exclusive with the vol overlay. Commit 273b9d7.
+- Family ran (trials 54-69, N: 53 → 69). Winner trial 56 (SMA100/btc/2%/
+  daily): Sharpe 1.1651, DSR 0.9115, MDD 58.47% — criteria 1 and 2 fail;
+  **fifth registered negative.** Full table + frontier analysis in
+  `docs/research/GOALP_EXPERIMENT5_RESULT.md`.
+- Breakthrough inside the negative: trials 62/64 (SMA200/btc/daily) put
+  cs MDD INSIDE the statutory bar for the first time (51.83% ≤ 51.93%) at
+  Sharpe 0.978 — the feasible region exists; the statutory corner
+  (both bars at once) is still open.
+- Winner-gap trend exp 3→4→5: 75.08% → 63.76% → 58.47% MDD. Directional
+  gating works where vol targeting failed. Monthly-frozen gates are
+  disaster arms; daily gate + 2% hysteresis halves turnover and raises
+  Sharpe. Trial 29 at N=69: DSR 0.9802 (fourth non-monotone rise).
+- **Next step (Q4, NEXT sitting unless operator overrides): pre-register
+  experiment 6 — multi-horizon trend-factor selection (Cambridge JFQA
+  2024, already in RESEARCH_LOG) under the proven SMA200/btc/daily gate;
+  or K/lookback variation under that gate. Statutory bars unchanged.**
