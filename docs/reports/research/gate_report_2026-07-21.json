@@ -25,319 +25,463 @@
       19,
       20,
       21,
-      37
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53
     ],
     "combinations_evaluated": 12870,
     "cscv_blocks": 16,
     "passes": false,
-    "pbo": 0.583372,
-    "pbo_all_columns": 0.630303,
+    "pbo": 0.636364,
+    "pbo_all_columns": 0.587102,
     "threshold_max": 0.05
   },
   "gate_4_dsr": {
-    "effective_trials": 37,
+    "effective_trials": 53,
     "per_trial": [
       {
         "annualized_sharpe": "-0.375032",
-        "dsr": 0.000806,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.001571,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "first registered run: daily trend ensemble BTC+ETH, full pre-holdout history",
         "passes_dsr": false,
         "trial_id": 1
       },
       {
         "annualized_sharpe": "1.022274",
-        "dsr": 0.737132,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.797794,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "trial 2: risk pause thresholds aligned to research DD expectations (0.65/0.10); corrects trial 1 lockout",
         "passes_dsr": false,
         "trial_id": 2
       },
       {
         "annualized_sharpe": "0.963394",
-        "dsr": 0.682896,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.750201,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "trial 3: 2x cost stress rerun of trial 2 config (gate stress evidence)",
         "passes_dsr": false,
         "trial_id": 3
       },
       {
         "annualized_sharpe": "1.022989",
-        "dsr": 0.737711,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.79828,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "trial 4: audit-fix parity re-run (cost-adjusted sizing, rejected-count fix, turnover metric)",
         "passes_dsr": false,
         "trial_id": 4
       },
       {
         "annualized_sharpe": "1.017021",
-        "dsr": 0.732139,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.793375,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 1: confirmed_trend_ensemble confirm_days=2 per GOALP_PREREGISTRATION.md (whipsaw verdict 2026-07-15)",
         "passes_dsr": false,
         "trial_id": 5
       },
       {
         "annualized_sharpe": "1.014722",
-        "dsr": 0.730508,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.792078,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.30 window=20 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 6
       },
       {
         "annualized_sharpe": "1.127022",
-        "dsr": 0.820536,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.867937,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.30 window=20 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 7
       },
       {
         "annualized_sharpe": "1.001554",
-        "dsr": 0.717454,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.780354,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.30 window=60 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 8
       },
       {
         "annualized_sharpe": "0.975907",
-        "dsr": 0.693295,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.758912,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.30 window=60 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 9
       },
       {
         "annualized_sharpe": "1.069063",
-        "dsr": 0.778029,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.832987,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.50 window=20 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 10
       },
       {
         "annualized_sharpe": "1.103977",
-        "dsr": 0.804573,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.854976,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.50 window=20 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 11
       },
       {
         "annualized_sharpe": "1.066699",
-        "dsr": 0.774555,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.829715,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.50 window=60 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 12
       },
       {
         "annualized_sharpe": "1.066245",
-        "dsr": 0.774215,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.829435,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.50 window=60 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 13
       },
       {
         "annualized_sharpe": "1.086541",
-        "dsr": 0.791705,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.844392,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.70 window=20 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 14
       },
       {
         "annualized_sharpe": "1.08316",
-        "dsr": 0.788334,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.841428,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.70 window=20 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 15
       },
       {
         "annualized_sharpe": "1.084021",
-        "dsr": 0.788892,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.84187,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.70 window=60 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 16
       },
       {
         "annualized_sharpe": "1.030429",
-        "dsr": 0.744298,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.80398,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.70 window=60 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 17
       },
       {
         "annualized_sharpe": "1.069141",
-        "dsr": 0.777476,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.832386,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.90 window=20 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 18
       },
       {
         "annualized_sharpe": "1.045196",
-        "dsr": 0.756904,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.81477,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.90 window=20 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 19
       },
       {
         "annualized_sharpe": "1.077014",
-        "dsr": 0.783243,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.837115,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.90 window=60 rebalance=daily (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 20
       },
       {
         "annualized_sharpe": "1.032387",
-        "dsr": 0.745957,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.805397,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 2 family member: vol overlay target=0.90 window=60 rebalance=monthly (GOALP_EXPERIMENT2_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 21
       },
       {
         "annualized_sharpe": "0.808108",
-        "dsr": 0.522916,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.602497,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=90 cadence=weekly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 22
       },
       {
         "annualized_sharpe": "0.593158",
-        "dsr": 0.295547,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.369655,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=90 cadence=weekly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 23
       },
       {
         "annualized_sharpe": "0.992713",
-        "dsr": 0.712485,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.776975,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=90 cadence=monthly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 24
       },
       {
         "annualized_sharpe": "0.900379",
-        "dsr": 0.621697,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.695678,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=90 cadence=monthly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 25
       },
       {
         "annualized_sharpe": "-0.05938",
-        "dsr": 0.010893,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.01813,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=180 cadence=weekly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 26
       },
       {
         "annualized_sharpe": "-0.105044",
-        "dsr": 0.007749,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.013202,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=180 cadence=weekly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 27
       },
       {
         "annualized_sharpe": "1.039778",
-        "dsr": 0.763165,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.822755,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=180 cadence=monthly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 28
       },
       {
         "annualized_sharpe": "1.410899",
-        "dsr": 0.962102,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.976471,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=2 lookback=180 cadence=monthly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": true,
         "trial_id": 29
       },
       {
         "annualized_sharpe": "0.872492",
-        "dsr": 0.592061,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.66795,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=90 cadence=weekly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 30
       },
       {
         "annualized_sharpe": "0.594897",
-        "dsr": 0.297971,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.371985,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=90 cadence=weekly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 31
       },
       {
         "annualized_sharpe": "0.879732",
-        "dsr": 0.600247,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.675986,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=90 cadence=monthly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 32
       },
       {
         "annualized_sharpe": "0.756884",
-        "dsr": 0.467415,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.546882,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=90 cadence=monthly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 33
       },
       {
         "annualized_sharpe": "0.382076",
-        "dsr": 0.136644,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.18517,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=180 cadence=weekly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 34
       },
       {
         "annualized_sharpe": "0.959829",
-        "dsr": 0.680881,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.748944,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=180 cadence=weekly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 35
       },
       {
         "annualized_sharpe": "0.817388",
-        "dsr": 0.53277,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.611389,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=180 cadence=monthly filter=off (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 36
       },
       {
         "annualized_sharpe": "1.243142",
-        "dsr": 0.893573,
-        "expected_max_sharpe": 0.041201,
+        "dsr": 0.926115,
+        "expected_max_sharpe": 0.037336,
         "operator_note": "Goal P exp 3 family member: cross-sectional momentum K=3 lookback=180 cadence=monthly filter=on (GOALP_EXPERIMENT3_PREREGISTRATION.md)",
         "passes_dsr": false,
         "trial_id": 37
+      },
+      {
+        "annualized_sharpe": "0.769295",
+        "dsr": 0.565479,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.30 window=20 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 38
+      },
+      {
+        "annualized_sharpe": "0.868607",
+        "dsr": 0.675797,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.30 window=20 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 39
+      },
+      {
+        "annualized_sharpe": "0.795044",
+        "dsr": 0.59214,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.30 window=60 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 40
+      },
+      {
+        "annualized_sharpe": "0.83383",
+        "dsr": 0.633222,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.30 window=60 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 41
+      },
+      {
+        "annualized_sharpe": "0.761234",
+        "dsr": 0.553271,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.50 window=20 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 42
+      },
+      {
+        "annualized_sharpe": "0.977262",
+        "dsr": 0.771242,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.50 window=20 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 43
+      },
+      {
+        "annualized_sharpe": "0.861228",
+        "dsr": 0.661177,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.50 window=60 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 44
+      },
+      {
+        "annualized_sharpe": "0.855388",
+        "dsr": 0.654426,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.50 window=60 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 45
+      },
+      {
+        "annualized_sharpe": "0.668426",
+        "dsr": 0.45095,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.70 window=20 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 46
+      },
+      {
+        "annualized_sharpe": "1.033754",
+        "dsr": 0.811394,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.70 window=20 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 47
+      },
+      {
+        "annualized_sharpe": "0.94639",
+        "dsr": 0.739958,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.70 window=60 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 48
+      },
+      {
+        "annualized_sharpe": "0.928934",
+        "dsr": 0.722274,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.70 window=60 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 49
+      },
+      {
+        "annualized_sharpe": "0.662021",
+        "dsr": 0.444376,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.90 window=20 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 50
+      },
+      {
+        "annualized_sharpe": "0.999071",
+        "dsr": 0.782369,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.90 window=20 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 51
+      },
+      {
+        "annualized_sharpe": "0.901944",
+        "dsr": 0.696898,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.90 window=60 rebalance=daily (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 52
+      },
+      {
+        "annualized_sharpe": "0.903812",
+        "dsr": 0.69824,
+        "expected_max_sharpe": 0.037336,
+        "operator_note": "Goal P exp 4 family member: cs K=2/180d/monthly/filter-on + vol overlay target=0.90 window=60 rebalance=monthly (GOALP_EXPERIMENT4_PREREGISTRATION.md)",
+        "passes_dsr": false,
+        "trial_id": 53
       }
     ],
     "threshold_min": 0.95,
-    "trial_sharpe_variance_deannualized": 0.0003643363163383011
+    "trial_sharpe_variance_deannualized": 0.0002638470660514101
   },
-  "generated_at": "2026-07-21T04:58:27.157907+00:00",
+  "generated_at": "2026-07-21T05:36:32.226133+00:00",
   "holdout_lock": {
     "holdout_start": "2025-07-02T23:59:59.999000+00:00",
     "locked_at": "2026-07-03T02:44:47.633808+00:00",
@@ -346,5 +490,5 @@
   },
   "observations": 2676,
   "registry_path": "docs\\reports\\research\\trial_registry.jsonl",
-  "trials_n": 37
+  "trials_n": 53
 }

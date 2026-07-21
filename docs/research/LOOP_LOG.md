@@ -63,3 +63,26 @@
   risk-managed combination family (cs momentum signal × drawdown/vol
   overlay) targeting MDD without killing the deflation-surviving Sharpe.
   Also compute trial 29 × trial 4 return correlation (queued read-out).**
+
+## 2026-07-21 — iteration 4 (experiment 4, operator-triggered same-sitting)
+
+- Drift-guard override by explicit operator order, recorded in the
+  pre-registration; thresholds all anchored to pre-today numbers.
+- Engine: cs vol-overlay refusal lifted; `_cs_vol_scaled_weights` reuses
+  `_vol_scaler` verbatim; execution now fires on any effective-vs-held
+  drift (daily scaler resizes between monthly selections). Commit 7e50bc8.
+- Family ran (trials 38-53, N: 37 → 53). Winner trial 47 (70%/20d/monthly):
+  Sharpe 1.0338, DSR 0.8114, MDD 63.76% — **criteria 1 AND 2 fail; fourth
+  registered negative.** Full table + structural finding in
+  `docs/research/GOALP_EXPERIMENT4_RESULT.md`.
+- Structural conclusion: the vol dial sweeps 39%→73% MDD and Sharpe never
+  clears the deflation bar anywhere on the dial — volatility is the wrong
+  conditioning variable for cs momentum (profits live IN high-vol regimes).
+- Trial 29 at N=53: DSR 0.9765 (non-monotonic deflation, third case).
+- Scheduled iteration 3 (21:37 headless) ran during this window and
+  surfaced the regime-gate hypothesis (BTC 200d-SMA) in RESEARCH_LOG.
+- **Next step (Q4, NEXT sitting, drift guard back in force): pre-register
+  experiment 5 — directional regime gate (BTC close > 200d SMA) over the
+  fixed cs architecture; grid over gate window/hysteresis arms; criteria
+  anchored to the same statutory bars (DSR ≥ 0.95, MDD ≤ 51.93%,
+  turnover ≤ 53.1).**
