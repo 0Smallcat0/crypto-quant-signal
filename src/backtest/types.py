@@ -44,12 +44,25 @@ class BacktestParameters:
     vol_target_annualized: Decimal | None = None
     vol_window_days: int = 20
     vol_rebalance: str = "daily"
+    # Experiment-3 cross-sectional momentum family (frozen in
+    # docs/research/GOALP_EXPERIMENT3_PREREGISTRATION.md). Consulted only
+    # when strategy_name == "cross_sectional_momentum"; the ladder
+    # strategies and the live daily runtime never read these.
+    cs_top_k: int = 2
+    cs_lookback_days: int = 90
+    cs_rebalance_cadence: str = "weekly"
+    cs_absolute_filter: bool = False
+    cs_min_pool_size: int = 4
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
             msg = "risk_budgets must be a non-empty mapping"
             raise BacktestError(msg)
-        if self.strategy_name not in ("daily_trend_ensemble", "confirmed_trend_ensemble"):
+        if self.strategy_name not in (
+            "daily_trend_ensemble",
+            "confirmed_trend_ensemble",
+            "cross_sectional_momentum",
+        ):
             msg = f"unknown backtest strategy_name: {self.strategy_name}"
             raise BacktestError(msg)
         if self.confirm_days < 1:
@@ -64,6 +77,28 @@ class BacktestParameters:
         if self.vol_rebalance not in ("daily", "monthly"):
             msg = "vol_rebalance must be 'daily' or 'monthly'"
             raise BacktestError(msg)
+        if self.cs_top_k < 1:
+            msg = "cs_top_k must be at least 1"
+            raise BacktestError(msg)
+        if self.cs_lookback_days < 2:
+            msg = "cs_lookback_days must be at least 2"
+            raise BacktestError(msg)
+        if self.cs_rebalance_cadence not in ("weekly", "monthly"):
+            msg = "cs_rebalance_cadence must be 'weekly' or 'monthly'"
+            raise BacktestError(msg)
+        if self.cs_min_pool_size < 1:
+            msg = "cs_min_pool_size must be at least 1"
+            raise BacktestError(msg)
+        if self.strategy_name == "cross_sectional_momentum":
+            if self.cs_top_k > len(self.risk_budgets):
+                msg = "cs_top_k must not exceed the size of the universe"
+                raise BacktestError(msg)
+            if self.vol_target_annualized is not None:
+                msg = (
+                    "vol overlay is not supported for cross_sectional_momentum "
+                    "(the family's weights are already cross-sectionally normalized)"
+                )
+                raise BacktestError(msg)
         if self.initial_cash <= Decimal("0"):
             msg = "initial_cash must be positive"
             raise BacktestError(msg)
