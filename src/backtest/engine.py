@@ -591,6 +591,98 @@ def _vol_scaler(
     return Decimal(str(round(min(1.0, float(target) / realized), 6)))
 
 
+def _cs_close_prefix_sums(candles: tuple[Candle, ...]) -> list[Decimal]:
+    """prefix[i] = sum of closes[0..i-1]; SMA queries become O(1)."""
+
+    prefix = [Decimal("0")]
+    for candle in candles:
+        prefix.append(prefix[-1] + candle.close_price)
+    return prefix
+
+
+def _cs_gate_on(
+    candles: tuple[Candle, ...],
+    prefix: list[Decimal],
+    index: int,
+    *,
+    sma_window: int,
+    band: Decimal,
+    was_on: bool,
+) -> bool:
+    """Experiment-5 SMA regime state machine for one basis symbol.
+
+    Fewer than sma_window closes -> OFF (no data, conservative side).
+    OFF->ON requires close > SMA*(1+band); ON->OFF requires
+    close < SMA*(1-band); inside the band the state holds.
+    """
+
+    if index + 1 < sma_window:
+        return False
+    window_sum = prefix[index + 1] - prefix[index + 1 - sma_window]
+    sma = window_sum / Decimal(sma_window)
+    close = candles[index].close_price
+    if was_on:
+        return close >= sma * (Decimal("1") - band)
+    return close > sma * (Decimal("1") + band)
+
+
+def _cs_gated_weights(
+    target_weights: dict[str, Decimal],
+    *,
+    parameters: BacktestParameters,
+    candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+    candle_lookup: Mapping[str, Mapping[datetime, int]],
+    prefix_by_symbol: Mapping[str, list[Decimal]],
+    decision_time: datetime,
+    gate_state: dict[str, bool],
+    evaluate: bool,
+) -> dict[str, Decimal]:
+    """Apply the directional regime gate to the cs book.
+
+    `evaluate` follows cs_gate_cadence: daily arms update the state machine
+    every decision day, monthly arms only on selection rebalance days (the
+    frozen state applies in between). Symbols without a candle today keep
+    the last state — the machine only steps on fresh closes.
+    """
+
+    sma_window = parameters.cs_gate_sma_window
+    if sma_window is None:  # pragma: no cover - guarded by the caller
+        return dict(target_weights)
+    band = parameters.cs_gate_hysteresis
+
+    def _step(symbol_value: str) -> bool:
+        index = candle_lookup[symbol_value].get(decision_time)
+        was_on = gate_state.get(symbol_value, False)
+        if index is None:
+            return was_on
+        now_on = _cs_gate_on(
+            candles_by_symbol[symbol_value],
+            prefix_by_symbol[symbol_value],
+            index,
+            sma_window=sma_window,
+            band=band,
+            was_on=was_on,
+        )
+        gate_state[symbol_value] = now_on
+        return now_on
+
+    if parameters.cs_gate_basis == "btc":
+        if evaluate:
+            _step("BTCUSDT")
+        book_on = gate_state.get("BTCUSDT", False)
+        return {
+            symbol_value: (weight if book_on else Decimal("0"))
+            for symbol_value, weight in target_weights.items()
+        }
+    if evaluate:
+        for symbol_value in target_weights:
+            _step(symbol_value)
+    return {
+        symbol_value: (weight if gate_state.get(symbol_value, False) else Decimal("0"))
+        for symbol_value, weight in target_weights.items()
+    }
+
+
 def _cs_vol_scaled_weights(
     target_weights: dict[str, Decimal],
     *,
@@ -737,6 +829,16 @@ def _run_cross_sectional_backtest(
     last_close_by_symbol: dict[str, Decimal] = {}
     last_rebalance_key: object | None = None
     cs_vol_cache: dict[str, tuple[tuple[int, int], Decimal]] = {}
+    gate_state: dict[str, bool] = {}
+    prefix_by_symbol: dict[str, list[Decimal]] = {}
+    if parameters.cs_gate_sma_window is not None:
+        if parameters.cs_gate_basis == "btc" and "BTCUSDT" not in candles_by_symbol:
+            msg = "cs_gate_basis 'btc' requires BTCUSDT in the universe"
+            raise BacktestError(msg)
+        prefix_by_symbol = {
+            symbol_value: _cs_close_prefix_sums(candles)
+            for symbol_value, candles in candles_by_symbol.items()
+        }
 
     for decision_time in decision_times:
         for symbol_value, lookup in candle_lookup.items():
@@ -788,8 +890,8 @@ def _run_cross_sectional_backtest(
         else:
             reason_codes = ("CS_HOLD",)
 
-        # Experiment-4 overlay: raw cs weights drive selection state; the
-        # executed book is the vol-scaled version (de-risk only).
+        # Raw cs weights drive selection state; the executed book is the
+        # vol-scaled (experiment 4) or regime-gated (experiment 5) version.
         if parameters.vol_target_annualized is not None:
             effective_weights = _cs_vol_scaled_weights(
                 target_weights,
@@ -798,6 +900,17 @@ def _run_cross_sectional_backtest(
                 candle_lookup=candle_lookup,
                 decision_time=decision_time,
                 scaler_cache=cs_vol_cache,
+            )
+        elif parameters.cs_gate_sma_window is not None:
+            effective_weights = _cs_gated_weights(
+                target_weights,
+                parameters=parameters,
+                candles_by_symbol=candles_by_symbol,
+                candle_lookup=candle_lookup,
+                prefix_by_symbol=prefix_by_symbol,
+                decision_time=decision_time,
+                gate_state=gate_state,
+                evaluate=(parameters.cs_gate_cadence == "daily" or is_rebalance),
             )
         else:
             effective_weights = target_weights

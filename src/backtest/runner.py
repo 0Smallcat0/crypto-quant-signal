@@ -151,6 +151,14 @@ def run_registered_backtest(
             "cs_absolute_filter": str(parameters.cs_absolute_filter),
             "cs_min_pool_size": str(parameters.cs_min_pool_size),
             "cs_decision_start": parameters.cs_decision_start or "none",
+            "cs_gate_sma_window": (
+                str(parameters.cs_gate_sma_window)
+                if parameters.cs_gate_sma_window is not None
+                else "none"
+            ),
+            "cs_gate_basis": parameters.cs_gate_basis,
+            "cs_gate_hysteresis": str(parameters.cs_gate_hysteresis),
+            "cs_gate_cadence": parameters.cs_gate_cadence,
         },
         universe=tuple(sorted(parameters.risk_budgets)),
         data_start=report.data_start,
