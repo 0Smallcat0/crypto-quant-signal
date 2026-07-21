@@ -591,6 +591,33 @@ def _vol_scaler(
     return Decimal(str(round(min(1.0, float(target) / realized), 6)))
 
 
+def _cs_signal_score(
+    candles: tuple[Candle, ...],
+    index: int,
+    *,
+    lookback: int,
+    horizons: tuple[int, ...],
+) -> Decimal | None:
+    """Selection score: trailing return (single lookback) or the
+    equal-weight mean of trailing returns over the horizon set (exp 6).
+
+    None = not enough history or a degenerate price; the symbol stays out
+    of the ranking pool.
+    """
+
+    spans = horizons if horizons else (lookback,)
+    if index < max(spans):
+        return None
+    end_close = candles[index].close_price
+    total = Decimal("0")
+    for span in spans:
+        start_close = candles[index - span].close_price
+        if start_close <= Decimal("0"):
+            return None
+        total += end_close / start_close - Decimal("1")
+    return total / Decimal(len(spans))
+
+
 def _cs_close_prefix_sums(candles: tuple[Candle, ...]) -> list[Decimal]:
     """prefix[i] = sum of closes[0..i-1]; SMA queries become O(1)."""
 
@@ -780,12 +807,21 @@ def _run_cross_sectional_backtest(
         if parameters.cs_decision_start is not None
         else None
     )
-    decision_times = tuple(
-        close_time
-        for close_time in all_close_times
-        if (decision_floor is None or close_time.date() >= decision_floor)
-        and any(_has_lookback(symbol_value, close_time) for symbol_value in symbols)
-    )
+    # With an explicit floor, every candle day at/after it is a decision
+    # day — arms whose signal needs more history simply hold cash until
+    # eligible, keeping return series aligned across the whole family.
+    # Without a floor (unit-test path), keep the lookback-driven start.
+    if decision_floor is None:
+        decision_times = tuple(
+            close_time
+            for close_time in all_close_times
+            if any(_has_lookback(symbol_value, close_time) for symbol_value in symbols)
+        )
+    else:
+        floor = decision_floor
+        decision_times = tuple(
+            close_time for close_time in all_close_times if close_time.date() >= floor
+        )
     if not decision_times:
         msg = "no cross-sectional decision days after the lookback floor; provide more history"
         raise BacktestError(msg)
@@ -855,13 +891,17 @@ def _run_cross_sectional_backtest(
             pool_returns: dict[str, Decimal] = {}
             for symbol_value in sorted(symbols):
                 index = candle_lookup[symbol_value].get(decision_time)
-                if index is None or index < lookback:
+                if index is None:
                     continue
-                start_close = candles_by_symbol[symbol_value][index - lookback].close_price
-                end_close = candles_by_symbol[symbol_value][index].close_price
-                if start_close <= Decimal("0"):
+                score = _cs_signal_score(
+                    candles_by_symbol[symbol_value],
+                    index,
+                    lookback=lookback,
+                    horizons=parameters.cs_horizon_days,
+                )
+                if score is None:
                     continue
-                pool_returns[symbol_value] = end_close / start_close - Decimal("1")
+                pool_returns[symbol_value] = score
 
             new_weights: dict[str, Decimal] = dict.fromkeys(symbols, Decimal("0"))
             if len(pool_returns) < parameters.cs_min_pool_size:

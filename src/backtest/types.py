@@ -65,6 +65,10 @@ class BacktestParameters:
     cs_gate_basis: str = "btc"
     cs_gate_hysteresis: Decimal = Decimal("0")
     cs_gate_cadence: str = "daily"
+    # Experiment-6 multi-horizon trend factor (empty = single-lookback
+    # behavior). Selection score = equal-weight mean of trailing returns
+    # over these horizons; pool eligibility keys on the longest one.
+    cs_horizon_days: tuple[int, ...] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
@@ -118,6 +122,12 @@ class BacktestParameters:
             raise BacktestError(msg)
         if self.cs_gate_cadence not in ("daily", "monthly"):
             msg = "cs_gate_cadence must be 'daily' or 'monthly'"
+            raise BacktestError(msg)
+        if any(horizon < 2 for horizon in self.cs_horizon_days):
+            msg = "cs_horizon_days entries must each be at least 2"
+            raise BacktestError(msg)
+        if len(set(self.cs_horizon_days)) != len(self.cs_horizon_days):
+            msg = "cs_horizon_days must not contain duplicates"
             raise BacktestError(msg)
         if self.strategy_name == "cross_sectional_momentum":
             if self.cs_top_k > len(self.risk_budgets):

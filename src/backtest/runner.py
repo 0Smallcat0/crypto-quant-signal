@@ -159,6 +159,11 @@ def run_registered_backtest(
             "cs_gate_basis": parameters.cs_gate_basis,
             "cs_gate_hysteresis": str(parameters.cs_gate_hysteresis),
             "cs_gate_cadence": parameters.cs_gate_cadence,
+            "cs_horizon_days": (
+                ",".join(str(h) for h in parameters.cs_horizon_days)
+                if parameters.cs_horizon_days
+                else "none"
+            ),
         },
         universe=tuple(sorted(parameters.risk_budgets)),
         data_start=report.data_start,
