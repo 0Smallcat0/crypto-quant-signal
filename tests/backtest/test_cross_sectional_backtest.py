@@ -105,25 +105,44 @@ def test_cross_sectional_requires_a_valid_top_k() -> None:
         _parameters(top_k=5)
 
 
-def test_cross_sectional_rejects_vol_overlay() -> None:
-    with pytest.raises(BacktestError, match="vol overlay is not supported"):
-        BacktestParameters(
-            risk_budgets={"AUSDT": Decimal("1")},
-            initial_cash=Decimal("1000"),
-            account_id="cs-test",
-            fee_bps=Decimal("10"),
-            slippage_bps=Decimal("5"),
-            quantity_step=Decimal("0.000001"),
-            price_tick=Decimal("0.01"),
-            min_notional_usdt=Decimal("10"),
-            max_drawdown_fraction=Decimal("0.50"),
-            daily_loss_pause_fraction=Decimal("0.10"),
-            disaster_single_day_drop_fraction=Decimal("0.20"),
-            stale_data_max_age_seconds=129600,
-            strategy_name="cross_sectional_momentum",
-            cs_top_k=1,
-            vol_target_annualized=Decimal("0.5"),
-        )
+def test_vol_overlay_derisks_the_cs_book() -> None:
+    # Experiment 4 lifted the earlier refusal: the overlay may only shrink
+    # invested weight (spot long-only), never raise it.
+    raw = run_backtest(_small_universe(), parameters=_parameters(cadence="monthly"))
+    overlaid = run_backtest(
+        _small_universe(),
+        parameters=replace(
+            _parameters(cadence="monthly"),
+            vol_target_annualized=Decimal("0.01"),
+            vol_window_days=5,
+            vol_rebalance="daily",
+        ),
+    )
+
+    def _gross(entry: object) -> Decimal:
+        return sum((weight for _, weight in entry.target_weights), Decimal("0"))  # type: ignore[attr-defined]
+
+    # First decision day: AUSDT's realized vol far exceeds the 1% target,
+    # so its slot must shrink toward cash while the raw book is fully
+    # invested. (Low-vol symbols legitimately keep scaler == 1.)
+    assert _gross(overlaid.targets[0]) < _gross(raw.targets[0])
+    assert overlaid.targets[0].cash_weight > raw.targets[0].cash_weight
+
+
+def test_daily_overlay_resizes_between_selection_rebalances() -> None:
+    raw = run_backtest(_small_universe(), parameters=_parameters(cadence="monthly"))
+    overlaid = run_backtest(
+        _small_universe(),
+        parameters=replace(
+            _parameters(cadence="monthly"),
+            vol_target_annualized=Decimal("0.01"),
+            vol_window_days=5,
+            vol_rebalance="daily",
+        ),
+    )
+    # Selection changes only twice in the two-month window; a daily scaler
+    # below AUSDT's realized vol must generate resize fills on hold days.
+    assert len(overlaid.fills) > len(raw.fills)
 
 
 def test_cross_sectional_rejects_unknown_cadence() -> None:

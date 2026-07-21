@@ -591,6 +591,60 @@ def _vol_scaler(
     return Decimal(str(round(min(1.0, float(target) / realized), 6)))
 
 
+def _cs_vol_scaled_weights(
+    target_weights: dict[str, Decimal],
+    *,
+    parameters: BacktestParameters,
+    candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+    candle_lookup: Mapping[str, Mapping[datetime, int]],
+    decision_time: datetime,
+    scaler_cache: dict[str, tuple[tuple[int, int], Decimal]],
+) -> dict[str, Decimal]:
+    """Experiment-4 overlay: per-symbol vol scaling of cross-sectional weights.
+
+    Reuses _vol_scaler verbatim (pre-registration requirement: one vol
+    formula in the codebase). Monthly cadence freezes each symbol's scaler
+    at its first decision day of the calendar month; daily recomputes.
+    Symbols without a candle on the decision day keep their raw weight —
+    a stale scaler is worse than none.
+    """
+
+    target = parameters.vol_target_annualized
+    if target is None:  # pragma: no cover - guarded by the caller
+        return dict(target_weights)
+    month_key = (decision_time.year, decision_time.month)
+    scaled: dict[str, Decimal] = {}
+    for symbol_value, weight in target_weights.items():
+        if weight <= Decimal("0"):
+            scaled[symbol_value] = weight
+            continue
+        index = candle_lookup[symbol_value].get(decision_time)
+        if index is None:
+            scaled[symbol_value] = weight
+            continue
+        if parameters.vol_rebalance == "monthly":
+            cached = scaler_cache.get(symbol_value)
+            if cached is not None and cached[0] == month_key:
+                scaler = cached[1]
+            else:
+                scaler = _vol_scaler(
+                    candles_by_symbol[symbol_value],
+                    index,
+                    vol_window=parameters.vol_window_days,
+                    target=target,
+                )
+                scaler_cache[symbol_value] = (month_key, scaler)
+        else:
+            scaler = _vol_scaler(
+                candles_by_symbol[symbol_value],
+                index,
+                vol_window=parameters.vol_window_days,
+                target=target,
+            )
+        scaled[symbol_value] = weight * scaler
+    return scaled
+
+
 def _run_cross_sectional_backtest(
     candles_by_symbol: Mapping[str, tuple[Candle, ...]],
     *,
@@ -682,6 +736,7 @@ def _run_cross_sectional_backtest(
     benchmark_anchor: dict[str, Decimal] = {}
     last_close_by_symbol: dict[str, Decimal] = {}
     last_rebalance_key: object | None = None
+    cs_vol_cache: dict[str, tuple[tuple[int, int], Decimal]] = {}
 
     for decision_time in decision_times:
         for symbol_value, lookup in candle_lookup.items():
@@ -733,20 +788,34 @@ def _run_cross_sectional_backtest(
         else:
             reason_codes = ("CS_HOLD",)
 
+        # Experiment-4 overlay: raw cs weights drive selection state; the
+        # executed book is the vol-scaled version (de-risk only).
+        if parameters.vol_target_annualized is not None:
+            effective_weights = _cs_vol_scaled_weights(
+                target_weights,
+                parameters=parameters,
+                candles_by_symbol=candles_by_symbol,
+                candle_lookup=candle_lookup,
+                decision_time=decision_time,
+                scaler_cache=cs_vol_cache,
+            )
+        else:
+            effective_weights = target_weights
+
         for symbol_value in sorted(symbols):
             signals.append(
                 SignalLogEntry(
                     symbol=symbol_value,
                     as_of=decision_time,
-                    exposure_fraction=target_weights[symbol_value],
+                    exposure_fraction=effective_weights[symbol_value],
                     reason_codes=reason_codes,
                 )
             )
 
         active_weights = tuple(
-            (symbol_value, target_weights[symbol_value])
+            (symbol_value, effective_weights[symbol_value])
             for symbol_value in sorted(symbols)
-            if target_weights[symbol_value] > Decimal("0")
+            if effective_weights[symbol_value] > Decimal("0")
         )
         gross = sum((weight for _, weight in active_weights), Decimal("0"))
         targets.append(
@@ -771,7 +840,13 @@ def _run_cross_sectional_backtest(
             if event is not None:
                 risk_events.append(event)
 
-        if is_rebalance:
+        # Execute whenever the effective book drifts from what is held —
+        # monthly selection changes AND daily overlay resizes both qualify.
+        needs_execution = any(
+            effective_weights[symbol_value] != executed_fraction[symbol_value]
+            for symbol_value in symbols
+        )
+        if needs_execution:
             execution_candles: dict[str, Candle] = {}
             for symbol_value in sorted(symbols):
                 index = candle_lookup[symbol_value].get(decision_time)
@@ -804,12 +879,12 @@ def _run_cross_sectional_backtest(
                 ordered_symbols = sorted(
                     execution_candles,
                     key=lambda value: (
-                        target_weights[value] >= executed_fraction[value],
+                        effective_weights[value] >= executed_fraction[value],
                         value,
                     ),
                 )
                 for symbol_value in ordered_symbols:
-                    desired_fraction = target_weights[symbol_value]
+                    desired_fraction = effective_weights[symbol_value]
                     if desired_fraction == executed_fraction[symbol_value]:
                         continue
                     order_sequence += 1
