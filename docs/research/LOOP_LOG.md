@@ -158,6 +158,32 @@
   eligibility instead of intersection alignment) with tests; then the
   family pre-registration. Statutory bars unchanged.**
 
+## 2026-07-22 — iteration 9 (experiment 8, operator-triggered "continue")
+
+- Fifth recorded override; thresholds statutory. Iteration-8 engine
+  prerequisite verified green (66 tests) and its unpushed commit 7f8a0b7
+  pushed first.
+- Family ran (trials 94-101, N: 93 → 101) on the staggered 13-symbol
+  universe, 1/13 budgets. Winner trial 96 (fast/mid_channel/no gate —
+  exp-7 winner architecture widened): Sharpe 1.0004, DSR 0.8317,
+  MDD 46.59% — criterion 1 fails; **eighth registered negative.**
+- **Breadth hypothesis falsified in all eight pairings** (winner −0.18
+  Sharpe vs trial 88): cash drag from idle pre-listing budgets + altcoin
+  false breakouts. Barbell windows underperformed fast. Gate verdict
+  FLIPPED on the diversified book (improves MDD, Sharpe-neutral) — the
+  exp-7 double-brake was BTC/ETH-specific.
+- Deflation mechanics: trial 37 became the registry's SECOND gate-4 pass
+  (0.9532) on variance compression alone — MDD 67.5% keeps it
+  disqualified; trial 88 GAINED to 0.9330 and remains the risk-compliant
+  frontier (0.017 short). Trial 29: 0.9870.
+- Hypothesis pool (not auto-run): SSRN-faithful vol-based sizing on the
+  Donchian book (new allocation-model engine feature); barbell variants
+  parked. Full table in `docs/research/GOALP_EXPERIMENT8_RESULT.md`.
+- **Next step: NEXT sitting weighs the N-arithmetic explicitly before
+  any ninth family (every family raises every trial's bar); October
+  holdout untouched; gate-6 evidence accumulation continues in the
+  background.**
+
 ## 2026-07-22 — iteration 8 (Q1 for experiment 8, autonomous)
 
 - Research log appended (4 dated lines): arxiv 2510.23150 (2025-10-28)
