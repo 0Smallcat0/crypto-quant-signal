@@ -54,6 +54,7 @@ from src.strategies import (
     DailyTrendEnsembleDecision,
     evaluate_confirmed_trend_ensemble,
     evaluate_daily_trend_ensemble,
+    evaluate_donchian_ensemble,
 )
 
 _BPS = Decimal("10000")
@@ -135,16 +136,50 @@ def run_backtest(
 
     confirmation_states: dict[str, ConfirmationState] = {}
     vol_scaler_cache: dict[str, tuple[tuple[int, int], Decimal]] = {}
+    donchian_states: dict[str, tuple[bool, ...]] = {}
+    ladder_gate_state: dict[str, bool] = {}
+    ladder_prefix: dict[str, list[Decimal]] = {}
+    if parameters.cs_gate_sma_window is not None:
+        if parameters.cs_gate_basis == "btc" and "BTCUSDT" not in candles_by_symbol:
+            msg = "cs_gate_basis 'btc' requires BTCUSDT in the universe"
+            raise BacktestError(msg)
+        ladder_prefix = {
+            symbol_value: _cs_close_prefix_sums(candles)
+            for symbol_value, candles in candles_by_symbol.items()
+        }
     for decision_time in decision_times:
         decisions: dict[str, DailyTrendEnsembleDecision | _SizedDecision] = {}
         for symbol_value in sorted(symbols):
             snapshot = snapshot_lookup[symbol_value][decision_time]
+            decision: DailyTrendEnsembleDecision | _SizedDecision
             if parameters.strategy_name == "confirmed_trend_ensemble":
                 decision, confirmation_states[symbol_value] = evaluate_confirmed_trend_ensemble(
                     snapshot,
                     previous_fraction=previous_decision_fraction[symbol_value],
                     state=confirmation_states.get(symbol_value),
                     confirm_days=parameters.confirm_days,
+                )
+            elif parameters.strategy_name == "donchian_breakout_ensemble":
+                candle_index = candle_lookup[symbol_value][decision_time]
+                fraction, dc_codes, donchian_states[symbol_value] = evaluate_donchian_ensemble(
+                    candles_by_symbol[symbol_value],
+                    candle_index,
+                    windows=parameters.dc_windows,
+                    exit_mode=parameters.dc_exit,
+                    previous_states=donchian_states.get(symbol_value),
+                )
+                next_index = candle_index + 1
+                executable = (
+                    candles_by_symbol[symbol_value][next_index].open_time
+                    if next_index < len(candles_by_symbol[symbol_value])
+                    else decision_time
+                )
+                decision = _SizedDecision(
+                    symbol=symbols[symbol_value],
+                    exposure_fraction=fraction,
+                    reason_codes=dc_codes,
+                    executable_from_next_bar=executable,
+                    generated_at_bar_close=decision_time,
                 )
             else:
                 decision = evaluate_daily_trend_ensemble(
@@ -178,6 +213,16 @@ def run_backtest(
                 candle_lookup=candle_lookup,
                 decision_time=decision_time,
                 scaler_cache=vol_scaler_cache,
+            )
+        if parameters.cs_gate_sma_window is not None:
+            decisions = _apply_ladder_gate(
+                decisions,
+                parameters=parameters,
+                candles_by_symbol=candles_by_symbol,
+                candle_lookup=candle_lookup,
+                prefix_by_symbol=ladder_prefix,
+                decision_time=decision_time,
+                gate_state=ladder_gate_state,
             )
 
         target_set = build_ladder_targets(
@@ -504,6 +549,7 @@ class _SizedDecision:
     exposure_fraction: Decimal
     reason_codes: tuple[str, ...]
     executable_from_next_bar: datetime
+    generated_at_bar_close: datetime
 
 
 def _apply_vol_overlay(
@@ -557,6 +603,7 @@ def _apply_vol_overlay(
             exposure_fraction=decision.exposure_fraction * scaler,
             reason_codes=(*decision.reason_codes, f"VOL_SCALED_{scaler}"),
             executable_from_next_bar=decision.executable_from_next_bar,
+            generated_at_bar_close=decision.generated_at_bar_close,
         )
     return sized
 
@@ -708,6 +755,68 @@ def _cs_gated_weights(
         symbol_value: (weight if gate_state.get(symbol_value, False) else Decimal("0"))
         for symbol_value, weight in target_weights.items()
     }
+
+
+def _apply_ladder_gate(
+    decisions: dict[str, DailyTrendEnsembleDecision | _SizedDecision],
+    *,
+    parameters: BacktestParameters,
+    candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+    candle_lookup: Mapping[str, Mapping[datetime, int]],
+    prefix_by_symbol: Mapping[str, list[Decimal]],
+    decision_time: datetime,
+    gate_state: dict[str, bool],
+) -> dict[str, DailyTrendEnsembleDecision | _SizedDecision]:
+    """Experiment-7 regime gate on ladder decisions (daily evaluation).
+
+    Same SMA state machine as the cs path; strategy state still sees the
+    RAW fractions (the gate resizes execution, never the signal).
+    """
+
+    sma_window = parameters.cs_gate_sma_window
+    if sma_window is None:  # pragma: no cover - guarded by the caller
+        return decisions
+    band = parameters.cs_gate_hysteresis
+
+    def _step(symbol_value: str) -> bool:
+        index = candle_lookup[symbol_value].get(decision_time)
+        was_on = gate_state.get(symbol_value, False)
+        if index is None:
+            return was_on
+        now_on = _cs_gate_on(
+            candles_by_symbol[symbol_value],
+            prefix_by_symbol[symbol_value],
+            index,
+            sma_window=sma_window,
+            band=band,
+            was_on=was_on,
+        )
+        gate_state[symbol_value] = now_on
+        return now_on
+
+    def _zeroed(
+        decision: DailyTrendEnsembleDecision | _SizedDecision,
+    ) -> _SizedDecision:
+        return _SizedDecision(
+            symbol=decision.symbol,
+            exposure_fraction=Decimal("0"),
+            reason_codes=(*decision.reason_codes, "REGIME_GATE_OFF"),
+            executable_from_next_bar=decision.executable_from_next_bar,
+            generated_at_bar_close=decision.generated_at_bar_close,
+        )
+
+    gated: dict[str, DailyTrendEnsembleDecision | _SizedDecision] = {}
+    if parameters.cs_gate_basis == "btc":
+        book_on = _step("BTCUSDT")
+        for symbol_value, decision in decisions.items():
+            keep = book_on or decision.exposure_fraction == Decimal("0")
+            gated[symbol_value] = decision if keep else _zeroed(decision)
+        return gated
+    for symbol_value, decision in decisions.items():
+        symbol_on = _step(symbol_value)
+        keep = symbol_on or decision.exposure_fraction == Decimal("0")
+        gated[symbol_value] = decision if keep else _zeroed(decision)
+    return gated
 
 
 def _cs_vol_scaled_weights(
@@ -1046,6 +1155,7 @@ def _run_cross_sectional_backtest(
                         exposure_fraction=desired_fraction,
                         reason_codes=reason_codes,
                         executable_from_next_bar=execution_time,
+                        generated_at_bar_close=decision_time,
                     )
                     outcome = _execute_ladder_change(
                         ledger=ledger,

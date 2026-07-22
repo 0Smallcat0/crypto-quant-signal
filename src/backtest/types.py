@@ -69,6 +69,10 @@ class BacktestParameters:
     # behavior). Selection score = equal-weight mean of trailing returns
     # over these horizons; pool eligibility keys on the longest one.
     cs_horizon_days: tuple[int, ...] = ()
+    # Experiment-7 Donchian breakout ensemble (ladder path). Exactly four
+    # channel windows map onto the 5-rung ladder (0, 1/4, 1/2, 3/4, 1).
+    dc_windows: tuple[int, ...] = ()
+    dc_exit: str = "half_low"
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
@@ -78,9 +82,29 @@ class BacktestParameters:
             "daily_trend_ensemble",
             "confirmed_trend_ensemble",
             "cross_sectional_momentum",
+            "donchian_breakout_ensemble",
         ):
             msg = f"unknown backtest strategy_name: {self.strategy_name}"
             raise BacktestError(msg)
+        if self.strategy_name == "donchian_breakout_ensemble":
+            if len(self.dc_windows) != 4:
+                msg = "dc_windows must contain exactly four channel windows"
+                raise BacktestError(msg)
+            if any(window < 2 for window in self.dc_windows):
+                msg = "dc_windows entries must each be at least 2"
+                raise BacktestError(msg)
+            if len(set(self.dc_windows)) != 4:
+                msg = "dc_windows must not contain duplicates"
+                raise BacktestError(msg)
+            if self.dc_exit not in ("half_low", "mid_channel"):
+                msg = "dc_exit must be 'half_low' or 'mid_channel'"
+                raise BacktestError(msg)
+            if self.vol_target_annualized is not None:
+                msg = (
+                    "vol overlay is not supported for donchian_breakout_ensemble "
+                    "(experiment-7 pre-registration scope)"
+                )
+                raise BacktestError(msg)
         if self.confirm_days < 1:
             msg = "confirm_days must be at least 1"
             raise BacktestError(msg)

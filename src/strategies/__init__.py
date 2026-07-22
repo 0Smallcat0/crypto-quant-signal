@@ -13,6 +13,9 @@ from src.strategies.daily_trend_ensemble import (
     LADDER_UP,
     evaluate_daily_trend_ensemble,
 )
+from src.strategies.donchian_breakout_ensemble import (
+    evaluate_donchian_ensemble,
+)
 from src.strategies.large_liquid_trend_15 import (
     LargeLiquidTrend15Parameters,
     LargeLiquidTrend15ParameterValues,
@@ -43,5 +46,6 @@ __all__ = [
     "StrategyValidationError",
     "evaluate_confirmed_trend_ensemble",
     "evaluate_daily_trend_ensemble",
+    "evaluate_donchian_ensemble",
     "evaluate_large_liquid_trend_15",
 ]
