@@ -83,7 +83,8 @@ def run_backtest(
         symbol_value: build_daily_trend_snapshots(candles)
         for symbol_value, candles in candles_by_symbol.items()
     }
-    decision_times = _aligned_decision_times(snapshots_by_symbol)
+    staggered = parameters.allow_staggered_listings
+    decision_times = _ladder_decision_times(snapshots_by_symbol, allow_staggered=staggered)
     if not decision_times:
         msg = "no decision days after the warmup floor; provide more history"
         raise BacktestError(msg)
@@ -147,9 +148,29 @@ def run_backtest(
             symbol_value: _cs_close_prefix_sums(candles)
             for symbol_value, candles in candles_by_symbol.items()
         }
+    # Staggered-mode bookkeeping: last observed close per symbol (for padding
+    # ledger marks on days a symbol has no candle) and per-symbol benchmark
+    # anchor (universe-slot buy-and-hold anchored on first executable open).
+    last_close_by_symbol: dict[str, Decimal] = {}
+    benchmark_anchor: dict[str, Decimal] = {}
     for decision_time in decision_times:
+        active_symbols = tuple(
+            symbol_value
+            for symbol_value in sorted(symbols)
+            if decision_time in snapshot_lookup[symbol_value]
+        )
+        if not active_symbols:
+            # Only possible in staggered mode if decision_time predates every
+            # symbol's warmup floor; nothing to record and nothing to execute.
+            continue
+        if staggered:
+            for symbol_value in active_symbols:
+                candle_index = candle_lookup[symbol_value][decision_time]
+                last_close_by_symbol[symbol_value] = candles_by_symbol[symbol_value][
+                    candle_index
+                ].close_price
         decisions: dict[str, DailyTrendEnsembleDecision | _SizedDecision] = {}
-        for symbol_value in sorted(symbols):
+        for symbol_value in active_symbols:
             snapshot = snapshot_lookup[symbol_value][decision_time]
             decision: DailyTrendEnsembleDecision | _SizedDecision
             if parameters.strategy_name == "confirmed_trend_ensemble":
@@ -226,7 +247,7 @@ def run_backtest(
             )
 
         target_set = build_ladder_targets(
-            tuple(decisions[symbol_value] for symbol_value in sorted(symbols)),
+            tuple(decisions[symbol_value] for symbol_value in sorted(decisions)),
             parameters=ladder_parameters,
         )
         targets.append(
@@ -240,21 +261,39 @@ def run_backtest(
             )
         )
 
-        execution_candles = _execution_candles(candles_by_symbol, candle_lookup, decision_time)
-        if execution_candles is None:
-            # Final decision day: signal recorded, nothing left to execute on.
+        execution_candles: dict[str, Candle] | None
+        if staggered:
+            execution_candles = _partial_execution_candles(
+                candles_by_symbol, candle_lookup, decision_time, active_symbols
+            )
+        else:
+            execution_candles = _execution_candles(candles_by_symbol, candle_lookup, decision_time)
+        if not execution_candles:
+            # No symbol can execute today: intersection mode's final decision
+            # day, or a staggered day where every active symbol lacks a
+            # next-bar candle. Signal already recorded.
             continue
 
         open_prices = {
             symbol_value: candle.open_price for symbol_value, candle in execution_candles.items()
         }
-        if benchmark_open_prices is None:
+        if staggered:
+            for symbol_value, price in open_prices.items():
+                benchmark_anchor.setdefault(symbol_value, price)
+        elif benchmark_open_prices is None:
             benchmark_open_prices = dict(open_prices)
         execution_time = next(iter(execution_candles.values())).open_time
-        equity_at_open = _equity_at(ledger, open_prices)
+        if staggered:
+            padded_open_prices = dict(open_prices)
+            for symbol_value, close_price in last_close_by_symbol.items():
+                padded_open_prices.setdefault(symbol_value, close_price)
+            equity_at_open = _cs_equity_at_marked(ledger, padded_open_prices, symbols)
+        else:
+            padded_open_prices = open_prices
+            equity_at_open = _equity_at(ledger, open_prices)
 
         ordered_symbols = sorted(
-            symbols,
+            execution_candles,
             key=lambda value: (
                 decisions[value].exposure_fraction >= executed_fraction[value],
                 value,
@@ -277,7 +316,7 @@ def run_backtest(
                 current_fraction=executed_fraction[symbol_value],
                 budget=parameters.risk_budgets[symbol_value],
                 equity_at_open=equity_at_open,
-                open_prices=open_prices,
+                open_prices=padded_open_prices,
                 symbols=symbols,
                 execution_time=execution_time,
                 order_id=f"bt-{order_sequence:06d}-{symbol_value}",
@@ -296,12 +335,28 @@ def run_backtest(
         close_prices = {
             symbol_value: candle.close_price for symbol_value, candle in execution_candles.items()
         }
-        close_time = next(iter(execution_candles.values())).close_time
-        close_snapshot = ledger.snapshot(
-            mark_prices=_mark_prices(close_prices, symbols),
-            captured_at=close_time,
-        )
-        benchmark_equity = _benchmark_equity(parameters, benchmark_open_prices, close_prices)
+        if staggered:
+            for symbol_value, price in close_prices.items():
+                last_close_by_symbol[symbol_value] = price
+            padded_close_prices = dict(close_prices)
+            for symbol_value, price in last_close_by_symbol.items():
+                padded_close_prices.setdefault(symbol_value, price)
+            close_time = next(iter(execution_candles.values())).close_time
+            close_snapshot = ledger.snapshot(
+                mark_prices=_mark_prices(padded_close_prices, symbols),
+                captured_at=close_time,
+            )
+            benchmark_equity = _cs_benchmark_equity(
+                parameters, benchmark_anchor, last_close_by_symbol
+            )
+        else:
+            close_time = next(iter(execution_candles.values())).close_time
+            close_snapshot = ledger.snapshot(
+                mark_prices=_mark_prices(close_prices, symbols),
+                captured_at=close_time,
+            )
+            assert benchmark_open_prices is not None  # set on the first executable day
+            benchmark_equity = _benchmark_equity(parameters, benchmark_open_prices, close_prices)
         equity_curve.append(
             EquityPoint(
                 close_time=close_time,
@@ -533,6 +588,28 @@ def _aligned_decision_times(
             )
             raise BacktestError(msg)
     return tuple(sorted(reference or ()))
+
+
+def _ladder_decision_times(
+    snapshots_by_symbol: Mapping[str, tuple[FeatureSnapshot, ...]],
+    *,
+    allow_staggered: bool,
+) -> tuple[datetime, ...]:
+    """Decision-day list for the ladder path.
+
+    Intersection mode (default) preserves the strict alignment contract every
+    pre-exp-8 family relied on: mismatched snapshot windows raise.
+    Union mode (experiment-8 prerequisite) returns the sorted union so late
+    listings can join from their own first post-warmup day; the main loop
+    filters to per-day eligible symbols and holds the rest.
+    """
+
+    if not allow_staggered:
+        return _aligned_decision_times(snapshots_by_symbol)
+    union: set[datetime] = set()
+    for snapshots in snapshots_by_symbol.values():
+        union.update(snapshot.as_of for snapshot in snapshots)
+    return tuple(sorted(union))
 
 
 @dataclass(frozen=True, slots=True)
@@ -1303,6 +1380,33 @@ def _execution_candles(
         next_index = index + 1
         if next_index >= len(candles):
             return None
+        execution_candles[symbol_value] = candles[next_index]
+    return execution_candles
+
+
+def _partial_execution_candles(
+    candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+    candle_lookup: Mapping[str, Mapping[datetime, int]],
+    decision_time: datetime,
+    active_symbols: tuple[str, ...],
+) -> dict[str, Candle]:
+    """Staggered-mode execution slice: next-bar candle per eligible symbol.
+
+    Symbols without a candle today, or on their final bar, are silently
+    excluded — the caller holds their existing position through the day.
+    Returns an empty dict when no active symbol can execute; the caller
+    treats that as a no-op decision day (still records the signal).
+    """
+
+    execution_candles: dict[str, Candle] = {}
+    for symbol_value in active_symbols:
+        index = candle_lookup[symbol_value].get(decision_time)
+        if index is None:
+            continue
+        next_index = index + 1
+        candles = candles_by_symbol[symbol_value]
+        if next_index >= len(candles):
+            continue
         execution_candles[symbol_value] = candles[next_index]
     return execution_candles
 

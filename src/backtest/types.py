@@ -73,6 +73,14 @@ class BacktestParameters:
     # channel windows map onto the 5-rung ladder (0, 1/4, 1/2, 3/4, 1).
     dc_windows: tuple[int, ...] = ()
     dc_exit: str = "half_low"
+    # Experiment-8 engineering prerequisite: opt-in for the ladder path to
+    # admit staggered listings. False (default) keeps the strict intersection-
+    # aligned decision-day contract every prior family used. True switches to
+    # union-of-dates + per-symbol eligibility on the ladder path (each symbol
+    # participates only on days it has both a candle and a post-warmup
+    # snapshot). Cross-sectional strategy is unaffected — it already uses the
+    # union model natively.
+    allow_staggered_listings: bool = False
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:
