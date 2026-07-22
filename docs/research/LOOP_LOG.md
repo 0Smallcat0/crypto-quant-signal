@@ -132,3 +132,28 @@
   pre-registration (new signal space, SSRN 2025 in RESEARCH_LOG), or
   (2) consolidate: stop spending N, redirect iterations to gate-6
   evidence until the October holdout. One choice, pre-registered.**
+
+## 2026-07-22 — iteration 7 (experiment 7, operator-triggered "繼續找")
+
+- Fork resolved by operator order: new signal space. Fourth recorded
+  override; thresholds statutory as always.
+- Engine: donchian_breakout_ensemble strategy module on the ladder path
+  (4-window state machines → 5-rung ladder), _SizedDecision gained
+  generated_at_bar_close, ladder path gained the exp-5 regime gate.
+  Commit f625d87.
+- Family ran (trials 86-93, N: 85 → 93). Winner trial 88 (10+20+55+110/
+  mid_channel/no gate): Sharpe 1.1821, **DSR 0.9267 — missed by 0.0233,
+  the closest any winner has come** — MDD 33.05% and turnover both PASS.
+  **Seventh registered negative, but the first with both risk bars passed
+  family-wide.** Full table in `docs/research/GOALP_EXPERIMENT7_RESULT.md`.
+- Signal space > wrapper: Donchian's WORST arm beats every MDD-compliant
+  cs arm on both axes. Gate on a self-exiting signal double-brakes
+  (lowers Sharpe in 3 of 4 pairings) — lesson recorded.
+- vs incumbent trial 4 (same universe): equal terminal wealth, MDD
+  33% vs 52%.
+- Trial 29 at N=93: DSR 0.9852 (plateau). PBO candidates 0.8705.
+- **Next step (Q4, NEXT sitting unless operator overrides): experiment 8
+  — Donchian on the 13-symbol universe. Engineering prerequisite first:
+  ladder engine must admit staggered listings (per-symbol decision
+  eligibility instead of intersection alignment) with tests; then the
+  family pre-registration. Statutory bars unchanged.**
