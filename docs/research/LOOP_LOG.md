@@ -157,3 +157,47 @@
   ladder engine must admit staggered listings (per-symbol decision
   eligibility instead of intersection alignment) with tests; then the
   family pre-registration. Statutory bars unchanged.**
+
+## 2026-07-22 — iteration 8 (Q1 for experiment 8, autonomous)
+
+- Research log appended (4 dated lines): arxiv 2510.23150 (2025-10-28)
+  "medium-term horizon is redundant when short and long are present —
+  barbell beats equal-weight" (parked as follow-up family, not this
+  iteration); CoinAPI/Concretum/StratBase practitioner notes on survivor-
+  ship bias and point-in-time universe construction (load-bearing for
+  exp-8); Zarattini/Pagani/Barbon SSRN 2025 revisited (their headline
+  rests on a survivorship-bias-free wide universe — universe size is
+  central to the claim). All mapped to the exp-8 lineage.
+- `BacktestParameters.allow_staggered_listings: bool = False` added
+  (`src/backtest/types.py`) — additive optional field; every existing
+  call site defaults to intersection mode, so the entire pre-exp-8
+  registry (trials 1..93) is bit-for-bit reproducible.
+- Engine gained `_ladder_decision_times(...)` (union or intersection),
+  `_partial_execution_candles(...)` (per-symbol next-bar slice), and a
+  staggered-mode branch in the main ladder loop (`src/backtest/engine.py`):
+  active-symbol filter per decision day, subset ladder targets, per-symbol
+  benchmark anchor (reuses `_cs_benchmark_equity`), padded ledger marks
+  (reuses `_cs_equity_at_marked`). The cs path is untouched — it already
+  uses the union-of-dates model natively.
+- 3 new tests in `tests/backtest/test_backtest_engine.py`:
+  (1) intersection mode STILL rejects a staggered universe (contract
+      preserved for every pre-exp-8 family);
+  (2) staggered mode: BTC lists day 0, ETH day 100; ETH's first signal is
+      strictly later than BTC's, union has strictly more BTC decision days
+      than ETH, both symbols fill from their respective listing days;
+  (3) parity — turning the flag on with an aligned universe reproduces the
+      intersection result bit-for-bit (metrics, trade count, signals).
+- Verification bare (rule 7): `ruff check` PASS; `ruff format --check` PASS
+  (2 files reformatted, re-checked green); `mypy --strict src/` PASS
+  (58 files, 0 issues); `lint-imports` 13/13 KEPT; `pytest -m "not network"`
+  366 passed in 50.21s (was 349 at iteration 1 — deltas across intervening
+  iterations plus the 3 new engine tests this iteration).
+- Registry N unchanged at 93. Family run (Q2) and pre-registration (Q4)
+  are deferred to the next iteration per the multi-session split the
+  contract allows and the drift-guard scheduling.
+- **Next step (Q4, NEXT sitting unless operator overrides): pre-register
+  experiment 8 — Donchian breakout ensemble on the 13-symbol qualified
+  universe with `allow_staggered_listings=True`, grid drawn from the
+  exp-7 family (best fast/slow window pair × exit rule × gate off/on),
+  criteria anchored to the same statutory bars (DSR ≥ 0.95,
+  MDD ≤ 51.93%, turnover ≤ 53.1).**

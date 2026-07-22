@@ -66,3 +66,38 @@ cross-sectional momentum untested here → experiment 3.
   (Markov-switching classifier is an engine-scale addition; premature
   before we have exhausted the simpler regime-gate hypothesis).
 
+## 2026-07-22 — iteration 8 web pass (experiment-8 engineering prerequisite)
+
+- 2026-07-22 — arxiv 2510.23150 ("Revisiting the Structure of Trend Premia:
+  When Diversification Hides Redundancy", 2025-10-28): dynamic per-asset
+  weighting across trend horizons via Bayesian optimization; medium-term
+  band (~125d) contributes little incremental performance or diversification
+  once short and long are included; a barbell of short+long trends beats
+  equal-weight three-band on Sharpe and drawdown while retaining benchmark
+  correlation. Testable-here: **yes as a follow-up family** — our Donchian
+  ensemble already spans 10/20/55/110 (short + medium) and 20/55/110/220
+  (medium + long); a barbell arm (e.g. 10+20+110+220) is a natural addition
+  once the wider universe is running. Not this iteration's scope.
+- 2026-07-22 — CoinAPI + Concretum practitioner notes on survivorship bias
+  (coinapi.io/blog/how-to-eliminate-survivorship-bias-in-crypto-backtesting,
+  concretumgroup.com/building-a-survivorship-bias-free-crypto-dataset-with-
+  coinmarketcap-api/): point-in-time universe construction (include symbols
+  as of the historical decision date, not the terminal snapshot) is the
+  standard fix; naive "all symbols traded today" datasets inflate returns
+  200–400% in crypto. Testable-here: **yes and load-bearing for exp-8** —
+  UNIVERSE_EXPANSION.md already qualifies 13 symbols with staggered listing
+  dates; the engine change this iteration is the mechanical prerequisite so
+  each symbol participates only from its own listing day onward (no
+  look-back through the pre-listing window into future returns).
+- 2026-07-22 — StratBase.ai note on delisting exposure: even a qualified
+  universe carries survivorship risk if the strategy silently averages over
+  the intersection of dates instead of using per-symbol eligibility.
+  Testable-here: **directly** — this is what the ladder-path change fixes;
+  the cross-sectional path already uses the union-of-dates model.
+- 2026-07-22 — Zarattini/Pagani/Barbon SSRN 2025 revisited: the paper's
+  headline result rests on a survivorship-bias-free dataset covering all
+  cryptocurrencies traded since 2015 (per the SSRN abstract) — the SIZE of
+  the universe is central to their claim, not incidental. Testable-here:
+  **yes** — our 13-symbol qualified universe is the largest exp-8 can start
+  with under gate 1, and per the pre-registration will be the test corpus.
+

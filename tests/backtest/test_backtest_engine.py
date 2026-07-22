@@ -200,3 +200,92 @@ def test_simultaneous_full_budget_buys_fit_costs_inside_the_ladder_claim() -> No
     assert costs[1] - costs[0] < Decimal("1")
     # No hidden shortfall: nothing was rejected on the buy day.
     assert not report.risk_rejections
+
+
+def _staggered_parameters() -> BacktestParameters:
+    return BacktestParameters(
+        risk_budgets={"BTCUSDT": Decimal("0.5"), "ETHUSDT": Decimal("0.5")},
+        initial_cash=Decimal("1000"),
+        account_id="bt-staggered",
+        fee_bps=Decimal("10"),
+        slippage_bps=Decimal("5"),
+        quantity_step=Decimal("0.000001"),
+        price_tick=Decimal("0.01"),
+        min_notional_usdt=Decimal("10"),
+        max_drawdown_fraction=Decimal("0.20"),
+        daily_loss_pause_fraction=Decimal("0.05"),
+        disaster_single_day_drop_fraction=Decimal("0.20"),
+        stale_data_max_age_seconds=129600,
+        allow_staggered_listings=True,
+    )
+
+
+def _candles_for_from(
+    symbol: Symbol, prices: tuple[Decimal, ...], *, first_index: int
+) -> tuple[Candle, ...]:
+    """Like _candles_for, but clock-anchored at `first_index` (staggered listing)."""
+
+    return tuple(
+        _daily_candle(symbol, first_index + offset, price) for offset, price in enumerate(prices)
+    )
+
+
+def _rising_prices(base: Decimal, count: int) -> tuple[Decimal, ...]:
+    """Strictly monotone rising closes — every SMA lookback flags an uptrend."""
+
+    return tuple(base + Decimal(index) for index in range(count))
+
+
+def _staggered_universe() -> dict[str, tuple[Candle, ...]]:
+    # BTC lists on day 0 with 400 rising closes; ETH joins 100 days later with
+    # 300 rising closes. Union of snapshot days: BTC covers 200..399,
+    # ETH covers 300..399 — 100 days where both trade side by side and 100
+    # earlier days where only BTC trades.
+    long_btc = _candles_for(_symbol("BTCUSDT", "BTC"), _rising_prices(Decimal("100"), 400))
+    late_eth = _candles_for_from(
+        _symbol("ETHUSDT", "ETH"),
+        _rising_prices(Decimal("50"), 300),
+        first_index=100,
+    )
+    return {"BTCUSDT": long_btc, "ETHUSDT": late_eth}
+
+
+def test_intersection_mode_rejects_staggered_universe() -> None:
+    """Default (intersection) mode preserves the strict alignment contract."""
+
+    with pytest.raises(BacktestError, match="decision days must align"):
+        run_backtest(_staggered_universe(), parameters=_parameters())
+
+
+def test_staggered_mode_lets_a_late_listing_join_from_its_first_post_warmup_day() -> None:
+    universe = _staggered_universe()
+
+    report = run_backtest(universe, parameters=_staggered_parameters())
+
+    btc_signal_times = sorted(entry.as_of for entry in report.signals if entry.symbol == "BTCUSDT")
+    eth_signal_times = sorted(entry.as_of for entry in report.signals if entry.symbol == "ETHUSDT")
+    assert btc_signal_times, "BTC must have signals in staggered mode"
+    assert eth_signal_times, "ETH must have signals once it lists"
+    # Late listing only emits signals from its own first post-warmup day.
+    assert eth_signal_times[0] > btc_signal_times[0]
+    # Union of dates: BTC has strictly more decision days than ETH.
+    assert len(btc_signal_times) > len(eth_signal_times)
+
+    fill_symbols = {fill.symbol.value for fill in report.fills}
+    assert fill_symbols == {"BTCUSDT", "ETHUSDT"}
+    earliest_eth_fill = min(
+        fill.filled_at for fill in report.fills if fill.symbol.value == "ETHUSDT"
+    )
+    assert earliest_eth_fill >= eth_signal_times[0]
+
+
+def test_staggered_mode_matches_intersection_when_universe_is_aligned() -> None:
+    """Turning the flag on with an aligned universe must not change the outcome."""
+
+    aligned = _trend_and_crash_universe()
+    intersection_report = run_backtest(aligned, parameters=_parameters())
+    staggered_report = run_backtest(aligned, parameters=_staggered_parameters())
+
+    assert intersection_report.metrics.final_equity == staggered_report.metrics.final_equity
+    assert intersection_report.metrics.trade_count == staggered_report.metrics.trade_count
+    assert len(intersection_report.signals) == len(staggered_report.signals)
