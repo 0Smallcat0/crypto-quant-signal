@@ -164,6 +164,10 @@ def run_registered_backtest(
                 if parameters.cs_horizon_days
                 else "none"
             ),
+            "dc_windows": (
+                ",".join(str(w) for w in parameters.dc_windows) if parameters.dc_windows else "none"
+            ),
+            "dc_exit": parameters.dc_exit,
         },
         universe=tuple(sorted(parameters.risk_budgets)),
         data_start=report.data_start,
