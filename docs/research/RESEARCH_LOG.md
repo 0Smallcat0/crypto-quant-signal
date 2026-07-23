@@ -101,3 +101,39 @@ cross-sectional momentum untested here → experiment 3.
   **yes** — our 13-symbol qualified universe is the largest exp-8 can start
   with under gate 1, and per the pre-registration will be the test corpus.
 
+## 2026-07-23 — iteration 10 web pass (N-arithmetic weigh-in)
+
+- 2026-07-23 — Lopez de Prado & Fabozzi SSRN 2026-03 ("The False Discovery
+  Rate in Finance: Identification Failure and Search-Adjusted Estimation",
+  dx.doi.org/10.2139/ssrn.6450418): argues that in strategy search, FDR
+  control (not FWER/DSR alone) is the correct target once the search
+  budget grows large, because DSR is a per-test null-rejection rate that
+  gets more punishing with N regardless of independence structure.
+  Testable-here: **partially** — our current stop condition is DSR ≥ 0.95
+  AND candidates-PBO ≤ 0.05; PBO is already an FDR-adjacent measure. Load-
+  bearing for THIS iteration: it validates the "every family raises every
+  trial's bar" arithmetic — spending N without expected-Sharpe headroom is
+  strictly negative EV under both frameworks.
+- 2026-07-23 — Quanterlab foundations note on DSR (quanterlab.com/articles/
+  foundations-dsr): E[max SR|null] grows as √(2·ln N) times cross-trial
+  Sharpe std; for our N=101→117 step that's a ~1.5% expected-max lift
+  which raises the pass bar by ~0.007 annualized Sharpe. Testable-here:
+  **yes** — plugged into the arithmetic doc this iteration.
+- 2026-07-23 — Zarattini/Pagani/Barbon SSRN 2025 headline mechanism
+  (papers.ssrn.com/sol3/Delivery.cfm/5209907.pdf): the paper combines a
+  Donchian breakout ENSEMBLE with a **volatility-based position sizing**
+  step (inverse-vol / target-vol weights) — the two ingredients are
+  interlocking, not additive. Testable-here: **yes** — our exp-7/exp-8 ran
+  the ensemble on equal budgets; the vol-sizing arm is the untested half of
+  the paper's claim and remains the only registered-evidence route left in
+  the Donchian lineage. Queued to Q4 (next iteration under drift guard).
+- 2026-07-23 — Poluri SSRN 2025 ("Evaluating the Performance of a Donchian
+  Channel Breakout Strategy with ATR-Based Risk Management",
+  papers.ssrn.com/sol3/papers.cfm?abstract_id=6272239): ATR-scaled sizing
+  on Donchian entries on BTC daily materially reduces drawdown vs
+  fixed-size; the mechanism is roughly "smaller risk when the channel
+  itself is wide". Testable-here: **yes** as a sibling / spec of the
+  SSRN-2025 vol-sizing arm — if we add a vol-sized Donchian family,
+  ATR-based and realized-vol-based both belong in the same pre-registered
+  grid so the family is pre-registered before it runs.
+

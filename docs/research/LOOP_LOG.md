@@ -227,3 +227,44 @@
   exp-7 family (best fast/slow window pair × exit rule × gate off/on),
   criteria anchored to the same statutory bars (DSR ≥ 0.95,
   MDD ≤ 51.93%, turnover ≤ 53.1).**
+
+## 2026-07-23 — iteration 10 (N-arithmetic weigh-in, autonomous)
+
+- Research log appended (4 dated lines): Lopez de Prado/Fabozzi SSRN
+  2026-03 on FDR-in-finance validates "every family raises the bar"
+  arithmetic; Quanterlab DSR foundations for the √(2·ln N) growth law;
+  Zarattini/Pagani/Barbon SSRN 2025 mechanism read — Donchian ensemble ×
+  **vol-based position sizing** is the interlocking half we never tested;
+  Poluri SSRN 2025 ATR-scaled Donchian as sibling spec for a
+  vol-sized-Donchian family grid.
+- N-arithmetic recorded in `docs/research/N_ARITHMETIC_2026-07-23.md`
+  (numbers verified against gate_report_2026-07-22.json only):
+  σ_effective back-solved from trial 88's DSR row = 1.4332; at N=101 the
+  DSR ≥ 0.95 bar is SR_ann=**1.2465** and trial 88's gap is **+0.0644**;
+  each 16-config family lifts the bar to SR_ann≈1.255 (N=117) and costs
+  trial 88 ≈0.003 DSR on pure bar-rise mechanics; net observed exp-8 gain
+  was +0.0063 DSR (+0.0088 raw compression, exp-8 winners clustered
+  0.92–1.00 below trial 88's 1.18).
+- Decision recorded (does NOT pre-register anything — drift guard):
+  next iteration is authorized to pre-register the SSRN-faithful
+  vol-sized Donchian family IF AND ONLY IF the engine work
+  (allocation-model plumbing + tests) fits inside a single iteration;
+  else consolidate to gate-6 evidence accumulation until the October
+  holdout. Any wrapper re-sweep, barbell variant, or ATR-on-cs-momentum
+  family is strictly negative EV under the arithmetic and is refused.
+- Verification bare (rule 7): `ruff check` PASS; `ruff format --check`
+  PASS (111 files); `mypy --strict src/` PASS (58 files, 0 issues);
+  `lint-imports` 13/13 KEPT; `python -m pytest -m "not network"` 366
+  passed in 49.42s. Registry N unchanged at 101. Tree remained clean
+  through the iteration (docs-only edits).
+- Trial 88 standing unchanged: DSR 0.9330, MDD 33.05%, Sharpe 1.1821 —
+  incumbent risk-compliant frontier. Trial 29 sealed off from October per
+  holdout protocol; October holdout untouched.
+- **Next step (Q1+Q4, NEXT sitting): scope the SSRN-faithful vol-sized
+  Donchian allocation-model engine feature (target-vol weights over the
+  Donchian ladder). If bounded to one session (spec + tests + green
+  tree), land it and pre-register experiment 9 with a frozen grid
+  (window sets × vol target × cap arm). If unbounded, log a
+  consolidation switch: stop spending N, redirect subsequent iterations
+  to gate-6 real-run-readiness work (`docs/runbooks/`, holdout lock
+  hygiene, notifier drills) until 2026-10.**
