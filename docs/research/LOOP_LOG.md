@@ -268,3 +268,62 @@
   consolidation switch: stop spending N, redirect subsequent iterations
   to gate-6 real-run-readiness work (`docs/runbooks/`, holdout lock
   hygiene, notifier drills) until 2026-10.**
+
+## 2026-07-24 — iteration 11 (experiment-9 scoping, consolidation switch, autonomous)
+
+- Research log appended (4 dated lines): Zarattini/Pagani/Barbon SSRN
+  5209907 mechanism re-read on the Concretum Group companion page
+  (Sharpe 1.58, alpha +14% vs BTC 2015-01→2025-03 attributed **jointly**
+  to Donchian ensemble AND cross-asset vol-based sizing — not per-symbol
+  overlay); Concretum "Position Sizing in Trend-Following" naming
+  vol-targeting vs vol-parity vs pyramiding as three distinct
+  allocation models; Alvarez Quant Trading inverse-vol formula with
+  25%-per-name cap as the standard baseline; Bloomberg Cryptocurrency
+  Vol Target Indices spec (2025-08-05) anchoring 10/15/25% target-vol
+  values in institutional use.
+- Iteration-10's gate honored: engine work scoped honestly BEFORE any
+  code changes. Path A (reuse `_apply_vol_overlay` for Donchian by
+  lifting the exp-7 refusal in `types.py:110-115`) is bounded to one
+  iteration but is NOT SSRN-faithful (per-symbol overlay, not cross-
+  asset inverse-vol) and is explicitly refused by the 2026-07-23
+  N-arithmetic doc as a wrapper re-sweep. Path B (SSRN-faithful:
+  new allocation-model dispatch, cross-asset weight normalization,
+  cap arm, portfolio-vol rescale) requires new `BacktestParameters`
+  fields, new `_dc_vol_target_weights(...)`, execution rewire skipping
+  `build_ladder_targets`, staggered-mode interaction, ≥6-8 tests, plus
+  runner + registry + pre-registration — honest estimate 2-3
+  iterations, not one. Full scoping in
+  `docs/research/EXPERIMENT9_SCOPING_2026-07-24.md`.
+- **Verdict: UNBOUNDED**. Consolidation switch engaged per iteration-10
+  contingency. No exp-9 pre-registration written. No family run.
+  Registry N unchanged at 101. Trial 88 incumbent-frontier unchanged
+  (DSR 0.9330, MDD 33.05%, Sharpe 1.1821). The SSRN vol-sized
+  Donchian family is deferred until October holdout completes OR an
+  explicit operator authorization overrides the consolidation.
+- First gate-6 baseline recorded from the live `exec_quote` stream
+  (`data/runtime/events.jsonl` 42 events, 2026-07-03 → 2026-07-23,
+  21 days × 2 symbols): BTCUSDT median spread 0.00 bps, ETHUSDT
+  median 0.05 bps; round-trip estimate `2 × spread_median + 2 × fee_bps`
+  = 20.00 / 20.10 bps respectively vs the gate-6 cap of 37.5-45 bps
+  (`VALIDATION_GATE_CONTRACT.md §6`). Cost model comfortably inside
+  the calibration bar on the two live symbols so far; 90-day window
+  and decision→capture drift stat remain queued. Baseline table in
+  the scoping doc.
+- Verification bare (rule 7): `ruff check` PASS; `ruff format --check`
+  PASS (111 files); `mypy --strict src/` PASS (58 files, 0 issues);
+  `lint-imports` 13/13 KEPT (via `.venv/Scripts/lint-imports.exe` —
+  `python -m lint_imports` is not the entry point on Windows; noted
+  for future iterations); `python -m pytest -m "not network"` 366
+  passed in 50.48s. Registry N unchanged at 101; tree docs-only.
+- Holdout hygiene: `docs/reports/research/holdout_lock.json`
+  `spent=false`, `holdout_start=2025-07-02T23:59:59.999000+00:00`,
+  `locked_at=2026-07-03T02:44:47.633808+00:00` — sealed and untouched
+  this iteration.
+- **Next step: NEXT sitting continues consolidation work — likely
+  targets are (a) adding a decision→capture drift stat to
+  `src/runtime/quotes.py` outputs so gate-6 measurement covers
+  slippage in addition to spread, (b) drafting an operator-facing
+  holdout spend rehearsal note against `PRE_HOLDOUT_PROTOCOL.md`, or
+  (c) auditing the daily-cycle runbook against the actual harden
+  script output. Any exp-9 resumption requires an explicit operator
+  override recorded per drift-guard protocol.**

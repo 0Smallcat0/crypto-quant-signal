@@ -137,3 +137,43 @@ cross-sectional momentum untested here → experiment 3.
   ATR-based and realized-vol-based both belong in the same pre-registered
   grid so the family is pre-registered before it runs.
 
+## 2026-07-24 — iteration 11 web pass (experiment-9 scoping, gate-6 pivot)
+
+- 2026-07-24 — Zarattini/Pagani/Barbon SSRN 5209907 revisited on the
+  concretumgroup.com companion page ("Catching Crypto Trends"): the
+  paper's headline (Sharpe 1.58, CAGR 30%, alpha +14% vs BTC over
+  Jan-2015–Mar-2025 on a survivorship-free top-20 rotational book) is
+  **jointly** attributed to the Donchian ensemble AND cross-asset
+  volatility-based position sizing — the mechanism is inverse-vol
+  weighting scaled to a portfolio vol target, NOT per-symbol vol
+  overlay. Testable-here: **yes, but the engine feature is a genuinely
+  new allocation model** — cross-asset weight normalization and cap
+  arm — not a reuse of the per-symbol `_apply_vol_overlay` we already
+  have. Load-bearing for the exp-9 scoping verdict this iteration.
+- 2026-07-24 — Concretum Group "Position Sizing in Trend-Following:
+  Comparing Volatility Targeting, Volatility Parity, and Pyramiding"
+  (concretumgroup.com/position-sizing-in-trend-following-...): three
+  named methods differ in whether normalization is per-symbol vs
+  cross-asset and whether pyramiding is allowed; the trend-following
+  results the paper cites (60% monthly hit rate, healthy Sharpe over
+  1980–2024) use vol-targeting = cross-asset scale-to-portfolio-vol,
+  which matches SSRN 5209907's arm. Testable-here: **yes** — if
+  experiment 9 lands, the grid must pre-register vol-parity vs
+  vol-targeting explicitly (they are distinct research questions).
+- 2026-07-24 — Alvarez Quant Trading "Inverse Volatility Position
+  Sizing" (alvarezquanttrading.com/blog/inverse-volatility-position-
+  sizing/): concrete formula = per-asset weight ∝ 1/σ_i normalized so
+  ∑w = 1; cap arm typically 25% per asset. Testable-here: **yes**;
+  the SSRN top-20 book keeps ~5% per name under this rule, but our
+  13-symbol universe needs a cap in {1/N, 0.25, 0.50} to stop BTC
+  from dominating when altcoin vols spike. Belongs in the exp-9 grid.
+- 2026-07-24 — Bloomberg "Cryptocurrency Volatility Target Indices"
+  spec (assets.bbhub.io/professional/sites/10/Bloomberg-Vol-Target-
+  Specs_Crypto.pdf, 2025-08-05): institutional cash-vs-crypto vol
+  target indices; the mechanism scales to underlying-only for
+  long-only mandates, matching our product law. Testable-here:
+  **not directly** — index construction rules add rebalance bands and
+  fee accruals we would not want to import — but the vol targets in
+  common use (10% / 15% / 25%) anchor a reasonable grid range for
+  our exp-9 target-vol arm.
+
