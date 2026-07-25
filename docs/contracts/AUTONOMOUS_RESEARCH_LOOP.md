@@ -42,6 +42,35 @@ positive is the only forbidden result.
    Never skip this step; training-data-only reasoning is not research.
 3. **Advance the queue** (the bulk of the iteration).
 
+   **Queue as of 2026-07-26 — combination over selection, sleeve by sleeve**
+
+   The 2026-07-26 measurements changed what is worth doing. Selection
+   does not generalize here: PBO 0.7411 across distinct architectures,
+   and trial 118's distinguishing parameter turned NEGATIVE on Taiwan
+   0050 when run unchanged. What did work was combining the SAME untuned
+   rule across independent markets — crypto + 0050, daily correlation
+   −0.0041, combined Sharpe 1.3437 at 19.73% drawdown, all three
+   pre-declared criteria passed, and the independence measured STRONGER
+   in stress (−0.18 on crypto's worst 5% of days).
+
+   - **P1 (highest value): add independent-market trend sleeves.** Same
+     untuned mid-channel Donchian rule, new market, fixed equal weights,
+     no per-market tuning — a new sleeve is a data-source task, not a
+     search. **Binding mechanism constraint** from
+     `CROSSMARKET_COMBINATION_RESULT.md`: the benefit comes from a sleeve
+     being IN CASH while another falls, not from asset-class hedging, so
+     every candidate sleeve must be a system that exits to cash. Cheapest
+     next sources: a public daily CSV feed (US index ETF, gold) with its
+     own ingestion, quality gate, and pre-registration before any run.
+   - **P2: keep both existing sleeves recording.** Crypto shadow daily
+     08:20 (`CryptoShadowTrial88`), Taiwan weekly Saturday 09:40
+     (`TwShadow0050`). If either stops gaining rows, fix it first —
+     forward evidence is the only kind this project can still add.
+   - **P3: no new single-market parameter families.** They cost N, raise
+     every trial's bar, and the two diagnostics above say the winner
+     cannot be trusted anyway. Refuse them unless the operator overrides.
+   - Superseded queue (kept for provenance):
+
    **Queue as of 2026-07-25 — consolidation LIFTED by operator order**
    (「你真正該做的應該是想盡辦法，做盡測試」). The iteration-11
    consolidation switch is revoked; the multi-iteration budget the
