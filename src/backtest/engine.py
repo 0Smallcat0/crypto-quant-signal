@@ -188,6 +188,8 @@ def run_backtest(
                     windows=parameters.dc_windows,
                     exit_mode=parameters.dc_exit,
                     previous_states=donchian_states.get(symbol_value),
+                    atr_window=parameters.dc_atr_window,
+                    atr_multiple=parameters.dc_atr_multiple,
                 )
                 next_index = candle_index + 1
                 executable = (

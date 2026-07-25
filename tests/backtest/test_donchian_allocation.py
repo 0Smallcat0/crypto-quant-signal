@@ -188,3 +188,35 @@ def test_one_volatility_formula_backs_the_overlay() -> None:
 def test_warmup_reports_no_volatility() -> None:
     candles = _two_speed_universe()["BTCUSDT"]
     assert _annualized_realized_vol(candles, 5, 20) is None
+
+
+def test_atr_exit_is_wired_and_validated() -> None:
+    with pytest.raises(BacktestError, match="dc_exit"):
+        _parameters(dc_exit="chandelier")
+    with pytest.raises(BacktestError, match="dc_atr_multiple"):
+        _parameters(dc_exit="atr_channel", dc_atr_multiple=Decimal("0"))
+    with pytest.raises(BacktestError, match="dc_atr_window"):
+        _parameters(dc_exit="atr_channel", dc_atr_window=1)
+
+
+def test_atr_exit_holds_longer_than_mid_channel() -> None:
+    from src.strategies.donchian_breakout_ensemble import average_true_range
+
+    universe = _two_speed_universe()
+    candles = universe["ETHUSDT"]
+    atr = average_true_range(candles, 120, 14)
+    assert atr is not None and atr > Decimal("0")
+    assert average_true_range(candles, 0, 14) is None
+
+    mid = run_backtest(universe, parameters=_parameters(dc_exit="mid_channel"))
+    wide = run_backtest(
+        universe,
+        parameters=_parameters(
+            dc_exit="atr_channel", dc_atr_window=14, dc_atr_multiple=Decimal("6")
+        ),
+    )
+    # A six-ATR floor sits far below the channel high, so the book should
+    # spend at least as many days invested as the mid-channel rule.
+    mid_days = sum(1 for entry in mid.targets if entry.target_weights)
+    wide_days = sum(1 for entry in wide.targets if entry.target_weights)
+    assert wide_days >= mid_days

@@ -77,6 +77,8 @@ class BacktestParameters:
     # the exp-7/8 behaviour exactly; "inverse_vol" redistributes the
     # signal's gross exposure across active names by 1/vol, applies a
     # per-name cap, then de-risks the book toward dc_target_vol.
+    dc_atr_window: int = 14
+    dc_atr_multiple: Decimal = Decimal("3")
     dc_alloc_model: str = "equal"
     dc_vol_lookback: int = 20
     dc_target_vol: Decimal | None = None
@@ -112,8 +114,14 @@ class BacktestParameters:
             if len(set(self.dc_windows)) != 4:
                 msg = "dc_windows must not contain duplicates"
                 raise BacktestError(msg)
-            if self.dc_exit not in ("half_low", "mid_channel"):
-                msg = "dc_exit must be 'half_low' or 'mid_channel'"
+            if self.dc_exit not in ("half_low", "mid_channel", "atr_channel"):
+                msg = "dc_exit must be 'half_low', 'mid_channel', or 'atr_channel'"
+                raise BacktestError(msg)
+            if self.dc_atr_window < 2:
+                msg = "dc_atr_window must be at least 2"
+                raise BacktestError(msg)
+            if self.dc_atr_multiple <= Decimal("0"):
+                msg = "dc_atr_multiple must be positive"
                 raise BacktestError(msg)
             if self.dc_alloc_model not in ("equal", "inverse_vol"):
                 msg = "dc_alloc_model must be 'equal' or 'inverse_vol'"
