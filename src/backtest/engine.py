@@ -235,6 +235,14 @@ def run_backtest(
                 decision_time=decision_time,
                 scaler_cache=vol_scaler_cache,
             )
+        if parameters.dc_alloc_model == "inverse_vol":
+            decisions = _dc_allocated_decisions(
+                decisions,
+                parameters=parameters,
+                candles_by_symbol=candles_by_symbol,
+                candle_lookup=candle_lookup,
+                decision_time=decision_time,
+            )
         if parameters.cs_gate_sma_window is not None:
             decisions = _apply_ladder_gate(
                 decisions,
@@ -698,9 +706,26 @@ def _vol_scaler(
     — no scaling rather than a guessed one.
     """
 
-    start = end_index - vol_window
-    if start < 0:
+    realized = _annualized_realized_vol(candles, end_index, vol_window)
+    if realized is None:
         return Decimal("1")
+    return Decimal(str(round(min(1.0, float(target) / realized), 6)))
+
+
+def _annualized_realized_vol(
+    candles: tuple[Candle, ...], end_index: int, window: int
+) -> float | None:
+    """Annualized stdev of daily log returns over the trailing window.
+
+    The project's ONE volatility formula: the experiment-2/4 overlay and
+    the experiment-9 allocator both call this, so a change can never make
+    two paths disagree. None = warmup or degenerate series (callers treat
+    that as "no information", never as a guessed number).
+    """
+
+    start = end_index - window
+    if start < 0:
+        return None
     closes = [candles[index].close_price for index in range(start, end_index + 1)]
     returns = [
         math.log(float(closes[index + 1]) / float(closes[index]))
@@ -708,11 +733,100 @@ def _vol_scaler(
         if closes[index] > 0 and closes[index + 1] > 0
     ]
     if len(returns) < 2:
-        return Decimal("1")
+        return None
     realized = statistics.stdev(returns) * math.sqrt(365.0)
-    if realized <= 0.0:
-        return Decimal("1")
-    return Decimal(str(round(min(1.0, float(target) / realized), 6)))
+    return realized if realized > 0.0 else None
+
+
+def _dc_allocated_decisions(
+    decisions: dict[str, DailyTrendEnsembleDecision | _SizedDecision],
+    *,
+    parameters: BacktestParameters,
+    candles_by_symbol: Mapping[str, tuple[Candle, ...]],
+    candle_lookup: Mapping[str, Mapping[datetime, int]],
+    decision_time: datetime,
+) -> dict[str, DailyTrendEnsembleDecision | _SizedDecision]:
+    """Experiment-9 allocation model over Donchian ladder decisions.
+
+    Redistributes the SIGNAL's own gross exposure across active names by
+    inverse volatility (vol parity), applies a per-name cap, then scales
+    the whole book toward `dc_target_vol` using a correlation-1 portfolio
+    vol estimate. Long-only and de-risk-only: gross never exceeds what
+    equal weighting would have invested, and never exceeds 1.
+
+    Falls back to the untouched equal-weight decisions whenever any active
+    name lacks a volatility estimate — a partial allocation would silently
+    mix two sizing models on the same day.
+    """
+
+    if parameters.dc_alloc_model != "inverse_vol":  # pragma: no cover - caller guards
+        return decisions
+
+    budgets = parameters.risk_budgets
+    active: dict[str, tuple[Decimal, float]] = {}
+    target_gross = Decimal("0")
+    for symbol_value, decision in decisions.items():
+        raw = decision.exposure_fraction
+        if raw <= Decimal("0"):
+            continue
+        weight = raw * budgets[symbol_value]
+        target_gross += weight
+        index = candle_lookup[symbol_value].get(decision_time)
+        if index is None:
+            return decisions
+        realized = _annualized_realized_vol(
+            candles_by_symbol[symbol_value], index, parameters.dc_vol_lookback
+        )
+        if realized is None:
+            return decisions
+        active[symbol_value] = (weight, realized)
+
+    if not active or target_gross <= Decimal("0"):
+        return decisions
+
+    inverse_total = sum(Decimal(str(1.0 / realized)) for _, realized in active.values())
+    weights: dict[str, Decimal] = {}
+    for symbol_value, (_, realized) in active.items():
+        share = Decimal(str(1.0 / realized)) / inverse_total
+        # A name can never exceed its own risk budget: the ladder target
+        # builder validates source_score in [0, 1], and a budget is a risk
+        # rule, not a hint. Families that want cross-asset reallocation set
+        # per-symbol budgets to 1 and bound names with dc_name_cap instead.
+        weights[symbol_value] = min(
+            target_gross * share, parameters.dc_name_cap, budgets[symbol_value]
+        )
+
+    if parameters.dc_target_vol is not None:
+        # Correlation-1 portfolio vol: conservative for crypto, where
+        # pairwise correlations run high precisely in the drawdowns this
+        # scaling exists to contain.
+        portfolio_vol = sum(
+            float(weights[symbol_value]) * realized
+            for symbol_value, (_, realized) in active.items()
+        )
+        if portfolio_vol > 0.0:
+            scale = min(1.0, float(parameters.dc_target_vol) / portfolio_vol)
+            weights = {
+                symbol_value: weight * Decimal(str(round(scale, 6)))
+                for symbol_value, weight in weights.items()
+            }
+
+    gross = sum(weights.values(), Decimal("0"))
+    if gross > Decimal("1"):
+        weights = {symbol_value: weight / gross for symbol_value, weight in weights.items()}
+
+    allocated: dict[str, DailyTrendEnsembleDecision | _SizedDecision] = {}
+    for symbol_value, decision in decisions.items():
+        weight = weights.get(symbol_value, Decimal("0"))
+        budget = budgets[symbol_value]
+        allocated[symbol_value] = _SizedDecision(
+            symbol=decision.symbol,
+            exposure_fraction=weight / budget if budget > 0 else Decimal("0"),
+            reason_codes=(*decision.reason_codes, f"ALLOC_INVERSE_VOL_{weight}"),
+            executable_from_next_bar=decision.executable_from_next_bar,
+            generated_at_bar_close=decision.generated_at_bar_close,
+        )
+    return allocated
 
 
 def _cs_signal_score(

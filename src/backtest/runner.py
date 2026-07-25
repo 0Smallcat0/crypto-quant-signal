@@ -168,6 +168,12 @@ def run_registered_backtest(
                 ",".join(str(w) for w in parameters.dc_windows) if parameters.dc_windows else "none"
             ),
             "dc_exit": parameters.dc_exit,
+            "dc_alloc_model": parameters.dc_alloc_model,
+            "dc_vol_lookback": str(parameters.dc_vol_lookback),
+            "dc_target_vol": (
+                str(parameters.dc_target_vol) if parameters.dc_target_vol is not None else "none"
+            ),
+            "dc_name_cap": str(parameters.dc_name_cap),
         },
         universe=tuple(sorted(parameters.risk_budgets)),
         data_start=report.data_start,

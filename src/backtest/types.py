@@ -73,6 +73,14 @@ class BacktestParameters:
     # channel windows map onto the 5-rung ladder (0, 1/4, 1/2, 3/4, 1).
     dc_windows: tuple[int, ...] = ()
     dc_exit: str = "half_low"
+    # Experiment-9 allocation model (SSRN-faithful sizing). "equal" keeps
+    # the exp-7/8 behaviour exactly; "inverse_vol" redistributes the
+    # signal's gross exposure across active names by 1/vol, applies a
+    # per-name cap, then de-risks the book toward dc_target_vol.
+    dc_alloc_model: str = "equal"
+    dc_vol_lookback: int = 20
+    dc_target_vol: Decimal | None = None
+    dc_name_cap: Decimal = Decimal("1")
     # Experiment-8 engineering prerequisite: opt-in for the ladder path to
     # admit staggered listings. False (default) keeps the strict intersection-
     # aligned decision-day contract every prior family used. True switches to
@@ -106,6 +114,18 @@ class BacktestParameters:
                 raise BacktestError(msg)
             if self.dc_exit not in ("half_low", "mid_channel"):
                 msg = "dc_exit must be 'half_low' or 'mid_channel'"
+                raise BacktestError(msg)
+            if self.dc_alloc_model not in ("equal", "inverse_vol"):
+                msg = "dc_alloc_model must be 'equal' or 'inverse_vol'"
+                raise BacktestError(msg)
+            if self.dc_vol_lookback < 2:
+                msg = "dc_vol_lookback must be at least 2"
+                raise BacktestError(msg)
+            if self.dc_target_vol is not None and self.dc_target_vol <= Decimal("0"):
+                msg = "dc_target_vol must be positive when set"
+                raise BacktestError(msg)
+            if not Decimal("0") < self.dc_name_cap <= Decimal("1"):
+                msg = "dc_name_cap must be in (0, 1]"
                 raise BacktestError(msg)
             if self.vol_target_annualized is not None:
                 msg = (
