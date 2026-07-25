@@ -446,3 +446,26 @@
   confirm no calibration drift has crept in. No family resumption
   without an explicit operator override recorded per drift-guard
   protocol; October holdout untouched.**
+
+## 2026-07-26 — PBO scope diagnostic (zero registry cost)
+
+- Tested the one available excuse for gate 3's failure: that CSCV over
+  ~100 near-duplicate columns measures unrankable twins rather than
+  overfitting. Computed PBO over nine DISTINCT architectures (trials
+  4, 7, 29, 56, 78, 88, 96, 112, 118).
+- **Hypothesis refuted, in the worse direction**: distinct-family PBO is
+  **0.7411**, higher than candidates (0.6518) and all-columns (0.7326).
+  The gate-3 failure is not a column-composition artefact.
+- Consequences recorded in
+  `docs/research/PBO_SCOPE_DIAGNOSTIC_2026-07-26.md`: in-sample ranking
+  of these strategies is worse than a coin flip out of sample; trial
+  118's gate-4 pass does NOT imply it is the best of the nine; and since
+  all nine share 0.9+ correlated long-only crypto trend beta, **gate 3
+  may be unpassable for any strategy this product is legally allowed to
+  run**. October's report should state that as a finding, not discover it.
+- No rule changed, no verdict moved, no alternative representative set
+  tried after seeing the number (that search is exactly what the gate
+  exists to catch).
+- Forward shadow tracks are now the highest-value evidence stream: if
+  in-sample ranking is uninformative, only out-of-sample observation can
+  discriminate.
