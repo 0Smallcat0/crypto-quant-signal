@@ -514,3 +514,28 @@
 - **Standing guidance for any future work: a candidate's standing in this
   program now requires cross-market evidence before it can be described
   as an edge rather than a fit.**
+
+## 2026-07-26 (cross-market combination) — PASS
+
+- Pre-registered before computing: same untuned mid-channel Donchian rule
+  in crypto and on 0050, fixed 50/50 monthly rebalanced, daily
+  resolution, criteria and limitations frozen (the higher-scoring 30/70
+  blend seen in exploration was excluded by design).
+- Result over 2018-03-06 → 2025-07-01: crypto sleeve Sharpe 1.1829 /
+  MDD 33.05% / 14.26x; Taiwan sleeve 0.9816 / 14.83% / 2.02x;
+  **50/50 combination 1.3437 / 19.73% / 6.00x**. Daily correlation
+  **-0.0041** — effectively independent.
+- All three pre-declared criteria PASS.
+- **Why it matters**: it chooses nothing. Same rule both markets, weights
+  fixed in advance, improvement from diversification arithmetic rather
+  than from a fitted parameter — the one channel PBO 0.7411 and the
+  trial-118 cross-market refutation do not indict.
+- **What it costs**: terminal wealth 14.26x to 6.00x. Better path, less
+  money, and product law forbids levering it back. That is a decision
+  about what a person can hold, recorded as such.
+- Limits declared in advance: FX unmodeled, the window flatters the
+  Taiwan sleeve (0.98 here vs 0.43 over its full 21 years), no DSR, one
+  correlation estimate, two sleeves only.
+- **Next: forward tracking of the Taiwan sleeve so the combination can be
+  observed as a book. Backtests cannot strengthen this; only unseen data
+  can.**
