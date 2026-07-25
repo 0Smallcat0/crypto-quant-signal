@@ -121,10 +121,24 @@ Live view of the qualification run: today's command card, per-asset ladder state
 
 ## Project status
 
-The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The project is currently in the post-MVP **signal-live qualification** phase (Goal O): spending the single-use holdout and running the ≥3-month paper trade before publishing a pass/fail gate report.
+The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The project is in the post-MVP **signal-live qualification** phase (Goal O): the single-use holdout is still sealed, and a ≥3-month paper trade runs until October before the pass/fail gate report.
 
-- **312 passing tests** across 28 files, ~85% line coverage (`pytest -m "not network"`, no external network in CI).
-- **39 source modules**, ~9,300 lines, `mypy --strict` clean, 13 enforced import-linter contracts.
+**Search log, as of 2026-07-26 — 133 registered trials across eleven pre-registered families, ten of them registered negatives.** The honest summary of what that search found:
+
+| Finding | Status |
+|---|---|
+| Volatility targeting on an unleverable spot book | **Closed** — three families, two signal spaces: it can only de-risk, never lever back |
+| Cross-sectional momentum (64 arms) | **Closed** — the two statutory bars never met in one configuration |
+| Donchian breakout + ATR exit (trial 118) | Cleared the deflation gate (DSR 0.9505) — then **failed a cross-market test** |
+| Selection itself | **Unreliable** — PBO 0.7411 across distinct architectures, worse than a coin flip |
+| Same rule, two weakly-correlated markets | **First result that chooses nothing** — see below |
+
+The trial-118 story is the one worth reading: it passed every in-sample bar, cleared a full adversarial robustness battery, and was then run **unchanged** on Taiwan's 0050 ETF over 21 years, where it lost 34% while the index rose 687%. The single parameter that made it the best crypto candidate is worth +0.06 Sharpe in crypto and **−0.73 in Taiwan**. It was a fit, not an edge — and the repo says so in [`docs/research/GOALP_EXPERIMENT10_RESULT.md`](docs/research/GOALP_EXPERIMENT10_RESULT.md).
+
+What survived: the *untuned* mid-channel rule is positive in both markets, and their daily returns correlate **−0.004**. A fixed 50/50 combination — no parameter chosen, weights frozen before computing — scores Sharpe 1.34 at 19.7% drawdown versus 1.18 at 33.1% for crypto alone, at the cost of terminal wealth falling 14.3× to 6.0× ([`CROSSMARKET_COMBINATION_RESULT.md`](docs/research/CROSSMARKET_COMBINATION_RESULT.md)). It is not certified: gate 3 still fails, and no forward evidence exists yet. Both sleeves now record daily forward signals so that unseen data — the only thing that can settle this — starts accumulating.
+
+- **376 passing tests**, `mypy --strict` clean, 13 enforced import-linter contracts.
+- **Every pre-registration, result, retraction, and correction is committed**, including a same-day retraction of a correlation claim this project asserted without measuring.
 - Full goal roadmap and rationale: [`GOALS.md`](GOALS.md). Agent/contributor contract: [`AGENTS.md`](AGENTS.md). Design evidence: [`docs/research/SIGNAL_DESIGN_RESEARCH.md`](docs/research/SIGNAL_DESIGN_RESEARCH.md) ([English summary](docs/research/SIGNAL_DESIGN_RESEARCH_EN.md)).
 
 ## Tech stack

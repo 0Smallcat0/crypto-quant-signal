@@ -539,3 +539,20 @@
 - **Next: forward tracking of the Taiwan sleeve so the combination can be
   observed as a book. Backtests cannot strengthen this; only unseen data
   can.**
+
+## 2026-07-26 (documentation + a blocked forward track)
+
+- README updated in both repositories with the honest search log: 133
+  trials, ten registered negatives, the trial-118 cross-market
+  refutation, and the combination result with its wealth cost stated.
+- second_brain project note updated to the current state.
+- **Blocked, filed rather than worked around**: the TW forward shadow
+  track cannot start yet. `scripts.ingest_public_ohlcv` completed but
+  wrote through 2026-07-03 while reporting 5,675 known days against
+  5,661 written — roughly 14 sessions fetched and not persisted. The
+  shadow script's staleness guard refused to record rather than repeat a
+  22-day-old signal into a forward record, which is the correct
+  behaviour. **Next concrete task: find why the writer stops short of
+  TWSE's coverage, fix it, then start the TW track.** Until then the
+  cross-market combination has forward evidence on the crypto sleeve
+  only.
