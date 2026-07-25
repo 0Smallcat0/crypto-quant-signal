@@ -42,6 +42,39 @@ positive is the only forbidden result.
    Never skip this step; training-data-only reasoning is not research.
 3. **Advance the queue** (the bulk of the iteration).
 
+   **Queue as of 2026-07-26 (later) — three sleeves exist; forward
+   evidence is now the binding constraint**
+
+   Sleeve 3 (gold, GLD) was built and run the same day the queue below
+   was written. Result: `docs/research/SLEEVE3_GOLD_RESULT.md`, PASS on
+   all four pre-declared criteria. Three sleeves, equal weight, monthly
+   rebalanced, common window 2018-03-06..2025-07-01: Sharpe 1.4108
+   (from 1.3437), max drawdown 14.90% (from 19.73%), and lower drawdown
+   in every one of four sub-period regimes tested. Cost: terminal
+   wealth 6.00x -> 3.94x.
+
+   - **P1: keep all three forward tracks recording.** Crypto daily 08:20
+     (`CryptoShadowTrial88`), Taiwan + gold weekly Saturday 09:40
+     (`TwShadow0050`, which now refreshes both series and writes
+     `shadow_tw0050.jsonl` and `shadow_gld.jsonl`). If any stops gaining
+     rows, fix it before anything else. Every result document since the
+     two-sleeve combination has ended with the same sentence: backtests
+     cannot make this more credible, only unseen data can. Act like that
+     is true.
+   - **P2: a fourth sleeve is permitted, under the market-shopping
+     guard.** `SLEEVE3_GOLD_PREREGISTRATION.md` binds: pre-register the
+     market by name with reasons written before any run, run it once,
+     and report it **whether it passes or fails** — never try several
+     and publish the survivor. The mechanism constraint still holds: the
+     candidate must be a system that exits to cash. Weigh it against the
+     measured cost — each sleeve so far cut terminal wealth (14.26x,
+     6.00x, 3.94x) to buy a smaller drawdown, and a fourth will do it
+     again. A sleeve that is not close to independent is not worth that.
+   - **P3: no new single-market parameter families.** Unchanged, and
+     reinforced: PBO 0.7411 across distinct architectures, and trial
+     118's distinguishing parameter turned negative out of market.
+   - Superseded queue (kept for provenance):
+
    **Queue as of 2026-07-26 — combination over selection, sleeve by sleeve**
 
    The 2026-07-26 measurements changed what is worth doing. Selection

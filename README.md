@@ -131,11 +131,23 @@ The Core MVP is **complete and verified** (foundation → daily strategy → bac
 | Cross-sectional momentum (64 arms) | **Closed** — the two statutory bars never met in one configuration |
 | Donchian breakout + ATR exit (trial 118) | Cleared the deflation gate (DSR 0.9505) — then **failed a cross-market test** |
 | Selection itself | **Unreliable** — PBO 0.7411 across distinct architectures, worse than a coin flip |
-| Same rule, two weakly-correlated markets | **First result that chooses nothing** — see below |
+| Same rule, three weakly-correlated markets | **The only line that works** — and it chooses nothing; see below |
 
 The trial-118 story is the one worth reading: it passed every in-sample bar, cleared a full adversarial robustness battery, and was then run **unchanged** on Taiwan's 0050 ETF over 21 years, where it lost 34% while the index rose 687%. The single parameter that made it the best crypto candidate is worth +0.06 Sharpe in crypto and **−0.73 in Taiwan**. It was a fit, not an edge — and the repo says so in [`docs/research/GOALP_EXPERIMENT10_RESULT.md`](docs/research/GOALP_EXPERIMENT10_RESULT.md).
 
-What survived: the *untuned* mid-channel rule is positive in both markets, and their daily returns correlate **−0.004**. A fixed 50/50 combination — no parameter chosen, weights frozen before computing — scores Sharpe 1.34 at 19.7% drawdown versus 1.18 at 33.1% for crypto alone, at the cost of terminal wealth falling 14.3× to 6.0× ([`CROSSMARKET_COMBINATION_RESULT.md`](docs/research/CROSSMARKET_COMBINATION_RESULT.md)). It is not certified: gate 3 still fails, and no forward evidence exists yet. Both sleeves now record daily forward signals so that unseen data — the only thing that can settle this — starts accumulating.
+What survived: the *untuned* mid-channel rule is positive in every market it has been run in, and those returns are close to uncorrelated with each other. Combining them at **fixed equal weights** — no parameter chosen anywhere, weights frozen before computing — is the only thing in this repo that has improved results without selecting something:
+
+| Book (common window 2018-03 → 2025-07) | Sharpe | Worst drawdown | Multiple |
+|---|---:|---:|---:|
+| Crypto alone | 1.18 | 33.1% | 14.3× |
+| + Taiwan 0050, 50/50 | 1.34 | 19.7% | 6.0× |
+| + gold GLD, ⅓ each | **1.41** | **14.9%** | 3.9× |
+
+Pairwise daily correlations are −0.004, +0.077 and +0.033, and the three-sleeve book had a **lower drawdown in all four sub-periods tested**, including the covid crash and the 2022 bear year. The mechanism is not hedging — it is that a long-only trend system sits in cash, and cash is uncorrelated with everything.
+
+The price is stated as plainly as the gain: **each sleeve costs terminal wealth** (14.3× → 6.0× → 3.9×), because an unlevered spot book cannot lever the smoother path back up. The gold sleeve also loses to simply holding gold (2.44× vs 6.96× over 20 years). Details, including the stress test where gold's correlation *rose* rather than fell: [`CROSSMARKET_COMBINATION_RESULT.md`](docs/research/CROSSMARKET_COMBINATION_RESULT.md), [`SLEEVE3_GOLD_RESULT.md`](docs/research/SLEEVE3_GOLD_RESULT.md).
+
+None of it is certified: gate 3 still fails, and no forward evidence exists yet. All three sleeves now record forward signals so that unseen data — the only thing that can settle this — starts accumulating.
 
 - **376 passing tests**, `mypy --strict` clean, 13 enforced import-linter contracts.
 - **Every pre-registration, result, retraction, and correction is committed**, including a same-day retraction of a correlation claim this project asserted without measuring.
