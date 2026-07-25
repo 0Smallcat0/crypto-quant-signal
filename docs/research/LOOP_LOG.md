@@ -556,3 +556,43 @@
   TWSE's coverage, fix it, then start the TW track.** Until then the
   cross-market combination has forward evidence on the crypto sleeve
   only.
+
+## 2026-07-26 (later) — sleeve 3: gold, built and run the same day
+
+- **Data source found and gated.** Stooq is behind a JavaScript
+  proof-of-work bot wall and was not worked around. Yahoo's chart
+  endpoint plus FinMind's `USStockPrice` are two independent providers
+  for GLD; both were fetched. `range=max` silently downsamples 1d to
+  monthly (261 rows instead of 5,453), so an explicit epoch window is
+  used. Ingestion gate: 5,452 bars 2004-11-18..2026-07-23, **both
+  providers agreeing on every one of them**, worst close disagreement
+  6e-8, zero bars where adjusted close differs from raw, no gap over 10
+  days. Yahoo's 2026-07-24 row was holed and was dropped rather than
+  patched — the reason two providers are fetched at all.
+- **Pre-registration frozen before the run**
+  (`SLEEVE3_GOLD_PREREGISTRATION.md`, TW repo) with GLD chosen a priori,
+  SPY and TLT rejected in writing, four criteria, a cost model harsher
+  than US retail, brakes set so they cannot bind, and a binding
+  market-shopping guard.
+- **Result: PASS on all four** (`SLEEVE3_GOLD_RESULT.md`). TW trial 24.
+  Three sleeves, one third each, monthly rebalanced,
+  2018-03-06..2025-07-01: Sharpe 1.3437 to **1.4108**, max drawdown
+  19.73% to **14.90%**, correlations gold/crypto +0.0767 and
+  gold/Taiwan +0.0331. Lower drawdown in all four sub-periods;
+  covid-window Sharpe −3.11 to −0.02.
+- **Recorded against it:** terminal wealth 6.00x to 3.94x; the gold
+  sleeve loses to holding gold (2.44x vs 6.96x, at a lower Sharpe); and
+  its correlation to crypto **rises** in crypto's worst 5% of days
+  (+0.077 to +0.105), unlike Taiwan's. Gold is not a hedge; it is flat.
+- **Registry defect found and fixed.** Every row was stamping the SMA
+  ensemble's lookbacks regardless of what ran, so trials 23 and 24 are
+  on record naming a strategy they did not execute. Rows are
+  append-only; both stay wrong, the result document is the correction,
+  and rows after `63e2996` describe their own run. A test now fails if a
+  Donchian run stamps SMA lookbacks.
+- **Both non-crypto sleeves now record forward.** `shadow_signal_tw` was
+  generalized to a TRACKS tuple; first GLD row 2026-07-23, exposure 0.0.
+- **Next: P1 is keeping all three tracks alive.** A fourth sleeve is
+  permitted only under the market-shopping guard, and must be weighed
+  against the measured cost — every sleeve so far bought a smaller
+  drawdown with terminal wealth.
