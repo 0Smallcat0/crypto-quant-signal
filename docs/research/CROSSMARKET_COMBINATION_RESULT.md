@@ -112,3 +112,56 @@ under `CROSSMARKET_DONCHIAN_PREREGISTRATION.md`, where it was declared
 context for a test whose primary arm failed. Combination computed by
 `scripts/analyze_crossmarket_combination.py` from both reports' equity
 curves.
+
+---
+
+## Addendum 2026-07-26 — the independence survives stress, and the reason matters
+
+The sharpest objection to this result is that crypto and equities correlate
+sharply in liquidity events, so the diversification would vanish exactly
+when it is needed and the 19.73% drawdown would be understated. Measured on
+the same series, no new trials:
+
+**Conditional correlation (crypto sleeve's own worst days)**
+
+| Condition | n | Correlation | Crypto mean | Taiwan mean |
+|---|---:|---:|---:|---:|
+| Crypto worst 5% of days | 133 | **−0.1818** | −4.60% | **+0.10%** |
+| Crypto worst 10% of days | 267 | −0.1741 | −3.22% | +0.03% |
+| Crypto best 10% of days | 267 | +0.0298 | +3.85% | +0.05% |
+
+Correlation goes **more negative** precisely as the crypto sleeve falls
+hardest, and the Taiwan sleeve's average return on crypto's worst days is
+slightly positive.
+
+**Sub-period stability**
+
+| Window | n | Correlation | Crypto MDD | TW MDD | Combo MDD | Combo Sharpe |
+|---|---:|---:|---:|---:|---:|---:|
+| 2020 covid crash | 61 | −0.1882 | 19.9% | 2.1% | 11.9% | −3.11 |
+| 2022 bear year | 365 | −0.0111 | 22.6% | 8.0% | 12.6% | −1.04 |
+| 2018-2019 | 666 | −0.0536 | 29.7% | 7.2% | 16.9% | +0.94 |
+| 2023-2025H1 | 913 | +0.0005 | 24.2% | 14.8% | 11.7% | +1.50 |
+
+Across four distinct regimes the correlation never rises above +0.0005 and
+the combination's drawdown is roughly half the crypto sleeve's every time.
+This is not a single-window artefact.
+
+### Name the mechanism correctly
+
+The Taiwan sleeve is **not a hedge against crypto**. It is a trend system
+that is frequently in cash — its exposure on the day this was written was
+0.25 of one symbol — and *cash is uncorrelated with everything*. The
+diversification benefit comes substantially from one sleeve being flat while
+the other falls, not from Taiwan equities moving against crypto. Any future
+sleeve added on this reasoning must be a system that also goes to cash, and
+the claim being made is about **trend systems in independent markets**, not
+about asset-class correlation.
+
+### What still hurts
+
+Both sleeves lose together in fast bear markets: combined Sharpe is −3.11
+through the covid crash and −1.04 across 2022. Diversification halves the
+pain; it does not remove it. A long-only trend book has no positive-return
+state in a sharp decline — it can only be in cash sooner. The 61-day covid
+window is also too short to carry weight on its own.
