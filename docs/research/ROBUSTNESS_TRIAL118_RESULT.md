@@ -63,14 +63,36 @@ and slippage, trial 118 still scores 1.1523 — above trial 88's 3× result
 (1.0705) and above the live incumbent's UNSTRESSED Sharpe (1.0230). The
 edge is not an execution-cost illusion.
 
-## Registry consequence, as declared in advance
+## Registry consequence — the advance prediction was WRONG, measured
 
-N moved 125 → 133. The deflation bar rises with it, and trial 118's DSR
-in the next report is expected to fall below 0.95 on that mechanic alone.
-Experiment 10's verdict was rendered at N=125, as its pre-registration
-specified, and stands as recorded. Neither number may be quoted without
-the other: **DSR 0.950514 at N=125; lower at N≥133 because the search got
-bigger, not because the strategy got worse.**
+N moved 125 → 133. The pre-registration and the first draft of this
+document both predicted trial 118's DSR would fall below 0.95 on
+bar-rise mechanics alone. **It did not.** Measured at N=133
+(`docs/reports/research/gate_report_2026-07-25.json`, regenerated after
+the battery):
+
+| | N=125 | N=133 |
+|---|---:|---:|
+| Trial 118 DSR | 0.950514 | **0.950140** |
+| Cross-trial Sharpe variance | 1.6033e-4 | 1.5842e-4 |
+| Candidates-PBO | 0.8451 | **0.6518** |
+| All-columns PBO | 0.6967 | 0.7326 |
+
+The bar did rise, but the eight battery arms clustered tightly around the
+candidate (Sharpe 1.081–1.230), which compressed cross-trial variance
+almost exactly as fast. Deflation is not monotone in N — the fifth time
+this project has measured that — and the prediction failed because it
+accounted for the numerator and ignored the denominator.
+
+The record therefore reads: **trial 118 clears the gate-4 bar at both
+N=125 and N=133**, by 0.0005 and 0.0001 respectively. Both margins are
+inside the estimate's own noise; "at the bar" remains the honest phrase,
+and the tightening margin is a reminder that any further family is
+strictly negative EV for this candidate's standing.
+
+Candidates-PBO improved from 0.845 to 0.652 — still failing the 0.05 bar
+by an order of magnitude, and the all-columns number moved the other way
+(0.697 → 0.733), so nothing here rescues gate 3.
 
 ## Where trial 118 now stands
 
