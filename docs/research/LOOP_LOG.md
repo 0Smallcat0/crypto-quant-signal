@@ -327,3 +327,38 @@
   (c) auditing the daily-cycle runbook against the actual harden
   script output. Any exp-9 resumption requires an explicit operator
   override recorded per drift-guard protocol.**
+
+## 2026-07-25 — operator sprint (robustness, exp 9, exp 10; consolidation lifted)
+
+- Operator lifted the iteration-11 consolidation and granted an unbounded
+  budget (「想盡辦法，做盡測試」/「預算很充足，你可以一直跑」).
+- **Robustness battery on trial 88** (trials 102-109, never-nominatable):
+  all eight pre-declared criteria PASS — six window perturbations hold
+  Sharpe 1.123-1.211 / MDD 29.7-37.7% (spread 0.087 vs a 0.35 bar), cost
+  stress 1.126 at 2x and 1.071 at 3x. Zero-cost diagnostics:
+  P(Sharpe<=0)=0.0000, 2022 is a real losing year at 22.6% drawdown,
+  correlation 0.927 with the live incumbent which it dominates on every
+  axis. `docs/research/ROBUSTNESS_TRIAL88_RESULT.md`.
+- **Shadow track** started (commit 58f7af6) and later doubled: trial 88
+  and trial 118 each accumulate forward-only records daily at 08:20
+  (task CryptoShadowTrial88). First rows 2026-07-24; the two configs
+  already disagree materially, which is what a forward record is for.
+- **Experiment 9** (trials 110-117, SSRN-faithful inverse-vol sizing):
+  winner trial 112 DSR 0.9153 — **ninth negative**. All eight arms score
+  below equal-weighted trial 88. Third family across two signal spaces to
+  confirm that volatility targeting on an unleverable spot book can only
+  de-risk. Sizing is closed.
+- **Experiment 10** (trials 118-125, ATR-scaled channel exits):
+  **first family in ten to pass all three of its own criteria.**
+  Winner trial 118 (ATR 14 / multiple 2): Sharpe 1.2411,
+  **DSR 0.950514 PASS**, MDD 33.24% PASS, turnover 11.10 PASS. It is the
+  first risk-compliant trial ever to clear gate 4.
+- Honest limits recorded in the result doc: the DSR margin is 0.0005 (at
+  the bar, not above it); the winner sits at a grid endpoint; gate 3 PBO
+  is 0.8451 so the loop stop condition is NOT met and the search does not
+  halt; and one more 8-arm family would push trial 118 back under 0.95 on
+  bar-rise mechanics alone.
+- **Next step: robustness battery on trial 118 (its own, per experiment
+  10's honesty clause) — parameter neighbourhood plus 2x/3x cost stress,
+  all arms never-nominatable. After that, no new families without an
+  explicit N-arithmetic weigh-in, because the margin cannot absorb one.**
