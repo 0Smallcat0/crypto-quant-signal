@@ -41,11 +41,32 @@ from src.domain import Candle, Timeframe
 from src.strategies import evaluate_donchian_ensemble
 
 SYMBOLS = ("BTCUSDT", "ETHUSDT")
-WINDOWS = (10, 20, 55, 110)
-EXIT_MODE = "mid_channel"
-BUDGET = Decimal("0.5")  # trial 88 risk budgets: 0.5 per symbol
-TRACK_PATH = Path("data/runtime/shadow_trial88.jsonl")
+BUDGET = Decimal("0.5")  # both tracked configs use 0.5 per symbol
 FETCH_LIMIT = 400  # > longest window + slack
+
+# One entry per tracked configuration. Tracks are independent: adding a
+# new one never disturbs an existing record, which is what keeps each
+# track's forward history honest.
+TRACKS: tuple[dict[str, Any], ...] = (
+    {
+        "name": "trial88",
+        "source_trial": 88,
+        "windows": (10, 20, 55, 110),
+        "exit": "mid_channel",
+        "atr_window": 14,
+        "atr_multiple": Decimal("3"),
+        "path": Path("data/runtime/shadow_trial88.jsonl"),
+    },
+    {
+        "name": "trial118",
+        "source_trial": 118,
+        "windows": (10, 20, 55, 110),
+        "exit": "atr_channel",
+        "atr_window": 14,
+        "atr_multiple": Decimal("2"),
+        "path": Path("data/runtime/shadow_trial118.jsonl"),
+    },
+)
 
 
 async def fetch_candles(config: Any, timeout_seconds: float) -> dict[str, tuple[Candle, ...]]:
@@ -71,17 +92,19 @@ async def fetch_candles(config: Any, timeout_seconds: float) -> dict[str, tuple[
     return out
 
 
-def load_track() -> list[dict[str, Any]]:
-    if not TRACK_PATH.exists():
+def load_track(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
         return []
     rows: list[dict[str, Any]] = []
-    for line in TRACK_PATH.read_text(encoding="utf-8").splitlines():
+    for line in path.read_text(encoding="utf-8").splitlines():
         if line.strip():
             rows.append(json.loads(line))
     return rows
 
 
-def decide(candles: tuple[Candle, ...]) -> tuple[Decimal, tuple[str, ...], tuple[bool, ...]]:
+def decide(
+    candles: tuple[Candle, ...], track: dict[str, Any]
+) -> tuple[Decimal, tuple[str, ...], tuple[bool, ...]]:
     """Replay the state machine over the fetched window to today's close.
 
     Replaying from the warmup floor each run keeps the decision a pure
@@ -90,17 +113,25 @@ def decide(candles: tuple[Candle, ...]) -> tuple[Decimal, tuple[str, ...], tuple
     """
 
     closed = tuple(candle for candle in candles if candle.is_closed)
+    windows = track["windows"]
     states: tuple[bool, ...] | None = None
     fraction = Decimal("0")
     codes: tuple[str, ...] = ()
-    for index in range(max(WINDOWS), len(closed)):
+    for index in range(max(windows), len(closed)):
         fraction, codes, states = evaluate_donchian_ensemble(
-            closed, index, windows=WINDOWS, exit_mode=EXIT_MODE, previous_states=states
+            closed,
+            index,
+            windows=windows,
+            exit_mode=track["exit"],
+            previous_states=states,
+            atr_window=track["atr_window"],
+            atr_multiple=track["atr_multiple"],
         )
     return fraction, codes, states or (False,) * 4
 
 
-def summarize(rows: list[dict[str, Any]]) -> None:
+def summarize(name: str, rows: list[dict[str, Any]]) -> None:
+    print(f"=== {name} ===")
     if not rows:
         print("shadow track is empty")
         return
@@ -126,30 +157,35 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    rows = load_track()
     if args.summary:
-        summarize(rows)
+        for track in TRACKS:
+            summarize(track["name"], load_track(track["path"]))
         return
 
     config = load_config(Path(args.config))
     candles_by_symbol = asyncio.run(
         fetch_candles(config, float(config.data_source.timeout_seconds))
     )
+    for track in TRACKS:
+        append_day(track, candles_by_symbol)
 
+
+def append_day(track: dict[str, Any], candles_by_symbol: dict[str, tuple[Candle, ...]]) -> None:
+    rows = load_track(track["path"])
     decisions: dict[str, Decimal] = {}
     closes: dict[str, str] = {}
     reasons: dict[str, list[str]] = {}
     decision_date = ""
     for symbol_value, candles in candles_by_symbol.items():
         closed = tuple(candle for candle in candles if candle.is_closed)
-        fraction, codes, _ = decide(candles)
+        fraction, codes, _ = decide(candles, track)
         decisions[symbol_value] = fraction
         closes[symbol_value] = str(closed[-1].close_price)
         reasons[symbol_value] = list(codes)
         decision_date = max(decision_date, closed[-1].open_time.date().isoformat())
 
     if rows and str(rows[-1]["date"]) >= decision_date:
-        print(f"already recorded through {rows[-1]['date']}; nothing to append")
+        print(f"{track['name']}: already recorded through {rows[-1]['date']}")
         return
 
     # Notional mark-to-market: yesterday's exposure earns today's return.
@@ -170,19 +206,22 @@ def main() -> None:
         "recorded_at": datetime.now(UTC).isoformat(),
         "strategy": "donchian_breakout_ensemble",
         "config": {
-            "windows": list(WINDOWS),
-            "exit": EXIT_MODE,
-            "source_trial": 88,
+            "windows": list(track["windows"]),
+            "exit": track["exit"],
+            "atr_window": track["atr_window"],
+            "atr_multiple": str(track["atr_multiple"]),
+            "source_trial": track["source_trial"],
         },
         "exposure": {symbol: str(value) for symbol, value in decisions.items()},
         "close": closes,
         "reason_codes": reasons,
         "equity": str(equity),
     }
-    TRACK_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with TRACK_PATH.open("a", encoding="utf-8") as handle:
+    path = track["path"]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, sort_keys=True) + "\n")
-    print(json.dumps(row, indent=2, sort_keys=True))
+    print(f"{track['name']}: appended {row['date']} exposure={row['exposure']}")
 
 
 if __name__ == "__main__":
