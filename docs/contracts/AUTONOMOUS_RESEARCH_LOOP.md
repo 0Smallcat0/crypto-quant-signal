@@ -40,18 +40,34 @@ positive is the only forbidden result.
    two-sided costs). Append 3–5 dated lines to
    `docs/research/RESEARCH_LOG.md` — source, claim, testable-here yes/no.
    Never skip this step; training-data-only reasoning is not research.
-3. **Advance the queue** (the bulk of the iteration):
-   - Q1: cross-sectional allocator engine path (`cross_sectional_momentum`
-     in BacktestParameters) + tests, per the experiment-3 pre-registration.
-     Multi-session work: leave the tree green and committed at every stop.
-   - Q2: run the 16-config experiment-3 family (registry rows + durable
-     return series), commit.
-   - Q3: full gate report at the new N; write
-     `docs/research/GOALP_EXPERIMENT3_RESULT.md` with the pre-declared
-     verdict. An iteration that READS results does not WRITE the next
-     pre-registration (goalpost-drift guard) — queue it for the next one.
-   - Q4: next family pre-registration (frozen on commit), drawing on
-     RESEARCH_LOG hypotheses. Then its engine work, run, result — repeat.
+3. **Advance the queue** (the bulk of the iteration).
+
+   **Queue as of 2026-07-25 — consolidation LIFTED by operator order**
+   (「你真正該做的應該是想盡辦法，做盡測試」). The iteration-11
+   consolidation switch is revoked; the multi-iteration budget the
+   scoping doc said experiment 9 needs is granted. The N-arithmetic of
+   `docs/research/N_ARITHMETIC_2026-07-23.md` still governs WHICH family
+   is worth running — it rules out wrapper re-sweeps, not this one.
+
+   - Q1 (2-3 iterations, engine): SSRN-faithful allocation model for the
+     Donchian book per `docs/research/EXPERIMENT9_SCOPING_2026-07-24.md`
+     path B — cross-asset inverse-vol weights, per-name cap arm,
+     portfolio-vol rescale, new `BacktestParameters` fields, execution
+     rewire, staggered-mode interaction, ≥6 tests. Leave the tree green
+     and committed at every stop; never rush a half-verified engine out.
+   - Q2: pre-register the experiment-9 family (frozen on commit) with
+     statutory bars only, then run it, then gate report + result doc.
+   - Q3: adversarial robustness battery on any candidate that ends up
+     better-evidenced than trial 88, following the pattern in
+     `docs/research/ROBUSTNESS_TRIAL88_PREREGISTRATION.md` (arms bound as
+     never-nominatable; a better neighbour is a fragility signal).
+   - Q4: keep the trial-88 shadow track healthy — if
+     `data/runtime/shadow_trial88.jsonl` has not gained a row in 48h,
+     diagnose and fix it. Forward-only evidence is the only clean
+     out-of-sample data this project can accumulate before October.
+   - Standing: an iteration that READS results does not WRITE the next
+     pre-registration (goalpost-drift guard) unless the operator has
+     ordered otherwise in that sitting.
 4. **Verify** (rule 7), fix what breaks, or revert and log the failure.
 5. **Record + publish**: append a dated LOOP_LOG.md entry — what ran, what
    resulted, exact numbers, next step. Commit everything meaningful with a
