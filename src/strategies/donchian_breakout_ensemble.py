@@ -17,6 +17,30 @@ from src.strategies.types import StrategyValidationError
 
 EXIT_HALF_LOW = "half_low"
 EXIT_MID_CHANNEL = "mid_channel"
+EXIT_ATR_CHANNEL = "atr_channel"
+EXIT_MODES = (EXIT_HALF_LOW, EXIT_MID_CHANNEL, EXIT_ATR_CHANNEL)
+
+
+def average_true_range(candles: tuple[Candle, ...], index: int, window: int) -> Decimal | None:
+    """Wilder true range averaged over the trailing window, ending at index.
+
+    True range uses the prior close, so the first usable index is 1; None
+    means warmup (callers must not substitute a guessed level).
+    """
+
+    start = index - window + 1
+    if window < 1 or start < 1:
+        return None
+    total = Decimal("0")
+    for position in range(start, index + 1):
+        candle = candles[position]
+        previous_close = candles[position - 1].close_price
+        total += max(
+            candle.high_price - candle.low_price,
+            abs(candle.high_price - previous_close),
+            abs(candle.low_price - previous_close),
+        )
+    return total / Decimal(window)
 
 
 def evaluate_donchian_ensemble(
@@ -26,6 +50,8 @@ def evaluate_donchian_ensemble(
     windows: tuple[int, ...],
     exit_mode: str,
     previous_states: tuple[bool, ...] | None = None,
+    atr_window: int = 14,
+    atr_multiple: Decimal = Decimal("3"),
 ) -> tuple[Decimal, tuple[str, ...], tuple[bool, ...]]:
     """One decision from closes up to and including the decision close.
 
@@ -37,7 +63,7 @@ def evaluate_donchian_ensemble(
     replay determinism.
     """
 
-    if exit_mode not in (EXIT_HALF_LOW, EXIT_MID_CHANNEL):
+    if exit_mode not in EXIT_MODES:
         msg = f"unknown donchian exit_mode: {exit_mode}"
         raise StrategyValidationError(msg)
     if len(windows) != 4:
@@ -59,6 +85,15 @@ def evaluate_donchian_ensemble(
             if exit_mode == EXIT_HALF_LOW:
                 half = (window + 1) // 2
                 exit_level = min(candles[i].close_price for i in range(index - half, index))
+            elif exit_mode == EXIT_ATR_CHANNEL:
+                # Chandelier off the channel high: give the trend room
+                # proportional to how noisy the tape currently is. Warmup
+                # falls back to the mid-channel level rather than guessing.
+                atr = average_true_range(candles, index, atr_window)
+                if atr is None:
+                    exit_level = (max(prior_closes) + min(prior_closes)) / Decimal("2")
+                else:
+                    exit_level = max(prior_closes) - atr_multiple * atr
             else:
                 exit_level = (max(prior_closes) + min(prior_closes)) / Decimal("2")
             new_states.append(close >= exit_level)

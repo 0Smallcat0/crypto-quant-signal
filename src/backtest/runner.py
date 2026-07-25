@@ -168,6 +168,8 @@ def run_registered_backtest(
                 ",".join(str(w) for w in parameters.dc_windows) if parameters.dc_windows else "none"
             ),
             "dc_exit": parameters.dc_exit,
+            "dc_atr_window": str(parameters.dc_atr_window),
+            "dc_atr_multiple": str(parameters.dc_atr_multiple),
             "dc_alloc_model": parameters.dc_alloc_model,
             "dc_vol_lookback": str(parameters.dc_vol_lookback),
             "dc_target_vol": (
