@@ -387,3 +387,62 @@
   cannot absorb one, and every closed lineage is documented. Loop work
   returns to: shadow-track health (trial 88 + trial 118, daily 08:20),
   gate-6 evidence, and the October holdout per PRE_HOLDOUT_PROTOCOL.
+
+## 2026-07-25 — iteration 12 (gate-6 evidence + holdout rehearsal, autonomous)
+
+- Research log appended (4 dated lines): Bybit Q1 2026 spot slippage
+  publication (institutional 0.01-0.06 bps band on US$10k BTC orders —
+  our recorded 0.00/0.05 bps sits inside the same order of magnitude);
+  QuantMedia slippage/latency modeling reference (mid-quote fills
+  overstate Sharpe by 0.5-1.0 vs a decision-to-fill model);
+  Turbine blog on backtest/live divergence (reinforces
+  no-new-families standing at margin 0.0001); VARRD one-shot OOS
+  restatement (external anchor for the holdout rehearsal note).
+- Standing decision honored: **no new families**, no new
+  pre-registrations, no trial IDs reserved. Registry `N` unchanged
+  at 133; trial 118 remains the sole risk-compliant gate-4 pass;
+  trial 88 remains the incumbent-frontier shadow. Holdout untouched
+  (`spent=false`, `locked_at=2026-07-03T02:44:47.633808+00:00`).
+- Shadow-track health: `data/runtime/shadow_trial88.jsonl` and
+  `data/runtime/shadow_trial118.jsonl` each hold 1 row, first record
+  2026-07-24 (recorded 2026-07-25 morning by task
+  CryptoShadowTrial88). Both healthy — new files, first row within
+  contract 48h rule; next 48h check is 2026-07-27. No diagnosis or
+  fix needed.
+- Gate-6 evidence: refreshed baseline snapshot from
+  `data/runtime/events.jsonl` (44 exec_quote events, +2 vs
+  iteration 11's 42) into a new consolidated doc
+  `docs/research/GATE6_BASELINE_2026-07-25.md`. Numbers unchanged
+  from iteration 11: BTCUSDT median 0.00 bps, ETHUSDT median 0.05
+  bps, both round-trip estimates 20.00 / 20.10 bps vs the 37.5-45
+  bps cap. Sample still short of the 90-day §6 requirement.
+- Iteration-11 queued gate-6 stat delivered: decision→capture drift
+  computed post-hoc from already-recorded `close_time` and
+  `captured_at` fields (no runtime change — iron rule 1 preserved).
+  Median 308.4 s (~5m 08s, matches the 08:05 Taipei daily cycle);
+  two catch-up outliers (2026-07-06 ~3.4 h, 2026-07-11 ~19.8 h)
+  pulled the mean to 4099.7 s. Tail is bounded by the daily
+  re-fire; asymmetry documented, no recalibration required at
+  N=44; next re-check at N ≥ 60.
+- Operator-facing holdout spend rehearsal note included in the
+  same file — command sequence for the single-use spend, both
+  pre-declared nominations (N1 daily_trend_ensemble no-overlay,
+  N2 trial-7 overlay config), pass bars, consequence table, and
+  the explicit forbid list (no third nomination, no re-runs, no
+  post-hoc parameter tweaks). Doc-only; no CLI flag verified today
+  (called out in the doc so the operator re-checks `--help` before
+  the October session).
+- Verification bare (rule 7): `ruff check` PASS; `ruff format --check`
+  PASS (118 files); `mypy --strict src/` PASS (58 files, 0 issues);
+  `lint-imports` 13/13 KEPT (via `.venv/Scripts/lint-imports.exe`);
+  `python -m pytest -m "not network"` 378 passed in 50.00s. Tree
+  docs-only (2 files); registry N unchanged at 133.
+- **Next step: NEXT sitting continues consolidation work — likely
+  targets are (a) 48h shadow-track diff read-out (trial 88 vs
+  trial 118 exposure disagreement) once both files have ≥ 3 rows,
+  (b) audit of `RUNBOOK_DAILY_CYCLE_RELIABILITY.md` against the
+  observed 9% catch-up rate (2 late captures in 22 runs), or
+  (c) survey of `configs/costs/` vs the refreshed baseline to
+  confirm no calibration drift has crept in. No family resumption
+  without an explicit operator override recorded per drift-guard
+  protocol; October holdout untouched.**

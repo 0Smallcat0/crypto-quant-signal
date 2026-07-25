@@ -177,3 +177,46 @@ cross-sectional momentum untested here → experiment 3.
   common use (10% / 15% / 25%) anchor a reasonable grid range for
   our exp-9 target-vol arm.
 
+## 2026-07-25 — iteration 12 web pass (gate-6 evidence + holdout hygiene)
+
+- 2026-07-25 — Bybit Q1 2026 spot execution analysis via TradingView
+  news feed (tradingview.com/news/chainwire:ee08acbdf094b:0-...):
+  reference-order US$10k BTC spot slippage measured 0.01 bps on Bybit
+  vs 0.02–0.06 bps on peer venues, with the RPI mechanism accounting
+  for the improvement. Testable-here: **yes as a sanity anchor** —
+  our current gate-6 baseline of median 0.00 bps BTCUSDT / 0.05 bps
+  ETHUSDT (`data/runtime/events.jsonl`) is inside the same
+  order-of-magnitude band as an institutional publication, i.e. our
+  spread capture is not obviously miscalibrated; nothing to add to
+  a family grid, everything to add to the gate-6 rehearsal note.
+- 2026-07-25 — QuantMedia "Slippage and Latency Modeling: Realistic
+  Backtesting in Python" (quantmedia.io/paper-slippage-latency-
+  modeling.html): backtest engines that use mid-quote fills overstate
+  Sharpe by 0.5–1.0 versus a decision-to-fill model that includes
+  spread crossing + market-impact (square-root law) + stochastic drift
+  during the latency window. Testable-here: **yes, defensively** —
+  the specific number our `configs/costs/` cost model already books
+  (~20 bps round-trip vs a 37.5–45 bps gate-6 cap) implicitly assumes
+  the drift term is small; already-recorded `exec_quote` events make
+  the arithmetic a query away, not a new family. Belongs in gate-6,
+  not in trials.
+- 2026-07-25 — Turbine blog "Why Your Backtest Said +20% But Live
+  Trading Lost Money" (turbinefi.com/blog/why-backtests-lie-prediction-
+  market-overfitting-2026): argues live-vs-backtest divergence on
+  paper-trading books is dominated by (a) stale-side fills the backtest
+  assumes are mid, and (b) selection bias from picking the "best"
+  backtest out of many. Testable-here: **yes and both are already
+  gated** — (a) is what decision→capture drift in the runtime quote
+  stream is for (queued gate-6 work), (b) is exactly what the DSR
+  deflation + PBO framework corrects for. Reinforces the
+  no-new-families standing decision at margin 0.0001.
+- 2026-07-25 — VARRD "Out-of-Sample Testing in Trading — The Sacred
+  One-Shot" (varrd.com/guides/out-of-sample-testing.html): explicit
+  restatement of the one-shot protocol — a holdout that gets peeked
+  at, tweaked against, or re-tested is not a holdout. Testable-here:
+  **yes, procedurally** — matches `PRE_HOLDOUT_PROTOCOL.md` exactly;
+  useful as an external anchor for the operator-facing holdout
+  rehearsal note this iteration produces (nomination → freeze →
+  single `--spend-holdout` run → publish, no re-runs, no
+  post-hoc grid searches).
+
