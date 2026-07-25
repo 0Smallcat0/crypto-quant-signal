@@ -56,22 +56,25 @@ Two honest readings, both of which matter:
    NOT say it will be the best of these nine out of sample — this
    diagnostic says the opposite is more likely than not. Every claim
    about trial 118 must carry that.
-2. **The constraint space may be too narrow to support reliable
-   selection.** All nine architectures are spot, long-only, daily,
-   trend-shaped, on the same two-to-thirteen crypto symbols. Their return
-   series correlate at 0.9+. When candidates share that much beta, their
-   relative ranking is mostly noise, and no amount of methodology fixes
-   that. This is a property of what the product is legally allowed to be,
-   not of any particular strategy.
+2. ~~**The constraint space may be too narrow to support reliable
+   selection**, because all nine share 0.9+ correlated long-only crypto
+   trend beta.~~ **RETRACTED 2026-07-26, same day, on measurement.**
+   The pairwise correlations were asserted, not computed. Measured on the
+   same nine return series: **mean 0.628, minimum 0.359, maximum 0.958**.
+   These architectures are substantially more diverse than the retracted
+   claim said, so "everything is the same trade" does not hold and cannot
+   be used to argue that gate 3 is structurally unpassable. Any future
+   document repeating that argument is repeating a refuted one.
 
-Reading 2 has a consequence worth stating plainly: **gate 3 may be
-unpassable for any strategy this product can run.** That is not a reason
-to weaken the gate — the gate is doing exactly its job, which is to
-refuse to certify a selection that cannot be shown to generalize. It is a
-reason to be explicit, in October's report, that the six-gate framework
-as constructed may have no passing configuration inside this product's
-constraints, and to say so as a finding rather than discover it as a
-surprise.
+Reading 1 stands unchanged and is the finding: selection among these
+strategies does not generalize inside this window. Reading 2 was wrong.
+
+What the measured correlations DO support is the opposite kind of
+conclusion, pursued separately: if candidates are only ~0.63 correlated,
+a diversified combination of them carries real variance reduction, and a
+combination rule performs no selection at all — which is the textbook
+response to a high PBO. That direction is being taken up under its own
+pre-registration; nothing in this document evaluates it.
 
 ## What does not change
 
