@@ -493,3 +493,24 @@
 - Engine prerequisite declared: a real combination path that nets
   offsetting trades across sleeves. Return-series averaging is the
   conservative bound only, never the registered result.
+
+## 2026-07-26 (cross-market) — trial 118 tested in Taiwan, unchanged: it did not transfer
+
+- Ported the Donchian+ATR strategy into `D:\TW-Stock-Trading` (376 tests
+  green, existing paths untouched) under a frozen pre-registration
+  allowing ONE configuration and forbidding any tuning on TW data.
+- 0050 adjusted, 2004-2025, TW cost model unchanged: trial 118's config
+  scores **Sharpe -0.3055, MDD 40.48%, 100k TWD to 66,330** against
+  buy-and-hold's 0.7159 / 55.75% / 787,034. **DID NOT TRANSFER.**
+- Not a broken port: mean exposure 0.384 over 5,218 days, all five rungs
+  used, 165 trades.
+- Mechanism: the declared context arm (trial 88's mid-channel exit)
+  scores +0.4262 on identical data. One parameter — the exit rule — is
+  worth +0.06 Sharpe in crypto and -0.73 in Taiwan. The crypto-optimal
+  exit is the Taiwan-worst exit.
+- Consequence appended to the experiment-10 result (verdict unchanged):
+  trial 118's distinguishing choice is crypto-specific. Direct
+  cross-market confirmation of what PBO 0.7411 implied statistically.
+- **Standing guidance for any future work: a candidate's standing in this
+  program now requires cross-market evidence before it can be described
+  as an edge rather than a fit.**
