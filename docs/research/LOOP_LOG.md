@@ -469,3 +469,27 @@
 - Forward shadow tracks are now the highest-value evidence stream: if
   in-sample ranking is uninformative, only out-of-sample observation can
   discriminate.
+
+## 2026-07-26 (later) — correlation retraction + combination pre-registered
+
+- **Retraction**: the PBO diagnostic asserted the nine architectures
+  correlate at 0.9+. Measured: mean 0.628, min 0.359, max 0.958. Reading
+  2 of that document ("the constraint space is too narrow, gate 3 may be
+  structurally unpassable") is RETRACTED in place — it rested on the
+  wrong number. Reading 1 (selection does not generalize) stands.
+- The measured correlations point the other way: at ~0.63, combining
+  candidates buys real variance reduction, and a combination rule
+  performs no selection at all — the textbook answer to a high PBO.
+- Exploratory blends (zero registry cost, from existing return series):
+  nine hand-picked architectures Sharpe 1.4533 / MDD 34.77% / 27.2x;
+  **all 133 registered columns 1.2017 / 39.22%; all protocol candidates
+  1.1147 / 44.96%.** The gap between 1.45 and 1.11-1.20 IS the hindsight
+  premium, disclosed rather than banked.
+- **Experiment 11 pre-registered** (`GOALP_EXPERIMENT11_PREREGISTRATION.md`):
+  combination instead of selection, members fixed by a mechanical rule
+  (trial 4 plus every family's own pre-declared winner, including the
+  bad ones — trials 5 and 47 are restored), two weighting arms (equal,
+  inverse-vol), weight optimization forbidden, statutory bars.
+- Engine prerequisite declared: a real combination path that nets
+  offsetting trades across sleeves. Return-series averaging is the
+  conservative bound only, never the registered result.
