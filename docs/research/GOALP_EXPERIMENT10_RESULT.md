@@ -101,3 +101,35 @@ are fixed and cannot include either).
 
 All 8 trials on clean tree `33f55e8` (commit-first rule). Registry rows
 carry `dc_atr_window` / `dc_atr_multiple` machine-readable.
+
+---
+
+## Addendum 2026-07-26 — cross-market evidence against this family's key choice
+
+Recorded after the fact and appended rather than rewritten; the verdict
+above stands exactly as rendered at N=125.
+
+Trial 118's configuration was run **unchanged** on Taiwan's 0050 ETF
+(adjusted, 2004-04-15 → 2025-07-02, 21 years) in the sibling repository,
+under its own frozen pre-registration forbidding any re-tuning
+(`D:\TW-Stock-Trading\docs\research\CROSSMARKET_DONCHIAN_RESULT.md`).
+
+| | Sharpe | MDD | 100k becomes |
+|---|---:|---:|---:|
+| trial 118 config | **−0.3055** | 40.48% | 66,330 |
+| buy-and-hold 0050 | 0.7159 | 55.75% | 787,034 |
+| trial 88 config (context) | 0.4262 | 30.85% | 215,032 |
+
+**It did not transfer.** The decisive detail is the mechanism: the
+primary and context arms differ only in the exit rule, and that single
+swap is worth **+0.06 Sharpe in crypto but −0.73 in Taiwan**. The
+2×ATR exit — the choice that made trial 118 this program's best
+candidate — is the worst of the two in the other market.
+
+Consequence for how trial 118 must be described from now on: its crypto
+numbers, robustness battery, and gate-4 pass all stand, but any claim
+that it captures a market-independent trend-following effect is refuted.
+The parameter that distinguishes it encodes a property of crypto. This is
+the same conclusion the 2026-07-26 PBO diagnostic reached statistically,
+now measured directly across markets — which is stronger evidence than
+resampling one market ever produces.
