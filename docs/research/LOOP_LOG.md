@@ -362,3 +362,28 @@
   10's honesty clause) — parameter neighbourhood plus 2x/3x cost stress,
   all arms never-nominatable. After that, no new families without an
   explicit N-arithmetic weigh-in, because the margin cannot absorb one.**
+
+## 2026-07-25 (late) — trial-118 battery + final N=133 report
+
+- Battery (trials 126-133, never-nominatable): all eight criteria PASS.
+  Perturbations Sharpe 1.081-1.230 / MDD 29.9-43.4% (spread 0.149);
+  cost stress 1.197 at 2x and 1.152 at 3x — the project's strongest.
+- **Endpoint doubt resolved**: arm A3 at ATR multiple 1.5 scores 1.114,
+  below multiple 2's 1.241, so experiment 10's boundary winner is a
+  genuine interior optimum after all.
+- **Honest counterweight**: trial 118 IS its own neighbourhood maximum
+  (trial 88 was not) — the weaker signature, recorded to travel with
+  every future quote.
+- **Advance prediction WRONG, corrected in the result doc**: DSR was
+  predicted to fall under 0.95 at N=133; measured 0.950140, still
+  passing, because the clustered battery arms compressed cross-trial
+  variance as fast as the bar rose. Fifth measured case of non-monotone
+  deflation.
+- Final report N=133: gate 2 PASS; gate 3 candidates-PBO 0.6518 (down
+  from 0.8451) and all-columns 0.7326 — still FAIL by an order of
+  magnitude; gate 4 passing trials [29, 37, 118], of which only 118 is
+  risk-compliant.
+- **Standing decision: no new families.** The margin (0.0001 at N=133)
+  cannot absorb one, and every closed lineage is documented. Loop work
+  returns to: shadow-track health (trial 88 + trial 118, daily 08:20),
+  gate-6 evidence, and the October holdout per PRE_HOLDOUT_PROTOCOL.
