@@ -17,6 +17,38 @@ composition rather than evidence about the strategies.
 
 ## Measurement
 
+> **Addendum 2026-07-27 — what PBO is actually measuring here.** Computed
+> per family, eight columns each, PBO ranges over **15×**: exp-7 donchian
+> BTC/ETH **0.7415**, exp-8 donchian-13 **0.6830**, exp-3 cs-momentum
+> **0.2789**, exp-5 regime gate **0.0482**. It is not degenerate.
+>
+> But it runs **opposite** to measured quality. Against exposure-matched
+> passive twins (`TIMING_VALUE_2026-07-27.md`), exp-7's eight members score
+> 3.84–4.70 — **all positive, tightly clustered**. A four-member sample of
+> exp-5 scores 3.70 / 5.96 / 2.31 / 1.85 — **also all positive, spread
+> 3.2×**.
+>
+> **Both families have a real edge in every member measured. Their PBOs
+> differ by 15×.** What separates them is *dispersion*: when members are
+> nearly indistinguishable the in-sample best is close to a coin flip out
+> of sample (high PBO); when they differ a lot the ranking is stable (low
+> PBO).
+>
+> So PBO answers "can I trust that I picked the best member?" — a real
+> question — and says **nothing about whether the family has an edge.**
+> Used as a gate on edge existence it **penalises parameter-robust
+> families and rewards parameter-sensitive ones**, which is backwards. The
+> weakest family by this program's own buy-and-hold table (exp-5, median
+> ratio 0.439) is the only one here that would **pass** gate 3's 0.05 bar.
+>
+> **Correction to this iteration's own framing:** exp-5 was chosen as a
+> "known weak" control on the strength of its buy-and-hold ratio. On the
+> exposure-matched metric it is not weak. That is the same confound
+> iteration 17 identified — judging a partly-invested system against a
+> fully-invested benchmark — biting again inside one session. Only four of
+> exp-5's eight members were measured on the twin metric; the other four
+> are untested, and exp-3's twin edges were not measured at all.
+
 One representative per distinct strategy architecture, nine columns:
 
 | Trial | Architecture |

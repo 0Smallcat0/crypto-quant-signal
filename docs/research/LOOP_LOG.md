@@ -979,3 +979,46 @@
   it fails both bear windows; the search bought drawdown rather than
   return; standalone and portfolio timing value differ; **nothing is
   forward-validated and PBO remains unanswered.**
+
+## 2026-07-27 — iteration 21 (loop, step-0 check passed)
+
+- **Step 0.** PBO was the last analytically-addressable item in the
+  standing answer. Not sprawl: zero code change (`--representatives`
+  already takes an arbitrary trial list), no new script, no new document.
+- **PBO per family, eight columns each** — it is NOT degenerate, it
+  ranges over 15x:
+
+| Family | PBO |
+|---|---:|
+| exp-7 donchian BTC/ETH | **0.7415** |
+| exp-8 donchian-13 | 0.6830 |
+| exp-3 cs-momentum | 0.2789 |
+| exp-5 regime gate | **0.0482** |
+
+- **It runs opposite to measured quality.** exp-7's eight members score
+  3.84-4.70 against exposure-matched twins — all positive, tightly
+  clustered. A four-member sample of exp-5 scores 3.70 / 5.96 / 2.31 /
+  1.85 — also all positive, spread 3.2x.
+- **Both families have a real edge in every member measured; their PBOs
+  differ by 15x.** The separator is dispersion: near-identical members
+  make the in-sample best a near coin flip out of sample (high PBO);
+  dispersed members make ranking stable (low PBO).
+- **So PBO answers "can I trust that I picked the best member?" and says
+  nothing about whether the family has an edge.** Used as a gate on edge
+  existence it penalises parameter-robust families and rewards
+  parameter-sensitive ones. The weakest family by this program's own
+  buy-and-hold table is the only one that would PASS gate 3.
+- **Self-correction inside the iteration:** exp-5 was picked as a "known
+  weak" control from its buy-and-hold ratio. On the exposure-matched
+  metric it is not weak. That is the exact confound iteration 17
+  identified, biting again in the same session. Recorded rather than
+  quietly fixed.
+- **Untested, stated:** only 4 of exp-5's 8 members measured on the twin
+  metric; exp-3's twin edges not measured at all.
+- **Standing answer restated, with PBO now interpreted rather than
+  outstanding:** timing works in crypto only; the BTC/ETH edge is
+  positive in all four pre-declared sub-periods and all eight family
+  members with a +14.2% selection premium; the search bought drawdown
+  rather than return; **PBO 0.7415 for that family reflects members being
+  indistinguishable, not absence of edge**; **nothing is
+  forward-validated**, which is now the only unresolved item.
