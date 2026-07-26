@@ -772,3 +772,39 @@
   whether the BTC/ETH effect is a two-asset phenomenon or a
   large-cap-only one; a fourth sleeve must still clear the buy-and-hold
   gate before being proposed.
+
+## 2026-07-27 — iteration 15 (loop, self-paced)
+
+- Answered the scope question left open by iteration 14. New tool:
+  `scripts/analyze_symbol_dispersion.py` (zero registry cost, reads local
+  candles only).
+- **Per-name buy-and-hold across the 13-coin universe is violently
+  skewed**: mean 16.09x, median 3.21x. Top 1 name is 32.9% of summed
+  return, top 2 is 54.2%, top 3 is **73.7%** (BNB 68.8x, SOL 44.5x, DOGE
+  40.8x). Two names lost money outright. **Every name drew down at least
+  76%.**
+- **The skew story alone does not survive contact with the data.**
+  BTC/ETH is MORE top-heavy by top-1 share (BTC 76.9% of that two-name
+  sum vs 32.9%), and the rule won there. Concentration does not separate
+  the cases.
+- **What does: sleeve count.** On 2 names the rule returned 14.26x —
+  more than either constituent's own buy-and-hold (9.86x, 2.96x). On 13
+  names the best arm returned 9.39x, below the average constituent. The
+  measured cause is already on record: independently-exiting sleeves idle
+  their share of the book, and the three-sleeve combination sits in 66.2%
+  cash (`CASH_AWARE_ALLOCATION_RESULT.md`). Thirteen idle far more.
+- **One mechanism now explains three previously separate results**:
+  exp 8's 0-of-8, the combination's 3.94x against 5.42x held, and the
+  cash-aware refutation. The rule's advantage shrinks as the number of
+  independently-exiting sleeves grows — every sleeve buys drawdown
+  reduction with compounding. One trade, not three findings.
+- **Testable consequence**: a fourth sleeve should cut return again and
+  cut drawdown again, which makes the buy-and-hold gate already in the
+  contract the binding question rather than a formality.
+- Limits recorded: one window; survivorship uncontrolled (2026
+  eligibility screen, dead coins absent, benchmarks flattered); and the
+  cross-experiment causal claim is inference, since exp 7 and exp 8
+  differ in more than sleeve count.
+- Written into `REGISTRY_VS_BENCHMARK_2026-07-26.md` as a dated addendum.
+- **Next: P1 unchanged.** No new family. If a fourth sleeve is ever
+  proposed, this addendum is the prior it has to beat.
