@@ -882,3 +882,35 @@
   partially uncorrelated assets, which needs no signal.
 - Written up in `TIMING_VALUE_2026-07-27.md`.
 - **Next: run that substitution test.** P1 unchanged.
+
+## 2026-07-27 — iteration 18 (loop, first under the step-0 convergence check)
+
+- **Step 0 recorded.** Current answer: timing works in crypto only
+  (4.70x/2.77x vs exposure-matched twin), nothing in Taiwan (0.73x) or
+  gold (1.00x); best book 14.26x against 13.53x for holding thirteen
+  coins, so the search bought drawdown not return; no forward evidence.
+  This iteration moves: whether the non-crypto sleeves need their signal
+  at all. Not sprawl: closes a route, no new script (extended
+  `analyze_sleeve_combination`), no new document (addendum).
+- **Prediction from iteration 17 was REFUTED by its own test.** It said
+  substituting static holdings "should produce the same or better"
+  three-sleeve result. Measured: Sharpe **1.3870 vs 1.4108**, drawdown
+  **16.74% vs 14.90%**, multiple **3.74x vs 3.94x**. Worse on all three.
+- **The test was biased against the signal and the signal still won**:
+  static twins pay no trading costs, the sleeves pay full costs.
+- **Both results are true at once.** A sleeve can be worthless standalone
+  (Taiwan 0.73x) and still contribute to a book, because a static holding
+  is exposed all the time while a trend sleeve is **flat at moments
+  uncorrelated with crypto's drawdowns**. That is exactly the mechanism
+  `CROSSMARKET_COMBINATION_RESULT.md` named. Static exposure cannot
+  reproduce it by construction.
+- **Honest size: small.** Sharpe +1.7%, drawdown -11%, wealth +5% against
+  the static substitute.
+- **Route closed**: "replace the non-crypto sleeves with static holdings"
+  is worse; the sleeves stay as systems. Recorded in the contract's
+  standing answer so it is not proposed again.
+- **Standing answer restated (refined, not overturned):** timing value in
+  crypto only, the search bought drawdown rather than return, nothing is
+  forward-validated — **and standalone timing value is not the same
+  quantity as portfolio timing value**, which this program had been
+  conflating.

@@ -103,3 +103,49 @@ That test is the next thing worth running, and it is free.
 ```
 python -m scripts.analyze_timing_value
 ```
+
+---
+
+## Addendum, same day — the substitution test ran, and it refuted the prediction above
+
+The section above predicted that replacing the gold and Taiwan sleeves with
+static partial holdings "should produce the **same or better** three-sleeve
+result". Measured, via `scripts/analyze_sleeve_combination.py`:
+
+| Book (common window, ⅓ each, monthly) | Sharpe | Max drawdown | Multiple |
+|---|---:|---:|---:|
+| Three sleeves, all systems | **1.4108** | **14.90%** | **3.94×** |
+| Crypto system + Taiwan held at 0.477 + gold held at 0.419 | 1.3870 | 16.74% | 3.74× |
+
+**Worse on all three measures.** The prediction was wrong.
+
+And the test was biased *against* the signal: the static twins pay **no
+trading costs**, while the sleeves pay full costs. The signal won anyway.
+
+### Why both results are true at once
+
+A sleeve can be worthless standalone and still contribute to a book. The
+Taiwan sleeve returns 0.73× of a passive holding at the same average
+exposure — but a passive holding is exposed *all the time*, whereas the
+trend sleeve is **flat at moments uncorrelated with crypto's drawdowns**.
+That is precisely the mechanism `CROSSMARKET_COMBINATION_RESULT.md` named:
+
+> the benefit comes from a sleeve being IN CASH while another falls
+
+Static exposure cannot do that, by construction. So the signal's value
+outside crypto is **not** in its own return — it is in *when* it holds
+nothing.
+
+### The honest size of it
+
+Small. Sharpe +1.7%, drawdown −11%, terminal wealth +5% against the static
+substitute. Real, measured, cost-conservative — and not large enough to
+justify the machinery on its own if a simpler decorrelated flat-sleeve rule
+existed.
+
+### Route closed
+
+**"Replace the non-crypto sleeves with static holdings" is closed: it is
+worse.** The sleeves stay as systems. This also refines the standing answer
+— *standalone* timing value and *portfolio* timing value are different
+quantities, and this program had been conflating them.

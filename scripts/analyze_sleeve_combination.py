@@ -34,6 +34,8 @@ from collections.abc import Sequence
 from datetime import date
 from pathlib import Path
 
+from scripts.analyze_timing_value import mean_exposure
+
 _DAYS_PER_YEAR = 365
 _CRYPTO_REPORT = Path("docs/reports/backtests/trial-000088/report.json")
 _TW_REPORT = Path("D:/TW-Stock-Trading/docs/reports/backtests/trial-000023/report.json")
@@ -42,8 +44,12 @@ _GOLD_REPORT = Path("D:/TW-Stock-Trading/docs/reports/backtests/trial-000024/rep
 _INDEPENDENCE_LIMIT = 0.30
 
 
-def daily_returns(path: Path) -> dict[date, float]:
-    """Per-date returns from a report's equity curve."""
+def daily_returns(path: Path, field: str = "equity") -> dict[date, float]:
+    """Per-date returns from a report's equity curve.
+
+    ``field`` selects the series: ``equity`` is the system, and
+    ``benchmark_equity`` is buy-and-hold of the same universe.
+    """
 
     payload = json.loads(path.read_text(encoding="utf-8"))
     report = payload.get("report", payload)
@@ -51,11 +57,25 @@ def daily_returns(path: Path) -> dict[date, float]:
     previous: float | None = None
     for point in report["equity_curve"]:
         day = date.fromisoformat(str(point["close_time"])[:10])
-        equity = float(point["equity"])
+        equity = float(point[field])
         if previous is not None and previous > 0:
             out[day] = equity / previous - 1.0
         previous = equity
     return out
+
+
+def static_twin_returns(path: Path) -> tuple[dict[date, float], float]:
+    """A passive sleeve held at the system's own average gross exposure.
+
+    The control from `TIMING_VALUE_2026-07-27.md`: same asset, same time in
+    market, no signal. Returns the series and the weight it used.
+    """
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    report = payload.get("report", payload)
+    weight = mean_exposure(report["targets"])
+    benchmark = daily_returns(path, field="benchmark_equity")
+    return {day: weight * value for day, value in benchmark.items()}, weight
 
 
 def sharpe(returns: Sequence[float]) -> float:
@@ -179,6 +199,50 @@ def print_stress(days: Sequence[date], series: dict[str, list[float]]) -> None:
         )
 
 
+def print_static_substitution(
+    days: Sequence[date],
+    crypto: dict[date, float],
+    tw_report: Path,
+    gold_report: Path,
+    three_way: Sequence[float],
+) -> None:
+    """Do the non-crypto sleeves need their signal at all?
+
+    `TIMING_VALUE_2026-07-27.md` measured the Taiwan sleeve at 0.73x and the
+    gold sleeve at 1.00x against a passive holding at the same average
+    exposure. If replacing both with those static holdings reproduces the
+    three-sleeve book, the diversification never required trend-following
+    outside crypto — it only required partially uncorrelated assets.
+    """
+
+    taiwan_static, tw_weight = static_twin_returns(tw_report)
+    gold_static, gold_weight = static_twin_returns(gold_report)
+    substituted = combine_monthly_rebalanced(days, [crypto, taiwan_static, gold_static])
+
+    print(
+        f"\nstatic substitution: taiwan held at {tw_weight:.3f}, gold at {gold_weight:.3f}, "
+        "crypto sleeve unchanged"
+    )
+    print(f"{'book':30s}{'sharpe':>9}{'mdd':>9}{'multiple':>10}")
+    for name, values in (
+        ("three sleeves, all systems", three_way),
+        ("crypto system + 2 static", substituted),
+    ):
+        print(
+            f"{name:30s}{sharpe(values):9.4f}"
+            f"{max_drawdown(values):9.4f}{total_multiple(values):10.2f}"
+        )
+    verdict = (
+        "the signal is NOT needed outside crypto"
+        if (
+            total_multiple(substituted) >= total_multiple(three_way)
+            and max_drawdown(substituted) <= max_drawdown(three_way)
+        )
+        else "the signal contributes something outside crypto"
+    )
+    print(f"verdict: {verdict}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--crypto-report", default=str(_CRYPTO_REPORT))
@@ -249,6 +313,7 @@ def main() -> None:
     print(f"\nVERDICT: {'PASS' if all(checks.values()) else 'REGISTERED NEGATIVE'}")
 
     print_stress(days, series)
+    print_static_substitution(days, crypto, Path(args.tw_report), Path(args.gold_report), three_way)
 
 
 if __name__ == "__main__":
