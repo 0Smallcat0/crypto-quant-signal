@@ -143,6 +143,53 @@ substitute. Real, measured, cost-conservative — and not large enough to
 justify the machinery on its own if a simpler decorrelated flat-sleeve rule
 existed.
 
+## Addendum, same day — is the crypto edge one effect or two crashes?
+
+The whole-window edge (4.70×) could be an artifact of sitting out one or
+two crashes. Split across the **four sub-periods already declared** in
+`analyze_sleeve_combination.print_stress` — reused verbatim so the split
+cannot be chosen to flatter:
+
+**Trial 88 (BTC/ETH), average exposure 0.379**
+
+| Window | n | System | Twin | Edge |
+|---|---:|---:|---:|---:|
+| 2020 covid crash | 61 | 1.049 | 0.923 | **1.14** |
+| 2022 bear year | 365 | 0.801 | 0.702 | **1.14** |
+| 2018-2019 | 666 | 1.542 | 0.806 | **1.91** |
+| 2023-2025H1 | 913 | 2.045 | 1.855 | **1.10** |
+
+**Positive in all four.** Bull, bear, crash and mixed. The edge is not a
+single-episode artifact, which is the strongest statement this program has
+been able to make about any of its findings.
+
+**Trial 94 (13 symbols), average exposure 0.301**
+
+| Window | n | System | Twin | Edge |
+|---|---:|---:|---:|---:|
+| 2020 covid crash | 61 | 0.923 | 0.941 | 0.98 |
+| 2022 bear year | 365 | 0.706 | 0.789 | **0.90** |
+| 2018-2019 | 666 | 1.117 | 0.923 | 1.21 |
+| 2023-2025H1 | 913 | 1.936 | 1.503 | 1.29 |
+
+**Fails in both bear windows.** The 13-symbol book's whole-window edge of
+2.77× is regime-dependent in a way the 2-symbol book's is not — it earns in
+rising markets and loses to a static position in falling ones, which is the
+opposite of what a trend system is supposed to do.
+
+### The gap in this test, stated plainly
+
+The four windows total **2,005 of 2,676 days — 74.9%**. They do not tile the
+window: roughly **671 days from 2020-04 to 2021-12 are excluded**, and that
+is the largest bull run in the sample. Much of the whole-window compounding
+lives there and is untested by this split, so the sub-period edges do not
+multiply to 4.70×.
+
+Extending the split to cover every day would mean choosing new window
+boundaries after seeing results, which is exactly the move this program
+refuses. The honest statement is: **positive in all four windows that were
+declared in advance, with a quarter of the sample untested.**
+
 ### Route closed
 
 **"Replace the non-crypto sleeves with static holdings" is closed: it is

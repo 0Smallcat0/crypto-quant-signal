@@ -914,3 +914,35 @@
   forward-validated — **and standalone timing value is not the same
   quantity as portfolio timing value**, which this program had been
   conflating.
+
+## 2026-07-27 — iteration 19 (loop, step-0 check passed)
+
+- **Step 0.** Current answer unchanged going in. This iteration moves:
+  whether the program's ONLY positive finding (crypto timing edge 4.70x)
+  is a stable effect or an artifact of one or two crash episodes. Not
+  sprawl: no new script (extended `analyze_timing_value`), no new
+  document (addendum), and it attacks the central clause of the standing
+  answer.
+- **Split uses the four windows already declared** in
+  `analyze_sleeve_combination.print_stress`, reused verbatim so the split
+  could not be chosen after seeing results.
+- **Trial 88 (BTC/ETH): edge > 1 in all four windows** — covid 1.14,
+  2022 bear 1.14, 2018-2019 1.91, 2023-2025H1 1.10. Bull, bear, crash and
+  mixed. **Not a single-episode artifact.** This is the strongest
+  statement this program has made about any finding.
+- **Trial 94 (13 symbols): fails both bear windows** — covid 0.98, 2022
+  **0.90**, 2018-2019 1.21, 2023-2025H1 1.29. Its whole-window 2.77x is
+  regime-dependent: it earns in rising markets and loses to a static
+  position in falling ones, which is the opposite of what a trend system
+  is for.
+- **Gap stated plainly:** the four windows cover 2,005 of 2,676 days
+  (74.9%). They do not tile the sample — roughly 671 days from 2020-04 to
+  2021-12 are excluded, and that is the largest bull run in it. The
+  sub-period edges therefore do not multiply to 4.70x. Extending the
+  split would mean picking boundaries after seeing results, which this
+  program refuses.
+- **Standing answer restated, now with a robustness clause:** timing
+  works in crypto only; on BTC/ETH that edge is **positive in all four
+  pre-declared sub-periods**, on 13 symbols it is not; the search bought
+  drawdown rather than return; standalone and portfolio timing value are
+  different quantities; **nothing is forward-validated.**
