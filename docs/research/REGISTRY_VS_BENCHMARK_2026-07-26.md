@@ -123,3 +123,94 @@ That is a statement about scope, and scope is testable going forward.
 ```
 python -m scripts.analyze_registry_vs_benchmark
 ```
+
+---
+
+## Addendum 2026-07-27 — why 13 symbols lost, and the one mechanism underneath everything
+
+`scripts/analyze_symbol_dispersion.py` over the 13 local candle files, same
+window. Buy-and-hold per name:
+
+| Symbol | Listed | Buy-and-hold | Max drawdown |
+|---|---|---:|---:|
+| BNBUSDT | 2018-03-06 | **68.83×** | 76.07% |
+| SOLUSDT | 2020-08-11 | **44.53×** | 96.27% |
+| DOGEUSDT | 2019-07-05 | **40.77×** | 92.33% |
+| LINKUSDT | 2019-01-16 | 26.35× | 90.18% |
+| BTCUSDT | 2018-03-06 | 9.86× | 76.63% |
+| TRXUSDT | 2018-06-11 | 5.76× | 83.11% |
+| AVAXUSDT | 2020-09-22 | 3.21× | 93.49% |
+| ETHUSDT | 2018-03-06 | 2.96× | 89.78% |
+| XRPUSDT | 2018-05-04 | 2.44× | 84.99% |
+| ADAUSDT | 2018-04-17 | 2.23× | 93.74% |
+| DOTUSDT | 2020-08-18 | 1.06× | 94.14% |
+| XLMUSDT | 2018-05-31 | 0.76× | 90.49% |
+| LTCUSDT | 2018-03-06 | 0.42× | 88.78% |
+
+Mean 16.09×, **median 3.21×**. Top 1 name is 32.9% of the summed return,
+top 2 is 54.2%, **top 3 is 73.7%**. Two names lost money outright.
+**Every single name drew down at least 76%.**
+
+### The obvious reading, and why it is not enough
+
+The intuitive story is skew: a trend rule exits on weakness, so it trims
+exactly the names carrying the return. True as far as it goes — but
+**BTC/ETH is *more* top-heavy by that measure**, not less (BTC is 76.9% of
+that two-name sum against the 13-coin universe's 32.9%), and the rule *won*
+there. Concentration alone does not separate the cases.
+
+### What does separate them
+
+| | Sleeves | Rule returned | Best constituent held | Benchmark |
+|---|---:|---:|---:|---:|
+| Experiment 7 | 2 | **14.26×** | 9.86× (BTC) | 6.05× |
+| Experiment 8 | 13 | 9.39× (best arm) | 68.83× (BNB) | 13.53× |
+
+On two names the rule returned **more than either constituent's own
+buy-and-hold**. On thirteen it returned less than the average one.
+
+The mechanism is already measured elsewhere in this program:
+`CASH_AWARE_ALLOCATION_RESULT.md` found the three-sleeve book sits in
+**66.2% cash**, because each sleeve exits independently and its share of
+the book idles while it is flat. Thirteen independently-exiting sleeves
+idle far more than two. Against a benchmark that rose 13.53×, idle capital
+is ruinous; against one that rose 6.05× carrying an 81% drawdown, the
+protection still wins.
+
+### One mechanism, three previously separate results
+
+| Result | Explained as |
+|---|---|
+| Experiment 8: 0 of 8 beat buy-and-hold | 13 sleeves ⇒ most of the book in cash ⇒ misses a benchmark that rose 13.53× |
+| Three-sleeve combination: 3.94× against 5.42× held | 3 sleeves ⇒ 66.2% cash ⇒ same trade, smaller magnitude |
+| Cash-aware allocation: registered negative | Deploying the idle cash restores return but re-concentrates exactly when fewest markets trend |
+
+**The rule's advantage shrinks as the number of independently-exiting
+sleeves grows.** Every sleeve added buys drawdown reduction with
+compounding — one trade, not three separate findings.
+
+### Testable consequence, and it constrains the queue
+
+If this is right, a **fourth** sleeve should reduce return again and reduce
+drawdown again. The buy-and-hold gate now in
+`AUTONOMOUS_RESEARCH_LOOP.md` becomes the binding question: a candidate
+sleeve must beat holding *its own* market, because otherwise it dilutes the
+book toward cash for nothing.
+
+### Limits
+
+- **One window, one crypto cycle.** BNB, SOL and DOGE returning 40-70× is
+  a fact about 2018-2025, not a law.
+- **Survivorship is uncontrolled.** The 13 names come from a 2026
+  eligibility screen, so coins that died are absent and every buy-and-hold
+  figure here is flattered.
+- **Correlational.** Sleeve count is not the only difference between
+  experiments 7 and 8 — the universes differ in liquidity, listing dates
+  and volatility too. The cash-share mechanism is measured; the causal
+  claim across experiments is inference.
+
+### Reproduce
+
+```
+python -m scripts.analyze_symbol_dispersion
+```
