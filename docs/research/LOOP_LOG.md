@@ -1055,3 +1055,28 @@
   any number was used.
 - **Standing answer unchanged.** Forward validation remains the only
   unresolved item, and it needs time rather than analysis.
+
+## 2026-07-27 — iteration 23 (loop): analytical routes exhausted
+
+- **Step 0 returned "nothing to do", and that is the finding.** Every
+  remaining lever is structurally blocked: forward validation needs time,
+  the October holdout is operator-only, a new parameter family is refused
+  by P3, revising gate 3 after discovering it misranks would be changing
+  the rules after seeing results, and further diagnostics would not move
+  the standing answer.
+- **P1 verified, all three tracks healthy:**
+  - `CryptoShadowTrial88` last ran 2026-07-26 08:20:01 result 0, next
+    2026-07-27 08:20. Track at 2 rows through 2026-07-25 (one-day lag by
+    design — it records the last CLOSED daily candle).
+  - `TwShadow0050` shows last=1999-11-30 result=267011, which is
+    `SCHED_S_TASK_HAS_NOT_RUN`, not a failure: it was registered on a
+    Sunday and its first Saturday is 2026-08-01. 0050 at 1 row, GLD at 1
+    row, both written by the manual runs that created them.
+  - `CryptoResearchLoop` last ran 2026-07-26 21:37:01 result 0.
+- **Contract updated** with a "when the analytical routes are exhausted"
+  section, so a fresh-context iteration does not restart the diagnostic
+  treadmill. It names the three states that would unblock the work: ~90
+  days of forward rows, the October holdout spend, or an operator
+  override of P3.
+- **Standing answer unchanged**, and this iteration deliberately did not
+  try to change it.

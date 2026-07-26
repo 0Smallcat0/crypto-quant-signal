@@ -94,6 +94,33 @@ Hard limits, binding:
 > assets over the same window, not eight independent tests. On 13
 > symbols the same edge fails both bear windows.
 
+### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
+
+Step 0 was applied honestly and returned **nothing to do**. Every remaining
+lever is blocked, and the block is structural rather than temporary:
+
+| Lever | Why it is blocked |
+|---|---|
+| Forward validation | Needs **time**. Crypto gains one row/day at 08:20; Taiwan and gold one row/week. Analysis cannot accelerate it. |
+| October holdout | **Operator-only**, single-use, nominations fixed. |
+| A new parameter family | **P3 refuses it**, and the PBO/family measurements say the winner would not be trustworthy anyway. |
+| Revising gate 3 after finding it misranks | Changing the rules after seeing results. Refused by design, even though the defect is real and recorded. |
+| More diagnostics | Would not change the standing answer. Step 0 forbids running them. |
+
+**So the correct behaviour of an iteration that reaches this point is: do
+P1 maintenance, confirm the three tracks are gaining rows, and stop.** Do
+not manufacture a diagnostic in order to have something to commit.
+Twenty-three iterations produced the standing answer; the twenty-fourth
+cannot improve it without data that does not exist yet.
+
+**The state that would unblock this**, in order of when it can arrive:
+
+1. ~90 days of forward rows on all three tracks (from 2026-07-24), enough
+   to say anything at all about whether the measured edge persists.
+2. The October holdout spend, per `PRE_HOLDOUT_PROTOCOL.md`, operator-run.
+3. An operator override of P3 that accepts the recorded cost of a new
+   family.
+
 ## One iteration, in order
 
 1. **Read state** (~5 min): `docs/research/LOOP_LOG.md` (last entry),
