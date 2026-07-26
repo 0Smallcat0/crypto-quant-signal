@@ -657,27 +657,44 @@
 - **Registry-wide benchmark comparison**
   (`REGISTRY_VS_BENCHMARK_2026-07-26.md`). All 133 rows already carried
   `benchmark_final_equity`; nothing had ever read that column.
-- **Trial 88 ranks 1 of 16 in its own family.** Its system/benchmark
-  ratio is **2.381**; the family median is **1.242**; the spread runs
-  2.381 down to 0.419; and **8 of 16 members lose to buy-and-hold
-  outright**. A coin flip decides whether a family member beats holding
-  the asset, and the program carried forward the single best draw.
+- ~~**Trial 88 ranks 1 of 16 in its own family.** Its system/benchmark
+  ratio is 2.381; the family median is 1.242; the spread runs 2.381 down
+  to 0.419; and 8 of 16 members lose to buy-and-hold outright. A coin
+  flip decides whether a family member beats holding the asset.~~
+  **Retracted same day — the 16 rows are two different universes.**
+  Experiment 7 is BTC/ETH only (8 rows) and experiment 8 is the
+  13-symbol book (8 rows), declared as a separate test in exp 7's own
+  pre-registration. Pooling them averaged 100% and 0% into a fake 50%.
+- **Corrected: trial 88 ranks 1 of 8, and all 8 beat buy-and-hold.**
+  Family median 2.005, floor **1.789** — the worst member still beat
+  holding by 79%. Selection premium is 2.381/2.005 = **+18.8%**, not the
+  ~50% first claimed. Within BTC/ETH the effect is parameter-robust.
+- **But experiment 8 — the same rule on 13 symbols — beat buy-and-hold
+  in 0 of 8 configurations**, median ratio 0.543. The rule does not
+  survive universe expansion inside its own asset class.
+- **Distribution is bimodal, not random.** Families either win every arm
+  (exp 1, 2, 7, 9, 10) or lose most (exp 3, 5, 6, 8). The overall 57.9%
+  is the average of two modes and means little alone.
 - **Across the whole search: 77/133 (57.9%) beat buy-and-hold**, median
   ratio 1.099. Regime gate 8/33 (median 0.697), cross-sectional
   momentum 3/16 (median 0.643) — both lose in about three quarters of
   their configurations.
-- **Estimate revised, not the measurement.** Trial 88 really returned
-  14.26x. But a randomly-drawn family member would be expected at 1.242
-  against benchmark, not 2.381, so **roughly half the measured edge over
-  buy-and-hold is attributable to having picked the best member.** The
-  out-of-market tests landed below even the family median (Taiwan 0.277,
-  gold 0.349).
-- **Fourth independent line** saying the crypto result does not
-  generalize: PBO 0.7411, trial 118's cross-market refutation, losing to
-  buy-and-hold in two of three markets, and now family rank.
-- **Not proof the edge is zero.** Family median 1.242 is still above 1.
-  The claim is that 2.381 is inflated, not that the truth is 1.0. Only
-  forward data settles it — which is why P1 stays P1.
+- **The real finding is scope, not selection.** Every out-of-scope test
+  lands below the exp-7 family's *worst* member (floor 1.789): the
+  13-symbol crypto book 0.419-0.695, Taiwan 0.277, gold 0.349. So the
+  supportable statement is **"the rule works on BTC/ETH in this window,
+  robustly across 8 configurations, and has failed every extension
+  tested — more crypto symbols, another equity market, another asset
+  class."** Scope is testable going forward; a cherry-picking story is
+  not what the data says.
+- **Fourth independent line** saying the result does not generalize:
+  PBO 0.7411, trial 118's cross-market refutation, losing to
+  buy-and-hold in two of three markets, and now 0/8 on universe
+  expansion.
+- **Lesson recorded in the tool, not just the prose.** The grouping key
+  now carries the experiment number so two universes can never be
+  averaged together again. I made that mistake and published it before
+  catching it the same day.
 - **Correction duty executed**, not just declared: the word "untuned"
   removed from README and from the TW repo's `shadow_signal_tw.py`
   docstring. Frozen result documents keep their wording and are covered

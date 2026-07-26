@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import statistics
 from dataclasses import dataclass
 from pathlib import Path
@@ -57,11 +58,21 @@ class Row:
         return self.system > self.benchmark
 
     def family(self) -> str:
+        """Family key, including the experiment that ran it.
+
+        Grouping on the strategy name alone pooled experiment 7 (BTC/ETH,
+        8 configs) with experiment 8 (13 symbols, 8 configs) and produced a
+        meaningless "50% beat the benchmark": every exp-7 arm beat it and
+        every exp-8 arm lost. Different universes are different families.
+        """
+
         lowered = self.note.lower()
+        match = re.search(r"\bexp (\d+)\b", lowered)
+        suffix = f" exp{match.group(1)}" if match else ""
         for name, needles in _FAMILIES:
             if any(needle in lowered for needle in needles):
-                return name
-        return "other"
+                return f"{name}{suffix}"
+        return f"other{suffix}"
 
 
 def read_rows(path: Path) -> list[Row]:
