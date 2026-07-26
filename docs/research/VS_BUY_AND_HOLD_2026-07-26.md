@@ -68,9 +68,23 @@ say that selection channel does not generalize: candidates-PBO 0.7411 across
 distinct architectures, and trial 118 — the same family's best-evidenced
 candidate — turned negative when run unchanged on another market.
 
-The three-sleeve equal-weight book is at the opposite end: **no parameter was
-chosen anywhere in it.** Same untuned rule, fixed weights declared in
-advance, three markets.
+~~The three-sleeve equal-weight book is at the opposite end: **no parameter
+was chosen anywhere in it.** Same untuned rule, fixed weights declared in
+advance, three markets.~~
+
+**Corrected the same day — see
+[`SELECTION_PROVENANCE_CORRECTION_2026-07-26.md`](SELECTION_PROVENANCE_CORRECTION_2026-07-26.md).**
+The sentence above is false. The channel windows 10/20/55/110 are
+experiment 7's winner and the `mid_channel` exit was selected from an
+eight-arm grid by a maximize-Sharpe rule — both on crypto data. What was
+genuinely unchosen is narrower: the **transfer** to Taiwan and gold (nothing
+re-fit per market) and the **portfolio construction** (equal weights,
+monthly, declared before computing). The signal rule carries crypto's search
+history into every sleeve.
+
+This makes the table above read *worse*, not better: Taiwan and gold are
+out-of-sample tests of a crypto-selected rule, and in both it lost badly to
+holding the asset.
 
 So the honest comparison is not "14.26× beats 3.94×". It is:
 
