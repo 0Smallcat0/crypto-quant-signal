@@ -596,3 +596,28 @@
   permitted only under the market-shopping guard, and must be weighed
   against the measured cost — every sleeve so far bought a smaller
   drawdown with terminal wealth.
+
+## 2026-07-26 (later still) — where the money goes, and a closed route
+
+- **Diagnostic** (`analyze_idle_capital.py`, no registry cost): the
+  three-sleeve book holds **66.2% cash on average**, mean gross exposure
+  0.3380, while at least one sleeve is long on 87.4% of days. The
+  terminal-wealth cost of combining is mostly idle capital, not the
+  arithmetic of diversification.
+- **Pre-registered and run the same sitting** (operator override
+  recorded): equal share among the sleeves actually long, zero free
+  parameters, gross provably never above 1.
+- **REGISTERED NEGATIVE** (`CASH_AWARE_ALLOCATION_RESULT.md`).
+  Deployment 0.3380 to 0.5557 and multiple 3.94x to 4.39x, but drawdown
+  14.90% to **23.49%** and Sharpe 1.4108 to **1.3027**. Two of three
+  criteria fail. The pre-registration had already written what this
+  would mean: the idle cash was buying something real.
+- **Route closed with a mechanism**: within product law (spot,
+  long-only, unlevered) the smoother path and the smaller multiple are
+  the same fact, and reallocating idle capital does not separate them.
+  The rule concentrates hardest exactly when fewest markets trend. This
+  is an upper bound — reallocation costs are unmodelled and would only
+  make it worse.
+- **Do not re-open this by adding a cap parameter or a tilt.** That is a
+  parameter family on a portfolio rule, and P3 refuses those for the
+  same reason it refuses them on signals.
