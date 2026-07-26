@@ -808,3 +808,37 @@
 - Written into `REGISTRY_VS_BENCHMARK_2026-07-26.md` as a dated addendum.
 - **Next: P1 unchanged.** No new family. If a fourth sleeve is ever
   proposed, this addendum is the prior it has to beat.
+
+## 2026-07-27 — iteration 16 (loop, self-paced): iteration 15 retracted
+
+- Iteration 15 labelled its own central claim "inference, not
+  measurement". This iteration measured it. **It failed.**
+- **Deployment, measured from `targets[].cash_weight`:** trial 88
+  (2 symbols) mean gross **0.3785**; trial 94 (13 symbols) **0.3011**;
+  trial 96 (13 symbols, mid-channel) **0.2631**. The gap is real but only
+  ~20% relative — it cannot explain a 3.4x swing in benchmark-relative
+  performance. **The sleeve-count synthesis is retracted.**
+- **Backup hypothesis also refuted.** "Buy-and-hold wins by letting BNB
+  and SOL drift to dominate while the ladder re-snaps to equal budgets"
+  predicts drift >> rebalanced. Measured across all 13: drift **16.09x**,
+  daily-rebalanced equal weight **17.51x**. A wash.
+- **A bug was caught before publication.** The first rebalancing
+  computation returned 176.27x against a constituent mean of 16.09x.
+  Implausible on its face; the loop double-counted cash for unlisted
+  names. Rewritten with a sanity check on the six full-history names
+  (drift 14.46x, rebalanced 9.04x — sensible) before any number was used.
+  **Not reported as a finding at any point.**
+- **Corrected reading, simpler and less flattering to the analysis:**
+  both books add real timing value over their own exposure. Trial 88
+  turned a 6.05x benchmark into 14.26x at 37.9% average exposure; trial
+  94 turned a 13.53x benchmark into 9.39x at 30.1%. **Experiment 8 did
+  not collapse — its benchmark was 2.2x stronger**, and a
+  benchmark-relative test penalises operating in a market that rose more.
+- **Methodological consequence for the contract's buy-and-hold gate:** it
+  remains the right test for "hold this instead of the asset?", but it is
+  NOT a measure of strategy quality across markets. A sleeve can fail the
+  gate purely because its market went up a lot. That distinction now
+  belongs in any fourth-sleeve pre-registration.
+- Second self-retraction in two days, both caught by my own follow-up
+  measurement rather than by a reader.
+- **Next: P1 unchanged.** No new family.
