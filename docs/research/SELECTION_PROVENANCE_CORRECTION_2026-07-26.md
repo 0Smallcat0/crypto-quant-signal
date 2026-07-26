@@ -12,22 +12,35 @@ That second phrasing is false, and I wrote it.
 
 ## What the record actually says
 
-`docs/research/GOALP_EXPERIMENT8_PREREGISTRATION.md`, frozen before the run
-that produced trial 88:
+Trial 88 is an **experiment 7** row (`operator_note`: *"Goal P exp 7 family
+member: donchian ensemble windows=10+20+55+110 exit=mid_channel gate=off"*).
+Its own frozen pre-registration,
+`docs/research/GOALP_EXPERIMENT7_PREREGISTRATION.md`:
 
-- line 54 — `window set ∈ { {10,20,55,110} (fast — exp-7 winner shape), …`
+- line 54 — `## Family grid (8 configurations, all registered)`
+- line 56 — `window set ∈ { {10,20,55,110}, {20,55,110,220} }`
 - line 57 — `exit rule ∈ { half_low, mid_channel }`
-- line 66 — `Family winner = highest full-window annualized Sharpe.`
+- line 65 — `Family winner = highest full-window annualized Sharpe.`
 
 So the configuration carried into every sleeve — Donchian 10/20/55/110 with
-a mid-channel exit — is:
+a mid-channel exit, gate off — was **selected as the maximum-Sharpe member
+of an eight-configuration grid, on crypto data**, and experiment 8 then
+inherited it (its line 54 calls `{10,20,55,110}` the *"exp-7 winner
+shape"*), carrying the choice forward a second time.
 
-1. a **window set inherited from experiment 7's winner**, itself chosen from
-   candidate window shapes on crypto data, and
-2. an **exit rule selected as one of two arms** in an eight-configuration
-   grid, by an explicit maximize-Sharpe selection rule, on crypto data.
-
-Two rounds of selection, both in crypto.
+> **Correction, 2026-07-26.** An earlier version of this section attributed
+> the grid to experiment 8. Experiment 8 is the 13-symbol book; trial 88 is
+> an experiment 7 row on BTC/ETH. The substance is unchanged and is now
+> better sourced — a max-Sharpe pick from an 8-arm grid on crypto data —
+> but the experiment number was wrong and is fixed here.
+>
+> A second correction belongs here too: this document said the Taiwan and
+> gold failures showed the rule "does not generalize", implying the crypto
+> result was itself fragile. `REGISTRY_VS_BENCHMARK_2026-07-26.md` measured
+> that directly — **all 8 experiment-7 configurations beat buy-and-hold,
+> the worst by 79%** — so within BTC/ETH the effect is parameter-robust and
+> the selection premium is only +18.8%. The failures are about **scope**,
+> not about the winner being a lucky draw.
 
 ## What is still true, stated precisely
 
