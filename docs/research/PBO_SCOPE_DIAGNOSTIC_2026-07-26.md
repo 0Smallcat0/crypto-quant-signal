@@ -45,9 +45,44 @@ composition rather than evidence about the strategies.
 > "known weak" control on the strength of its buy-and-hold ratio. On the
 > exposure-matched metric it is not weak. That is the same confound
 > iteration 17 identified — judging a partly-invested system against a
-> fully-invested benchmark — biting again inside one session. Only four of
-> exp-5's eight members were measured on the twin metric; the other four
-> are untested, and exp-3's twin edges were not measured at all.
+> fully-invested benchmark — biting again inside one session.
+
+> **Addendum 2026-07-27 (iteration 22) — all four families measured.** The
+> claim above rested on two families. The other two were measured to test
+> it, since either could have refuted it:
+>
+> | Family | PBO | Twin edges | Spread | Members with edge |
+> |---|---:|---|---:|---:|
+> | exp-7 donchian BTC/ETH | **0.7415** | 3.84–4.70 | 1.22× | **8/8** |
+> | exp-8 donchian-13 | **0.6830** | 2.33–2.92 | 1.25× | **8/8** |
+> | exp-3 cs-momentum | 0.2789 | 0.04–20.22 | **505×** | **2/8** |
+> | exp-5 regime gate | 0.0482 | 1.85–5.96 | 3.2× | 4/4 measured |
+>
+> **The grouping holds: both tight families have high PBO (0.68, 0.74) and
+> both dispersed families have low PBO (0.05, 0.28).** The fine ordering
+> does not — exp-3 is 150× more dispersed than exp-5 yet scores a higher
+> PBO. Dispersion explains the split, not the ranking, and n = 4.
+>
+> **The decision-relevant statement is now sharper and rests on four
+> families rather than two:**
+>
+> - The two families where **every measured member has a real
+>   exposure-adjusted edge** (exp-7 and exp-8, 8/8 each) are the two with
+>   the **worst** PBO.
+> - The family where **only 2 of 8 members have any edge** (exp-3 — six
+>   members score between 0.04 and 1.00) scores a **better** PBO than both.
+>
+> **Gate 3 would therefore rank exp-3 as safer than exp-7.** PBO is a valid
+> statement about whether a *pick* can be trusted; it is not a statement
+> about whether the family works, and this program has been reading it as
+> the latter.
+>
+> **Method note:** the first exp-8 run exited 1. The cause was mine — a
+> PowerShell format string emitting `trial-0000100` instead of
+> `trial-000100` for the two three-digit ids. Fixed and rerun to exit 0
+> before any number here was used.
+>
+> **Still untested:** four of exp-5's eight members.
 
 One representative per distinct strategy architecture, nine columns:
 

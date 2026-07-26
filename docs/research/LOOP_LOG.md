@@ -1022,3 +1022,36 @@
   rather than return; **PBO 0.7415 for that family reflects members being
   indistinguishable, not absence of edge**; **nothing is
   forward-validated**, which is now the only unresolved item.
+
+## 2026-07-27 — iteration 22 (loop, step-0 check passed)
+
+- **Step 0.** Iteration 21 published "PBO tracks dispersion, not edge" on
+  only two families. This iteration measured the other two, which could
+  have refuted it. Not sprawl: no new script, no new document, tests a
+  claim published one iteration earlier.
+- **All four families now measured on the same exposure-matched metric:**
+
+| Family | PBO | Twin edges | Spread | Members with edge |
+|---|---:|---|---:|---:|
+| exp-7 donchian BTC/ETH | **0.7415** | 3.84-4.70 | 1.22x | **8/8** |
+| exp-8 donchian-13 | **0.6830** | 2.33-2.92 | 1.25x | **8/8** |
+| exp-3 cs-momentum | 0.2789 | 0.04-20.22 | **505x** | **2/8** |
+| exp-5 regime gate | 0.0482 | 1.85-5.96 | 3.2x | 4/4 measured |
+
+- **Grouping confirmed, ranking not.** Both tight families have high PBO
+  (0.68, 0.74); both dispersed families have low PBO (0.05, 0.28). But
+  exp-3 is 150x more dispersed than exp-5 and still scores higher PBO, so
+  dispersion explains the split and not the order. n = 4.
+- **Sharpest form of the finding:** the two families where EVERY measured
+  member has a real exposure-adjusted edge are the two with the WORST
+  PBO. The family where only 2 of 8 members have any edge scores BETTER
+  than both. **Gate 3 would rank exp-3 as safer than exp-7.**
+- **exp-8 clarification:** all 8 members are positive whole-window
+  (2.33-2.92) even though iteration 19 found it fails both bear
+  sub-windows. Both are true and neither was retracted.
+- **My own bug, recorded:** the first exp-8 run exited 1 because a
+  PowerShell format string emitted `trial-0000100` instead of
+  `trial-000100`. Caught by the exit code, fixed, rerun to exit 0 before
+  any number was used.
+- **Standing answer unchanged.** Forward validation remains the only
+  unresolved item, and it needs time rather than analysis.
