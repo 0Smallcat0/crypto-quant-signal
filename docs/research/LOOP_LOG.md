@@ -621,3 +621,33 @@
 - **Do not re-open this by adding a cap parameter or a tilt.** That is a
   parameter family on a portfolio rule, and P3 refuses those for the
   same reason it refuses them on signals.
+
+## 2026-07-26 (last) — the comparison the program answers to, and a correction
+
+- **Against buy-and-hold** (`VS_BUY_AND_HOLD_2026-07-26.md`). Every
+  report already carried a `benchmark_equity` series and no document had
+  ever read it. The trend rule beats holding the asset in **one of three
+  markets**: crypto 14.26x vs 6.05x (and 33% drawdown vs 81%), but
+  Taiwan 2.15x vs **7.75x** and gold 2.44x vs **6.99x** — gold loses on
+  Sharpe too. The three-sleeve book: 3.94x vs **5.42x** for holding the
+  same three assets equally, winning on drawdown (14.90% vs 40.59%) and
+  Sharpe (1.41 vs 1.05). **It is a risk-preference result, not a return
+  result**, and the README now says so.
+- **Correction, same day**
+  (`SELECTION_PROVENANCE_CORRECTION_2026-07-26.md`). Calling the sleeve
+  rule "untuned" was false and I had written it hours earlier.
+  Experiment 8's frozen pre-registration names {10,20,55,110} as
+  experiment 7's winner (line 54), lists `mid_channel` as one of two
+  exit arms (line 57), and declares the winner as highest full-window
+  Sharpe (line 66). Two rounds of selection, both on crypto.
+- **Precise survivor:** the *transfer* to Taiwan and gold was untuned and
+  the *portfolio construction* chose nothing. The *signal rule* carries
+  crypto's search history everywhere it goes. Frozen result docs were
+  not edited; the README and today's diagnostic were corrected in place.
+- **This is the third independent line** saying the crypto result does
+  not generalize, alongside PBO 0.7411 and trial 118's cross-market
+  refutation.
+- **Queue tightened:** a fourth sleeve must now beat buy-and-hold in its
+  own market on return or Sharpe **before** it can be proposed. Adding a
+  leg that loses on both, purely for a portfolio-level Sharpe bump, is
+  buying drawdown reduction that holding less would buy more cheaply.

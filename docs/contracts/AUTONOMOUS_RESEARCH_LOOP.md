@@ -42,6 +42,48 @@ positive is the only forbidden result.
    Never skip this step; training-data-only reasoning is not research.
 3. **Advance the queue** (the bulk of the iteration).
 
+   **Queue as of 2026-07-26 (latest) — a sleeve must beat buy-and-hold
+   in its own market before it may be added**
+
+   Two measurements taken after the queue below was written change what
+   a sleeve has to prove.
+
+   1. `VS_BUY_AND_HOLD_2026-07-26.md`: the trend rule beats simply
+      holding the asset in **one** of three markets. Taiwan 2.15x
+      against 7.75x, gold 2.44x against 6.99x, and the gold sleeve
+      loses on Sharpe as well. The three-sleeve book made 3.94x against
+      5.42x for holding the same three assets equally — it wins on
+      drawdown (14.90% against 40.59%) and Sharpe, and loses on money.
+   2. `SELECTION_PROVENANCE_CORRECTION_2026-07-26.md`: the rule is not
+      untuned. Windows 10/20/55/110 are experiment 7's winner and
+      `mid_channel` was selected from an eight-arm grid by a
+      maximize-Sharpe rule, both on crypto data. Taiwan and gold are
+      therefore out-of-sample tests of a crypto-selected rule, and it
+      lost both.
+
+   - **P1 (unchanged, still first): keep all three forward tracks
+     recording.** They are the only unbiased evidence this program can
+     still generate.
+   - **P2 (tightened): a fourth sleeve must clear a buy-and-hold gate
+     BEFORE it is proposed.** Pre-register it, run it once, and require
+     that the sleeve beat buy-and-hold **in its own market on at least
+     one of return or Sharpe**. A sleeve that loses on both is buying
+     drawdown reduction the operator could buy more cheaply by simply
+     holding less of everything, and it must not be added on a
+     portfolio-level Sharpe improvement alone. The market-shopping
+     guard in `SLEEVE3_GOLD_PREREGISTRATION.md` still binds: every
+     market tried is reported, not only the survivor.
+   - **P3 (unchanged): no new single-market parameter families**, and
+     no re-opening the cash-aware allocation route with a cap parameter
+     or a tilt.
+   - **Standing correction duty:** three independent lines now say the
+     crypto result does not generalize — PBO 0.7411, trial 118's
+     cross-market refutation, and the buy-and-hold comparison above.
+     Any document written from here that describes the rule as
+     "untuned", or the combination as choosing nothing, is wrong and
+     must be corrected in place the same day.
+   - Superseded queue (kept for provenance):
+
    **Queue as of 2026-07-26 (later) — three sleeves exist; forward
    evidence is now the binding constraint**
 
