@@ -127,3 +127,72 @@ same commit as this document.
 ```
 python -m scripts.analyze_vs_buy_and_hold
 ```
+
+---
+
+## Addendum 2026-07-27 — against the strongest naive benchmark there is
+
+`REGISTRY_VS_BENCHMARK_2026-07-26.md` recorded that experiment 8 (the
+13-symbol book) beat buy-and-hold in 0 of 8 configurations. A ratio cannot
+say whether that is the system collapsing or the benchmark being enormous.
+Measured directly:
+
+| Book, 2018-03 → 2025-07 | Sharpe | Max drawdown | Multiple |
+|---|---:|---:|---:|
+| **Trial 88 system (BTC/ETH)** | **1.1829** | **33.05%** | **14.26×** |
+| BTC/ETH buy-and-hold | 0.7081 | 80.99% | 6.05× |
+| Experiment 8 best system (13 coins) | 0.9728 | 51.54% | 9.39× |
+| **13-coin equal-weight buy-and-hold** | 0.8469 | **86.22%** | **13.53×** |
+
+**Experiment 8 did not collapse.** Its median arm still returned 7.33× and
+its best 9.39×. It lost on ratio because the 13-coin benchmark returned
+13.53× — 2.2× what the BTC/ETH benchmark returned. Trend-following on
+altcoins made real money and still could not keep up with holding them.
+
+### The comparison that matters most, and it is uncomfortable
+
+**Trial 88 returned 14.26×. Buying thirteen coins in March 2018 and never
+looking at them again returned 13.53×.**
+
+A 5.4% margin, over 7.3 years, after 133 registered trials.
+
+On return alone, this entire program bought almost nothing over the most
+naive possible crypto strategy.
+
+### What it did buy, and it is not nothing
+
+| | Trial 88 | 13-coin hold |
+|---|---:|---:|
+| Worst drawdown | **33.05%** | **86.22%** |
+| Sharpe | 1.1829 | 0.8469 |
+
+An 86% drawdown is the difference between a position a person holds and one
+they capitulate out of at the bottom. Almost nobody holds through 86%. The
+system's product is not return — **it is the drawdown that makes the return
+reachable.**
+
+That is the same conclusion the three-sleeve combination reached, now
+measured against the strongest naive alternative rather than against other
+systems.
+
+### Mechanism note
+
+Experiment 8 traded **1,516 times against experiment 7's 396** — roughly
+four times the trades, spread over 13 names — while running *lower*
+annualized turnover (6.38 against 8.55) because each name holds a
+thirteenth of the book. So the shortfall is not primarily cost drag. It is
+that thirteen independently-exiting sleeves are rarely all invested at
+once, and buy-and-hold captures every altcoin's full run while the trend
+rule sits out parts of each.
+
+That is the same flat-sleeve mechanism the combination results depend on —
+here it costs money instead of saving it, because the benchmark went
+straight up.
+
+### Limits
+
+- One window, one crypto cycle, and a 13-coin universe selected by the
+  project's own eligibility screen in 2026 — **survivorship is not
+  controlled**. Coins that died before the screen ran are absent from the
+  benchmark, which flatters buy-and-hold's 13.53×.
+- Benchmarks pay entry cost but no ongoing cost.
