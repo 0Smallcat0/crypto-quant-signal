@@ -739,3 +739,36 @@
   --check` 125 files already formatted; `lint-imports` 13 contracts
   kept / 0 broken; `mypy --strict src/` 58 files, no issues;
   `pytest -m "not network"` 378 passed. Tree left green.
+
+## 2026-07-27 — iteration 14 (loop, self-paced)
+
+- **P1 checked first: all three tracks healthy.** Crypto shadow last ran
+  2026-07-26 08:20 (result 0), track at 2 rows through 2026-07-25. The
+  one-day lag is by design, not a defect: the script records the last
+  fully closed daily candle. Next fire 2026-07-27 08:20.
+- **Resolved the exp-8 confound.** Yesterday's "0 of 8 beat buy-and-hold"
+  could not distinguish a collapsing system from an enormous benchmark.
+  Measured: exp 8's median arm returned 7.33x and its best 9.39x, while
+  the 13-coin benchmark returned **13.53x** — 2.2x the BTC/ETH
+  benchmark's 6.05x. The system made real money and still lost.
+- **The comparison this program had never made.** Trial 88 returned
+  **14.26x**; buying thirteen coins in March 2018 and never looking again
+  returned **13.53x**. A 5.4% margin after 133 registered trials.
+- **What the search actually bought: drawdown, not return.** 33.05%
+  against 86.22%, Sharpe 1.1829 against 0.8469. An 86% drawdown is the
+  difference between a position a person holds and one they capitulate
+  out of. Same conclusion as the combination results, now measured
+  against the strongest naive alternative rather than against other
+  systems.
+- **Mechanism, not cost drag.** Exp 8 traded 1,516 times against exp 7's
+  396 while running *lower* turnover (6.38 against 8.55) — thirteen
+  independently-exiting sleeves are rarely all invested at once, and
+  buy-and-hold captures every altcoin's full run.
+- **Limit recorded against the finding:** the 13-coin universe came from
+  a 2026 eligibility screen, so **survivorship is uncontrolled** and the
+  13.53x benchmark is flattered by coins that never died.
+- Written into `VS_BUY_AND_HOLD_2026-07-26.md` as a dated addendum.
+- **Next: P1 stays P1.** No new family. The open scope question is
+  whether the BTC/ETH effect is a two-asset phenomenon or a
+  large-cap-only one; a fourth sleeve must still clear the buy-and-hold
+  gate before being proposed.
