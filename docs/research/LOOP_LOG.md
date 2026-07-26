@@ -946,3 +946,36 @@
   pre-declared sub-periods**, on 13 symbols it is not; the search bought
   drawdown rather than return; standalone and portfolio timing value are
   different quantities; **nothing is forward-validated.**
+
+## 2026-07-27 — iteration 20 (loop, step-0 check passed)
+
+- **Step 0.** Moves the biggest remaining doubt about the only positive
+  finding: trial 88 is the MAXIMUM of its 8-member family and PBO is
+  0.7411, but the exposure-matched twin had only ever been run on the
+  winner. Not sprawl: **zero code change** (`--report` already existed),
+  no new script, no new document.
+- **Eight of eight family members beat their exposure-matched twin.**
+  Edges 3.88 / 4.17 / **4.70 (trial 88)** / 4.15 / 3.84 / 4.16 / 4.08 /
+  3.95. Range 3.84-4.70, median **4.115**. The family FLOOR beats its
+  twin by 3.84x.
+- **Trial 88's selection premium is +14.2%** over a randomly-drawn family
+  member. **Selection chose the edge's size, not its existence.**
+- **Regime robustness is not unique to the winner either.** Non-winners
+  86 and 93, same pre-declared windows: 1.09/1.08/1.89/1.06 and
+  1.06/1.37/1.71/1.03 — both positive in all four.
+- **Stated against the finding:** the eight are NOT eight independent
+  tests. They are a 2x2x2 grid (window set x exit x gate) on the same two
+  assets over the same window. "Eight of eight" means no parameter choice
+  inside that grid destroys the edge, not that it survived eight separate
+  chances to fail. **PBO 0.7411 was measured across distinct
+  architectures on Sharpe rankings and remains unanswered.**
+- **Method note:** the first run printed correct numbers while returning
+  exit code 255. Rerun bare it exits 0 — PowerShell's `Select-Object
+  -First` closed the pipe. Numbers were used only after that check. This
+  project has been bitten twice by pipes masking exit codes.
+- **Standing answer restated:** timing works in crypto only; on BTC/ETH
+  the edge is positive in all four pre-declared sub-periods AND all eight
+  family members, with a selection premium of only +14.2%; on 13 symbols
+  it fails both bear windows; the search bought drawdown rather than
+  return; standalone and portfolio timing value differ; **nothing is
+  forward-validated and PBO remains unanswered.**
