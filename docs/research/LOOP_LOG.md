@@ -651,3 +651,34 @@
   own market on return or Sharpe **before** it can be proposed. Adding a
   leg that loses on both, purely for a portfolio-level Sharpe bump, is
   buying drawdown reduction that holding less would buy more cheaply.
+
+## 2026-07-26 (final) — the winner is the maximum of its family
+
+- **Registry-wide benchmark comparison**
+  (`REGISTRY_VS_BENCHMARK_2026-07-26.md`). All 133 rows already carried
+  `benchmark_final_equity`; nothing had ever read that column.
+- **Trial 88 ranks 1 of 16 in its own family.** Its system/benchmark
+  ratio is **2.381**; the family median is **1.242**; the spread runs
+  2.381 down to 0.419; and **8 of 16 members lose to buy-and-hold
+  outright**. A coin flip decides whether a family member beats holding
+  the asset, and the program carried forward the single best draw.
+- **Across the whole search: 77/133 (57.9%) beat buy-and-hold**, median
+  ratio 1.099. Regime gate 8/33 (median 0.697), cross-sectional
+  momentum 3/16 (median 0.643) — both lose in about three quarters of
+  their configurations.
+- **Estimate revised, not the measurement.** Trial 88 really returned
+  14.26x. But a randomly-drawn family member would be expected at 1.242
+  against benchmark, not 2.381, so **roughly half the measured edge over
+  buy-and-hold is attributable to having picked the best member.** The
+  out-of-market tests landed below even the family median (Taiwan 0.277,
+  gold 0.349).
+- **Fourth independent line** saying the crypto result does not
+  generalize: PBO 0.7411, trial 118's cross-market refutation, losing to
+  buy-and-hold in two of three markets, and now family rank.
+- **Not proof the edge is zero.** Family median 1.242 is still above 1.
+  The claim is that 2.381 is inflated, not that the truth is 1.0. Only
+  forward data settles it — which is why P1 stays P1.
+- **Correction duty executed**, not just declared: the word "untuned"
+  removed from README and from the TW repo's `shadow_signal_tw.py`
+  docstring. Frozen result documents keep their wording and are covered
+  by the correction file.
