@@ -135,7 +135,7 @@ The Core MVP is **complete and verified** (foundation → daily strategy → bac
 
 The trial-118 story is the one worth reading: it passed every in-sample bar, cleared a full adversarial robustness battery, and was then run **unchanged** on Taiwan's 0050 ETF over 21 years, where it lost 34% while the index rose 687%. The single parameter that made it the best crypto candidate is worth +0.06 Sharpe in crypto and **−0.73 in Taiwan**. It was a fit, not an edge — and the repo says so in [`docs/research/GOALP_EXPERIMENT10_RESULT.md`](docs/research/GOALP_EXPERIMENT10_RESULT.md).
 
-What survived: the *untuned* mid-channel rule is positive in every market it has been run in, and those returns are close to uncorrelated with each other. Combining them at **fixed equal weights** — no parameter chosen anywhere, weights frozen before computing — is the only thing in this repo that has improved results without selecting something:
+What survived: the same mid-channel rule — *selected in crypto, then applied unchanged elsewhere* — is positive in every market it has been run in, and those returns are close to uncorrelated with each other. Combining them at **fixed equal weights**, frozen before computing, is the only thing in this repo that improved results without selecting anything at the portfolio level:
 
 | Book (common window 2018-03 → 2025-07) | Sharpe | Worst drawdown | Multiple |
 |---|---:|---:|---:|
