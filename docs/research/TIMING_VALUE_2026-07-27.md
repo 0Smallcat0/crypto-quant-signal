@@ -190,6 +190,59 @@ boundaries after seeing results, which is exactly the move this program
 refuses. The honest statement is: **positive in all four windows that were
 declared in advance, with a quarter of the sample untested.**
 
+## Addendum, same day — the edge belongs to the family, not to the pick
+
+The remaining doubt about the only positive finding was selection: trial 88
+is the **maximum** of its 8-member experiment-7 family, and this program's
+own PBO is 0.7411. But the exposure-matched twin had only ever been run on
+the winner. Run on all eight:
+
+| Trial | Exposure | System | Twin | **Edge** |
+|---|---:|---:|---:|---:|
+| 86 | 0.396 | 12.23× | 3.15× | 3.88 |
+| 87 | 0.317 | 10.92× | 2.62× | 4.17 |
+| **88 (the pick)** | 0.379 | 14.26× | 3.03× | **4.70** |
+| 89 | 0.310 | 10.71× | 2.58× | 4.15 |
+| 90 | 0.403 | 12.31× | 3.20× | 3.84 |
+| 91 | 0.349 | 11.77× | 2.83× | 4.16 |
+| 92 | 0.374 | 12.25× | 3.00× | 4.08 |
+| 93 | 0.337 | 10.87× | 2.75× | 3.95 |
+
+**Eight of eight. Range 3.84 to 4.70, median 4.115.** The family *floor*
+beats its twin by 3.84×.
+
+Trial 88's selection premium over a randomly-drawn family member is
+**4.70 / 4.115 = +14.2%**. Selection chose the edge's **size**, not its
+**existence** — a materially different claim from the one this program had
+been braced for.
+
+Spot-checking regime robustness on two non-winners with the same
+pre-declared windows: trial 86 scores 1.09 / 1.08 / 1.89 / 1.06 and trial 93
+scores 1.06 / 1.37 / 1.71 / 1.03. **Both positive in all four**, like the
+winner. The regime robustness is not unique to the selected member either.
+
+### Why this does not dispose of PBO
+
+The eight are **not eight independent tests.** They are a 2×2×2 grid
+(window set × exit rule × regime gate) on the *same two assets* over the
+*same window*. "Eight of eight" means **no parameter choice inside that grid
+destroys the edge** — not that the edge survived eight separate
+opportunities to fail.
+
+PBO 0.7411 was measured across *distinct architectures* on Sharpe rankings,
+a different question that remains unanswered by this. What changed is
+narrower: for **this** claim — exposure-adjusted return on BTC/ETH — the
+family is homogeneously positive, so the specific worry that the winner was
+a lucky draw is not supported.
+
+### Method note
+
+The first run of this test reported exit code 255 while printing correct
+numbers. Rerun bare it exits 0 — the 255 came from PowerShell's
+`Select-Object -First` closing the pipe early, not from the script. The
+numbers were only used after that check. This project has twice been bitten
+by pipes masking exit codes.
+
 ### Route closed
 
 **"Replace the non-crypto sleeves with static holdings" is closed: it is

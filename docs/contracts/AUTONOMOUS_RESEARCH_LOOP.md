@@ -84,6 +84,15 @@ Hard limits, binding:
 > earn their place by **being flat at moments uncorrelated with crypto's
 > drawdowns**, not by their own returns. Route closed: do not propose
 > static substitution again.
+>
+> Refinement 2026-07-27 (iterations 19-20): the BTC/ETH timing edge is
+> **positive in all four pre-declared sub-periods** and **in all eight
+> members of its experiment-7 family** (edge 3.84 to 4.70, median 4.115).
+> Trial 88's selection premium is only **+14.2%** over the family median,
+> so selection chose the edge's size, not its existence. This does NOT
+> dispose of PBO 0.7411 — the eight are a 2x2x2 grid on the same two
+> assets over the same window, not eight independent tests. On 13
+> symbols the same edge fails both bear windows.
 
 ## One iteration, in order
 
