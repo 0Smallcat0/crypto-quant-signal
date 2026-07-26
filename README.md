@@ -155,7 +155,11 @@ The price is stated as plainly as the gain, and it is not small:
 
 **The combination made less money than simply holding the same assets.** It is a risk-preference result, not a return result. Two of the three sleeves lose badly to buy-and-hold on return (Taiwan 2.15× vs 7.75×; gold 2.44× vs 6.99×) — the trend rule only earns its keep in crypto.
 
-The counter-argument is in the same document: the 14.3× is the **most search-contaminated number here** — the survivor of 133 trials, in a program whose own PBO says that selection does not generalize — while the equal-weight combination is the one where **nothing was chosen at all**. Full tables, plus the stress test where gold's correlation *rose* rather than fell: [`VS_BUY_AND_HOLD_2026-07-26.md`](docs/research/VS_BUY_AND_HOLD_2026-07-26.md), [`SLEEVE3_GOLD_RESULT.md`](docs/research/SLEEVE3_GOLD_RESULT.md), [`CROSSMARKET_COMBINATION_RESULT.md`](docs/research/CROSSMARKET_COMBINATION_RESULT.md).
+The counter-argument is in the same document: the 14.3× is the **most search-contaminated number here** — the survivor of 133 trials, in a program whose own PBO says that selection does not generalize — while the combination's *weights* and its *transfer* to new markets chose nothing.
+
+But the signal rule itself did not come from nowhere either, and saying otherwise was an error corrected the same day: the channel windows are experiment 7's winner and the exit was picked from an eight-arm grid by a maximize-Sharpe rule, both on crypto data ([`SELECTION_PROVENANCE_CORRECTION_2026-07-26.md`](docs/research/SELECTION_PROVENANCE_CORRECTION_2026-07-26.md)). That makes Taiwan and gold **out-of-sample tests of a crypto-selected rule — and it lost to buy-and-hold in both.** Three independent lines of evidence now point the same way.
+
+Full tables, plus the stress test where gold's correlation *rose* rather than fell: [`VS_BUY_AND_HOLD_2026-07-26.md`](docs/research/VS_BUY_AND_HOLD_2026-07-26.md), [`SLEEVE3_GOLD_RESULT.md`](docs/research/SLEEVE3_GOLD_RESULT.md), [`CROSSMARKET_COMBINATION_RESULT.md`](docs/research/CROSSMARKET_COMBINATION_RESULT.md).
 
 None of it is certified: gate 3 still fails, and no forward evidence exists yet. All three sleeves now record forward signals so that unseen data — the only thing that can settle this — starts accumulating.
 
