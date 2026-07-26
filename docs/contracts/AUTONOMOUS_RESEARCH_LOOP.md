@@ -75,6 +75,15 @@ Hard limits, binding:
 > (33% vs 86%), not return**. No forward evidence exists; three shadow
 > tracks began 2026-07-24. **Nothing here is an edge that passes the six
 > gates.**
+>
+> Refinement 2026-07-27 (iteration 18): *standalone* timing value and
+> *portfolio* timing value are different quantities. Replacing the Taiwan
+> and gold sleeves with static holdings at the same average exposure makes
+> the book **worse** (Sharpe 1.3870 vs 1.4108, drawdown 16.74% vs 14.90%,
+> 3.74× vs 3.94×) even though the twins pay no trading costs. Those sleeves
+> earn their place by **being flat at moments uncorrelated with crypto's
+> drawdowns**, not by their own returns. Route closed: do not propose
+> static substitution again.
 
 ## One iteration, in order
 
