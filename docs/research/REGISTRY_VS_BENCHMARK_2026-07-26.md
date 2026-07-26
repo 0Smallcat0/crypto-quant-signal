@@ -177,7 +177,43 @@ idle far more than two. Against a benchmark that rose 13.53×, idle capital
 is ruinous; against one that rose 6.05× carrying an 81% drawdown, the
 protection still wins.
 
-### One mechanism, three previously separate results
+> **Retracted 2026-07-27, one iteration later, by direct measurement.**
+> The synthesis below claimed sleeve count explains experiment 8's
+> shortfall. It does not survive being measured:
+>
+> | Book | Mean gross exposure | Mean cash |
+> |---|---:|---:|
+> | Trial 88 (2 symbols) | 0.3785 | 62.2% |
+> | Trial 94 (13 symbols) | 0.3011 | 69.9% |
+> | Trial 96 (13 symbols, mid-channel) | 0.2631 | 73.7% |
+>
+> The deployment gap is real but **only ~20% relative**, against a 3.4×
+> swing in benchmark-relative performance. It cannot carry the
+> explanation.
+>
+> The obvious backup hypothesis — that buy-and-hold wins by letting BNB
+> and SOL drift to dominate the book while the ladder re-snaps to equal
+> risk budgets — **also fails**: across all 13 names, drift buy-and-hold
+> returns 16.09× and a daily-rebalanced equal-weight book returns
+> 17.51×. Roughly a wash. (An earlier attempt at this figure produced
+> 176×; that was a bug double-counting unlisted cash, caught before
+> publication and discarded.)
+>
+> **The corrected reading is simpler and less interesting.** Both books
+> add real timing value over their own exposure level — trial 88 turned
+> a 6.05× benchmark into 14.26× at 37.9% average exposure, and trial 94
+> turned a 13.53× benchmark into 9.39× at 30.1%. Experiment 8 did not
+> collapse. **Its benchmark was 2.2× stronger, and a benchmark-relative
+> test penalises operating in a market that went up more.**
+>
+> That is still the right test for "should I hold this instead of the
+> asset" — if the market returned 13.53× and the system returned 9.39×,
+> holding was better. But it is *not* evidence that the strategy
+> degrades with sleeve count, and iteration 15 said it was.
+>
+> Everything below this box is superseded and kept for provenance.
+
+### One mechanism, three previously separate results (SUPERSEDED)
 
 | Result | Explained as |
 |---|---|
