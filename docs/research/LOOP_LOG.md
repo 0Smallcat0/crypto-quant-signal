@@ -842,3 +842,43 @@
 - Second self-retraction in two days, both caught by my own follow-up
   measurement rather than by a reader.
 - **Next: P1 unchanged.** No new family.
+
+## 2026-07-27 — iteration 17 (loop, self-paced): the confound-free control
+
+- Iteration 16 identified that "beat buy-and-hold" is confounded by how
+  strong the benchmark was. This iteration built the control that removes
+  it: `scripts/analyze_timing_value.py` compares each system against a
+  **passive twin holding the same asset at the system's own average
+  gross exposure** — same time in market, no signal. The twin pays no
+  trading costs, so every edge is conservative for the system.
+
+| Book | Expo | System | Twin | Edge | Sys MDD | Twin MDD |
+|---|---:|---:|---:|---:|---:|---:|
+| crypto t88 (2 sym) | 0.379 | 14.26x | 3.03x | **4.70** | 33.05% | 43.60% |
+| crypto t94 (13 sym) | 0.301 | 9.39x | 3.39x | **2.77** | 51.54% | 36.73% |
+| taiwan t23 | 0.477 | 2.15x | 2.95x | **0.73** | 30.85% | 30.96% |
+| gold t24 | 0.419 | 2.44x | 2.44x | **1.00** | 25.01% | 21.17% |
+
+- **Crypto timing works, in both universes.** 4.70x and 2.77x the twin.
+  This **vindicates experiment 8**: it did not fail, it beat its
+  exposure-matched twin and only lost the raw comparison because its
+  market rose 2.2x more. Iteration 16's correction is confirmed by a
+  proper control rather than by argument.
+- **Asymmetry not in the system's favour**: on BTC/ETH timing improved
+  return AND drawdown; on 13 symbols it improved return but **worsened**
+  drawdown (51.54% against 36.73%).
+- **Taiwan: timing destroyed value.** 0.73x, at the same drawdown.
+  Strictly dominated by holding 47.7% of 0050 continuously.
+- **Gold: timing did exactly nothing.** 1.00x, and the twin's drawdown is
+  LOWER (21.17% against 25.01%). The sleeve's signal machinery is
+  overhead.
+- **Consequence for the combination:** it is not one rule working in
+  three markets. It is one market where timing works plus two legs
+  equivalent to or worse than static partial positions.
+- **Free testable prediction, and it is the next step**: replace the gold
+  and Taiwan sleeves with static 41.9% GLD and 47.7% 0050 holdings. If
+  the three-sleeve result holds or improves, the diversification benefit
+  was never about trend-following in those markets — it was about holding
+  partially uncorrelated assets, which needs no signal.
+- Written up in `TIMING_VALUE_2026-07-27.md`.
+- **Next: run that substitution test.** P1 unchanged.
