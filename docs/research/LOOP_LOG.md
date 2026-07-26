@@ -682,3 +682,43 @@
   removed from README and from the TW repo's `shadow_signal_tw.py`
   docstring. Frozen result documents keep their wording and are covered
   by the correction file.
+
+## 2026-07-26 (iteration 13, autonomous) — tracks alive, external evidence recorded, no new writes
+
+- **All three forward tracks alive.** Crypto
+  `data/runtime/shadow_trial88.jsonl` last row date 2026-07-25 recorded
+  2026-07-26T00:20:06Z (daily 08:20 local) with `WINDOWS_ON_0_OF_4` for
+  BTCUSDT and `WINDOWS_ON_1_OF_4` for ETHUSDT, exposure 0/0.25 —
+  ensemble ran, ETH held a single window's long. TW repo
+  `shadow_tw0050.jsonl` last row 2026-07-24 recorded 2026-07-25T18:09Z,
+  exposure 0.25; `shadow_gld.jsonl` last row 2026-07-23 recorded
+  2026-07-25T20:19Z, exposure 0. Both are ahead of today's Saturday
+  09:40 schedule tick; healthy, no fix needed.
+- **Web research pass (five dated lines)** appended to `RESEARCH_LOG.md`
+  under `## 2026-07-26 (iteration 13)`. Two of the five directly harden
+  the sleeve programme:
+  1. Man Group "Cash (Equities) Is King" — directional univariate
+     sector trend keeps ~0.81 rolling-24m correlation to equity-index
+     trend over 21 years; cross-sectional trend is the diversifier,
+     not univariate. Reads onto our three univariate sleeves as a
+     warning against assuming a fourth is independent.
+  2. arXiv 2510.23150 "When Diversification Hides Redundancy" —
+     principal-components decomposition of multi-market trend books
+     shows effective-N materially below nominal N. Points at a
+     read-only diagnostic on our recorded sleeve returns.
+- **Queue action taken: none of P1/P2/P3 required a write this
+  iteration.** P1 was verified alive (above). P2 needs a fourth sleeve's
+  market pre-checked against buy-and-hold **before** pre-registration;
+  the standing goalpost-drift guard says an iteration that reads
+  results does not write the next pre-registration. P3 remains refused.
+  No code, no configs, no new pre-registration touched.
+- **Next-iteration candidate (recorded, not committed to)**: read-only
+  PCA / effective-N diagnostic on the three-sleeve daily return series
+  (crypto trial 88 curve, TW trial 23 curve, TW trial 24 curve) to put
+  a number on the arXiv 2510.23150 claim as it applies to this book.
+  Belongs alongside `analyze_idle_capital.py`, does not use holdout,
+  does not add a family, does not require a pre-registration.
+- **Verify (rule 7, bare)**: `ruff check` all-clear; `ruff format
+  --check` 125 files already formatted; `lint-imports` 13 contracts
+  kept / 0 broken; `mypy --strict src/` 58 files, no issues;
+  `pytest -m "not network"` 378 passed. Tree left green.

@@ -220,3 +220,53 @@ cross-sectional momentum untested here → experiment 3.
   single `--spend-holdout` run → publish, no re-runs, no
   post-hoc grid searches).
 
+## 2026-07-26 (iteration 13) — sleeve-independence external evidence
+
+- 2026-07-26 — Man Group "A Trend Following Deep Dive: Cash (Equities)
+  Is King" (man.com/insights/trend-following-cash-is-king): directional,
+  time-series sector trend following retains a rolling-24-month
+  correlation of ~0.81 to equity-index trend over a 21-year sample.
+  Cross-sectional sector trend delivers the diversification; univariate
+  sector trend does not. Testable-here: **yes, defensively** — our
+  crypto/Taiwan/gold sleeves are univariate trend on three markets,
+  which this paper says will remain highly correlated in the tails; a
+  fourth univariate sleeve is not safely assumed to be independent.
+  Reinforces the P2 buy-and-hold gate before any fourth sleeve.
+- 2026-07-26 — arXiv 2510.23150 "Revisiting the Structure of Trend
+  Premia: When Diversification Hides Redundancy": principal-components
+  decomposition of multi-market trend books shows the effective number
+  of independent bets is materially lower than the number of sleeves;
+  most of the risk sits on a small set of common factors. Testable-here:
+  **yes, as a read-only diagnostic on the three-sleeve book** — compute
+  PCA on the daily sleeve returns already recorded and report
+  effective-N vs nominal N=3. Belongs in a diagnostic doc, not a new
+  family.
+- 2026-07-26 — Man Group "A Trend Following Deep Dive: The Dynamics of
+  Dispersion" (man.com/insights/deep-dive-trend-following): 2020-2025
+  window, {20d, 60d, 125d, 250d, 500d} CTA horizons — only 20d and 500d
+  reached ~160 cumulative index; 60d and 125d stalled at ~120; the gap
+  widened after 2022 dispersion regime. Testable-here: **yes,
+  interpretively** — our Donchian ensemble is {10, 20, 55, 110} bars
+  daily, straddling the underperforming 60/125-day middle. Not
+  actionable as a new family (P3 refuses), but useful when the operator
+  weighs a fourth sleeve at a very different horizon.
+- 2026-07-26 — QuantInsti "Donchian Channels: How to Turn a Simple Idea
+  Into Working Strategies" (blog.quantinsti.com/donchian-channel-
+  strategy/): explicit finding that a Donchian rule tuned on one date
+  range typically degrades on the next, and that the in-sample /
+  out-of-sample gap is a stronger robustness signal than any single
+  backtest number. Testable-here: **yes as prior anchor** — matches our
+  own PBO 0.7411 and trial 118's cross-market refutation; useful to
+  cite when the operator asks whether the crypto search history really
+  contaminates the Taiwan/gold transfer (it does; this is an
+  independent voice saying so).
+- 2026-07-26 — etfdb "Alternatives ETFs Punching Above Their Weight in
+  2026" (etfdb.com/equity-etf-content-hub/alternatives-etfs-punch-
+  above-weight/): DBMF and CTA managed-futures ETFs took large 2026
+  inflows as bond-heavy allocators diversified. Testable-here: **no,
+  directly** — those are levered multi-asset futures books, not a
+  spot/long-only sleeve within product law. Useful only as a market
+  context note: institutional demand for trend diversification is not
+  evidence that a univariate long-only spot trend rule generalizes to
+  a new market, which is what our P2 gate exists to check.
+
