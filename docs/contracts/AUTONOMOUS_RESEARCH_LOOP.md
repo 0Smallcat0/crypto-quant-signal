@@ -30,6 +30,52 @@ positive is the only forbidden result.
 7. Run verification bare (no `| tail` pipes): `ruff check`, `ruff format
    --check`, `mypy --strict src/`, `lint-imports`, `pytest -m "not network"`.
 
+## Step 0 — convergence check (operator order 2026-07-27, do this FIRST)
+
+「記得每次loop都要先檢查不能越做越發散」. On 2026-07-27 the loop had
+produced **10 `analyze_*` scripts, 45 files in `docs/research/`, and 24
+commits in two days** while the operator's actual question went unmoved.
+Diagnostics are cheap to generate and feel like progress. They are not.
+
+Before doing anything else, write these three lines into the iteration:
+
+1. **Current answer.** State, in one sentence, the best present answer to
+   "does this make money?" — copied from the standing answer below and
+   updated only when a measurement changed it.
+2. **What this iteration moves.** Name the specific decision it advances or
+   the specific route it closes. "Measure X" is not an answer; "decide
+   whether the gold sleeve can be replaced by a static holding" is.
+3. **Why it is not sprawl.** If the honest answer is "this adds a
+   diagnostic but does not change the current answer or close a route",
+   **do not run it.** Pick something that does, or do maintenance (P1) and
+   stop.
+
+Hard limits, binding:
+
+- **At most one new script per iteration**, and only after checking that
+  none of the existing ten can be extended instead:
+  `analyze_candidate`, `analyze_crossmarket_combination`,
+  `analyze_idle_capital`, `analyze_pbo_scope`,
+  `analyze_registry_vs_benchmark`, `analyze_sleeve_combination`,
+  `analyze_symbol_dispersion`, `analyze_timing_value`,
+  `analyze_vs_buy_and_hold`, `analyze_whipsaw`.
+- **No new research document** unless it records a decision or a closed
+  route. Findings that only refine an existing document go into that
+  document as a dated addendum.
+- **End every iteration by restating line 1**, changed or unchanged. An
+  iteration that cannot change it should have been P1 maintenance.
+
+### Standing answer (update in place; this is the convergence anchor)
+
+> As of 2026-07-27, measured on 2018-2025 and not forward-validated:
+> the timing rule adds real value **in crypto only** — 4.70x and 2.77x
+> its exposure-matched passive twin — and **none** in Taiwan (0.73x) or
+> gold (1.00x). The best backtested book returned **14.26x against 13.53x
+> for simply holding thirteen coins**, so the search bought **drawdown
+> (33% vs 86%), not return**. No forward evidence exists; three shadow
+> tracks began 2026-07-24. **Nothing here is an edge that passes the six
+> gates.**
+
 ## One iteration, in order
 
 1. **Read state** (~5 min): `docs/research/LOOP_LOG.md` (last entry),
