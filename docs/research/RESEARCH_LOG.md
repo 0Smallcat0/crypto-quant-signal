@@ -269,4 +269,28 @@ cross-sectional momentum untested here → experiment 3.
   context note: institutional demand for trend diversification is not
   evidence that a univariate long-only spot trend rule generalizes to
   a new market, which is what our P2 gate exists to check.
+- 2026-07-27 — Coin Bureau "How to Backtest a Crypto Strategy in 2026"
+  (coinbureau.com/guides/how-to-backtest-your-crypto-trading-strategy):
+  claim that **2-4 weeks of paper/shadow trading** is a typical
+  practitioner threshold to separate a backtest survivor from live
+  failure, and that walk-forward re-optimisation should not be
+  substituted for it. Testable-here: **no, directly** — three shadow
+  tracks began 2026-07-24 and are ~3 days in; the claim places a first
+  honest read no earlier than 2026-08-07 and a real read closer to
+  2026-08-21. Useful as a **calendar anchor** for when to stop asking
+  "does the shadow track say anything yet" (answer: not before ~Aug 21).
+- 2026-07-27 — QuantInsti/Altrady/LuxAlgo/PyQuantLab Donchian repostings
+  (quantzee.com/crypto-trading-indicators; altrady.com/blog/crypto-
+  trading-strategies/donchian-channel-strategy; luxalgo.com/blog/
+  donchian-channels-breakout-and-trend-following-strategy):
+  consistently reported that a 55-day Donchian mid-line trend filter
+  raises BTC daily long-signal win rate from ~50% to ~55%, and that
+  mid-channel exits systematically outperform reversal-band exits for
+  capital preservation across BTC, gold, and equity indices.
+  Testable-here: **partially, as a prior** — trial 88 already uses
+  mid_channel exit and windows straddling 55, so the reported filter
+  uplift matches its mechanism claim. Not a new experiment (would need
+  a new family, which P3 refuses), but supports the standing answer's
+  mechanism claim that the crypto edge is real even if it does not
+  generalize to Taiwan or gold.
 

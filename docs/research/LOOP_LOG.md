@@ -1080,3 +1080,57 @@
   override of P3.
 - **Standing answer unchanged**, and this iteration deliberately did not
   try to change it.
+
+## 2026-07-27 — iteration 24 (loop, exhausted state, P1 maintenance)
+
+- **Step 0.** Current answer unchanged from iteration 23 (see standing
+  answer). What this iteration moves: nothing analytical — it confirms
+  the three forward tracks are still gaining rows and adds two dated
+  research-log entries whose only purpose is a calendar anchor for when
+  the shadow tracks can first speak. Why not sprawl: **zero new
+  scripts, zero new research documents, zero new pre-registrations, and
+  no attempt to invent an experiment.** The contract's "when the
+  analytical routes are exhausted" clause governs, and its instruction
+  is "do P1 maintenance, confirm the three tracks are gaining rows, and
+  stop."
+- **P1 status, all three tracks:**
+  - `CryptoShadowTrial88` — last 2026-07-27 08:20:01 result 0, next
+    2026-07-28 08:20. `shadow_trial88.jsonl` at **3 rows** (up from 2 at
+    iteration 23), most recent row `date=2026-07-26 close BTC 65399.99
+    ETH 1954.72 equity 1006.230318 exposure BTC 0 / ETH 0.5`. New row
+    written 2026-07-27 00:20:06 UTC. Track is healthy.
+  - `TwShadow0050` — last=1999-11-30 result=267011
+    (`SCHED_S_TASK_HAS_NOT_RUN`, per iteration 23 analysis), next
+    2026-08-01 09:40 (Saturday). `shadow_tw0050.jsonl` still at 1 row
+    and `shadow_gld.jsonl` still at 1 row, both from the manual seeds.
+    First scheduled fire has not arrived; nothing to fix.
+  - `CryptoResearchLoop` — currently Running (this iteration), previous
+    run 2026-07-27 21:37:01 result 0, next 2026-07-28 21:37. Healthy.
+- **Web research (contract step 2).** Two dated entries appended to
+  `RESEARCH_LOG.md`:
+  1. Coin Bureau's 2-4 weeks paper-trading threshold — places a first
+     honest read on the shadow tracks no earlier than 2026-08-07, real
+     read closer to 2026-08-21.
+  2. Multiple aggregator repostings of a 55-day Donchian mid-line
+     filter raising BTC daily long-signal win rate ~50% to ~55% — a
+     prior consistent with trial 88's mechanism, not testable-here as
+     a new experiment (P3 refuses).
+- **What was deliberately NOT done, and why:**
+  - Did not run any `analyze_*` script — every one would only refine
+    an existing document, and Step 0 forbids that.
+  - Did not open a new pre-registration — no sleeve candidate has
+    passed the P2 buy-and-hold pre-gate on paper, so a pre-reg would
+    be premature and would cost an N.
+  - Did not touch `configs/runtime/`, the trial registry, or any frozen
+    pre-registration.
+  - Did not attempt to move the standing answer — it can only be moved
+    by data that does not exist yet (~90 days of forward rows, or the
+    October holdout, or an operator override of P3).
+- **Standing answer restated, unchanged:** timing works in crypto only;
+  BTC/ETH edge positive in all four pre-declared sub-periods and all
+  eight family members with +14.2% selection premium; PBO 0.7415 for
+  that family reflects members being indistinguishable rather than
+  absence of edge; on 13 symbols the same edge fails both bear windows;
+  the search bought drawdown rather than return; **nothing is
+  forward-validated**, and forward validation remains the only
+  unresolved item — it needs time rather than analysis.
