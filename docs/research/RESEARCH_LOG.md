@@ -294,3 +294,33 @@ cross-sectional momentum untested here → experiment 3.
   mechanism claim that the crypto edge is real even if it does not
   generalize to Taiwan or gold.
 
+
+## 2026-07-28 (iteration 25)
+
+- **Bailey & López de Prado, Minimum Track Record Length (MinTRL)** —
+  via `portfoliooptimizer.io/blog/the-probabilistic-sharpe-ratio-bias-
+  adjustment-confidence-intervals-hypothesis-testing-and-minimum-track-
+  record-length/`, `papers.ssrn.com/sol3/papers.cfm?abstract_id=1821643`
+  ("The Sharpe Ratio Efficient Frontier"), and the CRAN
+  `PerformanceAnalytics::MinTrackRecord` reference
+  (`rdrr.io/cran/PerformanceAnalytics/man/MinTrackRecord.html`).
+  Claim: the track length needed to reject "measured Sharpe is below a
+  threshold" at a given confidence, explicitly incorporating skewness,
+  kurtosis and sample length. Same authors and same distributional
+  machinery as the Deflated Sharpe Ratio already used in gate 4.
+  Testable-here: **yes, and tested this iteration.** Applied to trial
+  88's own return series (n=2676, SR_ann 1.1823, skew +0.227, kurtosis
+  12.775): **MinTRL = 706 days = 2028-06-29** at 95% one-sided against
+  SR* = 0; 429 days (2027-09-26) at 90%. Trial 118: 644 / 391 days.
+- **Consequence, recorded as a correction rather than a finding:** the
+  loop contract's stated unblock condition ("~90 days of forward rows
+  ... enough to say anything at all") is wrong by roughly 8x. At 90
+  forward days the annualized Sharpe standard error is 2.016, a 95%
+  interval of [-2.77, +5.13]. Corrected in place in
+  `AUTONOMOUS_RESEARCH_LOOP.md` the same day, per the standing
+  correction duty.
+- **Sources consulted and rejected as not testable-here:**
+  `arxiv.org/pdf/2605.17628` (quantum-annealer portfolio optimization —
+  no bearing on a long-only daily spot rule),
+  `en.wikipedia.org/wiki/Deflated_Sharpe_ratio` (already implemented in
+  gate 4; nothing new).

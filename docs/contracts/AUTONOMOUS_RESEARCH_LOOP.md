@@ -93,6 +93,15 @@ Hard limits, binding:
 > dispose of PBO 0.7411 — the eight are a 2x2x2 grid on the same two
 > assets over the same window, not eight independent tests. On 13
 > symbols the same edge fails both bear windows.
+>
+> Refinement 2026-07-28 (iteration 25): **the forward-validation plan's
+> own timetable was wrong.** MinTRL on trial 88 is 706 days (2028-06-29,
+> 95% one-sided vs SR* = 0), not the ~90 days the contract asserted; at
+> 90 days the forward Sharpe's 95% interval is [-2.77, +5.13]. So the
+> answer to "does it work forward?" has a **2028** date under the current
+> design, and the 2026-10-22 read can only test **implementation
+> agreement**, never return. Read rule frozen in advance at 4 rows:
+> `docs/research/FORWARD_TRACK_READ_PREREGISTRATION.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
@@ -115,8 +124,19 @@ cannot improve it without data that does not exist yet.
 
 **The state that would unblock this**, in order of when it can arrive:
 
-1. ~90 days of forward rows on all three tracks (from 2026-07-24), enough
-   to say anything at all about whether the measured edge persists.
+1. ~~~90 days of forward rows on all three tracks (from 2026-07-24), enough
+   to say anything at all about whether the measured edge persists.~~
+   **CORRECTED 2026-07-28 (iteration 25) on measurement — this was wrong
+   by about a factor of eight.** MinTRL on trial 88's own return series
+   (SR 1.1823, skew +0.227, kurtosis 12.775) is **706 days, i.e.
+   2028-06-29** at 95% one-sided against SR* = 0; 429 days (2027-09-26)
+   at 90%. At 90 days the standard error of the forward Sharpe is 2.016
+   annualized, a 95% interval of **[-2.77, +5.13]** — no evidence about
+   return whatsoever. The 90-day read is an **implementation** read only.
+   Rule fixed in advance in
+   `docs/research/FORWARD_TRACK_READ_PREREGISTRATION.md`; no read may be
+   moved earlier, and a positive forward Sharpe may not be cited as
+   support before the MinTRL date.
 2. The October holdout spend, per `PRE_HOLDOUT_PROTOCOL.md`, operator-run.
 3. An operator override of P3 that accepts the recorded cost of a new
    family.
