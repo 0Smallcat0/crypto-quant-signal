@@ -1473,3 +1473,79 @@
   forward-validated and the earliest permitted forward verdict is
   2028-06-29; the single gate-4 pass holds only for a stopped search; and
   the framework has exercised exactly two gates, both defective.
+
+## 2026-07-28 — iteration 30 (loop, look-ahead ruled out; execution latency found unmodelled)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 29. What this iteration moves: five audits had not touched
+  the most consequential correctness question in any backtest —
+  **look-ahead between signal and fill**. It closes that question and, in
+  doing so, exposes a quantified assumption nobody had written down. Why
+  not sprawl: **zero new scripts, zero new documents** — one dated
+  addendum to the gate-6 document, which is where execution realism
+  belongs.
+- **Look-ahead: ruled out, and verified empirically rather than from
+  code intent.** `src/backtest/engine.py` carries
+  `generated_at_bar_close` and `executable_from_next_bar` and executes at
+  the next bar's `open_price`. Traced end to end on trial 88's first
+  trade: signal `as_of` 2018-03-04T23:59:59.999Z, order `accepted_at`
+  2018-03-05T00:00:00Z, fill price **11520.76**. Source candles give
+  2018-03-04 close **11515.00** and 2018-03-05 open **11515.00**, and
+  `11515.00 x 1.0005 = 11520.7575` — the next bar's open plus exactly the
+  modelled 5 bps. **The decision uses nothing after its own bar close.
+  Route closed.**
+- **The gap the acquittal exposes.** Because crypto is continuous,
+  `open[t+1] == close[t]`, so the one-bar lag gives **no price
+  protection** — the system fills at the price it decided on. That
+  encodes **zero decision-to-execution latency**. The live system is not
+  instantaneous: paper runtime 08:05 Taipei = **~5 min** after the 00:00
+  UTC bar close; shadow recorder 08:20 Taipei = **~20 min** (confirmed
+  from `recorded_at` 2026-07-28T00:20:07Z against `date` 2026-07-27).
+- **Quantified.** BTC daily sigma over the backtest window
+  (2018-03-05..2025-07-01, n=2675) is **3.4068%**. Scaled by sqrt(t):
+
+  | Horizon | E abs move | vs modelled 5 bps |
+  |---|---:|---:|
+  | 5 min (runtime) | **16.0 bps** | **3.2x** |
+  | 20 min (shadow) | **32.0 bps** | **6.4x** |
+  | 60 min | 55.5 bps | 11.1x |
+
+- **Stated honestly, with its limit.** This is **dispersion, not cost** —
+  a delay is symmetric in expectation unless the signal correlates with
+  the move that follows. The adverse fraction **cannot be measured from
+  daily candles**, so no cost number is claimed. But trial 88 is a
+  breakout rule, firing exactly when a level has just broken, and the
+  transaction-cost literature names breakout and momentum systems as the
+  case where delay cost is directional against you. The trial-118
+  robustness battery held at 3x cost (~60 bps round-trip); a
+  half-adverse 20-minute gap would add ~32 bps round-trip on top,
+  pushing toward the edge of what was tested. **The cost model's headroom
+  is smaller than the 3x stress suggests, by an amount this program
+  cannot currently measure.**
+- **This is gate 6's declared job and gate 6 has not run.** Its contract
+  requires measuring "notification->execution delay (simulated or
+  journaled)"; its "paper period >= 3 months" checkbox is still
+  unchecked. This converts a checklist line into a quantified reason to
+  run it.
+- **Closing it is an operator decision, not a loop action.** Either
+  ingest 1m/5m candles and measure the signed drift conditioned on a
+  signal firing, or add a bar-close-price and execution-price field to
+  the shadow tracks. The second touches a live recording track, so it is
+  the operator's call — and if done **now** rather than at a read it
+  strengthens Test 1 of `FORWARD_TRACK_READ_PREREGISTRATION.md` instead
+  of adding a read-time metric.
+- **What this does NOT do:** no gate rule modified, no trial registered,
+  no backtest run, no number retracted, no holdout touched, no
+  `configs/runtime/` or shadow script touched.
+- **Standing answer restated, extended:** timing works in crypto only and
+  in its own universe bought both return and drawdown (14.26x vs 6.05x,
+  33.05% vs 80.99%), with the 4.70x twin edge audited and robust;
+  **the engine is free of look-ahead, verified to the cent**; but the
+  backtest assumes zero execution latency while the live system runs 5 to
+  20 minutes late, a window whose price dispersion is 3 to 6 times the
+  modelled slippage and whose adverse component is unmeasured; against
+  the naive 13-coin alternative the margin is only 5.4% and that
+  benchmark is survivorship-flattered; breadth still fails; nothing is
+  forward-validated before 2028-06-29; the single gate-4 pass holds only
+  for a stopped search; and the framework has exercised exactly two
+  gates, both defective.

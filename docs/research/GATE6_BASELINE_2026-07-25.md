@@ -168,3 +168,118 @@ period yet. N2 is a research read-out, not a shortcut around gate 6.
 Next iteration continues Q4 work per contract: shadow-track health
 check, incremental gate-6 sample growth, holdout untouched until
 the operator signs the October spend off in a separate session.
+
+---
+
+## Addendum 2026-07-28 (iteration 30) — no look-ahead (verified), but execution latency is unmodelled and larger than the modelled slippage
+
+Five audits had not touched the single most consequential correctness
+question in any backtest. This one does, and splits into a clean
+acquittal and a quantified gap.
+
+### Look-ahead: ruled out, empirically
+
+The engine is explicit — `src/backtest/engine.py` carries
+`generated_at_bar_close`, `executable_from_next_bar`, and executes at
+the **next** bar's `open_price` / `open_time`. Code intent is not proof,
+so the chain was traced end to end on trial 88's first trade:
+
+| Stage | Value |
+|---|---|
+| signal `as_of` | 2018-03-04T23:59:59.999Z |
+| target `as_of` | 2018-03-04T23:59:59.999Z |
+| order `accepted_at` | 2018-03-05T00:00:00Z |
+| fill `filled_at` / price | 2018-03-05T00:00:00Z / **11520.76** |
+
+Against the source candles (`data/candles/BTCUSDT_1d.jsonl`):
+
+| Day | open | close |
+|---|---:|---:|
+| 2018-03-04 | 11464.47 | **11515.00** |
+| 2018-03-05 | **11515.00** | 11454.00 |
+
+`11515.00 x 1.0005 = 11520.7575`, matching the recorded fill of
+**11520.76** to the cent — the next bar's open plus exactly the modelled
+5 bps of slippage. **The decision uses no information after its own bar
+close, and the fill is the first price available afterwards. There is no
+look-ahead.** This had never been documented; it is now, and the route is
+closed.
+
+### The gap the acquittal exposes
+
+Because crypto trades continuously, `open[t+1] == close[t]` — 11515.00
+in both cells above. The one-bar execution lag therefore provides **no
+price protection at all**: the system fills at exactly the price it
+decided on, plus slippage. That is legitimate arithmetic, but it encodes
+an assumption: **zero decision-to-execution latency.**
+
+The live system is not instantaneous:
+
+| Clock | Lag after 00:00 UTC bar close |
+|---|---|
+| paper runtime, 08:05 Taipei | **~5 min** (00:05 UTC) |
+| shadow recorder, 08:20 Taipei | **~20 min** (00:20 UTC, confirmed: `recorded_at` 2026-07-28T00:20:07Z for `date` 2026-07-27) |
+
+BTC daily sigma over the backtest window (2018-03-05..2025-07-01,
+n=2675) is **3.4068%**. Scaling by sqrt(t):
+
+| Horizon | sigma | E abs move | vs modelled 5 bps slippage |
+|---|---:|---:|---:|
+| 5 min (runtime lag) | 0.4015%/sqrt(4) = 0.2007% | **16.0 bps** | **3.2x** |
+| 20 min (shadow lag) | 0.4015% | **32.0 bps** | **6.4x** |
+| 60 min | 0.6954% | 55.5 bps | 11.1x |
+
+**The price dispersion across the execution delay is three to six times
+the slippage the backtest charges.**
+
+### What this does and does not establish
+
+**It is dispersion, not cost.** A delay is symmetric in expectation
+*unless* the signal is correlated with the move that follows it. The
+adverse fraction cannot be measured from daily candles, so no cost
+number is claimed here.
+
+**But the sign is not neutral for this strategy.** Trial 88 is a Donchian
+breakout: it fires precisely when price has just broken a level, which is
+the moment continuation is most likely. The transaction-cost literature
+names this case directly — implementation shortfall is "particularly
+dangerous for breakout traders and momentum systems", because the fill
+arrives after liquidity has shifted at the level. For a breakout rule the
+delay cost is plausibly **directional against the system**, not
+zero-mean.
+
+**And it may sit outside what was stress-tested.** The trial-118
+robustness battery held at 3x costs (Sharpe 1.152), covering roughly
+60 bps round-trip. If even half of the 5-minute dispersion is adverse,
+that is ~8 bps one-way / 16 bps round-trip added on top — inside the
+tested range. At the 20-minute shadow lag, half-adverse would be ~32 bps
+round-trip added, pushing total cost toward the edge of it. **The honest
+statement is that the cost model's headroom is smaller than the 3x
+stress suggests, by an amount this program cannot currently measure.**
+
+### This is exactly gate 6's job, and gate 6 has not run
+
+The gate-6 contract requires measuring "notification->execution delay
+(simulated or journaled)" and recalibrating if round-trip cost exceeds
+1.5x the assumed 25-30 bps. The checklist item "Paper period >= 3
+calendar months completed" remains **unchecked** (iteration 27). This
+addendum converts a checklist line into a quantified reason to run it.
+
+### Closing it requires an operator decision, not a loop action
+
+Two routes, both touching things the loop must not change unilaterally:
+
+1. **Ingest intraday candles** (1m or 5m) for BTC/ETH over the window and
+   measure the actual signed drift from bar close to +5 min and +20 min,
+   conditioned on a signal firing. This is a data-ingestion task and a
+   real measurement, not a bound.
+2. **Add a field to the shadow tracks** recording price at bar close and
+   at execution time, converting the gap into journaled evidence. This
+   modifies a track that is actively recording, so it is the operator's
+   call; it also strengthens Test 1 of
+   `FORWARD_TRACK_READ_PREREGISTRATION.md` rather than adding a read-time
+   metric, so it does not violate that pre-registration if done **now**
+   rather than at a read.
+
+Nothing here changes a gate rule, a recorded number, or the live
+contract.
