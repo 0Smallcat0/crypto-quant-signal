@@ -1416,3 +1416,60 @@
   forward-validated and the earliest possible forward verdict is
   2028-06-29; the single gate-4 pass holds only for a stopped search;
   and the framework has exercised exactly two gates, both defective.
+
+## 2026-07-28 — iteration 29 (loop, audited the headline metric; it survives)
+
+- **Step 0.** Current answer entering the iteration: as corrected in
+  iteration 28. What this iteration moves: it closes two open attacks on
+  the **exposure-matched twin**, the metric that replaced the discredited
+  buy-and-hold comparison on 2026-07-27 and became the headline number
+  ("4.70x") within a single iteration without ever being audited itself.
+  Why not sprawl: **zero new scripts, zero new documents** — one dated
+  addendum to the existing metric document.
+- **Attack 1 — volatility drag.** The twin is built as `w *
+  benchmark_return` compounded (`analyze_timing_value.py:139`), i.e. a
+  continuously-rebalanced constant mix, which carries a drag the system
+  does not. **Refuted.** `log(1 + w*r) > w * log(1 + r)` for both signs
+  of r, so partial exposure suffers *less* drag than the asset it tracks
+  — the twin is a harder benchmark, not an easier one. Quantified against
+  the alternative construction (buy w once, never rebalance, cash
+  remainder):
+
+  | Twin construction | Twin multiple | Edge |
+  |---|---:|---:|
+  | constant-mix, daily rebalanced (**as used**) | 3.03x | **4.71** |
+  | un-rebalanced fraction | 2.9121x | 4.90 |
+
+  **4.1% apart, and the one in use is the more conservative.** The
+  headline is not a rebalancing artefact.
+- **Attack 2 — is it asset selection, not timing?** The twin matches
+  time-in-market but not asset mix, and BTC returned 9.86x against the
+  equal-weight benchmark's 6.05x, so a rule that merely favoured BTC
+  would masquerade as timing value. **Refuted decisively.** Mean
+  per-symbol target weight over all 2,677 decision days, from
+  `trial-000088/report.json`: **BTC 0.2006, ETH 0.1780** — total 0.3785,
+  reproducing the recorded mean exposure 0.379 exactly, and a **53/47
+  split against a 50/50 benchmark**. A three percentage point tilt cannot
+  produce a 4.70x edge.
+- **Route closed.** The twin metric survives audit on both the
+  construction it uses and the composition it ignores. Neither question
+  may be re-opened without new evidence. Limits unchanged and still
+  attached: the twin pays no trading costs while the system pays full
+  ones; the twin has no drawdown control (43.60% against 33.05%); and
+  none of it is forward evidence.
+- **Honest note on iteration value.** This iteration produced no new
+  claim — it removed two ways the existing claim could have been wrong.
+  That is the intended outcome of an audit, and it is recorded as such
+  rather than dressed up as a discovery.
+- **What this does NOT do:** no gate rule modified, no trial registered,
+  no backtest run, no number retracted, no holdout touched, no
+  `configs/runtime/` touched.
+- **Standing answer restated, unchanged from iteration 28:** timing works
+  in crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%), **now with the 4.70x twin edge
+  audited and robust to +-4% on twin construction and to asset mix**;
+  against the naive 13-coin alternative the margin is only 5.4% and that
+  benchmark is survivorship-flattered; breadth still fails; nothing is
+  forward-validated and the earliest permitted forward verdict is
+  2028-06-29; the single gate-4 pass holds only for a stopped search; and
+  the framework has exercised exactly two gates, both defective.

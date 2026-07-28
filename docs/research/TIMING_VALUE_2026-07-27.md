@@ -249,3 +249,76 @@ by pipes masking exit codes.
 worse.** The sleeves stay as systems. This also refines the standing answer
 — *standalone* timing value and *portfolio* timing value are different
 quantities, and this program had been conflating them.
+
+---
+
+## Addendum 2026-07-28 (iteration 29) — the twin metric was audited and survives; route closed
+
+This metric was built on 2026-07-27 and became the program's headline
+number within one iteration ("4.70x its exposure-matched passive twin").
+A metric that replaces a discredited one deserves the same scrutiny that
+discredited the old one. Two attacks were tried. **Both fail, and the
+number is more robust than expected.**
+
+### Attack 1 — does the twin eat volatility drag the system avoids?
+
+`analyze_timing_value.py:139` builds the twin as `w * benchmark_return`
+per period, compounded. That is a continuously-rebalanced constant-mix
+position, and constant-mix carries a drag term the system does not.
+
+**Refuted.** Scaling *arithmetic* returns by w < 1 gains convexity
+relative to full exposure: `log(1 + w*r) > w * log(1 + r)` for both signs
+of r, so partial exposure genuinely suffers less drag than the asset it
+tracks. The twin is therefore a **harder** benchmark than "w times the
+asset's log growth", not an easier one.
+
+Quantified against the obvious alternative construction — buy `w` of the
+asset once and never rebalance, rest in cash:
+
+| Twin construction | Twin multiple | Measured edge |
+|---|---:|---:|
+| constant-mix, daily rebalanced (**as used**) | 3.03x | **4.71** |
+| un-rebalanced fraction, cash remainder | 2.9121x | 4.90 |
+
+The two constructions differ by **4.1%**, and the one actually used is
+the **more conservative** of the pair. This is consistent with the
+standard result that buy-and-hold beats constant-mix in trending markets
+and loses in oscillating ones; this window trended (benchmark 6.0510x).
+**The headline edge is not an artefact of the rebalancing convention.**
+
+### Attack 2 — is the "timing" edge really asset selection between BTC and ETH?
+
+The twin matches **time-in-market** but not **asset mix**. Over this
+window BTC returned 9.86x against the equal-weight benchmark's 6.05x, so
+a rule that simply favoured BTC would show up as "timing value" without
+timing anything.
+
+**Refuted, decisively.** Mean per-symbol target weight across all 2,677
+decision days, read from `trial-000088/report.json` `targets[].target_weights`:
+
+| Symbol | Mean weight | Days with weight > 0 | Share of exposure |
+|---|---:|---:|---:|
+| BTCUSDT | 0.2006 | 1776 / 2677 | 53.0% |
+| ETHUSDT | 0.1780 | 1627 / 2677 | 47.0% |
+| **total** | **0.3785** | | |
+
+The total reproduces the recorded mean exposure of 0.379 exactly. The
+split is **53/47 against an equal-weight benchmark's 50/50 — a three
+percentage point tilt.** A 3pp tilt toward the better asset cannot
+produce a 4.70x edge. The rule is not picking BTC over ETH; it is going
+in and out.
+
+### What this closes
+
+**The exposure-matched twin survives audit on both the construction it
+uses and the composition it ignores.** The 4.70x is a property of the
+timing decisions, is conservative by 4% against the alternative twin, and
+is not contaminated by asset selection. Do not re-open either question
+without new evidence.
+
+**Limits that remain, unchanged and still recorded:** the twin pays no
+trading costs while the system pays full costs (conservative for the
+system); the twin has no drawdown control (43.60% against the system's
+33.05%); and none of this is forward evidence — the earliest date a
+forward return verdict is statistically permitted is 2028-06-29
+(`FORWARD_TRACK_READ_PREREGISTRATION.md`).

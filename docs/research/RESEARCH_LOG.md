@@ -410,3 +410,29 @@ cross-sectional momentum untested here → experiment 3.
   13-coin universe came from a 2026 eligibility screen, so its 13.53x is
   survivorship-flattered; that caveat now travels with the corrected
   opportunity comparison rather than being a footnote.
+
+## 2026-07-28 (iteration 29)
+
+- **Constant-mix vs buy-and-hold, and where volatility drag comes from** —
+  `aqr.com/-/media/AQR/Documents/Whitepapers/AQR_Portfolio-Rebalancing_Common-Misconceptions.pdf`,
+  `returnstacked.com/the-rebalance-drag-myth-in-leveraged-etfs-what-advisors-need-to-know/`,
+  `en.wikipedia.org/wiki/Rebalancing_investments`,
+  `caia.org/sites/default/files/dynamic_strategies_for_asset_allocation.pdf`.
+  Claim: constant-mix is a **concave** strategy that outperforms in
+  oscillating markets and underperforms buy-and-hold in trending ones;
+  the drag itself "arises from the interplay of volatility and
+  compounding, not from rebalancing", and rebalancing changes expected
+  growth only through its effect on portfolio variance. Testable-here:
+  **yes, and used to audit our own headline metric.** The
+  exposure-matched twin in `analyze_timing_value.py:139` is a
+  continuously-rebalanced constant mix. This window trended (benchmark
+  6.0510x), so the literature predicts the constant-mix twin should lose
+  to an un-rebalanced fraction twin — measured, it is the other way by
+  4.1% (3.03x against 2.9121x), which makes the twin actually used the
+  **more conservative** of the two. Either way the edge is 4.71 or 4.90,
+  so the headline is not a rebalancing artefact.
+- **Consequence recorded in `TIMING_VALUE_2026-07-27.md`** as a closed
+  route, together with a second refuted attack: per-symbol mean weights
+  read from the trial-88 report are BTC 0.2006 / ETH 0.1780, a 53/47
+  split against an equal-weight 50/50 benchmark, so the edge is not
+  BTC-over-ETH selection.
