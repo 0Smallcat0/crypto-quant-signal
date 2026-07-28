@@ -324,3 +324,32 @@ cross-sectional momentum untested here → experiment 3.
   no bearing on a long-only daily spot rule),
   `en.wikipedia.org/wiki/Deflated_Sharpe_ratio` (already implemented in
   gate 4; nothing new).
+
+## 2026-07-28 (iteration 26)
+
+- **Bailey & Lopez de Prado, Deflated Sharpe Ratio — the "number of
+  trials" variable** — `papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551`,
+  `davidhbailey.com/dhbpapers/deflated-sharpe.pdf`,
+  `en.wikipedia.org/wiki/Deflated_Sharpe_ratio`. Claim: DSR integrates
+  five inputs — track length, skewness, kurtosis, the variance across
+  the Sharpe ratios of all trials, and **the number of INDEPENDENT
+  trials**. The standard caution is that a raw backtest count
+  **overstates** search breadth, because optimizers run highly
+  correlated variations of one core strategy; determining the true
+  independent count requires precise recording of all historical
+  backtests. Testable-here: **yes, and used this iteration as a
+  counterweight against our own finding.** This program uses the raw
+  registry count by deliberate choice (`run_gate_report.py:188`,
+  "Conservative: raw registry count, no correlation shrinkage"). Its 133
+  rows are heavily correlated — mean pairwise 0.628 across nine distinct
+  architectures, and 64 of 133 are one cs-momentum lineage — so a
+  correlation-adjusted N would be materially below 133 and would give
+  trial 118 more margin than the one-trial figure measured today.
+  Recorded in `GATE4_FRAGILITY_2026-07-28.md` as a real counterweight
+  **and** as a fix that is refused, because adopting it now would be
+  changing a gate input after seeing the answer it produces — the same
+  move already refused over gate 3.
+- **Consulted, not usable here:** `arxiv.org/pdf/2603.20319`
+  ("Implementation Risk in Portfolio Backtesting") — quantifies error
+  from implementation choices rather than selection bias; relevant to
+  Test 1 of the forward-track read rule but not to the trial count.

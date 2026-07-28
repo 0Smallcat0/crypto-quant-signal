@@ -1210,3 +1210,82 @@
   (2027-09-26), accept the October holdout as a different question, or
   override P3 to search for a higher-Sharpe design, since MinTRL falls
   with the square of the Sharpe.
+
+## 2026-07-28 — iteration 26 (loop, gate-4 fragility measured)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 25. What this iteration moves: it audits the program's
+  single claimed achievement — trial 118's gate-4 pass at DSR 0.950140,
+  margin 0.00014 — and converts "thin margin" from an adjective into a
+  count. Why not sprawl: **zero new scripts** (imported the program's
+  own `deflated_sharpe_ratio` and `non_annualized_sharpe_variance`
+  rather than reimplementing), one new document that records a forced
+  operator decision and two closed routes, one in-place contract
+  refinement.
+- **Two dishonesty hypotheses tested FIRST, both refuted.** Neither
+  finding was allowed to rest on the margin until the margin was shown
+  to be honest.
+  - **H1: unregistered arms inflate the true N.** Refuted. Registry by
+    experiment: exp-1 1, exp-2..exp-6 16 each, exp-7..exp-10 8 each, 20
+    unlabelled early rows = 133. `LOOP_LOG.md:126` says "64 **registered**
+    cs-momentum arms" = exp-3..exp-6 at 16 apiece, exactly. Both
+    robustness batteries are registered (trials 102-109, 126-133).
+    Nothing evaluated is missing from the count.
+  - **H2: the pass is an artefact of trial 118's own battery
+    compressing cross-trial variance** — a live suspicion, since that
+    was the stated reason a 2026-07-25 advance prediction failed.
+    Refuted, and backwards: dropping trial 118's own battery gives
+    **0.950514**, dropping both batteries gives **0.951257**, both
+    higher than the recorded 0.950140. The N reduction outweighs the
+    variance increase. **The pass is honest.**
+- **The margin, counted:** N=133 -> 0.950140 PASS; **N=134 -> 0.949969
+  FAIL**. Because a 134th row shifts the variance as well as the count,
+  the real question is whether *any* 134th trial preserves the pass.
+  Sweeping its Sharpe: the surviving window is **[0.709, 1.180]**.
+
+  | 134th trial Sharpe | trial 118 DSR | |
+  |---:|---:|---|
+  | 0.00 | 0.940088 | FAIL |
+  | 0.95 (registry mean 0.9444) | 0.950626 | PASS |
+  | 1.1823 (trial 88's own) | 0.949988 | FAIL |
+  | 1.2413 (trial 118's own) | 0.949630 | FAIL |
+  | 2.00 | 0.937298 | FAIL |
+
+  **Finding something as good as what the program already has would
+  destroy the pass.** So would something notably worse. Only a mediocre
+  134th trial preserves it.
+- **This is not a DSR defect.** More search, and more spread among what
+  was searched, legitimately raises the bar. The error was this
+  program's: "trial 118 passes gate 4" has been quoted as a durable
+  property of trial 118, when it is a property of **a search of 133
+  configurations that has stopped**.
+- **Consequence, and it is a forced choice for the operator.** The
+  standing order is 「沒有找到 edge 不准停」. The standing decision since
+  2026-07-25 is "no new families" because "the margin cannot absorb
+  one." Those were treated as a pause; measured, they are **mutually
+  exclusive**. Keep the pass => the crypto registry is frozen at 133 and
+  the search is over, not paused. Keep searching => the pass is forfeit
+  the moment anything interesting registers, and gate 4 returns to zero
+  risk-compliant passers.
+- **Counterweight recorded against our own finding** (contract step 2
+  web research): the DSR literature's variable is the number of
+  **independent** trials, and a raw backtest count overstates search
+  breadth because variations are correlated. This program uses the raw
+  count by deliberate choice (`run_gate_report.py:188`). Its rows are
+  heavily correlated — mean pairwise 0.628, and 64 of 133 are one
+  lineage — so a correlation-adjusted N would be below 133 and would
+  give trial 118 more margin. **Recorded as a genuine counterweight and
+  as a fix that is refused**: adopting it now is changing a gate input
+  after seeing the answer it produces, the same move already refused
+  over gate 3, and self-serving in a measurable direction.
+- **What this does NOT do:** no gate rule modified, no trial registered,
+  no backtest run, no holdout touched, no `configs/runtime/` touched,
+  trial 118's recorded pass at N=125 and N=133 not retracted — only
+  qualified.
+- **Standing answer restated, extended:** timing works in crypto only;
+  the BTC/ETH edge is positive in all four pre-declared sub-periods and
+  all eight family members; the search bought drawdown rather than
+  return; nothing is forward-validated and the earliest possible
+  forward verdict is **2028-06-29**; **and the single gate-4 pass holds
+  only for a search that has stopped — under the frozen N convention
+  the program cannot both keep searching in crypto and keep it.**
