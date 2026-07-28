@@ -537,3 +537,19 @@ cross-sectional momentum untested here → experiment 3.
   qualification run deliberately keeps pre-holdout history so indicators
   with up to 110-day lookbacks are computable at the holdout's first day.
   CPCV purging is already used separately in gate 3.
+
+## 2026-07-28 (iteration 35)
+
+- **Stopping rules for a research programme — search largely off-target,
+  recorded as such.** Queried for when to stop a quantitative research
+  programme on diminishing returns. Results were dominated by stop-loss
+  literature (`sciencedirect.com/science/article/abs/pii/S138641811300030X`,
+  `arxiv.org/pdf/1609.00869`), which answers a different question. The one
+  on-point line, from
+  `kevinrodonnell.com/leveraging-quantitative-market-research-to-avoid-diminishing-returns-in-product-development/`,
+  is generic: diminishing returns arrive when further effort yields smaller
+  increments of value and additional investment no longer justifies the
+  gains. Testable-here: **no external stopping rule found to adopt**, so
+  the convergence judgement in this iteration rests on the loop's own
+  Step 0 criterion rather than borrowed authority. Second consecutive
+  search returning little of substance; recorded rather than padded.
