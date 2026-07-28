@@ -1549,3 +1549,64 @@
   forward-validated before 2028-06-29; the single gate-4 pass holds only
   for a stopped search; and the framework has exercised exactly two
   gates, both defective.
+
+## 2026-07-28 — iteration 31 (loop, measured the delay cost iteration 30 called unmeasurable)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 30. What this iteration moves: iteration 30 left the
+  execution-latency question as a bound and declared the adverse
+  component "unmeasurable from daily candles". **That was wrong**, and
+  this iteration measures it. Why not sprawl: **zero new scripts, zero
+  new documents** — one dated addendum to the same gate-6 document, using
+  data already on disk.
+- **The test.** Daily candles carry one usable signal about intraday
+  direction: where the **open** sits inside that day's high-low range. If
+  price rose after the open, the open sits low in the range, and a
+  delayed BUY pays more. All 669 fills were matched to their
+  execution-day candle:
+
+  | Group | n | mean open-in-range | delta vs baseline | t | implied drift |
+  |---|---:|---:|---:|---:|---:|
+  | BUY fill days | 331 | 0.4910 | **-0.0167** | **-0.99** | **-8.8 bps** |
+  | SELL fill days | 338 | 0.5038 | -0.0040 | -0.25 | -2.4 bps |
+  | all days baseline | 6484 | 0.5077 | — | — | — |
+
+- **Result: the predicted signature is there on buys, and it is not
+  significant.** BUY-day opens sit 1.67pp lower in range than typical —
+  the breakout continuation signature — at **t = -0.99**. And **SELL days
+  lean the favourable way**: an open low in the range means a delayed
+  sell gets a *better* price, worth +2.4 bps. **Net round-trip point
+  estimate about -6.4 bps**, against 10 bps of modelled round-trip
+  slippage and ~40 bps of headroom the trial-118 battery demonstrated at
+  3x cost. **Inside what was already stress-tested.**
+- **Second correction to iteration 30.** Its sqrt(t) scaling assumed
+  uniform intraday volatility. Crypto volatility peaks at **14:00-16:00
+  UTC** and declines after **20:00 UTC**; the execution window is
+  **00:00-00:20 UTC**, the quiet part of the day. So the 16 bps and
+  32 bps dispersion figures are **overestimates**, not neutral scalings.
+- **What this does not establish, stated plainly.** With sd 0.3070 and
+  n=331 the 95% detectable deviation for buys is **~17.4 bps**, so this
+  rules out adverse drifts larger than that and **cannot resolve the
+  measured -8.8 bps from zero**. And open-in-range describes a 24-hour
+  bar, not the first 5-20 minutes — it is evidence about direction, not a
+  substitute for intraday data. **The concern is narrowed to "under 17
+  bps and probably much less", not closed.**
+- **Method note against self-flattery.** This iteration's result makes
+  the program look better than iteration 30 implied, so the limits above
+  are stated in the same breath as the numbers, and the "narrowed, not
+  closed" verdict is the one that goes into the standing answer.
+- **What this does NOT do:** no gate rule modified, no trial registered,
+  no backtest run, no number retracted, no holdout touched, no
+  `configs/runtime/` or shadow script touched.
+- **Standing answer restated, extended:** timing works in crypto only and
+  in its own universe bought both return and drawdown (14.26x vs 6.05x,
+  33.05% vs 80.99%), with the 4.70x twin edge audited and robust; the
+  engine is free of look-ahead, verified to the cent; **the execution-
+  latency gap iteration 30 raised is now measured at about -6.4 bps
+  round-trip point estimate, bounded above by ~17 bps, and inside the
+  cost headroom already stress-tested** — narrowed, not closed, and gate
+  6 remains the way to close it; against the naive 13-coin alternative
+  the margin is only 5.4% and that benchmark is survivorship-flattered;
+  breadth still fails; nothing is forward-validated before 2028-06-29;
+  the single gate-4 pass holds only for a stopped search; and the
+  framework has exercised exactly two gates, both defective.

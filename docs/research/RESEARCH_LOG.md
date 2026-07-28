@@ -460,3 +460,23 @@ cross-sectional momentum untested here → experiment 3.
   daily candles, so no cost figure is claimed — but the literature says
   the sign is against a breakout system rather than neutral. Recorded in
   `GATE6_BASELINE_2026-07-25.md`.
+
+## 2026-07-28 (iteration 31)
+
+- **Bitcoin intraday volatility and volume seasonality** —
+  `sciencedirect.com/science/article/pii/S1059056024006506` ("Intraday
+  and daily dynamics of cryptocurrency"),
+  `researchgate.net/publication/334727071` ("Time-of-Day Periodicities of
+  Trading Volume and Volatility in Bitcoin Exchange"),
+  `quantpedia.com/strategies/intraday-seasonality-in-bitcoin`,
+  `blog.paperswithbacktest.com/p/bitcoin-never-sleeps-exploiting-seasonality`.
+  Claim: crypto volume and volatility are **not uniform across the day**
+  — they peak during the LSE/NYSE overlap (**14:00-16:00 UTC**) and
+  decline after **20:00 UTC**; the 21:00-23:00 UTC window carries the
+  highest average returns. Testable-here: **yes, and it corrects our own
+  previous estimate.** Iteration 30 scaled the execution-delay dispersion
+  from daily sigma by sqrt(t), implicitly assuming uniform intraday
+  volatility. The execution window is **00:00-00:20 UTC**, which this
+  literature places in the **quiet** part of the day, so the 16 bps and
+  32 bps figures are **overestimates** rather than neutral scalings.
+  Recorded in `GATE6_BASELINE_2026-07-25.md`.
