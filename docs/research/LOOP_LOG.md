@@ -1134,3 +1134,79 @@
   the search bought drawdown rather than return; **nothing is
   forward-validated**, and forward validation remains the only
   unresolved item — it needs time rather than analysis.
+
+## 2026-07-28 — iteration 25 (loop, exhausted state broken by a correction)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 24. What this iteration moves: it closes a real hole —
+  **the forward tracks were recording with no rule for how they would
+  be read** — and, in writing that rule, it found and corrected a
+  wrong number in the contract's own roadmap. Why not sprawl: **zero
+  new scripts** (all computation done inline against durable return
+  series), **one new document, which is a pre-registration and
+  therefore records a decision**, and two in-place corrections rather
+  than new documents.
+- **The hole.** Every queue revision since 2026-07-24 says "keep the
+  three forward tracks recording" and "forward evidence is the binding
+  constraint". Searching `docs/research/*PRE*` and `docs/contracts/`
+  found **no document stating how the tracks would be read**. Reading
+  forward data without a pre-declared rule is the exact failure the six
+  gates exist to prevent. Written today at **4 rows**, so the data
+  cannot have shaped the rule; every day of delay would have made that
+  less true.
+- **The correction, which is the substantive finding.** The contract
+  asserted ~90 days of forward rows would be "enough to say anything at
+  all". Measured with MinTRL (Bailey & Lopez de Prado, the same
+  machinery as the gate-4 DSR) on the shadowed trials' own durable
+  return series:
+
+  | Trial | n | SR_ann | skew | kurtosis | MinTRL 90% | MinTRL 95% |
+  |---:|---:|---:|---:|---:|---:|---:|
+  | 88 | 2676 | 1.1823 | +0.227 | 12.775 | 429 d (2027-09-26) | **706 d (2028-06-29)** |
+  | 118 | 2676 | 1.2413 | +0.157 | 12.980 | 391 d (2027-08-19) | **644 d (2028-04-28)** |
+
+  Forward Sharpe standard error: **N=90 -> 2.016 annualized, 95%
+  interval [-2.77, +5.13]**; N=365 -> 1.001, [-0.78, +3.14]. At the
+  90-day mark the track cannot distinguish Sharpe -2.7 from +5.1. The
+  contract was wrong by roughly a factor of eight and is corrected in
+  place.
+- **Method self-correction inside the iteration.** The first pass
+  annualized with 252 and produced 706 days = 2.80 years. Checking
+  against the registry's own recorded `annualized_sharpe` of 1.182061
+  showed the program annualizes with **365** (crypto trades every day):
+  0.06188 * sqrt(365) = 1.1823, exact match. Redone; 706 days is
+  **1.93 years**, not 2.80. The 252 numbers appear in no document.
+- **The rule now frozen** (`FORWARD_TRACK_READ_PREREGISTRATION.md`):
+  read dates 2026-10-22 / 2027-01-24 / 2027-07-24 / 2028-06-29, none
+  movable earlier; **Test 1 implementation agreement** (deterministic,
+  full power at any N, and the only thing the 90-day read can settle);
+  **Test 2 drawdown breach** as one-sided refutation against the
+  recorded 33.05% / 33.24% backtest maxima, with non-breach declared in
+  advance as uninformative; **Test 3 return**, refutation permitted but
+  **confirmation forbidden until 2028-06-29**. No metric may be added at
+  read time.
+- **P1 status, all tracks healthy:**
+  - `CryptoShadowTrial88` — last 2026-07-28 08:20:01 result 0, next
+    2026-07-29 08:20. `shadow_trial88.jsonl` **4 rows** (up from 3),
+    latest `date=2026-07-27 close BTC 63755.86 ETH 1892.53 equity
+    998.2269 exposure BTC 0 / ETH 0.25`. `shadow_trial118.jsonl` also
+    4 rows, equity 1002.9011, exposure 0.5 / 0.5.
+  - `TwShadow0050` — next 2026-08-01 09:40, first scheduled fire still
+    ahead; `shadow_tw0050.jsonl` and `shadow_gld.jsonl` at 1 row each
+    from the manual seeds, as expected. Nothing to fix.
+  - `CryptoResearchLoop` — previous run 2026-07-27 21:37:01 result 0,
+    next 2026-07-28 21:37. Healthy.
+- **What this does NOT do:** no trial registered, no backtest run, no
+  holdout touched, no `configs/runtime/` touched, no new family
+  proposed, no frozen pre-registration edited, no recorded verdict
+  changed.
+- **Standing answer, updated:** timing works in crypto only; the BTC/ETH
+  edge is positive in all four pre-declared sub-periods and all eight
+  family members; the search bought drawdown rather than return;
+  nothing is forward-validated — **and the date at which forward
+  validation could first return a positive verdict is 2028-06-29, not
+  October 2026.** The 2026-10-22 read tests implementation only. The
+  operator's levers to move that date are: accept 90% confidence
+  (2027-09-26), accept the October holdout as a different question, or
+  override P3 to search for a higher-Sharpe design, since MinTRL falls
+  with the square of the Sharpe.
