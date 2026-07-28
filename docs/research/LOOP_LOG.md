@@ -1883,3 +1883,53 @@
   nothing is forward-validated before 2028-06-29; the single gate-4 pass
   holds only for a stopped search; and the framework has exercised
   exactly two gates, both defective.
+
+## 2026-07-28 — iteration 36 (loop, P1 maintenance only — first post-convergence iteration)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 35. What this iteration moves: **it advances nothing new by
+  design.** Iteration 35 declared the audit route converged; the
+  contract's own guidance (line 182) is "do P1 maintenance, confirm the
+  three tracks are gaining rows, and stop. Do not manufacture a
+  diagnostic in order to have something to commit." This iteration tests
+  whether the loop will honour that instruction rather than drift back
+  into diagnostic-generation. Zero new scripts, zero new documents, one
+  dated addendum to `RESEARCH_LOG.md`.
+- **P1 status — all four tracks green.** Verified by direct read of the
+  jsonl files and today's shadow-run log:
+
+  | Track | Rows | Last date | Next fire | Today's run |
+  |---|---:|---|---|---|
+  | `shadow_trial88` (crypto BTC/ETH, source trial 88) | 4 | 2026-07-27 | 2026-07-29 08:20 | exit=0 at 08:20:07+08 |
+  | `shadow_trial118` (crypto BTC/ETH, source trial 118) | 4 | 2026-07-27 | 2026-07-29 08:20 | exit=0 at 08:20:07+08 |
+  | `shadow_tw0050` (Taiwan 0050, source trial 23) | 1 | 2026-07-24 | 2026-08-01 09:40 (weekly Sat) | not scheduled today |
+  | `shadow_gld` (US GLD, source trial 24) | 1 | 2026-07-23 | 2026-08-01 09:40 (weekly Sat) | not scheduled today |
+
+  Nothing broken, nothing due. The two weekly tracks are three days from
+  their first non-seed row; if that fire fails on Saturday it becomes
+  P1 obligation of iteration 37 or 38.
+- **Step 2 (web research) done and recorded** — three passes, two
+  actionable-adjacent papers (Han/Kang/Ryu SSRN 4675565 on crypto
+  momentum under realistic assumptions, Huang/Sangiorgi/Urquhart SSRN
+  4825389 on volume-weighted TSMOM). Both are blocked by P3 (no new
+  single-market families). Filed in `RESEARCH_LOG.md` so the same
+  searches are not re-issued. Third consecutive iteration with no
+  directly-actionable literature under the P1-only constraint.
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract edited, no trial registered, no backtest run, holdout not
+  read, `spent` still `false`, no code changed, no diagnostic script
+  written, no research document created. Verification (rule 7) not run
+  because no source file changed — consistent with iterations 34-35.
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x twin edge is audited and
+  robust; the engine is free of look-ahead, verified to the cent;
+  execution-latency cost is about -6.4 bps round-trip, bounded above by
+  ~17 bps, inside tested headroom; the October holdout is protected
+  mechanically and its spend path is covered by six tests; the Taiwan
+  and gold negatives are robust to dividend treatment and if anything
+  understated; against the naive 13-coin alternative the margin is only
+  5.4% and that benchmark is survivorship-flattered; breadth still fails;
+  nothing is forward-validated before 2028-06-29; the single gate-4 pass
+  holds only for a stopped search; and the framework has exercised
+  exactly two gates, both defective.
