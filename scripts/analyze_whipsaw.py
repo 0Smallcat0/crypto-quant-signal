@@ -126,7 +126,12 @@ def analyze_symbol(candles_dir: Path, symbol_value: str, timeframe: str) -> dict
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--candles-dir", default="data/candles")
+    # Defaults to the pre-holdout slice, not data/candles. This diagnostic has
+    # no date bound of its own, so pointing it at the full series lets a
+    # research verdict be formed on data reserved for the single-use holdout
+    # (`HOLDOUT_INTEGRITY_2026-07-28.md`). Pass --candles-dir explicitly to
+    # widen it; `first_month`/`last_month` in the output record what was read.
+    parser.add_argument("--candles-dir", default="data/candles_preholdout")
     parser.add_argument("--symbols", nargs="+", default=["BTCUSDT", "ETHUSDT"])
     parser.add_argument("--timeframe", default="1d")
     return parser.parse_args()

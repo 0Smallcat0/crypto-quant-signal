@@ -501,3 +501,18 @@ cross-sectional momentum untested here → experiment 3.
   research priority. Recorded in `HOLDOUT_INTEGRITY_2026-07-28.md` as a
   caveat that must travel with the October result rather than be
   discovered after it.
+
+## 2026-07-28 (iteration 33)
+
+- **Programmatic holdout enforcement — search largely unproductive, recorded
+  as such.** Queried for guard-rail patterns that prevent accidental test-set
+  access in data pipelines. Results were dominated by LLM guardrail tooling
+  (`invariantlabs.ai/blog/guardrails`, `budecosystem.com/llm-guardrails-...`,
+  AWS Control Tower) rather than ML data governance. The one on-topic hit,
+  `mlbenchmarks.org/pdf/04-holdout-method.pdf`, restates that in theory a
+  test set is used once and in practice that is "only sometimes the case",
+  and that repeated exposure degrades the generalisation estimate.
+  Testable-here: **no established pattern to copy.** Recorded so that the
+  engine-level holdout guard (operator decision 2 in
+  `HOLDOUT_INTEGRITY_2026-07-28.md`) is known to be a from-scratch design
+  rather than an adoption. Reporting the empty result rather than padding it.

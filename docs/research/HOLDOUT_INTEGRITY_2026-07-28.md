@@ -99,3 +99,58 @@ excuse.
   metadata, row counts, and date boundaries were inspected.
 - Nominations stay fixed; `spent` stays `false`.
 - No trial registered, no backtest run, no `configs/runtime/` touched.
+
+---
+
+## Addendum 2026-07-28 (iteration 33) — one claim above corrected, and the channel closed
+
+### Correction: only one of the two diagnostics was actually unsafe
+
+The table above lists `analyze_symbol_dispersion.py:30` and
+`analyze_whipsaw.py:129` together as reading the full series. **That
+overstates it for the first script.**
+`analyze_symbol_dispersion.py` carries its own date bound:
+
+```python
+_START = date(2018, 3, 6)
+_END = date(2025, 7, 1)
+...
+parser.add_argument("--end", default=_END.isoformat())
+```
+
+Its default `--end` is **2025-07-01**, exactly the holdout boundary. It
+reads from `data/candles` but truncates before `holdout_start`, so it was
+**safe by default all along**. Only `analyze_whipsaw` was genuinely
+unbounded — it has no date argument at all, so its `--candles-dir`
+default was the whole exposure.
+
+### The channel is now closed
+
+`scripts/analyze_whipsaw.py` now defaults to `data/candles_preholdout`,
+with the reason stated at the argument. `first_month` / `last_month` were
+already in its JSON output, so any future run that widens the window with
+an explicit `--candles-dir` still records what it saw.
+
+Locked in by `tests/scripts/test_analyze_whipsaw.py::
+test_default_candles_dir_is_the_preholdout_slice`, so the default cannot
+regress silently. Full suite: **379 passed**; ruff, ruff format, mypy
+--strict and lint-imports all exit 0.
+
+This closes operator decision 3 from the section above. Decisions 1 (carry
+the caveat into the October result) and 2 (make the lock mechanical in the
+engine) remain open and remain the operator's.
+
+**What is not undone:** the whipsaw verdict that set hysteresis first in
+Goal P was formed on a window crossing the boundary. Fixing the default
+prevents recurrence; it does not retract the history. That caveat still
+travels to October.
+
+### Note on the mechanical-lock recommendation
+
+A literature search for programmatic holdout-enforcement patterns
+returned little of substance — mostly LLM guardrail tooling, not ML data
+governance. The one relevant confirmation is the benchmarks literature's
+observation that in theory a test set is used once and in practice that
+is "only sometimes the case". That is an argument for decision 2 rather
+than against it, but no established pattern was found to copy, so the
+engine-level guard would be designed from scratch.
