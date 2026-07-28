@@ -154,3 +154,89 @@ observation that in theory a test set is used once and in practice that
 is "only sometimes the case". That is an argument for decision 2 rather
 than against it, but no established pattern was found to copy, so the
 engine-level guard would be designed from scratch.
+
+---
+
+## Addendum 2026-07-28 (iteration 34) — the central claim of this document was wrong
+
+### The lock IS mechanical. "Convention, not mechanism" is retracted.
+
+The section "The hazard: the lock is convention, not mechanism" argued the
+guarantee "rests on ten defaults staying correct, not on the engine
+refusing to read past `holdout_start`." **That is false, and it is
+retracted here.**
+
+`src/backtest/runner.py` is the single registered entry point every
+family runner goes through, and it trims unconditionally:
+
+```python
+if spend_holdout_single_use:
+    holdout = spend_holdout(holdout_path, spent_at=recorded_at)
+    run_candles = dict(candles_by_symbol)
+else:
+    run_candles = {
+        symbol_value: tuple(
+            candle for candle in candles if candle.close_time < holdout.holdout_start
+        )
+        ...
+    }
+```
+
+Its module docstring says so on line 1 — "holdout enforcement + trial
+registry + report" — and the function docstring states "inputs are
+trimmed to end before the holdout starts."
+
+**Passing `--candles-dir data/candles` to a family runner would NOT leak
+the holdout.** The runner discards every candle at or after
+`holdout_start` before the engine sees it. The reason all 133 trials
+carry `data_end` = 2025-07-01 is **this trim**, not ten argparse defaults
+happening to be right.
+
+This is the pattern the leakage literature recommends — enforcement "at
+the framework level ... at the architectural level rather than relying on
+manual implementation." The codebase already implements it.
+
+**Operator decision 2 above ("make the lock mechanical") is therefore
+VOID.** There is nothing to build; it exists.
+
+### The spend path is covered, and spending before the run is deliberate
+
+`spend_holdout`'s docstring states the design outright: "The spend is
+recorded BEFORE the qualification run executes: if the run crashes, the
+holdout stays spent (conservative by doctrine)." A suspected
+irreversible-loss bug is an explicit, documented choice.
+
+Six tests in `tests/backtest/test_validation_gate.py` cover the October
+procedure:
+
+| Test | Covers |
+|---|---|
+| `test_holdout_lock_is_single_use` | double-spend rejected, post-spend reads rejected |
+| `test_registered_run_locks_holdout_trims_data_and_registers_trials` | **the trim itself** |
+| `test_holdout_spend_run_is_single_use_and_marked_in_registry` | spend marked in the registry |
+| `test_future_dated_candles_cannot_anchor_the_holdout` | a future candle cannot push `holdout_start` years out |
+| `test_holdout_spend_registers_isolated_holdout_segment_metrics` | holdout-segment metrics are isolated |
+| `test_holdout_segment_includes_the_boundary_day_move` | the boundary-day return is not dropped |
+
+### What survives from this document
+
+**Iteration 33's fix still stands and was the real hole.** Diagnostics
+like `analyze_whipsaw` read candle files **directly** and never call
+`run_registered_backtest`, so the trim never protected them. That was the
+only genuine leak channel, and it is now closed at the source.
+
+Corrected picture: **trials were mechanically safe all along; diagnostics
+were not.** The soft-contamination history (the whipsaw verdict that set
+hysteresis first in Goal P) is unaffected by this correction and still
+travels to October.
+
+### Note on how this document went wrong
+
+Iteration 32 inferred a mechanism claim from **ten argparse defaults
+without reading the runner they feed into.** That is asserting rather
+than measuring — the exact failure this program has caught repeatedly in
+its own record (the retracted 0.9+ correlation claim, the retracted
+sleeve-count synthesis, the pooled-universe headline). Three of that
+iteration's statements have now needed correction: the dispersion script
+was already bounded, the lock was already mechanical, and operator
+decision 2 was never needed.

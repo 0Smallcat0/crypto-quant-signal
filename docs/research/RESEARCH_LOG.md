@@ -516,3 +516,24 @@ cross-sectional momentum untested here → experiment 3.
   engine-level holdout guard (operator decision 2 in
   `HOLDOUT_INTEGRITY_2026-07-28.md`) is known to be a from-scratch design
   rather than an adoption. Reporting the empty result rather than padding it.
+
+## 2026-07-28 (iteration 34)
+
+- **Framework-level enforcement of train/test boundaries** —
+  `medium.com/balaena-quant-insights/train-test-split-cross-validation-and-walk-forward-testing-for-on-chain-factors-b5fcf01572e2`,
+  `insightbig.com/post/traditional-backtesting-is-outdated-use-cpcv-instead`,
+  `research.mental-momentum.ai/r/backtesting-frameworks-llm-trading-bias-l1dnl5`,
+  `quantstrategy.io/blog/backtesting-ai-powered-trading-systems-ensuring-robustness/`.
+  Claim: leakage prevention should be enforced **at the framework level**,
+  "at the architectural level rather than relying on manual
+  implementation"; chronological forward-chaining splits ensure the model
+  never observes future data; **purging** removes observations adjacent to
+  the split boundary. Testable-here: **yes, and it vindicates the codebase
+  against our own iteration-32 claim.** `run_registered_backtest` trims
+  every non-spend run to `close_time < holdout_start` before the engine
+  sees a candle — architectural enforcement, exactly the recommended
+  pattern. Purging is not applicable here: this is a chronological
+  walk-forward boundary, not a cross-validation split, and the
+  qualification run deliberately keeps pre-holdout history so indicators
+  with up to 110-day lookbacks are computable at the holdout's first day.
+  CPCV purging is already used separately in gate 3.
