@@ -383,3 +383,30 @@ cross-sectional momentum untested here → experiment 3.
   iteration 26's claim that adopting effective-N would be a rule change
   — it is the frozen rule; the raw count is a conservative deviation
   from it.
+
+## 2026-07-28 (iteration 28)
+
+- **Benchmark appropriateness criteria** —
+  `auroratrainingadvantage.com/finance/investment-management/performance-measurement-benchmarks/`,
+  `m1.com/blog/benchmarks-why-choosing-the-right-one-matters/`,
+  `assetvantage.com/blogs/portfolio-comparison-against-benchmark/`.
+  Claim: a valid benchmark must be measurable, investable,
+  **appropriate** (aligned with the portfolio's actual investment
+  universe, strategy and constraints), reflective of current investment
+  opinion, and **specified in advance**. A frequent error is choosing a
+  benchmark by convenience rather than appropriateness — the cited
+  example is judging a US large-cap portfolio against a global index.
+  Outperformance against a mismatched benchmark reflects universe
+  differences, not skill. Testable-here: **yes, and it convicts this
+  program's own headline sentence.** Trial 88 trades BTC/ETH; the
+  13-coin equal-weight benchmark is neither appropriate to its universe
+  nor specified in advance for it. Corrected in
+  `VS_BUY_AND_HOLD_2026-07-26.md` and in the contract standing answer.
+- **Survivorship, look-ahead and data-snooping from narrow universes** —
+  `arxiv.org/html/2505.07750v1` ("The Pitfalls of Benchmarking in
+  Algorithm Selection"). Claim: short horizons and narrow universes
+  produce survivorship, look-ahead and data-snooping bias that undermine
+  claimed improvements. Testable-here: **already recorded** — the
+  13-coin universe came from a 2026 eligibility screen, so its 13.53x is
+  survivorship-flattered; that caveat now travels with the corrected
+  opportunity comparison rather than being a footnote.

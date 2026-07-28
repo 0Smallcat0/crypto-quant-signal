@@ -196,3 +196,64 @@ straight up.
   controlled**. Coins that died before the screen ran are absent from the
   benchmark, which flatters buy-and-hold's 13.53×.
 - Benchmarks pay entry cost but no ongoing cost.
+
+---
+
+## Addendum 2026-07-28 (iteration 28) — this document contradicts itself, and the standing answer inherited the wrong half
+
+### The contradiction
+
+Two statements in this file describe the same strategy against different
+benchmarks, and only one of them is a like-for-like comparison:
+
+| Where | Comparison | System | Benchmark | System MDD | Benchmark MDD |
+|---|---|---:|---:|---:|---:|
+| line 14, line 143 | **same universe** — trial 88 vs BTC/ETH buy-and-hold | 14.26x | **6.05x** | 33.05% | **80.99%** |
+| line 145, line 166 | **cross universe** — trial 88 vs 13-coin equal-weight | 14.26x | **13.53x** | 33.05% | **86.22%** |
+
+Line 19 of this document states the first correctly: "it more than
+doubles buy-and-hold's return while cutting the drawdown from 81% to
+33%." Line 171 states the second as a mechanism claim: "the system's
+product is not return."
+
+**Trial 88 traded BTC and ETH only.** Its market is the 6.05x row. The
+13-coin book is experiment 8's universe, where the best arm returned
+9.39x against that same 13.53x (`REGISTRY_VS_BENCHMARK_2026-07-26.md`).
+Pairing experiment 7's result with experiment 8's benchmark is the
+identical universe-pooling error this program caught and retracted on
+2026-07-26, when "8 of 16 beat buy-and-hold, a coin flip" turned out to
+be 8/8 and 0/8 once the experiment number was carried in the grouping key.
+
+### What is actually true, split by the question being asked
+
+**As a mechanism claim — does the timing rule add value?** It must be
+same-universe, and the answer is that the rule bought **both**:
+
+- return **14.26x against 6.05x** (+136%), and
+- drawdown **33.05% against 80.99%**.
+
+The clause "the search bought drawdown, **not return**" is false in this
+frame. It is also unnecessary: the exposure-matched twin measurement
+(`TIMING_VALUE_2026-07-27.md`) independently scores this sleeve at 4.70x
+its passive twin, which is the cleaner version of the same finding.
+
+**As an opportunity comparison — after 133 trials, is this better than
+the dumbest alternative the operator could have executed?** The
+cross-universe figure is legitimate and is the more decision-relevant
+one for someone whose goal is money: 14.26x against 13.53x, a **5.4%
+margin**, at 33.05% drawdown against 86.22%. Two caveats already recorded
+stay attached: the 13-coin universe came from a 2026 eligibility screen so
+**survivorship is uncontrolled** and 13.53x is flattered, and a 5.4%
+margin is not a result 133 trials can claim credit for.
+
+Even in this frame "not return" overstates it — the correct phrasing is
+**mostly drawdown, plus a slim return margin**.
+
+### What changes
+
+- Nothing measured. Every number above is as recorded; none is retracted.
+- The standing answer in `AUTONOMOUS_RESEARCH_LOOP.md` carried the
+  cross-universe sentence and is corrected the same day.
+- Any future document quoting "14.26x against 13.53x" must say which
+  question it is answering, and must not use it to support a claim about
+  what the timing rule does.

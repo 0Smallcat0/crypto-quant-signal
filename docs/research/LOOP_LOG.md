@@ -1353,3 +1353,66 @@
   search; **and the framework that produced all of this has exercised
   exactly two gates, both of which are known to be defective in recorded
   ways.**
+
+## 2026-07-28 — iteration 28 (loop, the standing answer's headline sentence was pooling two universes)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 27. What this iteration moves: it audits the single sentence
+  this program restates verbatim every iteration — its convergence
+  anchor — and finds it compares experiment 7's result against
+  experiment 8's benchmark. Why not sprawl: **zero new scripts, zero new
+  documents**; a dated addendum to the existing result document plus two
+  in-place contract corrections.
+- **The defect.** The standing answer reads: "best book 14.26x against
+  13.53x for holding thirteen coins, so the search bought drawdown (33%
+  vs 86%), not return." **Trial 88 traded BTC and ETH only.** Verified
+  against `VS_BUY_AND_HOLD_2026-07-26.md`:
+
+  | Row | System | Benchmark | System MDD | Benchmark MDD |
+  |---|---:|---:|---:|---:|
+  | line 14 / 143 — **BTC/ETH buy-and-hold** (same universe) | 14.26x | **6.05x** | 33.05% | **80.99%** |
+  | line 145 / 166 — **13-coin equal-weight** (cross universe) | 14.26x | 13.53x | 33.05% | 86.22% |
+
+  The 13.53x / 86.22% pair belongs to experiment 8, whose best arm
+  returned 9.39x against it. **This is the identical universe-pooling
+  error caught and retracted on 2026-07-26**, when "8 of 16 beat
+  buy-and-hold, a coin flip" turned out to be 8/8 and 0/8 once the
+  experiment number entered the grouping key.
+- **The source document contradicts itself and the standing answer
+  inherited the wrong half.** `VS_BUY_AND_HOLD_2026-07-26.md` line 19
+  states it correctly — "more than doubles buy-and-hold's return while
+  cutting the drawdown from 81% to 33%" — and line 171 states the pooled
+  version as a mechanism claim, "the system's product is not return."
+- **Corrected, split by the question being asked:**
+  - **Does the timing rule add value?** Same-universe only. It bought
+    **both**: return **14.26x vs 6.05x (+136%)** and drawdown **33.05%
+    vs 80.99%**. **"Not return" is false here**, and unnecessary — the
+    exposure-matched twin already scores this sleeve 4.70x independently.
+  - **Was 133 trials better than the dumbest alternative?**
+    Cross-universe is legitimate for this and is the operator's money
+    question: **14.26x vs 13.53x, a 5.4% margin**, at 33.05% vs 86.22%.
+    Caveats stay attached — the 13-coin universe is
+    survivorship-uncontrolled so 13.53x is flattered, and 5.4% is not a
+    margin 133 trials can claim credit for. Even here "not return"
+    overstates: **mostly drawdown plus a slim return margin**.
+- **Web research (contract step 2)** supplied the standard this convicts
+  the sentence against: a benchmark must be **appropriate to the
+  portfolio's actual universe** and **specified in advance**. The 13-coin
+  benchmark for a BTC/ETH strategy fails both.
+- **Note on direction.** This correction makes the program look
+  **better** than the record said, so it was held to the stricter
+  standard: every number was read from the result document's own tables
+  rather than from LOOP_LOG prose, and nothing is retracted — only the
+  pairing is.
+- **What this does NOT do:** no gate rule modified, no frozen
+  pre-registration edited, no measured number changed or retracted, no
+  trial registered, no backtest run, no holdout touched, no
+  `configs/runtime/` touched.
+- **Standing answer restated, corrected:** timing works in crypto only,
+  and **in its own universe it bought both return and drawdown (14.26x
+  vs 6.05x, 33.05% vs 80.99%)**; against the naive 13-coin alternative
+  the margin is only 5.4% and that benchmark is survivorship-flattered;
+  breadth still fails (exp-8 best arm 9.39x vs 13.53x); nothing is
+  forward-validated and the earliest possible forward verdict is
+  2028-06-29; the single gate-4 pass holds only for a stopped search;
+  and the framework has exercised exactly two gates, both defective.
