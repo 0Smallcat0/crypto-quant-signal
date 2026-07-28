@@ -1289,3 +1289,67 @@
   forward verdict is **2028-06-29**; **and the single gate-4 pass holds
   only for a search that has stopped — under the frozen N convention
   the program cannot both keep searching in crypto and keep it.**
+
+## 2026-07-28 — iteration 27 (loop, gate audit + same-day correction of iteration 26)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 26. What this iteration moves: it audits the phrase used in
+  nearly every document this program has produced — "six-gate
+  anti-overfitting framework" — by asking which gates have ever decided
+  anything; and in doing so it found that **iteration 26's own reasoning
+  was wrong** and corrected it the same day. Why not sprawl: **zero new
+  scripts, zero new documents** — the findings are a dated addendum to
+  `GATE4_FRAGILITY_2026-07-28.md` plus two in-place contract
+  refinements.
+- **Correction to iteration 26, in place.** Iteration 26 said adopting
+  correlation-adjusted `effective_N` "would be changing a gate's input
+  after seeing the answer it produces" and refused it on that basis.
+  **Wrong.** `VALIDATION_GATE_CONTRACT.md` — frozen, written before any
+  of these results — mandates it at gate 1 line 44: "`effective_N` for
+  DSR should account for correlation between trials ... the method used
+  must be recorded alongside the number", and line 75 lists `effective_N`
+  as a gate-4 input. So `run_gate_report.py:190` passing
+  `trial_count = len(trials)` is a **deviation from the contract**,
+  conservative on the N axis, with no method recorded — which also means
+  gate 1 is not currently fully satisfied.
+- **What is actually post-hoc, and why it was still not computed.** Three
+  standard methods exist (ONC, hierarchical, spectral). Proper compliance
+  clusters trials into K groups, forms an aggregate Sharpe per cluster,
+  and takes the variance across **those K Sharpes** — changing *both*
+  gate-4 inputs. The variance across K aggregates can be larger or
+  smaller than across 133 individual trials, so **the net effect on trial
+  118 is unknown, not favourable.** Choosing a method after seeing the
+  0.950140 margin is the move that would void the answer, so it was left
+  for the operator to declare first. Meanwhile trial 118's pass stands as
+  earned under a bar at least as strict as the contract requires.
+- **Gate audit — which gates have ever decided a candidate:**
+
+  | Gate | Ever decided a candidate? |
+  |---|---|
+  | 1 trial registry | No — precondition, and **not currently satisfied** (no `effective_N` method recorded) |
+  | 2 data floor >= 1000 days | **No, and cannot** — all 133 trials share one 2676-day window, so `passes: true` by construction |
+  | 3 PBO <= 0.05 | **Yes — rejects everything** (0.6518 candidates, 0.7326 all-columns) |
+  | 4 DSR >= 0.95 | **Yes — one passer**, trial 118, on a one-trial margin |
+  | 5 single-use holdout | No — never executed, nominations fixed |
+  | 6 paper trading >= 3 months | No — `GATE6_BASELINE_2026-07-25.md` checkbox still unchecked |
+
+- **The synthesis, which is the finding.** Gates 5 and 6 lying ahead is
+  normal and not a defect. What matters is that the two gates which have
+  actually exercised judgement over 133 trials **both have recorded
+  defects**: gate 3 misranks (iteration 22 — it would call exp-3 with
+  2/8 members having edge safer than exp-7 with 8/8), and gate 4 holds
+  only for a stopped search (iteration 26). **No document may describe
+  this program as having "survived six gates".** Nothing has: gate 3
+  fails, and gates 5 and 6 have not been attempted.
+- **What this does NOT do:** no gate rule modified, no frozen contract
+  edited, no trial registered, no backtest run, no holdout touched, no
+  `configs/runtime/` touched. The contract deviation is **recorded, not
+  fixed** — fixing it requires an operator-declared method.
+- **Standing answer restated, extended:** timing works in crypto only;
+  the BTC/ETH edge is positive in all four pre-declared sub-periods and
+  all eight family members; the search bought drawdown rather than
+  return; nothing is forward-validated and the earliest possible forward
+  verdict is 2028-06-29; the single gate-4 pass holds only for a stopped
+  search; **and the framework that produced all of this has exercised
+  exactly two gates, both of which are known to be defective in recorded
+  ways.**
