@@ -436,3 +436,27 @@ cross-sectional momentum untested here → experiment 3.
   read from the trial-88 report are BTC 0.2006 / ETH 0.1780, a 53/47
   split against an equal-weight 50/50 benchmark, so the edge is not
   BTC-over-ETH selection.
+
+## 2026-07-28 (iteration 30)
+
+- **Implementation shortfall and why delay is directional for breakout
+  systems** — `cube.exchange/what-is/implementation-shortfall`,
+  `quantitativebrokers.com/blog/a-brief-history-of-implementation-shortfall`,
+  `ryanoconnellfinance.com/implementation-shortfall/`,
+  `markets4you.com/en/blog/market-analysis/how-to-measure-slippage-spread-and-market-impact-before-they-erode-a-winning-strategy/`.
+  Claim: implementation shortfall is the gap between the **decision
+  price** and the realised execution price, covering market impact plus
+  delay cost. It is called out as "particularly dangerous for breakout
+  traders and momentum systems", because a breakout entry is identified
+  at a level and by the time the order reaches the market liquidity has
+  shifted and the fill lands worse. The urgency dilemma: trading fast
+  costs impact, trading slow costs delay. Testable-here: **partially,
+  and it convicts an unmodelled assumption.** Trial 88 is a Donchian
+  breakout whose backtest fills at the next bar's open, which in 24/7
+  crypto equals the decision-bar close — i.e. **zero assumed latency**.
+  Live lag is ~5 min (paper runtime) to ~20 min (shadow recorder), across
+  which BTC's expected absolute move is **16.0 / 32.0 bps** against a
+  modelled 5 bps slippage. The adverse *fraction* is not measurable from
+  daily candles, so no cost figure is claimed — but the literature says
+  the sign is against a breakout system rather than neutral. Recorded in
+  `GATE6_BASELINE_2026-07-25.md`.
