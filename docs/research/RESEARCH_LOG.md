@@ -553,3 +553,33 @@ cross-sectional momentum untested here → experiment 3.
   the convergence judgement in this iteration rests on the loop's own
   Step 0 criterion rather than borrowed authority. Second consecutive
   search returning little of substance; recorded rather than padded.
+
+## 2026-07-28 (iteration 36, P1 maintenance)
+
+- `papers.ssrn.com/sol3/papers.cfm?abstract_id=4675565` — Han, Kang, Ryu,
+  "Time-Series and Cross-Sectional Momentum in the Cryptocurrency Market:
+  A Comprehensive Analysis under Realistic Assumptions". Claim: momentum
+  effects in crypto shrink materially once realistic trading assumptions
+  (costs, borrowing constraints, execution frictions) are applied.
+  Testable-here: **not actionable this iteration** — the queue is P1-only
+  (route declared converged iteration 35). Filed for the next family
+  window if the operator ever opens P3; would inform any experiment 9
+  successor about cost sensitivity, not the existing frozen 133.
+- `papers.ssrn.com/sol3/papers.cfm?abstract_id=4825389` — Huang,
+  Sangiorgi, Urquhart, "Cryptocurrency Volume-Weighted Time Series
+  Momentum". Claim: volume-weighted TSMOM in crypto shows significant
+  positive returns using volume-weighted market returns. Testable-here:
+  **no** — introduces a volume-weighting parameter that would be a new
+  single-market family (P3-refused). Recorded so the same idea is not
+  re-searched next iteration.
+- Third pass on "trend/momentum in crypto forward-validated 2026" and
+  "MinTRL small-sample corrections". Returned only Bailey/Lopez de Prado
+  restatements already codified in the standing answer (MinTRL on trial
+  88 is 706 days at 95% one-sided vs SR* = 0 = 2028-06-29, per iteration
+  25). Testable-here: **already implemented**; nothing new to lift.
+- **Meta-observation, recorded rather than acted on.** Three consecutive
+  external-research passes have returned no directly-actionable finding
+  under this repo's P1-only constraint. Same diminishing-returns pattern
+  iteration 35 noted internally. Not a reason to stop Step 2 (which is
+  contract-mandated), but another signal that the binding constraint is
+  now forward rows, not literature.
