@@ -1734,3 +1734,76 @@
   forward-validated before 2028-06-29; the single gate-4 pass holds only
   for a stopped search; and the framework has exercised exactly two
   gates, both defective.
+
+## 2026-07-28 — iteration 34 (loop, iteration 32's central claim retracted)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 33. What this iteration moves: nine audits asked whether the
+  holdout is clean; none asked whether the code that **spends** it works.
+  October is a one-shot irreversible operation that has never executed.
+  Why not sprawl: **zero new scripts, zero new documents** — one dated
+  addendum, and it is mostly a retraction of my own earlier work.
+- **Hypothesis tested and refuted.** Suspected an irreversible-loss bug:
+  if the lock is marked spent **before** the run, a crash burns the
+  single-use holdout for nothing. It is not a bug — `spend_holdout`'s
+  docstring states the design outright: "The spend is recorded BEFORE the
+  qualification run executes: if the run crashes, the holdout stays spent
+  (conservative by doctrine)." Deliberate and documented.
+- **RETRACTION: iteration 32's central claim was wrong.** That entry said
+  "the lock is convention, not mechanism ... the guarantee rests on ten
+  defaults staying correct, not on the engine refusing to read past
+  `holdout_start`." **False.** `src/backtest/runner.py` — the single
+  registered entry point every family runner uses — trims
+  unconditionally:
+
+  ```python
+  run_candles = {
+      symbol_value: tuple(
+          candle for candle in candles if candle.close_time < holdout.holdout_start
+      )
+  ```
+
+  **Passing `--candles-dir data/candles` to a family runner would not
+  leak the holdout.** The reason all 133 trials carry `data_end` =
+  2025-07-01 is this trim, not luck with argparse. This is exactly the
+  framework-level enforcement the leakage literature prescribes —
+  "architectural level rather than relying on manual implementation".
+  **Operator decision 2 from iteration 32 ("make the lock mechanical") is
+  VOID: it already is.**
+- **The October procedure is covered by six tests**, including the trim
+  itself (`test_registered_run_locks_holdout_trims_data_and_registers_trials`),
+  double-spend rejection, future-dated candles being unable to anchor
+  `holdout_start` years ahead, isolated holdout-segment metrics, and the
+  boundary-day move not being dropped.
+- **What survives, and it matters.** Iteration 33's fix was the real
+  hole: diagnostics like `analyze_whipsaw` read candle files **directly**
+  and never call `run_registered_backtest`, so the trim never protected
+  them. **Trials were mechanically safe all along; diagnostics were
+  not.** The soft-contamination history — the whipsaw verdict that placed
+  hysteresis first in Goal P — is untouched by this correction and still
+  travels to October.
+- **How iteration 32 went wrong, named plainly.** It inferred a mechanism
+  claim from **ten argparse defaults without reading the runner they feed
+  into**. That is asserting instead of measuring, the same failure this
+  program has caught in itself before (the retracted 0.9+ correlation
+  claim, the retracted sleeve-count synthesis, the pooled-universe
+  headline). Three of iteration 32's statements have now needed
+  correction across two iterations.
+- **What this does NOT do:** no gate rule modified, no frozen contract
+  edited, no trial registered, no backtest run, holdout not read,
+  nominations unchanged, `spent` still `false`, no code changed this
+  iteration.
+- **Standing answer restated, one clause strengthened:** timing works in
+  crypto only and in its own universe bought both return and drawdown;
+  the 4.70x twin edge is audited and robust; the engine is free of
+  look-ahead, verified to the cent; execution-latency cost is about
+  -6.4 bps round-trip, bounded above by ~17 bps, inside tested headroom;
+  **the October holdout is protected mechanically by the runner's trim,
+  not by convention, and its spend path is covered by six tests** —
+  ~366 days remain, `spent` is false, and the one real leak channel
+  (diagnostics) was closed in iteration 33 though its historical caveat
+  stands; against the naive 13-coin alternative the margin is only 5.4%
+  and that benchmark is survivorship-flattered; breadth still fails;
+  nothing is forward-validated before 2028-06-29; the single gate-4 pass
+  holds only for a stopped search; and the framework has exercised
+  exactly two gates, both defective.
