@@ -480,3 +480,24 @@ cross-sectional momentum untested here → experiment 3.
   literature places in the **quiet** part of the day, so the 16 bps and
   32 bps figures are **overestimates** rather than neutral scalings.
   Recorded in `GATE6_BASELINE_2026-07-25.md`.
+
+## 2026-07-28 (iteration 32)
+
+- **Adaptive data analysis and indirect holdout contamination** —
+  `research.google/blog/the-reusable-holdout-preserving-validity-in-adaptive-data-analysis/`,
+  `mlbenchmarks.org/04-holdout-method.html`,
+  `arxiv.org/pdf/1905.12580` ("Model Similarity Mitigates Test Set
+  Overuse"). Claim: the holdout's statistical guarantee assumes the k
+  models were chosen **independently** of the test data; in practice
+  analysts choose guided by earlier results, and "the moment a scientist
+  considers a prior result on a benchmark dataset, the new model now has
+  some formal dependency on the test data that invalidates the classical
+  theory." The failure mode is **adaptivity** — a feedback loop between
+  analyst and data — not only direct fitting. Testable-here: **yes, and
+  it names a channel this program had not recorded.** No trial read the
+  holdout (verified: all 133 have `data_end` 2025-07-01), but
+  `analyze_whipsaw` defaults to the full series and its documented run
+  spanned 2024-01 to 2026-06, crossing `holdout_start`; its verdict set
+  research priority. Recorded in `HOLDOUT_INTEGRITY_2026-07-28.md` as a
+  caveat that must travel with the October result rather than be
+  discovered after it.

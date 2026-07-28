@@ -1610,3 +1610,69 @@
   breadth still fails; nothing is forward-validated before 2028-06-29;
   the single gate-4 pass holds only for a stopped search; and the
   framework has exercised exactly two gates, both defective.
+
+## 2026-07-28 — iteration 32 (loop, holdout integrity verified; one hazard found)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 31. What this iteration moves: seven audits had not touched
+  **gate 5**, and the October holdout is the one clean evidence this
+  program has reserved. If it were already contaminated it would be
+  worthless before being spent, and nobody had checked. Why not sprawl:
+  **zero new scripts**; one new document, justified because it records a
+  verification the operator needs before spending the holdout and has no
+  existing home (`PRE_HOLDOUT_PROTOCOL.md` is frozen and was not edited).
+- **Verified clean at the trial level.** `data/candles` runs to
+  2026-07-02 (3242 rows); `data/candles_preholdout` stops at 2025-07-01
+  (2876 rows), exactly one day before `holdout_start`
+  2025-07-02T23:59:59.999Z. The decisive check is the registry, not
+  script intent: **all 133 registered trials have `data_end` =
+  2025-07-01, and zero cross the boundary.** About 366 days of holdout
+  exist to spend and `spent` is still `false`. **Gate 5 is intact as
+  written.**
+- **Hazard: the lock is convention, not mechanism.** All ten
+  trial-registering scripts (`run_alloc_family`, `run_atr_family`,
+  `run_combo_family`, `run_cs_family`, `run_donchian13_family`,
+  `run_donchian_family`, `run_gate_family`, `run_robustness_trial88`,
+  `run_robustness_trial118`, `run_trendfactor_family`) default to
+  `data/candles_preholdout` — but nothing *prevents* passing
+  `--candles-dir data/candles`. The guarantee rests on ten argparse
+  defaults staying correct, not on the engine refusing to read past
+  `holdout_start`.
+- **Soft contamination found and recorded before October, not after.**
+  `analyze_symbol_dispersion.py:30` and `analyze_whipsaw.py:129` default
+  to the **full** series, and `WHIPSAW_DIAGNOSTIC.md:84` documents a run
+  over candles spanning 2024-01 to 2026-06 — crossing the boundary. That
+  diagnostic's verdict placed the hysteresis experiment first in Goal P.
+  **This is not a gate-5 violation** (gate 5 binds trials, and no trial
+  read it), but the adaptive-data-analysis literature is explicit that a
+  researcher merely *considering* a result computed on reserved data
+  creates a formal dependency the classical theory does not cover.
+- **Magnitude, not minimised.** The whipsaw statistic is signal churn
+  frequency, **not** strategy P&L, so it cannot reveal whether trial 88
+  or 118 made money after 2025-07-01 and cannot have tuned them toward
+  holdout returns. What it could do — and did — is nudge **research
+  priority**. Weak channel, real channel, and it belongs on the record
+  now rather than surfacing after the October result, when it would read
+  as an excuse.
+- **Three operator decisions named:** carry this caveat into the October
+  result document; optionally make the lock mechanical (engine refuses
+  `open_time >= holdout_start` without an explicit `--spend-holdout`);
+  and repoint the two diagnostics at `candles_preholdout` by default,
+  which costs nothing and closes the channel for future work.
+- **What this does NOT do:** the holdout was **not read** — only
+  `holdout_lock.json` metadata, row counts and date boundaries were
+  inspected. No gate rule modified, no frozen contract edited, no trial
+  registered, no backtest run, nominations unchanged, `spent` still
+  `false`, no `configs/runtime/` touched.
+- **Standing answer restated, extended:** timing works in crypto only and
+  in its own universe bought both return and drawdown; the 4.70x twin
+  edge is audited and robust; the engine is free of look-ahead, verified
+  to the cent; execution-latency cost is measured at about -6.4 bps
+  round-trip point estimate, bounded above by ~17 bps, inside tested
+  headroom; **the October holdout is verified unread by any trial and
+  still has ~366 days available, with one soft-contamination channel now
+  on the record**; against the naive 13-coin alternative the margin is
+  only 5.4% and that benchmark is survivorship-flattered; breadth still
+  fails; nothing is forward-validated before 2028-06-29; the single
+  gate-4 pass holds only for a stopped search; and the framework has
+  exercised exactly two gates, both defective.
