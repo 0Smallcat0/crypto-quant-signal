@@ -1933,3 +1933,60 @@
   nothing is forward-validated before 2028-06-29; the single gate-4 pass
   holds only for a stopped search; and the framework has exercised
   exactly two gates, both defective.
+
+## 2026-07-28 — iteration 37 (session loop, handoff verification and shutdown)
+
+- **Purpose: verify the unattended mechanism, then hand off.** Iteration
+  35 declared the audit route converged; iteration 36 (this session)
+  deliberately committed nothing so the nightly headless run could own
+  that number cleanly. This iteration checks whether it did.
+- **Verified, end to end and correct.** `CryptoResearchLoop` fired
+  2026-07-28 21:37:01, exit 0, finished 21:41:24 (~4 minutes),
+  `docs/research/loop_runs/run_20260728_213701.log`. It:
+  - numbered itself **iteration 36**, with no collision;
+  - read the convergence declaration and did **P1 maintenance only**,
+    recording the standing answer "unchanged in every clause";
+  - performed contract step 2 independently, surfacing SSRN 4675565
+    (crypto momentum under realistic assumptions) and SSRN 4825389
+    (volume-weighted TSMOM), and **correctly judged both blocked by P3**;
+  - named its own next P1 obligation — confirm the 2026-08-01 Saturday
+    fire appends a second row to the TW and GLD tracks;
+  - committed `de0cb9d` and pushed. `origin/main` and local are both at
+    `de0cb9d`, 0 ahead / 0 behind.
+- **Operator decision, 2026-07-28: the session loop is stopped.** The
+  reason is not fatigue and not diminishing returns in the abstract — it
+  is that the free nightly mechanism was demonstrated tonight to do the
+  same job correctly, so a paid session loop iterating the same contract
+  on a converged route is strictly redundant. Research does not stop; it
+  moves to the leg that costs nothing.
+- **What continues unattended:**
+  - `CryptoResearchLoop` — daily 21:37, one contract iteration.
+  - `CryptoShadowTrial88` — daily 08:20, writes `shadow_trial88.jsonl`
+    and `shadow_trial118.jsonl` (4 rows each).
+  - `TwShadow0050` — Saturdays 09:40, first fire **2026-08-01**; both
+    `shadow_tw0050.jsonl` and `shadow_gld.jsonl` still at their 1-row
+    manual seeds, which is expected, not a fault.
+- **Open items that need the operator, not the loop:**
+  1. Carry the whipsaw soft-contamination caveat into the October
+     holdout result document (`HOLDOUT_INTEGRITY_2026-07-28.md`).
+  2. If an earlier answer date than 2028-06-29 is wanted, the only lever
+     is a P3 override toward a higher-Sharpe design — MinTRL falls with
+     the square of the Sharpe. The cost is trial 118's gate-4 pass, which
+     fails at N=134 (`GATE4_FRAGILITY_2026-07-28.md`).
+  3. Optionally repoint `analyze_symbol_dispersion` at the pre-holdout
+     slice. Cosmetic only — it is already date-bounded to 2025-07-01.
+- **Standing answer at handoff, unchanged:** timing works in crypto only
+  and in its own universe bought both return and drawdown (14.26x vs
+  6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin edge is
+  audited and robust to twin construction and asset mix; the engine is
+  free of look-ahead, verified to the cent; execution-latency cost is
+  about -6.4 bps round-trip, bounded above by ~17 bps, inside tested
+  headroom; the October holdout is protected mechanically by the runner's
+  trim, unread by all 133 trials, with ~366 days available and its spend
+  path covered by six tests; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin is
+  only 5.4% and that benchmark is survivorship-flattered; breadth fails;
+  **nothing is forward-validated and no return-based forward verdict is
+  statistically permitted before 2028-06-29**; the single gate-4 pass
+  holds only for a stopped search; and the six-gate framework has
+  exercised exactly two gates, both with recorded defects.
