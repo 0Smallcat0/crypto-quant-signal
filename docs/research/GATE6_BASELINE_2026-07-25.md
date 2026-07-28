@@ -283,3 +283,73 @@ Two routes, both touching things the loop must not change unilaterally:
 
 Nothing here changes a gate rule, a recorded number, or the live
 contract.
+
+## Addendum 2026-07-28 (iteration 31) — the delay-cost concern, measured and de-escalated
+
+The addendum above said the adverse fraction of the execution delay
+"cannot be measured from daily candles, so no cost number is claimed."
+**That was too pessimistic, and is corrected here.** Daily candles carry
+one usable signal: where the **open** sits inside that day's high-low
+range. If price rose after the open, the open sits low in the range — and
+a delayed BUY would have paid more.
+
+### Measurement
+
+All 669 trial-88 fills matched against their execution-day candle:
+
+| Group | n | mean open-in-range | delta vs baseline | t | mean daily range | implied drift |
+|---|---:|---:|---:|---:|---:|---:|
+| BUY fill days | 331 | 0.4910 | **-0.0167** | **-0.99** | 5.27% | **-8.8 bps** |
+| SELL fill days | 338 | 0.5038 | -0.0040 | -0.25 | 5.98% | -2.4 bps |
+| all days (baseline) | 6484 | 0.5077 | — | — | — | — |
+
+**BUY days do lean the adverse way** — the open sits 1.67 percentage
+points lower in its range than a typical day, meaning price rose after
+the open more often than usual, which is the predicted breakout
+signature. **But it is not significant (t = -0.99).**
+
+**SELL days lean the *favourable* way.** For a sell, an open low in the
+range means price rose afterwards, so a delayed sell gets a **better**
+price. The -0.0040 there is a +2.4 bps benefit, not a cost.
+
+**Net point estimate across a round trip: about -6.4 bps**, against
+10 bps of round-trip slippage already modelled and roughly 40 bps of
+headroom demonstrated by the trial-118 battery holding at 3x cost
+(60 bps round-trip against a 20 bps baseline). **The delay cost, taken at
+face value, sits well inside what was already stress-tested.**
+
+### Two corrections to the previous addendum's framing
+
+**1. The sqrt(t) scaling was conservative, not neutral.** It assumed
+volatility is uniform across the day. It is not: Bitcoin volume and
+volatility peak during the LSE/NYSE overlap (**14:00-16:00 UTC**) and
+decline after **20:00 UTC**. The execution window here is **00:00-00:20
+UTC** — the quiet part of the crypto day. The true dispersion across that
+specific window is therefore **below** the 32 bps the uniform scaling
+produced, and the 16 bps five-minute figure is likewise an overestimate.
+
+**2. "Unmeasurable" was wrong.** It was measurable, imperfectly, from
+data already on disk, and the loop should have tried before declaring it
+out of reach.
+
+### What this does NOT establish
+
+**Power is limited.** With sd 0.3070 and n=331, the 95% detectable
+deviation for BUYs is 0.0331 in open-in-range units, i.e. about
+**17.4 bps**. This test can rule out adverse drifts **larger than ~17
+bps**; it cannot resolve anything smaller. The measured -8.8 bps is
+exactly in that unresolvable band.
+
+**The proxy is coarse.** Open-in-range describes the whole 24-hour bar,
+not the first 5 to 20 minutes. It is evidence about direction, not a
+substitute for intraday measurement.
+
+### Net effect on the standing concern
+
+Iteration 30 raised execution latency as a possible threat to the cost
+model's headroom. Iteration 31 measures it and finds **the right sign on
+buys, the opposite sign on sells, neither significant, a net point
+estimate inside the tested headroom, and a dispersion estimate that was
+itself overstated.** The concern is **narrowed to "under 17 bps and
+probably much less", not closed.** Gate 6's journaled measurement remains
+the way to close it properly, and gate 6 still has not run.
