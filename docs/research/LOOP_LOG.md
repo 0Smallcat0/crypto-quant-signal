@@ -1807,3 +1807,79 @@
   nothing is forward-validated before 2028-06-29; the single gate-4 pass
   holds only for a stopped search; and the framework has exercised
   exactly two gates, both defective.
+
+## 2026-07-28 — iteration 35 (loop, Taiwan verdict closed; audit route declared converged)
+
+- **Step 0, with a warning raised rather than buried.** Two of the
+  previous three iterations corrected **my own recent work** rather than
+  finding anything new (32 was wrong, 34 retracted it). That is precisely
+  the diminishing-returns signal Step 0 exists to detect. This iteration
+  targets the last substantive standing-answer claim never checked at
+  source, then reports honestly on whether the route should continue.
+  Zero new scripts, zero new documents.
+- **Hypothesis: the Taiwan verdict is a dividend artefact.** 0050 pays
+  ~3-4% a year; over 2018-03 to 2025-07 that compounds ~30%, enough to
+  overturn "timing adds none in Taiwan (0.73x)" if the system and its
+  benchmark treated dividends differently.
+- **Refuted structurally.** The Taiwan `src/backtest/engine.py` derives
+  the benchmark from the same candles the system trades:
+  `benchmark_open_prices = dict(open_prices)` taken from
+  `execution_candles`, then
+  `growth += budget * close_prices[s] / benchmark_open_prices[s]`.
+  One series feeds both sides, so adjusted-versus-raw shifts them
+  **together** and no relative distortion is possible. This iteration
+  deliberately did **not** resolve which series is used, because the
+  conclusion does not depend on it.
+- **Any residual error is conservative.** The system is ~30% invested
+  against a 100%-invested benchmark, so missing dividends would
+  understate the **benchmark** more, making the Taiwan loss look
+  *smaller* than truth. The recorded verdict is correct or too kind, not
+  an artefact. **Route closed.**
+- **P1 status: nothing due, nothing missing.** `shadow_trial88` 4 rows,
+  `shadow_trial118` 4 rows, next fire 2026-07-29 08:20; `shadow_tw0050`
+  and `shadow_gld` 1 row each, first scheduled fire 2026-08-01.
+- **Convergence declaration: the audit route opened at iteration 25 is
+  converged.**
+
+  | Iteration | Outcome |
+  |---:|---|
+  | 25 | **Finding** — forward-validation timetable wrong by ~8x; MinTRL 2028-06-29 |
+  | 26 | **Finding** — the gate-4 pass survives only a stopped search |
+  | 27 | **Finding** — only 2 of 6 gates ever adjudicated, both defective |
+  | 28 | **Finding** — the headline sentence pooled two universes |
+  | 29 | Refuted two attacks; metric survived |
+  | 30 | Acquittal on look-ahead, plus one new gap |
+  | 31 | **Finding** — that gap measured and de-escalated |
+  | 32 | **Partly wrong** |
+  | 33 | Fix (the one real hole) |
+  | 34 | **Retraction of 32** |
+  | 35 | Refuted; route closed |
+
+  The last genuinely new finding was iteration 31. Four of the last five
+  iterations produced refutations, fixes, or corrections of my own work.
+  By Step 0's own criterion the route is worked out.
+- **What the loop should do next.** None of the three unblocking states is
+  reachable by analysis: forward rows need time (2028-06-29 for a return
+  verdict), the October holdout is operator-only, and P3 refuses new
+  families. The remaining mode is **P1 maintenance** — confirm the four
+  tracks gain rows, correct anything found wrong, and stop manufacturing
+  work. Two operator items remain, both narrowed by iteration 34: carry
+  the whipsaw soft-contamination caveat into the October result, and
+  optionally repoint `analyze_symbol_dispersion` for tidiness (it is
+  already date-bounded, so this is cosmetic, not protective).
+- **What this does NOT do:** no gate rule modified, no frozen contract
+  edited, no trial registered, no backtest run, holdout not read, no code
+  changed, nominations unchanged.
+- **Standing answer restated, unchanged in substance:** timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x twin edge is audited and
+  robust; the engine is free of look-ahead, verified to the cent;
+  execution-latency cost is about -6.4 bps round-trip, bounded above by
+  ~17 bps, inside tested headroom; the October holdout is protected
+  mechanically and its spend path is covered by six tests; **the Taiwan
+  and gold negatives are robust to dividend treatment and if anything
+  understated**; against the naive 13-coin alternative the margin is only
+  5.4% and that benchmark is survivorship-flattered; breadth still fails;
+  nothing is forward-validated before 2028-06-29; the single gate-4 pass
+  holds only for a stopped search; and the framework has exercised
+  exactly two gates, both defective.

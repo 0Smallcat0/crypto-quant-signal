@@ -257,3 +257,34 @@ Even in this frame "not return" overstates it — the correct phrasing is
 - Any future document quoting "14.26x against 13.53x" must say which
   question it is answering, and must not use it to support a claim about
   what the timing rule does.
+
+## Addendum 2026-07-28 (iteration 35) — the Taiwan verdict is robust to dividend treatment
+
+0050 pays roughly 3-4% a year. Over 2018-03 to 2025-07 that compounds to
+about 30%, enough to overturn a verdict if the system and its benchmark
+treated dividends differently. Checked at source.
+
+**A mismatch is structurally impossible.** `src/backtest/engine.py` in the
+Taiwan repo derives the benchmark from the same candles the system trades:
+
+```python
+benchmark_open_prices = dict(open_prices)   # from execution_candles
+...
+growth += budget * close_prices[symbol_value] / benchmark_open_prices[symbol_value]
+```
+
+Both sides read one series. Whether that series is dividend-adjusted or
+raw, it shifts **both** the system and the benchmark together, so no
+relative distortion is possible. (This iteration did not determine which
+series is used, because the conclusion does not depend on it.)
+
+**And the direction of any residual error is conservative.** The system
+is invested roughly 30% of the time; the buy-and-hold benchmark is
+invested 100%. Missing dividends would therefore understate the
+*benchmark* more than the system — so a raw series makes the Taiwan
+sleeve's loss look **smaller** than it truly is. The recorded verdict
+(2.15x against 7.75x, and the 0.73x exposure-matched twin score) is
+either correct or too kind. It is not an artefact.
+
+**Route closed.** Do not re-open dividend treatment as an explanation for
+the Taiwan result without new evidence.
