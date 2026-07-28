@@ -1676,3 +1676,61 @@
   fails; nothing is forward-validated before 2028-06-29; the single
   gate-4 pass holds only for a stopped search; and the framework has
   exercised exactly two gates, both defective.
+
+## 2026-07-28 — iteration 33 (loop, first code change in nine iterations: holdout channel closed)
+
+- **Step 0.** Current answer entering the iteration: unchanged from
+  iteration 32. What this iteration moves: eight consecutive iterations
+  produced observations. Iteration 32 found a live hazard and named three
+  fixes, one of which is purely protective — and I filed it under
+  "operator decides", which on re-reading was **over-cautious**. It
+  touches no runtime, no engine, no contract, no registry, and can only
+  *reduce* holdout exposure. Why not sprawl: **zero new scripts** — one
+  default changed, one test added.
+- **Correction to iteration 32, in place.** That entry listed
+  `analyze_symbol_dispersion.py` and `analyze_whipsaw.py` together as
+  reading the full series. **Wrong for the first.**
+  `analyze_symbol_dispersion` defaults `--end` to `_END = date(2025, 7, 1)`
+  — exactly the holdout boundary — so it reads `data/candles` but
+  truncates before `holdout_start` and was **safe all along**. Only
+  `analyze_whipsaw` was genuinely unbounded: it has no date argument, so
+  its `--candles-dir` default was the entire exposure.
+- **Fix.** `scripts/analyze_whipsaw.py` now defaults to
+  `data/candles_preholdout`, with the reason written at the argument.
+  `first_month`/`last_month` were already emitted, so a future run that
+  widens the window explicitly still records what it read. Locked in by
+  `tests/scripts/test_analyze_whipsaw.py::test_default_candles_dir_is_the_preholdout_slice`
+  so it cannot regress silently.
+- **Verification, run bare.** ruff check 0, ruff format --check 0
+  (127 files), mypy --strict 0 (58 source files), lint-imports 0
+  (13 contracts kept), **pytest -m "not network": 379 passed**. The
+  trailing `PermissionError` in the pytest output is its own Windows
+  temp-directory cleanup at interpreter exit, after the run completed —
+  not a test failure.
+- **What is not undone.** The whipsaw verdict that placed hysteresis
+  first in Goal P was formed on a window crossing the boundary. Changing
+  the default prevents recurrence; it does not retract history. **That
+  caveat still travels to October.**
+- **Operator decisions 1 and 2 remain open** — carry the caveat into the
+  October result document, and optionally make the lock mechanical in the
+  engine. A literature search for programmatic holdout-enforcement
+  patterns returned little of substance (mostly LLM guardrail tooling),
+  so decision 2 would be a from-scratch design rather than adopting a
+  known pattern. Empty search result recorded rather than padded.
+- **What this does NOT do:** no gate rule modified, no frozen contract
+  edited, no trial registered, no backtest run, holdout not read,
+  nominations unchanged, `spent` still `false`, no `configs/runtime/`
+  and no family runner touched.
+- **Standing answer restated, unchanged in substance from iteration 32:**
+  timing works in crypto only and in its own universe bought both return
+  and drawdown; the 4.70x twin edge is audited and robust; the engine is
+  free of look-ahead, verified to the cent; execution-latency cost is
+  about -6.4 bps round-trip point estimate, bounded above by ~17 bps,
+  inside tested headroom; the October holdout is verified unread by any
+  trial with ~366 days available, **its one soft-contamination channel is
+  now closed at the source though the historical caveat stands**; against
+  the naive 13-coin alternative the margin is only 5.4% and that
+  benchmark is survivorship-flattered; breadth still fails; nothing is
+  forward-validated before 2028-06-29; the single gate-4 pass holds only
+  for a stopped search; and the framework has exercised exactly two
+  gates, both defective.

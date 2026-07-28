@@ -3,11 +3,28 @@ from __future__ import annotations
 from datetime import date
 from decimal import Decimal
 
+import pytest
+
 from scripts.analyze_whipsaw import (
     month_end_closes,
+    parse_args,
     turning_point_months,
     yearly_counts,
 )
+
+
+def test_default_candles_dir_is_the_preholdout_slice(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """This diagnostic has no date bound, so its default must not see the holdout.
+
+    Pointing it at `data/candles` lets a research verdict be formed on data
+    reserved for the single-use holdout, which is how the soft contamination in
+    `HOLDOUT_INTEGRITY_2026-07-28.md` happened. The default is load-bearing.
+    """
+
+    monkeypatch.setattr("sys.argv", ["analyze_whipsaw"])
+    assert parse_args().candles_dir == "data/candles_preholdout"
 
 
 def _monthly_series(closes: list[str], *, start_year: int = 2020) -> dict[tuple[int, int], Decimal]:
