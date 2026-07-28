@@ -168,6 +168,91 @@ between these is the operator's call, not the loop's. What the loop can
 say is that the choice exists, is forced, and has until now been
 invisible because the margin was described as "thin" rather than counted.
 
+## Addendum 2026-07-28 (iteration 27) — correction to this document, and a gate audit
+
+### Correction: the effective-N adjustment is mandated, not a rule change
+
+The section above says adopting correlation-adjusted N "would be changing
+a gate's input after seeing that the current input produces an
+inconvenient answer." **That framing is wrong, and it is corrected here
+the same day.**
+
+`VALIDATION_GATE_CONTRACT.md` — frozen, written before any of these
+results — already requires it. Gate 1, line 44:
+
+> `effective_N` for DSR **should account for correlation between trials**
+> (near-identical variants do not count as fully independent); **the
+> method used must be recorded alongside the number.**
+
+and line 75 lists gate 4's inputs as the Sharpe variance across
+registered trials **and `effective_N`** — not the raw count.
+
+So correlation adjustment is not a post-hoc loosening. It is the frozen
+contract's own specification, and `scripts/run_gate_report.py:190`
+passing `trial_count = len(trials)` is a **deviation from the contract**,
+conservative on the N axis and undocumented as to method. The report
+records `effective_trials: 133` and no method, which does not satisfy
+"the method used must be recorded alongside the number."
+
+**Consequence for trial 118, stated carefully:** its gate-4 pass was
+earned under a bar at least as strict as the contract requires, and
+probably stricter. That is a point in its favour, not against it.
+
+### What is genuinely post-hoc is the method, and the direction is unknown
+
+Three standard methods exist for the effective count — ONC clustering,
+hierarchical clustering, and spectral/eigenvalue treatment of the
+correlation matrix. Choosing among them **now**, knowing trial 118 sits
+at 0.950140, is where the post-hoc risk actually lives.
+
+More importantly, proper compliance is **not** simply "use a smaller N".
+The prescribed procedure clusters correlated trials into K independent
+groups, forms an aggregate Sharpe per cluster, and takes the variance
+across **those K Sharpes** — so it changes *both* gate-4 inputs, and a
+variance computed across K cluster aggregates can be larger or smaller
+than the variance across 133 individual trials. **The net effect on
+trial 118 is therefore unknown and must not be assumed favourable.**
+This document does not compute it, because computing it requires picking
+a method, and picking a method after seeing the margin is the one move
+that would make the answer untrustworthy.
+
+**The clean route** is for the operator to declare the method before it is
+computed, and to record it, as gate 1 already demands. Until then the
+raw count stands, and the one-trial margin measured above stands with it.
+
+### Gate audit: which gates have ever adjudicated anything
+
+Prompted by the above, all six were checked against the latest report
+(`gate_report_2026-07-25.json`, N=133) and the contract:
+
+| Gate | What it is | Has it ever decided a candidate? |
+|---|---|---|
+| 1 Trial registry | Process discipline — append-only, `effective_N` method recorded | No. It is a precondition. **And it is currently not fully satisfied** — no method is recorded. |
+| 2 Data floor | >= 1000 daily observations | **No, and it cannot.** Every trial shares one 2676-day window, so it returns `passes: true` for all 133 by construction. Cleared 2.7x over before trial 1. |
+| 3 PBO <= 0.05 | CSCV over candidate columns | **Yes — it rejects everything.** 0.6518 candidates / 0.7326 all-columns. |
+| 4 DSR >= 0.95 | Deflated Sharpe | **Yes — one passer** (trial 118), on the margin measured above. |
+| 5 Single-use holdout | Operator-only, single-use | No. Never executed; nominations fixed for October. |
+| 6 Paper trading >= 3 months | Live signal runtime | No. `GATE6_BASELINE_2026-07-25.md` checklist item "Paper period >= 3 calendar months completed" is **unchecked**. |
+
+**Of six gates, two have ever produced a verdict on a candidate.** Gates
+1 and 2 are preconditions rather than filters; gates 5 and 6 lie ahead,
+not behind. That is not a defect on its own — a pipeline whose later
+stages have not run is normal. What matters is the combination with what
+is already recorded:
+
+- **Gate 3, the only gate that has ever rejected anything, misranks.**
+  It would call exp-3 (2 of 8 members with any edge) safer than exp-7
+  (8 of 8), because PBO tracks dispersion rather than edge
+  (`PBO_SCOPE_DIAGNOSTIC_2026-07-26.md`, iteration 22).
+- **Gate 4, the only gate that has ever passed anything, holds only for a
+  search that has stopped** (this document, iteration 26).
+
+**So the entire discriminating power exercised in 133 trials rests on two
+gates, and both have documented defects.** Neither defect is being fixed,
+correctly — rules stay frozen until the holdout is spent. But no document
+should describe this program as having "survived six gates". Nothing has
+survived them: gate 3 fails, and gates 5 and 6 have not been attempted.
+
 ## Relation to the gate-3 finding
 
 Iteration 22 recorded that gate 3 (PBO) **misranks**: it would call

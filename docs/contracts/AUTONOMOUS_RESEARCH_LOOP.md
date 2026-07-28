@@ -118,6 +118,24 @@ Hard limits, binding:
 > **"No new families" is therefore not a pause — it is the search being
 > over.** Full measurement and the forced operator choice:
 > `docs/research/GATE4_FRAGILITY_2026-07-28.md`.
+>
+> Refinement 2026-07-28 (iteration 27): **of six gates, two have ever
+> decided a candidate.** Gate 2 cannot bind — all 133 trials share one
+> 2676-day window against a 1000-day floor, so it returns pass by
+> construction; gate 1 is process discipline; gates 5 and 6 have never
+> been executed (gate 6's "paper period >= 3 months" checkbox is still
+> unchecked). Gate 3 rejects everything and **misranks**; gate 4 passes
+> one trial and **only for a stopped search**. **The whole discriminating
+> power rests on two gates, both with recorded defects — so no document
+> may say this program "survived six gates".** Also corrected in place:
+> iteration 26 called correlation-adjusted `effective_N` a post-hoc rule
+> change. It is not — `VALIDATION_GATE_CONTRACT.md` gate 1 line 44 already
+> mandates it and requires the method be recorded, so the raw count in
+> `run_gate_report.py:190` is a conservative **deviation from contract**.
+> What is post-hoc is the *method choice*, and since proper compliance
+> also recomputes the variance across K cluster aggregates, its net effect
+> on trial 118 is **unknown, not favourable**. The operator must declare a
+> method before it is computed.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 

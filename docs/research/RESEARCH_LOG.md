@@ -353,3 +353,33 @@ cross-sectional momentum untested here → experiment 3.
   ("Implementation Risk in Portfolio Backtesting") — quantifies error
   from implementation choices rather than selection bias; relevant to
   Test 1 of the forward-track read rule but not to the trial count.
+
+## 2026-07-28 (iteration 27)
+
+- **Lopez de Prado, methods for the effective number of independent
+  trials** — `en.wikipedia.org/wiki/Deflated_Sharpe_ratio`,
+  `risklab.ai/research/backtesting/testing_set_overfitting`,
+  `paperswithbacktest.com/course/deflated-sharpe-ratio`. Claim: three
+  named techniques cluster correlated strategies to recover K
+  independent trials — **ONC (optimal number of clusters)**,
+  **hierarchical clustering** (a conservative lower bound for N), and
+  **spectral methods** on the correlation matrix eigenvalue
+  distribution. The full procedure does not stop at a smaller N: it
+  forms inverse-variance-weighted aggregate returns per cluster,
+  computes an aggregate Sharpe for each of the K independent trials, and
+  takes **the variance across those K Sharpes**. Testable-here:
+  **yes in principle, deliberately NOT run.** Both gate-4 inputs would
+  change and the variance across K cluster aggregates can be larger or
+  smaller than across 133 individual trials, so the net effect on trial
+  118's 0.950140 is unknown — and choosing among three methods after
+  seeing that margin is exactly the post-hoc move that would void the
+  answer. Recorded in `GATE4_FRAGILITY_2026-07-28.md` as an
+  operator-declares-first item.
+- **Consequence found in our own frozen contract, not in the
+  literature:** `VALIDATION_GATE_CONTRACT.md` gate 1 line 44 already
+  mandates correlation-adjusted `effective_N` with the method recorded,
+  and line 75 lists `effective_N` as a gate-4 input. The implementation
+  passes the raw count (`run_gate_report.py:190`). This corrects
+  iteration 26's claim that adopting effective-N would be a rule change
+  — it is the frozen rule; the raw count is a conservative deviation
+  from it.
