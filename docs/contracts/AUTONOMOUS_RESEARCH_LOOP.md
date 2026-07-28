@@ -102,6 +102,22 @@ Hard limits, binding:
 > design, and the 2026-10-22 read can only test **implementation
 > agreement**, never return. Read rule frozen in advance at 4 rows:
 > `docs/research/FORWARD_TRACK_READ_PREREGISTRATION.md`.
+>
+> Refinement 2026-07-28 (iteration 26): **the one gate-4 pass exists only
+> if the search stops.** Trial 118's DSR is 0.950140 at N=133 and
+> **0.949969 at N=134** — a margin of exactly one trial. Sweeping what a
+> 134th trial could be, the only ones that preserve the pass have Sharpe
+> in **[0.709, 1.180]**; trial 118's own 1.2413 and trial 88's 1.1823 are
+> both **outside** it, so *finding something as good as what the program
+> already has would destroy the pass*. Two dishonesty hypotheses were
+> tested and refuted first: no unregistered arms exist (64 cs-momentum
+> arms and both robustness batteries are all inside the 133), and
+> dropping the batteries **raises** trial 118's DSR, so the pass is not
+> self-served. This is DSR working correctly; the error was reading a
+> pass as a durable property of a trial rather than of a stopped search.
+> **"No new families" is therefore not a pause — it is the search being
+> over.** Full measurement and the forced operator choice:
+> `docs/research/GATE4_FRAGILITY_2026-07-28.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
