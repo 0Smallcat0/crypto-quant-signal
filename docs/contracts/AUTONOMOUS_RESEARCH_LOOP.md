@@ -72,7 +72,10 @@ Hard limits, binding:
 > its exposure-matched passive twin — and **none** in Taiwan (0.73x) or
 > gold (1.00x). The best backtested book returned **14.26x against 13.53x
 > for simply holding thirteen coins**, so the search bought **drawdown
-> (33% vs 86%), not return**. No forward evidence exists; three shadow
+> (33% vs 86%), not return**. [**CORRECTED 2026-07-28, iteration 28 —
+> this clause pools two universes; see the correction block at the end of
+> this standing answer. Trial 88 traded BTC/ETH, whose benchmark is 6.05x
+> at 80.99%, not 13.53x at 86.22%.**] No forward evidence exists; three shadow
 > tracks began 2026-07-24. **Nothing here is an edge that passes the six
 > gates.**
 >
@@ -136,6 +139,31 @@ Hard limits, binding:
 > also recomputes the variance across K cluster aggregates, its net effect
 > on trial 118 is **unknown, not favourable**. The operator must declare a
 > method before it is computed.
+>
+> Refinement 2026-07-28 (iteration 28) — **correction to this standing
+> answer's own headline sentence.** "Best book 14.26x against 13.53x for
+> holding thirteen coins, so the search bought drawdown (33% vs 86%), not
+> return" **pools two universes.** Trial 88 traded BTC/ETH only; its
+> market is **6.05x at 80.99% drawdown**. The 13.53x / 86.22% pair is
+> experiment 8's 13-coin universe, where the best arm returned 9.39x.
+> This is the same pooling error caught and retracted on 2026-07-26.
+> Split by question:
+>
+> - **Does the timing rule add value?** Same-universe only. The rule
+>   bought **both** — return **14.26x vs 6.05x (+136%)** and drawdown
+>   **33.05% vs 80.99%**. "Not return" is **false** here. Independently
+>   corroborated by the exposure-matched twin score of 4.70x.
+> - **Was 133 trials of work better than the dumbest alternative?**
+>   Cross-universe is legitimate for this and is the money question:
+>   **14.26x vs 13.53x, a 5.4% margin**, at 33.05% vs 86.22%. Caveats
+>   stand — the 13-coin universe is survivorship-uncontrolled so 13.53x
+>   is flattered, and 5.4% is not a margin 133 trials can claim credit
+>   for. Even here "not return" overstates; it is **mostly drawdown plus
+>   a slim return margin**.
+>
+> `VS_BUY_AND_HOLD_2026-07-26.md` stated the correct same-universe
+> reading at its line 19 and the pooled one at its line 171; the standing
+> answer inherited the wrong half. Full addendum in that document.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
