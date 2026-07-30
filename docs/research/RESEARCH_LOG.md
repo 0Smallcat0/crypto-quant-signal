@@ -583,3 +583,29 @@ cross-sectional momentum untested here → experiment 3.
   iteration 35 noted internally. Not a reason to stop Step 2 (which is
   contract-mandated), but another signal that the binding constraint is
   now forward rows, not literature.
+
+## 2026-07-30 (iteration 38, P1 maintenance)
+
+- `arxiv.org/abs/2602.11708` — "Systematic Trend-Following with Adaptive
+  Portfolio Construction: Enhancing Risk-Adjusted Alpha in Cryptocurrency
+  Markets", claim: 36-month OOS on 150+ crypto pairs yields SR 2.41,
+  max DD 12.7%, Calmar 3.18 via an adaptive weighting scheme.
+  Testable-here: **no** — 150+ pairs is a universe expansion plus an
+  adaptive allocator, i.e. simultaneously a new symbol set and a new
+  parameter family. P3 refuses it, and PBO 0.7411 across four existing
+  architectures says the winner of such a search would not be trustworthy
+  regardless. Filed for provenance so this SR-2.41 headline is not
+  chased again next iteration.
+- `en.wikipedia.org/wiki/Deflated_Sharpe_ratio` + `quanterlab.com/articles/foundations-dsr`
+  — DSR restatement, "DSR > 0.95 = real edge after search". No content
+  beyond Bailey/Lopez de Prado 2014 already codified in the gate
+  contract; specifically nothing on the fragility question raised in
+  iteration 26 ("DSR pass is a property of a stopped search, not of a
+  trial"). Testable-here: **already implemented**.
+- Third pass on "forward validation of crypto trend rules under realistic
+  costs 2026". Returned aggregator/practitioner posts (Coin Bureau,
+  Vantixs, Medium/Coinmonks) and the older arXiv 2009.12155 already
+  known. No new peer-reviewed finding that would displace the standing
+  answer's MinTRL = 706 days on trial 88. Fourth consecutive iteration
+  in which external literature returns nothing directly actionable under
+  the P1-only queue — recording, not stopping.
