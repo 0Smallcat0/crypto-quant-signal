@@ -609,3 +609,30 @@ cross-sectional momentum untested here → experiment 3.
   answer's MinTRL = 706 days on trial 88. Fourth consecutive iteration
   in which external literature returns nothing directly actionable under
   the P1-only queue — recording, not stopping.
+
+## 2026-07-29 — new route opened: on-chain data
+
+- **Coin Metrics community API** (`community-api.coinmetrics.io/v4/`) —
+  **verified keyless by direct query**, no account, no bot wall. Daily
+  BTC and ETH metrics covering the full backtest window: network activity
+  (`AdrActCnt`, `AdrBalCnt`, `BlkCnt`, `TxCnt`, `TxTfrCnt`), exchange
+  flows (`FlowInExNtv`, `FlowOutExNtv`, `SplyExNtv`), miner/issuance
+  (`FeeTotNtv`, `IssTotNtv`, `HashRate`), valuation (`CapMVRVCur`). BTC
+  from 2009-2011, ETH from 2015. Testable-here: **yes — this is the first
+  genuinely non-price information source available to the programme.**
+- **Constraint discovered before any design, not after:**
+  `AssetEODCompletionTime` shows each day's metrics finalize **~3.1 h
+  after the UTC day closes** (BTC 3.18 h, ETH 3.02 h). The engine decides
+  and fills at 00:00 UTC, so using day D's on-chain data for a day-D
+  decision would be **look-ahead**. Every on-chain input must be lagged
+  one full day, or execution moved past 04:00 UTC.
+- **The programme's dual-source gate does not transfer.** Against
+  `api.blockchain.info/charts/n-unique-addresses` (free, keyless, BTC
+  only) over 1337 overlapping days: level ratio median **1.391** (range
+  1.141-2.548) but daily-change correlation **+0.8729**. On-chain metrics
+  are provider-specific constructions, so validation must move to change
+  correlation plus recorded definitions. ETH would be single-source, and
+  exchange flows cannot be cross-validated at all — every provider uses
+  its own private exchange-address labelling.
+- Full inventory: `ONCHAIN_SOURCE_INVENTORY_2026-07-29.md`. No strategy,
+  no pre-registration, no trial, no ingestion script yet.
