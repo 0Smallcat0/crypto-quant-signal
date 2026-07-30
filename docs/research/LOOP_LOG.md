@@ -1990,3 +1990,90 @@
   statistically permitted before 2028-06-29**; the single gate-4 pass
   holds only for a stopped search; and the six-gate framework has
   exercised exactly two gates, both with recorded defects.
+
+## 2026-07-30 — iteration 38 (nightly headless, P1 maintenance)
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iteration 37 handoff: timing
+     works in crypto only; in its own universe it bought both return
+     (14.26x vs 6.05x) and drawdown (33.05% vs 80.99%); the 4.70x
+     exposure-matched twin edge is audited and robust; no forward-based
+     return verdict is statistically permitted before **2028-06-29**;
+     the single gate-4 pass on trial 118 holds only for a stopped
+     search; the six-gate framework has exercised only gates 3 and 4,
+     both with recorded defects; the audit route is declared
+     converged (iteration 35).
+  2. **What this iteration moves.** Confirms the three continuing
+     unattended tracks (crypto x2, weekly TW+GLD) are still gaining
+     rows on schedule, and records that yesterday's nightly loop
+     (2026-07-29 21:37) crashed with an upstream API
+     `ConnectionRefused` before it could number itself as an
+     iteration. Names no new decision; closes no route.
+  3. **Why it is not sprawl.** No new script (checked the ten:
+     none applicable to "confirm rows"), no new document,
+     no gate rerun, no trial registered. Under contract's
+     analytical-routes-exhausted clause the correct behaviour is
+     "do P1 maintenance, confirm three tracks are gaining rows,
+     and stop" — this iteration does exactly that.
+- **Track state, verified from source files, not memory.**
+
+  | Track | Path | Rows | Last date | Next fire | Today |
+  |---|---|---:|---|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 6 (5 real + seed) | 2026-07-29 | 2026-07-31 08:20 | wrote 2026-07-30 at 08:20:07+00 (equity 999.44) |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 6 (5 real + seed) | 2026-07-29 | 2026-07-31 08:20 | wrote 2026-07-30 at 08:20:07+00 (equity 1006.23) |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 1 (seed) | 2026-07-26 | 2026-08-01 09:40 (Sat) | not scheduled today |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 1 (seed) | 2026-07-26 | 2026-08-01 09:40 (Sat) | not scheduled today |
+
+  Nothing broken, nothing due. The two weekly tracks are still
+  two days from their first non-seed row; if Saturday's fire
+  misses, that becomes P1 obligation of iteration 39 or 40.
+  Iteration 36's own next-P1 obligation ("confirm 2026-08-01
+  Saturday fire appends a second row to TW and GLD") is carried
+  forward unchanged.
+- **Nightly loop failure recorded, not fixed here.** The
+  `CryptoResearchLoop` scheduled task fired 2026-07-29 21:37:01,
+  ran ~3 minutes, and exited 1 —
+  `docs/research/loop_runs/run_20260729_213701.log` contains a
+  single line: `API Error: Unable to connect to API
+  (ConnectionRefused)`. No LOOP_LOG entry was written, no
+  iteration was numbered, and no source file changed, so the
+  research state is uncorrupted. This is a transient upstream
+  outage (Claude API), not a repo defect; iteration 37 explicitly
+  named this exact failure mode as an acceptable one because a
+  missed nightly does not touch the frozen artefacts. Not
+  escalating unless it recurs — a second consecutive miss would
+  need operator attention on the scheduled task's Claude
+  invocation.
+- **Step 2 (web research) done and recorded.** Three passes,
+  one new-looking finding (arXiv 2602.11708 — adaptive-allocator
+  trend-following on 150+ crypto pairs, headline SR 2.41) which
+  P3 refuses because it is a simultaneous universe-and-family
+  expansion; two other passes returned DSR restatements and
+  practitioner blog posts already known. Filed in
+  `RESEARCH_LOG.md` under iteration 38. **Fourth consecutive
+  iteration** with no directly-actionable literature under the
+  P1-only constraint — signal that the binding constraint is
+  forward rows, not literature.
+- **What this iteration does NOT do:** no gate rule modified, no
+  frozen contract edited, no trial registered, no backtest run,
+  holdout not read, `spent` still `false`, no code changed, no
+  diagnostic script written, no research document created,
+  no pre-registration touched. Verification (rule 7) not run
+  because no source file changed — consistent with iterations
+  34-37.
+- **Standing answer restated, unchanged in every clause:**
+  timing works in crypto only and in its own universe bought
+  both return and drawdown (14.26x vs 6.05x, 33.05% vs 80.99%);
+  the 4.70x twin edge is audited and robust; the engine is free
+  of look-ahead, verified to the cent; execution-latency cost
+  is about -6.4 bps round-trip, bounded above by ~17 bps,
+  inside tested headroom; the October holdout is protected
+  mechanically and its spend path is covered by six tests; the
+  Taiwan and gold negatives are robust to dividend treatment
+  and if anything understated; against the naive 13-coin
+  alternative the margin is only 5.4% and that benchmark is
+  survivorship-flattered; breadth still fails; **nothing is
+  forward-validated and no return-based forward verdict is
+  statistically permitted before 2028-06-29**; the single
+  gate-4 pass holds only for a stopped search; and the
+  framework has exercised exactly two gates, both defective.
