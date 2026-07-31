@@ -25,6 +25,7 @@ from src.strategies.types import (
     ALLOWED_EXPOSURE_FRACTIONS,
     DailyTrendEnsembleDecision,
     DailyTrendSubSignals,
+    DonchianEnsembleDecision,
     StrategyDecision,
     StrategyValidationError,
 )
@@ -37,6 +38,7 @@ __all__ = [
     "ConfirmationState",
     "DailyTrendEnsembleDecision",
     "DailyTrendSubSignals",
+    "DonchianEnsembleDecision",
     "LADDER_DOWN",
     "LADDER_HOLD",
     "LADDER_UP",

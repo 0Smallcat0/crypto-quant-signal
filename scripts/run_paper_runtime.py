@@ -39,6 +39,7 @@ from src.notify import (
 from src.risk import DISASTER_SINGLE_DAY_DROP
 from src.runtime import (
     CycleResult,
+    DonchianRuntimeConfig,
     JsonlEventStore,
     RuntimeEngineError,
     RuntimeParameters,
@@ -50,7 +51,12 @@ from src.runtime import (
 )
 
 # 200-close warmup plus margin; Binance caps one request at 1000 anyway.
-_LIVE_FETCH_LIMIT = 210
+# 400, not 210: the Donchian ensemble replays its window state from the warmup
+# floor every cycle and needs far more history than its longest window (110).
+# Matches scripts/shadow_signal.py's FETCH_LIMIT and src.runtime's
+# DONCHIAN_WARMUP_CANDLES, so live and shadow decide from the same depth. The
+# daily trend ensemble only needs 200 and is unaffected by the deeper fetch.
+_LIVE_FETCH_LIMIT = 400
 # A lock older than this is treated as a crash leftover, not a live run.
 _LOCK_STALE_SECONDS = 2 * 60 * 60
 
@@ -262,6 +268,13 @@ def _runtime_parameters(config: AppConfig) -> RuntimeParameters:
         disaster_single_day_drop_fraction=config.risk.disaster_single_day_drop_fraction,
         stale_data_max_age_seconds=config.risk.stale_data_max_age_seconds,
         idempotency_namespace=config.runtime.idempotency_key_namespace,
+        strategy_name=config.strategy.name,
+        donchian=DonchianRuntimeConfig(
+            windows=config.strategy.donchian.windows,
+            exit_mode=config.strategy.donchian.exit_mode,
+            atr_window=config.strategy.donchian.atr_window,
+            atr_multiple=config.strategy.donchian.atr_multiple,
+        ),
     )
 
 

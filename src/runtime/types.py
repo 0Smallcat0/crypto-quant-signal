@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from decimal import Decimal
 from types import MappingProxyType
@@ -14,6 +14,35 @@ from src.notify import NotificationEvent
 
 class RuntimeEngineError(ValueError):
     """Raised when the signal runtime receives unusable inputs or state."""
+
+
+@dataclass(frozen=True, slots=True)
+class DonchianRuntimeConfig:
+    """Donchian ensemble parameters as the runtime consumes them.
+
+    Defaults are trial 118 as registered. The runtime replays the ensemble
+    from the warmup floor on every cycle rather than persisting window state,
+    so these values fully determine the decision given the candle history.
+    """
+
+    windows: tuple[int, int, int, int] = (10, 20, 55, 110)
+    exit_mode: str = "atr_channel"
+    atr_window: int = 14
+    atr_multiple: Decimal = Decimal("2")
+
+    def __post_init__(self) -> None:
+        if len(self.windows) != 4 or any(window <= 0 for window in self.windows):
+            msg = "donchian windows must be four positive ints"
+            raise RuntimeEngineError(msg)
+        if list(self.windows) != sorted(set(self.windows)):
+            msg = "donchian windows must be strictly increasing and distinct"
+            raise RuntimeEngineError(msg)
+        if self.atr_window <= 0:
+            msg = "atr_window must be positive"
+            raise RuntimeEngineError(msg)
+        if self.atr_multiple <= Decimal("0"):
+            msg = "atr_multiple must be positive"
+            raise RuntimeEngineError(msg)
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,6 +62,11 @@ class RuntimeParameters:
     disaster_single_day_drop_fraction: Decimal
     stale_data_max_age_seconds: int
     idempotency_namespace: str
+    # Strategy selection. Defaults keep every existing caller on the incumbent
+    # daily trend ensemble; only a caller that explicitly asks for the Donchian
+    # ensemble changes behaviour.
+    strategy_name: str = "daily_trend_ensemble"
+    donchian: DonchianRuntimeConfig = field(default_factory=lambda: DonchianRuntimeConfig())
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_budgets, Mapping) or not self.risk_budgets:

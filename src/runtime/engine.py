@@ -23,6 +23,7 @@ from src.domain import (
     OrderSide,
     Position,
     RiskDecisionStatus,
+    Signal,
     Symbol,
     VirtualAccountSnapshot,
     VirtualFill,
@@ -44,6 +45,7 @@ from src.notify import (
     ladder_notification_id,
 )
 from src.portfolio import LadderPortfolioParameters, build_ladder_targets
+from src.portfolio.ladder import LadderDecisionLike
 from src.risk import (
     EXCHANGE_MIN_NOTIONAL_NOT_MET,
     MIN_NOTIONAL_NOT_MET,
@@ -57,11 +59,18 @@ from src.risk import (
 )
 from src.runtime.store import JsonlEventStore
 from src.runtime.types import CycleResult, RuntimeEngineError, RuntimeParameters
-from src.strategies import DailyTrendEnsembleDecision, evaluate_daily_trend_ensemble
+from src.strategies import (
+    DonchianEnsembleDecision,
+    evaluate_daily_trend_ensemble,
+    evaluate_donchian_ensemble,
+)
 
 _BPS = Decimal("10000")
 
 WARMUP_INSUFFICIENT_HISTORY = "WARMUP_INSUFFICIENT_HISTORY"
+# Kept equal to scripts/shadow_signal.py's FETCH_LIMIT so the live runtime and
+# the shadow track replay the Donchian state machine over the same depth.
+DONCHIAN_WARMUP_CANDLES = 400
 STALE_DATA_HALT = "STALE_DATA_HALT"
 ZERO_QUANTITY_AFTER_ROUNDING = "ZERO_QUANTITY_AFTER_ROUNDING"
 
@@ -98,6 +107,73 @@ class SignalRuntime:
     def last_processed(self) -> datetime | None:
         return self._last_processed
 
+    @property
+    def _warmup_candles(self) -> int:
+        """Minimum closed candles this strategy needs before it may decide.
+
+        Donchian replays its window state from the warmup floor every cycle, so
+        it needs materially more history than the longest window: the replay
+        must run long enough for the state to be determined by real crossings
+        rather than by the arbitrary start of the slice. 400 matches
+        ``scripts/shadow_signal.py``'s fetch limit, so the live runtime and the
+        shadow track decide from the same depth.
+        """
+
+        if self._parameters.strategy_name == "donchian_breakout_ensemble":
+            return DONCHIAN_WARMUP_CANDLES
+        return DAILY_TREND_WARMUP_CANDLES
+
+    def _decide(
+        self,
+        *,
+        symbol_value: str,
+        candles: tuple[Candle, ...],
+        previous_fraction: Decimal,
+    ) -> LadderDecisionLike:
+        """Route one symbol's closed history to the configured strategy."""
+
+        if self._parameters.strategy_name == "donchian_breakout_ensemble":
+            return self._decide_donchian(candles=candles)
+        snapshot = build_daily_trend_snapshots(candles[-DAILY_TREND_WARMUP_CANDLES:])[0]
+        return evaluate_daily_trend_ensemble(snapshot, previous_fraction=previous_fraction)
+
+    def _decide_donchian(self, *, candles: tuple[Candle, ...]) -> DonchianEnsembleDecision:
+        """Replay the Donchian ensemble to the latest closed candle.
+
+        Window state is NOT persisted between cycles. Replaying from the warmup
+        floor each run makes the decision a pure function of price history, so
+        a restart, a re-run, or a missed day cannot silently change it — the
+        same property that makes the shadow track auditable.
+        """
+
+        config = self._parameters.donchian
+        windows = config.windows
+        states: tuple[bool, ...] | None = None
+        fraction = Decimal("0")
+        codes: tuple[str, ...] = ()
+        for index in range(max(windows), len(candles)):
+            fraction, codes, states = evaluate_donchian_ensemble(
+                candles,
+                index,
+                windows=windows,
+                exit_mode=config.exit_mode,
+                previous_states=states,
+                atr_window=config.atr_window,
+                atr_multiple=config.atr_multiple,
+            )
+        close_time = candles[-1].close_time
+        return DonchianEnsembleDecision(
+            # Taken from the candle rather than rebuilt from the string: the
+            # base/quote split is data, not something this layer may invent.
+            symbol=candles[-1].symbol,
+            signal=Signal.LONG if fraction > Decimal("0") else Signal.FLAT,
+            exposure_fraction=fraction,
+            reason_codes=codes,
+            window_states=states or (False,) * 4,
+            generated_at_bar_close=close_time,
+            executable_from_next_bar=close_time + timedelta(days=1),
+        )
+
     def process_closed_candles(
         self,
         candles_by_symbol: Mapping[str, tuple[Candle, ...]],
@@ -114,7 +190,7 @@ class SignalRuntime:
         short_history = [
             symbol_value
             for symbol_value, candles in ordered.items()
-            if len(candles) < DAILY_TREND_WARMUP_CANDLES
+            if len(candles) < self._warmup_candles
         ]
         if short_history:
             warmup_close = max(candles[-1].close_time for candles in ordered.values())
@@ -180,13 +256,14 @@ class SignalRuntime:
 
         # Step 2: today's decisions, signals, and notifications.
         notifications: list[NotificationEvent] = []
-        decisions: dict[str, DailyTrendEnsembleDecision] = {}
+        decisions: dict[str, LadderDecisionLike] = {}
         for symbol_value in sorted(symbols):
-            snapshot = build_daily_trend_snapshots(
-                ordered[symbol_value][-DAILY_TREND_WARMUP_CANDLES:]
-            )[0]
             previous_fraction = self._decision_fractions[symbol_value]
-            decision = evaluate_daily_trend_ensemble(snapshot, previous_fraction=previous_fraction)
+            decision = self._decide(
+                symbol_value=symbol_value,
+                candles=ordered[symbol_value],
+                previous_fraction=previous_fraction,
+            )
             decisions[symbol_value] = decision
             self._decision_fractions[symbol_value] = decision.exposure_fraction
             self._store.append(

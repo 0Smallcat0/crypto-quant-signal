@@ -14,6 +14,61 @@ class StrategyValidationError(ValueError):
 
 
 @dataclass(frozen=True, slots=True)
+class DonchianEnsembleDecision:
+    """Donchian-ensemble decision for one symbol at one closed daily bar.
+
+    Satisfies ``src.portfolio.ladder.LadderDecisionLike`` (symbol,
+    exposure_fraction, reason_codes) so the ladder target builder consumes it
+    unchanged. It deliberately does NOT reuse ``DailyTrendEnsembleDecision``:
+    that type carries SMA ``sub_signals``, and this strategy has none, so
+    populating them would be fabricated provenance.
+
+    ``window_states`` is the per-window on/off state after this bar. The live
+    runtime does not persist it — the decision is replayed from the warmup
+    floor each run, keeping it a pure function of price history.
+    """
+
+    symbol: Symbol
+    signal: Signal
+    exposure_fraction: Decimal
+    reason_codes: tuple[str, ...]
+    window_states: tuple[bool, ...]
+    generated_at_bar_close: datetime
+    executable_from_next_bar: datetime
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.signal, Signal):
+            msg = "signal must be a Signal"
+            raise StrategyValidationError(msg)
+        if (
+            not isinstance(self.exposure_fraction, Decimal)
+            or self.exposure_fraction not in ALLOWED_EXPOSURE_FRACTIONS
+        ):
+            msg = "exposure_fraction must be one of 0, 0.25, 0.5, 0.75, 1"
+            raise StrategyValidationError(msg)
+        expected_signal = Signal.LONG if self.exposure_fraction > Decimal("0") else Signal.FLAT
+        if self.signal is not expected_signal:
+            msg = "signal must be LONG when exposure_fraction is positive, FLAT otherwise"
+            raise StrategyValidationError(msg)
+        if not isinstance(self.reason_codes, tuple) or not self.reason_codes:
+            msg = "reason_codes must be a non-empty tuple"
+            raise StrategyValidationError(msg)
+        if any(
+            not isinstance(reason_code, str) or not reason_code for reason_code in self.reason_codes
+        ):
+            msg = "reason_codes must contain non-empty strings"
+            raise StrategyValidationError(msg)
+        if len(self.window_states) != 4 or any(
+            not isinstance(state, bool) for state in self.window_states
+        ):
+            msg = "window_states must carry four boolean window states"
+            raise StrategyValidationError(msg)
+        if self.executable_from_next_bar <= self.generated_at_bar_close:
+            msg = "executable_from_next_bar must be after generated_at_bar_close"
+            raise StrategyValidationError(msg)
+
+
+@dataclass(frozen=True, slots=True)
 class StrategyDecision:
     """Signal-only strategy decision for one symbol at one closed bar."""
 
