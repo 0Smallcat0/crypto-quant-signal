@@ -636,3 +636,54 @@ cross-sectional momentum untested here → experiment 3.
   its own private exchange-address labelling.
 - Full inventory: `ONCHAIN_SOURCE_INVENTORY_2026-07-29.md`. No strategy,
   no pre-registration, no trial, no ingestion script yet.
+
+## 2026-07-31 (iteration 39, P1 maintenance)
+
+- `deepbluealpha.io/research/bitcoin-bottom-signals-2026-on-chain`,
+  `zipmex.com/blog/how-to-use-on-chain-analytics-for-crypto-trading/`,
+  `theledgermind.com/on-chain-metrics-bitcoin/`,
+  `axeladlerjr.com/charts/bitcoin-exchange-netflow/` — practitioner
+  exchange-netflow narratives: negative netflow = accumulation,
+  positive = distribution; divergence-based interpretation. Cited
+  headline stat: ~48,500 BTC net outflow in the 30 days ending early
+  April 2026, single-day 32,000 BTC withdrawal 2026-03-07.
+  Testable-here: **partially.** The metric class (`FlowInExNtv`,
+  `FlowOutExNtv`, `SplyExNtv`) is in the on-chain inventory as
+  genuinely non-price and single-source-only (cannot cross-validate,
+  every provider uses private exchange labelling). Any hypothesis
+  lock the operator issues on netflow must specify (a) which side,
+  (b) which threshold, (c) how to trade the signal (long-only spot,
+  no shorting), (d) the D-1 lag rule. No peer-reviewed backtest with
+  realistic two-sided costs found; practitioner sources are all
+  narrative.
+- `mdpi.com/2227-9091/14/3/51` — "Enhancing Bitcoin Trading Signal
+  Prediction in Crisis Periods Using an Improved Machine Learning
+  Approach" (Risks 2026, vol. 14 iss. 3). Uses ML on crisis-period
+  features to predict entry/exit. Testable-here: **no** — an ML
+  approach is a parameter family expansion (P3 refuses), the paper's
+  own scope-of-validity is crisis periods (a regime-selected sample,
+  not out-of-sample), and no realistic two-sided cost audit is
+  reported. Adds nothing directly usable.
+- `arxiv.org/pdf/2606.00071` — "Bitcoin Price Prediction: Peer-
+  Reviewed Evidence and Social Media Discourse" (June 2026 arXiv).
+  Cited multi-regime finding: no model survives across multiple
+  regimes; independent replications with different model families
+  are needed. Testable-here: **no**, but useful as external
+  corroboration of the standing answer's PBO/multi-family findings.
+- `coinbureau.com/guides/how-to-backtest-your-crypto-trading-strategy`,
+  `theledgermind.com/bitcoin-mvrv-ratio-analysis/`,
+  `tradingview.com/script/czUjU1Zi-Crypto-MVRV-ZScore-Strategy-PresentTrading/`
+  — MVRV Z-score backtest guides. One useful negative line from the
+  Coin Bureau piece: "MVRV has only been tested across three bear
+  markets, and neither MVRV nor other popular indicators has survived
+  a rigorous backtest across all historical cycles as a reliable
+  standalone signal." Testable-here: **partial** — MVRV
+  (`CapMVRVCur`) is in the on-chain inventory but flagged as
+  partly-price-derived (price sits in the numerator of market cap
+  over realized cap), so any use of it must be labelled accordingly.
+  No independent peer-reviewed OOS backtest found.
+- **Meta-observation.** Fifth consecutive external-research pass with
+  no directly-actionable finding under the P1-only constraint.
+  Consistent with iterations 35/37/38's same observation. The binding
+  constraint remains forward rows plus operator hypothesis authority,
+  not literature.

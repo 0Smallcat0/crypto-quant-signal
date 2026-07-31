@@ -2077,3 +2077,145 @@
   statistically permitted before 2028-06-29**; the single
   gate-4 pass holds only for a stopped search; and the
   framework has exercised exactly two gates, both defective.
+
+## 2026-07-31 — iteration 39 (P1 maintenance, on-chain route awaits operator hypothesis lock)
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iteration 38. Timing works
+     in crypto only; own universe bought both return (14.26x vs
+     6.05x) and drawdown (33.05% vs 80.99%); the 4.70x exposure-
+     matched twin edge is audited and robust; no return-based
+     forward verdict is statistically permitted before **2028-06-29**;
+     trial 118's gate-4 pass holds only for a stopped search; the
+     six-gate framework has exercised only gates 3 and 4, both with
+     recorded defects; audit route declared converged (iteration 35).
+  2. **What this iteration moves.** Declares in one place what the
+     unnumbered `ba0b99f` ("Open the on-chain route: source
+     inventory, no strategy", 2026-07-30 22:39) opened but did not
+     close: the on-chain route is now standing, no hypothesis lock
+     exists, and the contract's own queue block ("Queue as of
+     2026-07-26 (latest)") does not yet mention it. Records that
+     iteration 39 will NOT write an on-chain pre-registration
+     unilaterally — that is a substantive hypothesis choice and
+     needs an operator order. Route remains open; next actionable
+     step is operator-scoped, not Claude-scoped.
+  3. **Why it is not sprawl.** No new script (checked the ten:
+     none applicable), no new research document, no gate rerun,
+     no trial registered, no edit to `AUTONOMOUS_RESEARCH_LOOP.md`
+     or any frozen contract. The LOOP_LOG entry records a
+     decision (defer the on-chain pre-reg to operator hypothesis
+     order); under Step 0's document rule "no new research
+     document unless it records a decision or a closed route", a
+     LOOP_LOG entry that records a defer-decision is inside the
+     rule, not outside it. Under contract's analytical-routes-
+     exhausted clause the correct behaviour absent an operator
+     order is P1 maintenance — this iteration does exactly that.
+- **Track state, verified from source files, not memory.**
+
+  | Track | Path | Rows | Dates covered | Today's fire |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 7 (6 real + seed) | 2026-07-24 .. 2026-07-30 | wrote 2026-07-30 row at 01:31:46 UTC = 09:31 local, equity 999.9328, exposure `{BTC: 0, ETH: 0.25}` |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 7 (6 real + seed) | 2026-07-24 .. 2026-07-30 | wrote 2026-07-30 row at 01:31:46 UTC = 09:31 local, equity 1010.3542, exposure `{BTC: 0.5, ETH: 0.5}` |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 1 (seed) | 2026-07-24 (seed) | not scheduled today; next fire 2026-08-01 09:40 Sat |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 1 (seed) | 2026-07-23 (seed) | not scheduled today; next fire 2026-08-01 09:40 Sat |
+
+  Two accounting corrections to iteration 38's own numbers,
+  read directly from the jsonl:
+
+  - Iteration 38 said trial88 wrote a 2026-07-30 row at
+    08:20:07+00 UTC with equity 999.44. The jsonl shows the
+    999.4365 equity attaches to the row for **date 2026-07-29**
+    written at UTC 2026-07-30 00:20:07; the row for **date
+    2026-07-30** was written today at UTC 01:31:46 with equity
+    999.9328. Same-shift, off-by-one date label in iteration 38.
+  - Same off-by-one for trial118: 1006.226 is the 2026-07-29 row
+    (not 2026-07-30 as iteration 38 said); the 2026-07-30 row
+    was written today at UTC 01:31:46 with equity 1010.3542.
+
+  Two schedule observations for the record, not acted on:
+
+  - Today's crypto shadow fire ran at 09:31 local (01:31 UTC),
+    not the previous 08:20 local (00:20 UTC) documented in six
+    prior `shadow_runs/shadow_YYYYMMDD_082001.log` files. The
+    schedule shifted between 2026-07-30 08:20 local and today.
+    No `.log` from 08:20 today exists, so the earlier scheduled
+    task either did not fire or was replaced. Either way the row
+    was written before any decision would consume it. Not a
+    defect; recording so a future missed fire is diagnosed
+    correctly.
+  - `shadow_tw0050` last row is dated 2026-07-24 (seed) and
+    `shadow_gld` last row is dated 2026-07-23 (seed). Both are
+    still at their iteration-38 state. Iteration 36's carried-
+    forward obligation ("confirm 2026-08-01 Saturday fire
+    appends a second row to TW and GLD") lands on iteration 40
+    or 41 depending on when the nightly loop fires next.
+- **On-chain route: standing but unadvanced today, and why.**
+  `ONCHAIN_SOURCE_INVENTORY_2026-07-29.md` opened the route with
+  four decisions locked before any fit: keyless Coin Metrics
+  community API is the source; genuinely non-price metrics are
+  the ten listed (`AdrActCnt`, `AdrBalCnt`, `BlkCnt`, `TxCnt`,
+  `TxTfrCnt`, `FeeTotNtv`, `IssTotNtv`, `HashRate`, `FlowInExNtv`,
+  `FlowOutExNtv`, `SplyExNtv`); every on-chain input lags D-1
+  because completion is 3.02-3.18 h after UTC day close;
+  validation moves from level agreement (unusable, median ratio
+  1.391) to daily-change correlation ≥ some floor (measured
+  +0.8729 on `AdrActCnt` vs blockchain.com over 1337 days).
+  What the inventory explicitly did not decide: which metric or
+  metric-combination to test, in which direction, against what
+  passing threshold, with what N-budget cost against the gate-4
+  fragility (a 134th trial would break trial 118's DSR pass unless
+  its Sharpe fell inside [0.709, 1.180], per
+  `GATE4_FRAGILITY_2026-07-28.md`). Writing that pre-registration
+  is a substantive hypothesis choice, and the standing goalpost-
+  drift guard at contract line 344-347 restricts Claude from
+  authoring a next pre-registration in an iteration that reads
+  prior state absent explicit operator order in the same sitting.
+  No such order exists in today's input. **Iteration 39 therefore
+  does not touch the on-chain route.** Options for iteration 40+
+  when the operator decides: (a) close by refusing to spend
+  registry N; (b) issue a hypothesis-scope order (which metric,
+  which direction, which pass criterion) and let a subsequent
+  iteration write the pre-reg; (c) hand the pre-reg authorship
+  to a human. All three are legitimate under the contract; the
+  ambiguity is not.
+- **Step 2 (web research) done and recorded.** Three passes:
+  practitioner exchange-netflow narratives (accumulation vs
+  distribution language, no peer-reviewed backtest with realistic
+  costs); active-address predictive signal (one MDPI 2026 paper
+  using ML crisis-period features — P3 refuses on parameter-
+  family grounds); MVRV backtest search — TradingView scripts and
+  Coin Bureau guide, one useful negative line ("neither MVRV nor
+  other popular indicators has survived a rigorous backtest
+  across all historical cycles as a reliable standalone signal")
+  which corroborates the standing answer. Filed in
+  `RESEARCH_LOG.md` under iteration 39. **Fifth consecutive
+  iteration** with no directly-actionable literature under the
+  P1-only constraint. The web-research signal is consistent —
+  the binding constraint is forward rows plus operator hypothesis
+  authority, not literature.
+- **What this iteration does NOT do:** no gate rule modified, no
+  frozen contract edited, no trial registered, no backtest run,
+  holdout not read, `spent` still `false`, no code changed, no
+  diagnostic script written, no research document created, no
+  pre-registration touched, on-chain ingestion not started.
+  Verification (rule 7) not run because no source file under
+  version control changed except this log entry itself and
+  `RESEARCH_LOG.md` — consistent with iterations 34-38.
+- **Standing answer restated, unchanged in every clause:**
+  timing works in crypto only and in its own universe bought
+  both return and drawdown (14.26x vs 6.05x, 33.05% vs 80.99%);
+  the 4.70x twin edge is audited and robust; the engine is free
+  of look-ahead, verified to the cent; execution-latency cost is
+  about -6.4 bps round-trip, bounded above by ~17 bps, inside
+  tested headroom; the October holdout is protected mechanically
+  and its spend path is covered by six tests; the Taiwan and gold
+  negatives are robust to dividend treatment and if anything
+  understated; against the naive 13-coin alternative the margin
+  is only 5.4% and that benchmark is survivorship-flattered;
+  breadth still fails; **nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29**; the single gate-4 pass holds only for a stopped
+  search; and the framework has exercised exactly two gates,
+  both defective. New line, dated 2026-07-31: the on-chain route
+  is opened but unadvanced — inventory locked, pre-registration
+  awaits operator hypothesis order.
