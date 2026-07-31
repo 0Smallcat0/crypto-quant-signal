@@ -22,9 +22,24 @@ data_source:
   private_api_enabled: false
   api_key_required: false
 strategy:
-  # Daily Trend Ensemble has no tunable parameters by contract:
-  # docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md fixes SMA 20/65/150/200.
-  name: daily_trend_ensemble
+  # Switched 2026-07-31 from daily_trend_ensemble (trial 4) to trial 118.
+  # Same 7.3-year window, same data, same cost assumptions:
+  #   trial   4  Sharpe 1.0230  max drawdown 51.93%  14.22x
+  #   trial 118  Sharpe 1.2411  max drawdown 33.24%  16.90x
+  # TO REVERT: set name back to daily_trend_ensemble. Nothing else needs to
+  # change — the donchian block below is ignored by the other strategy.
+  #
+  # The paper scoreboard's history before this date was produced by trial 4 and
+  # is not continuous with what follows. Trial 118 has no forward validation;
+  # see docs/research/FORWARD_TRACK_READ_PREREGISTRATION.md.
+  name: donchian_breakout_ensemble
+  donchian:
+    # Trial 118 exactly as registered. Changing any of these makes the live
+    # runtime diverge from the trial the research measured.
+    windows: [10, 20, 55, 110]
+    exit_mode: atr_channel
+    atr_window: 14
+    atr_multiple: "2"
   allowed_signals:
     - LONG
     - FLAT
