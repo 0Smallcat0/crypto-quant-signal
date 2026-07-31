@@ -14,7 +14,12 @@ from src.runtime.engine import (
 from src.runtime.quotes import EXEC_QUOTE_KIND, record_execution_quotes
 from src.runtime.replay import ReplaySummary, run_replay
 from src.runtime.store import JsonlEventStore, RuntimeStoreError, StoredEvent
-from src.runtime.types import CycleResult, RuntimeEngineError, RuntimeParameters
+from src.runtime.types import (
+    CycleResult,
+    DonchianRuntimeConfig,
+    RuntimeEngineError,
+    RuntimeParameters,
+)
 
 __all__ = [
     "EXEC_QUOTE_KIND",
@@ -25,6 +30,7 @@ __all__ = [
     "JsonlEventStore",
     "ReplaySummary",
     "RuntimeEngineError",
+    "DonchianRuntimeConfig",
     "RuntimeParameters",
     "RuntimeStoreError",
     "SignalRuntime",

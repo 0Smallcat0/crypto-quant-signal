@@ -170,18 +170,60 @@ class StrategyParametersConfig(CoreConfigModel):
         return self
 
 
+class DonchianParametersConfig(CoreConfigModel):
+    """Donchian breakout ensemble parameters.
+
+    Defaults are trial 118 exactly as registered: four windows 10/20/55/110
+    with an ATR-channel exit at window 14 and multiple 2. Changing these makes
+    the live runtime diverge from the registered trial, so they are explicit
+    rather than implied.
+    """
+
+    windows: tuple[int, int, int, int] = (10, 20, 55, 110)
+    exit_mode: Literal["half_low", "mid_channel", "atr_channel"] = "atr_channel"
+    atr_window: int = 14
+    atr_multiple: Decimal = Decimal("2")
+
+    @field_validator("windows")
+    @classmethod
+    def _validate_windows(cls, value: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
+        for window in value:
+            _require_positive_int("donchian window", window)
+        if list(value) != sorted(set(value)):
+            msg = "donchian windows must be strictly increasing and distinct"
+            raise ValueError(msg)
+        return value
+
+    @field_validator("atr_window")
+    @classmethod
+    def _validate_atr_window(cls, value: int) -> int:
+        return _require_positive_int("atr_window", value)
+
+    @field_validator("atr_multiple")
+    @classmethod
+    def _validate_atr_multiple(cls, value: Decimal) -> Decimal:
+        if value <= Decimal("0"):
+            msg = "atr_multiple must be positive"
+            raise ValueError(msg)
+        return value
+
+
 class StrategyConfig(CoreConfigModel):
     """Strategy selection and parameter configuration.
 
     The Daily Trend Ensemble has no tunable parameters by contract
     (docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md); the ``parameters``
     block only applies to the superseded ``large_liquid_trend_15`` strategy.
+    The ``donchian`` block only applies to ``donchian_breakout_ensemble``.
     """
 
-    name: Literal["daily_trend_ensemble", "large_liquid_trend_15"] = "daily_trend_ensemble"
+    name: Literal["daily_trend_ensemble", "large_liquid_trend_15", "donchian_breakout_ensemble"] = (
+        "daily_trend_ensemble"
+    )
     allowed_signals: tuple[Signal, ...] = (Signal.LONG, Signal.FLAT)
     allow_short: bool = False
     parameters: StrategyParametersConfig = Field(default_factory=StrategyParametersConfig)
+    donchian: DonchianParametersConfig = Field(default_factory=DonchianParametersConfig)
 
     @field_validator("allowed_signals")
     @classmethod
