@@ -135,7 +135,14 @@ def test_default_paper_runtime_config_loads_through_typed_model() -> None:
 
     assert config.account.initial_cash == Decimal("1000")
     assert config.data_source.timeframe == "1d"
-    assert config.strategy.name == "daily_trend_ensemble"
+    # Switched 2026-07-31 to trial 118. Pinned here so the live strategy cannot
+    # drift without a deliberate edit: this file is what the human's daily
+    # signals are generated from.
+    assert config.strategy.name == "donchian_breakout_ensemble"
+    assert config.strategy.donchian.windows == (10, 20, 55, 110)
+    assert config.strategy.donchian.exit_mode == "atr_channel"
+    assert config.strategy.donchian.atr_window == 14
+    assert config.strategy.donchian.atr_multiple == Decimal("2")
     assert config.portfolio.risk_budgets == {
         "BTCUSDT": Decimal("0.5"),
         "ETHUSDT": Decimal("0.5"),
