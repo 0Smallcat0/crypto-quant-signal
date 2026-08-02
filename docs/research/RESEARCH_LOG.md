@@ -687,3 +687,49 @@ cross-sectional momentum untested here → experiment 3.
   Consistent with iterations 35/37/38's same observation. The binding
   constraint remains forward rows plus operator hypothesis authority,
   not literature.
+
+## 2026-08-03 — iteration 40 (P1 maintenance pass)
+
+- `arxiv.org/pdf/2209.05559` — "Deep Reinforcement Learning for
+  Cryptocurrency Trading: Practical Approach to Address Backtest
+  Overfitting" (10-coin test, 2022-05-01..2022-06-27 cohort spanning
+  two crashes). Reported finding: less-overfit DRL agents (measured
+  by their PBO-like discipline) delivered HIGHER out-of-sample return
+  than more-overfit peers. Testable-here: **no** — a DRL policy is a
+  parameter-family expansion and P3 refuses. Value is corroborative:
+  an independent methodology confirms the standing answer's PBO
+  framework as OOS-predictive rather than a formality.
+- `arxiv.org/pdf/2411.06327` — "Return and Volatility Forecasting
+  Using On-Chain Flows in Cryptocurrency Markets". Reported finding:
+  USDT flowing INTO exchanges positively predicts BTC and ETH returns
+  at multiple horizons, and negatively predicts ETH volatility at
+  multiple horizons and BTC volatility at 6h. Practitioner
+  corroboration: ~48,500 BTC net outflow across major exchanges in
+  the 30 days ending early April 2026 (single-day 32,000 BTC
+  withdrawal on 2026-03-07). Testable-here: **partially, and only
+  after operator hypothesis lock.** The metric class (`FlowInExNtv`,
+  `FlowOutExNtv`) is already in the on-chain inventory as genuinely
+  non-price and single-source-only; the literature adds a directional
+  prior (INflow positively predicts return — counterintuitive vs the
+  retail "coins leave exchanges = bullish" narrative) but does not
+  fix N-budget, threshold, or cost-audit path. P3-blocked pending
+  operator scope.
+- `portfoliooptimizer.io/blog/the-probabilistic-sharpe-ratio-*` and
+  `stratbase.ai/en/blog/walk-forward-analysis-guide` — MinTRL and
+  walk-forward canonical references. Two lines relevant to the
+  standing answer: (i) MinTRL is defined against a specific null
+  Sharpe and confidence — the 706-day figure for trial 88 at SR* = 0,
+  95% one-sided is the textbook computation, not a bespoke bar;
+  (ii) Quantpedia-cited OOS gap across published strategies is ~33%
+  mean / ~44% median Sharpe degradation, corroborating the standing
+  answer's caveat that the 5.4% margin over the naive benchmark is
+  not enough. Neither line changes the standing answer; both belong
+  on file so a future audit sees the numbers are aligned with
+  external norms.
+- **Meta-observation.** Sixth consecutive external-research pass with
+  no directly-actionable finding under the P1-only constraint.
+  Consistent with iterations 35/37/38/39. Item (ii) is the first
+  literature-side entry with a genuine testable prior for the
+  on-chain route (directional exchange-flow) — recording it here so
+  that when the operator issues a hypothesis lock, the pre-reg has an
+  external reference rather than being invented from scratch.
