@@ -2219,3 +2219,128 @@
   both defective. New line, dated 2026-07-31: the on-chain route
   is opened but unadvanced — inventory locked, pre-registration
   awaits operator hypothesis order.
+
+## 2026-08-03 — iteration 40 (P1 maintenance, TW shadow broken, two research-loop misses recorded)
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iterations 27-39. Timing works
+     in crypto only; own universe bought both return (14.26x vs 6.05x)
+     and drawdown (33.05% vs 80.99%); the 4.70x exposure-matched twin
+     edge is audited and robust; no return-based forward verdict is
+     statistically permitted before **2028-06-29**; trial 118's gate-4
+     pass holds only for a stopped search; the six-gate framework has
+     exercised only gates 3 and 4, both with recorded defects; audit
+     route declared converged (iteration 35); on-chain route open but
+     unadvanced pending operator hypothesis lock.
+  2. **What this iteration moves.** Records four facts read directly
+     from source files, none changing the standing answer: (a) the TW
+     0050 shadow is BROKEN — still at 1 seed row from 2026-07-24
+     because the Saturday 2026-08-01 09:40 fire hit a TWSE
+     `STOCK_DAY` ingest error and never reached the 0050 append step;
+     (b) the GLD shadow gained its first non-seed row (2026-07-31,
+     close 371.54, exposure 0) on 2026-08-01 09:55 local — one branch
+     of the Sat fire worked, the other did not; (c) the daily crypto
+     shadow missed its 2026-08-02 08:20 fire, caught up today at
+     00:53 local writing the 2026-08-01 row late — no dates dropped
+     but the schedule is drifting; (d) the nightly research loop
+     missed BOTH 2026-08-01 21:37 and 2026-08-02 21:37 firings —
+     iteration 39 named a second consecutive miss as the point that
+     needs operator attention, so this is now flagged. This iteration
+     is 00:53 local, i.e. today's recovery firing.
+  3. **Why it is not sprawl.** No new script (checked the ten:
+     none applicable — the TW ingest bug lives in `D:/TW-Stock-Trading`,
+     a separate repo, and this loop's iron rule 1 forbids touching
+     the live runtime side); no new research document; no gate rerun;
+     no trial registered; no edit to any frozen contract; the LOOP_LOG
+     entry records observations and one P1 escalation
+     (operator-attention flag on TW shadow + research-loop scheduler),
+     which is inside Step 0's rule "no new document unless it records
+     a decision or a closed route" because the escalation IS a
+     decision — defer fix to operator since the fix lives outside
+     this repo's boundary. Under contract's analytical-routes-
+     exhausted clause the correct behaviour is P1 maintenance; that
+     is exactly what this iteration does.
+- **Track state, verified from source files, not memory.**
+
+  | Track | Path | Rows | Dates covered | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 9 (8 real + seed) | 2026-07-24 .. 2026-08-01 | OK — today's 00:53 local fire wrote 2026-08-01 row late (recorded_at 2026-08-02T16:53:28+00:00), equity 996.30, exposure `{BTC: 0, ETH: 0}` |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 9 (8 real + seed) | 2026-07-24 .. 2026-08-01 | OK — same fire wrote 2026-08-01 row, equity 993.28, exposure `{BTC: 0, ETH: 0.5}` |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 1 (seed only) | 2026-07-24 (seed) | **BROKEN** — 2026-08-01 09:40 Sat fire failed at TWSE `STOCK_DAY` step; log at `tw_shadow_20260801_094000.log` shows `python.exe : backfill failed: STOCK_DAY returned stat = '...'` (Chinese error garbled by PowerShell encoding). Corporate-actions and calendar refreshed 19063 events, TWSE month sweep began but the 0050 append never ran. Next scheduled Sat 2026-08-08 09:40 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 2 (1 real + seed) | 2026-07-23 (seed), 2026-07-31 (real) | OK — 2026-08-01 09:55 local wrote 2026-07-31 row, close 371.54, exposure 0, `WINDOWS_ON_0_OF_4` |
+
+  Iteration 39's carried obligation — "confirm 2026-08-01 Saturday
+  fire appends a second row to TW and GLD" — is resolved as **half
+  pass, half fail.** GLD passed. TW failed and needs operator repair
+  in the sibling repo before the next Sat fire is meaningful.
+- **Nightly research loop schedule state.** `docs/research/loop_runs/`
+  is missing files for 2026-08-01 21:37 and 2026-08-02 21:37 —
+  contiguous with `run_20260731_213701.log` (last successful) and
+  `run_20260803_005325.log` (this iteration). Two consecutive misses
+  crosses iteration 39's escalation threshold. This is a scheduler
+  problem, not a Claude API outage: the 2026-07-29 miss (recorded in
+  iteration 38) had a `ConnectionRefused` line inside its log file;
+  the 08-01/08-02 slots produced no log file at all, meaning the
+  scheduled task itself did not fire. Not fixing here — the task is
+  registered under Windows Task Scheduler outside this repo's
+  operational boundary (`data/runtime/shadow_runs/task_registered.txt`
+  references it) and operator attention is the correct next step.
+- **Runtime-side commits noted, not touched.** Commits `8d9ce67`
+  (2026-07-31, "Wire the Donchian ensemble into the live runtime")
+  and `2423bf6` (2026-07-31, "Switch the live signal to trial 118")
+  landed on main between iteration 39 and today. Iron rule 1 forbids
+  iterations from touching the live paper contract; these commits
+  are operator-attributed and inside the runtime side, so they do
+  not violate the rule. Recorded here so a future audit can see that
+  the shadow tracks now read from a live runtime that itself has
+  been switched to the trial-118 configuration (`atr_multiple: 2`,
+  `exit: atr_channel`) — the shadow trial88 file continues to write
+  its own trial-88 numbers (`atr_multiple: 3`, `exit: mid_channel`),
+  so the two are still parallel unbiased signals as long as the
+  daily shadow driver stays configured against both trials. Verified
+  from the shadow rows above that both configs are being written
+  side-by-side.
+- **Step 2 (web research) done and recorded.** Three passes filed in
+  `RESEARCH_LOG.md` under iteration 40: (i) arXiv 2209.05559 (crypto
+  DRL overfitting, 2022 crash cohort) — corroborates PBO framework
+  but adds no directly-testable rule; (ii) exchange-flow predictive
+  research (arXiv 2411.06327 + practitioner data ~48,500 BTC net
+  outflow in the 30 days ending early April 2026) — directly relevant
+  to on-chain route but P3-blocked until operator locks a hypothesis
+  (metric/direction/threshold); (iii) MinTRL and walk-forward
+  literature — corroborates the 706-day MinTRL number on trial 88
+  and Quantpedia's 33%/44% Sharpe degradation OOS finding, both
+  already inside the standing answer's caveats. **Sixth consecutive
+  iteration** with no directly-actionable literature under the
+  P1-only constraint. Consistent with iterations 35/37/38/39.
+- **What this iteration does NOT do:** no gate rule modified, no
+  frozen contract edited, no trial registered, no backtest run,
+  holdout not read, `spent` still `false`, no code changed in either
+  repo, no diagnostic script written, no research document created,
+  no pre-registration touched, on-chain ingestion not started, TW
+  shadow bug not fixed (operator boundary). Verification (rule 7)
+  not run because no source file under version control changed
+  except this log entry and `RESEARCH_LOG.md` — consistent with
+  iterations 34-39.
+- **Standing answer restated, unchanged in every clause:**
+  timing works in crypto only and in its own universe bought both
+  return and drawdown (14.26x vs 6.05x, 33.05% vs 80.99%); the
+  4.70x twin edge is audited and robust; the engine is free of
+  look-ahead, verified to the cent; execution-latency cost is
+  about -6.4 bps round-trip, bounded above by ~17 bps, inside
+  tested headroom; the October holdout is protected mechanically
+  and its spend path is covered by six tests; the Taiwan and gold
+  negatives are robust to dividend treatment and if anything
+  understated; against the naive 13-coin alternative the margin
+  is only 5.4% and that benchmark is survivorship-flattered;
+  breadth still fails; **nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29**; the single gate-4 pass holds only for a stopped
+  search; and the framework has exercised exactly two gates, both
+  defective. On-chain route open but unadvanced. New operator-
+  attention items, dated 2026-08-03: (a) TW 0050 shadow ingest
+  broken since 2026-08-01, needs operator repair in
+  `D:/TW-Stock-Trading` before Sat 2026-08-08 fire; (b) nightly
+  research loop scheduled task missed 2026-08-01 and 2026-08-02
+  slots with no log emission, indicating Task Scheduler misfire
+  rather than in-process outage.
