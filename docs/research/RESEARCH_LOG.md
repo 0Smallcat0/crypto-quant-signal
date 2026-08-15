@@ -733,3 +733,160 @@ cross-sectional momentum untested here → experiment 3.
   on-chain route (directional exchange-flow) — recording it here so
   that when the operator issues a hypothesis lock, the pre-reg has an
   external reference rather than being invented from scratch.
+
+## 2026-08-03 — iteration 41 (P1 maintenance, TW ingest root cause)
+
+- arXiv **2602.11708**, "Systematic Trend-Following with Adaptive
+  Portfolio Construction: Enhancing Risk-Adjusted Alpha in
+  Cryptocurrency Markets" (AdaptiveTrend). Claim: rule-based
+  trend-following on crypto **perpetual futures**, 150+ pairs,
+  36-month out-of-sample window 2022-2024, annualized Sharpe 2.41,
+  max drawdown -12.7%, Calmar 3.18, beating TSMOM and equal-weight
+  buy-and-hold; robustness section covers parameter sensitivity,
+  transaction costs and regime decomposition. Testable-here:
+  **no.** Product law binds this project to spot, long-only, daily,
+  two-sided costs; perpetual futures bring leverage, shorting and
+  funding-rate carry, none of which this engine models or is
+  permitted to trade. Recorded because a 2.41 headline on a market
+  this project cannot access is exactly the kind of number that
+  invites goalpost drift — it is not comparable to trial 88's 1.1823
+  and must never be cited as evidence about this program.
+- arXiv **2510.23150** / SSRN 5665752, Etienne, Ohana, Benhamou et al.,
+  "Revisiting the Structure of Trend Premia: When Diversification
+  Hides Redundancy". Claim: equal-weighting trend horizons assumes
+  every asset benefits equally from every horizon, which is
+  empirically suboptimal; the medium-term (~125-day) horizon "adds
+  little distinct information" and overlaps its neighbours; a
+  **barbell** of short- plus long-term horizons captures most of the
+  performance, and dropping the mid horizon modestly **lifts** Sharpe
+  and improves drawdown. Testable-here: **mechanically yes, and
+  refused.** This project's ensemble is a four-window equal-weight
+  Donchian at windows 10/20/55/110 — close to the structure the paper
+  says carries redundancy, and "drop 55" is a one-line arm. It is
+  refused on two independent grounds: (a) queue **P3** bars new
+  single-market parameter families, and this is a wrapper re-sweep of
+  the kind `N_ARITHMETIC_2026-07-23.md` already ruled out; (b)
+  `GATE4_FRAGILITY_2026-07-28.md` measured that a 134th trial
+  preserves trial 118's DSR pass only if its Sharpe lands inside
+  **[0.709, 1.180]**, so an arm that *worked* as the paper predicts
+  would land above that band and **destroy the only gate-4 pass the
+  program has**. Filed as a named, deliberately-unrun hypothesis so a
+  future audit sees the refusal was priced, not overlooked.
+- arXiv **2603.20319** / SSRN 6443898, Yin, Miki, Lesnichenko, Gural,
+  "Implementation Risk in Portfolio Backtesting: A Previously
+  Unquantified Source of Error" (2026-03-19). Claim: the same logical
+  strategy run through five independent open-source engines diverges
+  purely from implementation; 15 strategies x 30 stratified buckets
+  (180 S&P 500 names) x 4 cost regimes. Key result: **at zero cost
+  all five engines agreed exactly (max divergence 0.000%)**, isolating
+  **transaction-cost implementation** as the sole source of
+  disagreement; the authors propose engine sensitivity, an
+  implementation-uncertainty interval, a divergence amplification
+  factor and a conclusion stability index, and conclude multi-engine
+  comparison is the most effective diagnostic. Testable-here:
+  **no under P1**, but it names an uncertainty this program has never
+  measured. Every headline number here (14.26x, Sharpe 1.1823/1.2413,
+  the 4.70x twin edge) comes from **one** engine, and this is a
+  cost-intensive daily strategy with two-sided costs — the exact
+  regime where the paper finds divergence is material. Honest status:
+  a **known-unquantified** error source, added to the caveat list.
+  It cannot manufacture an edge, only widen the interval around one,
+  so it does not change the standing answer's direction.
+- `en.wikipedia.org/wiki/Deflated_Sharpe_ratio`, Bailey & López de
+  Prado (SSRN 2460551), and secondary explainers. Claim: DSR adjusts
+  the rejection threshold by trial count, skew and kurtosis; "the
+  more configurations you tried, the higher the bar the winner has to
+  clear", and the expected maximum Sharpe across many zero-edge
+  trials is well above zero. Testable-here: **already applied.**
+  Recorded as external corroboration that iteration 26's finding is
+  **DSR working as designed, not a defect of this implementation** —
+  a pass that survives only while the search is stopped is the
+  textbook property of the statistic. Removes any temptation to treat
+  the one-trial margin (0.950140 at N=133, 0.949969 at N=134) as an
+  artefact to be engineered around.
+- **Meta-observation.** Seventh consecutive external-research pass
+  with no *actionable* finding under P1-only — but the first in that
+  run to change the **caveat list** rather than only corroborate it:
+  2603.20319 adds single-engine implementation risk as a named
+  unquantified error source, and 2510.23150 supplies a concrete,
+  priced-and-refused hypothesis (drop the mid horizon) rather than
+  the usual "no directly testable rule". Both are facts about
+  measurement quality; neither is evidence of an edge.
+
+## 2026-08-15 — iteration 42 (P1 maintenance after an 11-night loop outage)
+
+- arXiv **2607.19453**, Ayoub Jadouli, "Predictive Extrema,
+  Unprofitable Policies: An AI-Assisted Audit of Candle-Based Binance
+  Spot Timing Models" (submitted 2026-07-21). Claim: machine-learning
+  models that predict price extrema on **Binance Spot**, daily and
+  4-hour candles, **long-only**, produce **no** profitable policy once
+  costs are charged — "every operational decision remains NO_TRADE" at
+  **31 bps per completed cycle** (21 bps stress threshold). Recorded
+  numbers: a ten-pair daily selector lost **6.72% over 19 cycles**
+  (3 wins, 16 losses); a local-minimum policy returned **-1.79%**
+  against an **11.11 bps** gross advantage; a local-maximum policy
+  underperformed holding by **2.80%** despite a **12.21 bps**
+  theoretical edge; a Gurgul-inspired model lost **44.30%** over seven
+  cycles against **-41.20%** for buy-and-hold. Classification quality
+  was good and useless at once — ROC AUC **0.874-0.896** with average
+  precision only **0.116-0.134**. Testable-here: **not as a strategy**
+  (different signal family, and P3 bars new single-market families),
+  but it is the **closest external match to this project's own product
+  law** yet found — same exchange, same spot venue, same long-only
+  daily bar, same two-sided cost discipline — and it is a registered
+  negative. Its value here is as a base rate: an independent,
+  cost-honest audit of daily Binance spot timing found nothing, which
+  is the prior against which this program's single gate-4 pass should
+  be read. Numbers verified at arxiv.org/abs/2607.19453.
+- **"Order flow and cryptocurrency returns"**, Journal of Empirical
+  Finance, ScienceDirect **S1386418126000029** (online 2026-01);
+  working-paper version presented at EFMA 2025. Claim: exchange
+  **order flow** has economically valuable **out-of-sample**
+  predictive power for crypto returns, with non-linear ML conditioned
+  on order flow beating both fundamentals-conditioned ML and leading
+  ML benchmarks without it; a one-standard-deviation rise in lagged
+  world order flow is associated with **+0.2% daily** and **+0.9%
+  weekly** returns, and the authors state the result survives
+  short-selling constraints and high transaction costs — the two
+  restrictions that usually kill a crypto result under this project's
+  product law. Testable-here: **not yet, and not without an operator
+  hypothesis lock.** It is adjacent to, but not the same as, the open
+  on-chain route: this is *exchange* order flow (trades and book), not
+  *on-chain* exchange netflow, and conflating the two would repeat the
+  pooling error of 2026-07-26 and 2026-07-28. The data is not
+  ingested here. Filed as the strongest external support so far for
+  the flow family being worth an eventual hypothesis lock, **and** as
+  a reminder that the lock must name which flow. **Source-access
+  caveat, recorded deliberately:** the publisher page returned HTTP
+  403 and the EFMA working-paper PDF failed TLS verification, so the
+  numbers above come from the publisher-side abstract summary and are
+  **not** verified against the paper itself. They must not be quoted
+  in a result document until someone reads the PDF.
+- **E-values / anytime-valid sequential inference** (Ramdas and Wang,
+  *Hypothesis Testing with E-values*; Johari et al., arXiv 1512.04922
+  "Always Valid Inference"; group-sequential comparisons from
+  practitioner sources). Claim: e-values and always-valid p-values
+  control Type I error **at any data-dependent stopping time**, so a
+  monitor may look at an accumulating record continuously without
+  inflating alpha. Testable-here: **relevant, and refused as a way to
+  read the forward tracks early.** This is the obvious next idea once
+  a 706-day MinTRL is on the books (iteration 25), so it is priced
+  here before anyone proposes it: anytime-validity buys *permission to
+  look*, not *evidence*. It does not reduce the data needed to
+  separate SR = 1.1823 from SR = 0; against a fixed-sample test at the
+  same date it is strictly **less** powerful, because the flexibility
+  is paid for in power. Adopting it would move the honest verdict date
+  **later than 2028-06-29, not earlier**. What it could legitimately
+  buy is the right to monitor the three shadow tracks continuously
+  without the alpha-spending problem that
+  `FORWARD_TRACK_READ_PREREGISTRATION.md` currently solves by freezing
+  the read to four rows — a governance simplification, not a
+  scientific shortcut, and one that would itself have to be
+  pre-registered before any row is read under it.
+- **Meta-observation.** Eighth consecutive external-research pass with
+  no actionable finding under P1-only. This one is the first to supply
+  an external **base rate** (2607.19453: an independent cost-honest
+  audit of daily long-only Binance spot timing found nothing
+  tradeable) rather than only method caveats, and the first to
+  pre-refuse a shortcut around the 2028 verdict date. Neither is
+  evidence of an edge; both narrow what a future iteration may claim.

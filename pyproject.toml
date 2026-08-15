@@ -51,6 +51,10 @@ exclude = [
     ".venv",
     "build",
     "dist",
+    # ruff >=0.16 formats Python blocks inside Markdown. Research documents
+    # under docs/ are append-only records, so a formatter must never rewrite
+    # them - including the source excerpts they quote verbatim.
+    "*.md",
 ]
 
 [tool.ruff.lint]
@@ -72,6 +76,10 @@ exclude = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Contract rule 7 runs `pytest` bare. Without this the repo root is absent
+# from sys.path unless the interpreter happens to be the editable install,
+# and every test module fails collection on `import src`.
+pythonpath = ["."]
 markers = [
     "network: tests that touch external network services and are excluded from default verification",
 ]
