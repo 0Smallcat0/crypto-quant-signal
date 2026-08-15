@@ -2344,3 +2344,165 @@
   research loop scheduled task missed 2026-08-01 and 2026-08-02
   slots with no log emission, indicating Task Scheduler misfire
   rather than in-process outage.
+
+## 2026-08-15 — iteration 42 (P1 maintenance after an 11-night loop outage; iteration 40's root cause corrected)
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iterations 27-40. Timing works
+     in crypto only; in its own universe it bought both return (14.26x
+     vs 6.05x) and drawdown (33.05% vs 80.99%); the 4.70x
+     exposure-matched twin edge is audited and robust; no return-based
+     forward verdict is statistically permitted before **2028-06-29**;
+     trial 118's gate-4 pass holds only for a stopped search; the
+     six-gate framework has exercised only gates 3 and 4, both with
+     recorded defects; the audit route is converged (iteration 35); the
+     on-chain route is open but unadvanced pending an operator
+     hypothesis lock.
+  2. **What this iteration moves.** It closes the question "why has
+     this loop produced nothing since 2026-08-03?" with a root cause
+     read from log files rather than inferred, and it **corrects
+     iteration 40's answer to that same question**, which named the
+     wrong cause. It also resolves iteration 40's open obligation on
+     the Taiwan track, records a permanent hole in the crypto forward
+     record with the arithmetic needed to bound its damage, and repairs
+     two verification defects that made contract rule 7 unrunnable as
+     written.
+  3. **Why it is not sprawl.** No new script (the ten were checked;
+     none applies to a scheduler-auth outage or to a jsonl gap). No new
+     research document. No gate rerun, no trial registered, no
+     pre-registration touched, no frozen contract edited. Two config
+     lines changed in `pyproject.toml`, both purely to make the
+     contract's own verification command execute; no source or research
+     content altered. Under the analytical-routes-exhausted clause the
+     prescribed behaviour is P1 maintenance, and every item here is P1.
+- **Root cause of the outage, and a correction to iteration 40.** The
+  nightly `CryptoResearchLoop` task (registered 2026-07-21, daily
+  21:37) **did fire** on 2026-08-04, 08-05, 08-06, 08-07, 08-09, 08-11,
+  08-12 (21:53), 08-13 and 08-14. Every one of those runs is a 480-byte
+  log containing exactly one error and an exit code:
+
+  ```
+  Failed to authenticate. API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth access token has expired. Re-authenticate to continue."},"request_id":null}
+  exit=1
+  ```
+
+  Four extra daytime retries (2026-08-11 09:48 and 15:19, 08-12 17:53,
+  08-13 09:58) failed identically. The 2026-08-03 21:37 and 2026-08-08
+  21:37 logs are 0 bytes; the 2026-08-10 21:37 slot produced no file at
+  all. **Net: zero completed iterations from 2026-08-04 to 2026-08-14,
+  eleven nights.** Iteration 40 recorded the cause as "Task Scheduler
+  misfire rather than in-process outage". For the outage that followed
+  **that is wrong** — the task fires reliably and the agent cannot
+  authenticate. Corrected here per the standing correction duty. The
+  2026-08-01 and 2026-08-02 slots remain fileless and therefore still
+  unexplained; they are a separate, earlier symptom and are not
+  evidence for the auth diagnosis.
+- **Orphaned iteration 41, committed unedited.** `RESEARCH_LOG.md`
+  carried an uncommitted `## 2026-08-03 — iteration 41` block (four
+  sources: arXiv 2602.11708, arXiv 2510.23150, arXiv 2603.20319, and
+  the DSR literature) with **no** LOOP_LOG entry and no commit. That
+  iteration completed step 2 and died before step 5 — consistent with
+  the 0-byte 2026-08-03 21:37 log. It is committed today exactly as
+  written, keeps the number 41, and today's work is numbered 42, so the
+  numbering stays auditable rather than being silently reused.
+- **Track state, verified from the files themselves.**
+
+  | Track | Path | Rows | Dates covered | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 21 (20 real + seed) | 2026-07-24 .. 2026-08-14, **2026-08-09 missing** | OK — last row 2026-08-14 written 2026-08-15T00:20:05.804828+00:00, equity 993.7564267590065144761572415, exposure `{BTC: 0, ETH: 0}` |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 21 (20 real + seed) | 2026-07-24 .. 2026-08-14, **2026-08-09 missing** | OK — last row 2026-08-14 written 2026-08-15T00:20:05.836265+00:00, equity 994.7655928691401162549420727, exposure `{BTC: 0.25, ETH: 0.5}` |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 5 (4 real + seed) | 2026-07-24 (seed), 08-07, 08-11, 08-12, 08-14 | **REPAIRED** — last row 2026-08-14 written 2026-08-15T01:49:32.325851+00:00, close 106.40, exposure 0.75, equity 1015.741494790171164002006047 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 6 (5 real + seed) | 2026-07-23 (seed), 07-31, 08-07, 08-10, 08-11, 08-14 | OK — last row 2026-08-14 written 2026-08-15T01:49:32.462409+00:00, close 401.480011, exposure 0.5, equity 1003.784962641249894625805519 |
+
+  Iteration 40's operator-attention item (a) — the Taiwan 0050 ingest
+  broken since 2026-08-01 — is **resolved**. The Saturday fires of
+  2026-08-08 and 2026-08-15 both appended (01:49 UTC = 09:49 local),
+  and two extra runs on 08-11 and 08-12 added rows as well. **Forward
+  evidence accumulated normally throughout the loop outage**: the
+  shadow drivers are separate scheduled tasks and never depended on the
+  research agent.
+- **One permanently lost forward row, and what it cost.** No
+  `shadow_20260810_0820*.log` exists, so the 2026-08-10 08:20 fire did
+  not run and the **2026-08-09** row was never written; the next run
+  (2026-08-11 09:48 local) wrote the 2026-08-10 row and did **not**
+  backfill. The gap is left as-is: fabricating a row after the fact
+  would corrupt an append-only forward record, which is the one clean
+  evidence stream this project still has. Damage bounded by arithmetic
+  on trial 118, the only track that was exposed. From the 2026-08-08
+  row (equity 1002.9901337, BTC 64962.60, ETH 1916.74) to the
+  2026-08-10 row (BTC 63970.01, ETH 1873.16): BTC -1.5279%, ETH
+  -2.2737%; at the driver's per-symbol weighting (exposure divided by
+  the two symbols) the two-day portfolio return is **-0.759406%**,
+  predicting equity **995.373370** against **995.373372** recorded. So
+  the driver compounds from the last recorded close and the missing day
+  **did not distort the equity path**. What was lost is at most one
+  exposure update dated 2026-08-09, and it is unrecoverable.
+- **Verification (rule 7) run bare, and two defects repaired to make it
+  runnable.** `ruff format --check` failed on
+  `docs/research/VS_BUY_AND_HOLD_2026-07-26.md:271` because **ruff
+  0.16.2 now formats Python blocks inside Markdown** and wanted to
+  restyle a source excerpt quoted verbatim in a recorded result
+  document. Editing that document to satisfy a formatter would violate
+  iron rule 3, so `*.md` was added to `[tool.ruff] exclude` instead — a
+  formatter must never rewrite append-only records. Separately,
+  `pytest -m "not network"` failed collection in **36 modules** with
+  `ModuleNotFoundError: No module named 'src'`, because bare `pytest`
+  resolves to the system Python 3.12 on PATH, which has neither the
+  editable install nor the repo root on `sys.path`; `pythonpath = ["."]`
+  was added to `[tool.pytest.ini_options]` so the command in rule 7
+  works as written under any interpreter. Results after both fixes, all
+  run bare: `ruff check` **All checks passed!**; `ruff format --check`
+  **128 files already formatted** (exactly the 128 tracked `.py`
+  files); `mypy --strict src/` **Success: no issues found in 58 source
+  files**; `lint-imports` **Contracts: 13 kept, 0 broken** over 81 files
+  and 325 dependencies; `pytest -m "not network"` **383 passed** in
+  125.10s. Tree green.
+- **Step 2 (web research) done and recorded.** Three passes filed in
+  `RESEARCH_LOG.md` under iteration 42: (i) arXiv **2607.19453**
+  (Jadouli, 2026-07-21) — the closest external match to this project's
+  product law yet found (Binance **spot**, daily and 4h candles,
+  **long-only**, costs charged at 31 bps per cycle) and a registered
+  **negative**: "every operational decision remains NO_TRADE", ten-pair
+  daily selector -6.72% over 19 cycles, ROC AUC 0.874-0.896 against
+  average precision 0.116-0.134. Recorded as an external base rate, not
+  as a strategy; (ii) *Order flow and cryptocurrency returns* (J. Emp.
+  Fin., S1386418126000029, 2026-01) — order flow claimed to have
+  out-of-sample predictive power surviving short-sale constraints and
+  high costs; adjacent to but **not** the same as the open on-chain
+  route (exchange order flow, not on-chain netflow), and its numbers
+  are **unverified at source** (publisher 403, working-paper PDF TLS
+  failure) so they may not be quoted in a result document yet; (iii)
+  e-values / anytime-valid inference — **pre-refused** as a route to
+  reading the forward tracks before 2028-06-29, because
+  anytime-validity buys permission to look, not evidence, and is
+  strictly less powerful than the fixed-sample test at the same date.
+  **Eighth consecutive iteration** with no directly-actionable
+  literature under the P1-only constraint.
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false`, no research document created, no diagnostic script written,
+  no runtime or `configs/runtime/` file touched, no shadow row
+  fabricated or backfilled, on-chain ingestion not started.
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and
+  drawdown (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x twin edge is
+  audited and robust; the engine is free of look-ahead, verified to the
+  cent; execution-latency cost is about -6.4 bps round-trip, bounded
+  above by ~17 bps, inside tested headroom; the October holdout is
+  protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin
+  is only 5.4% and that benchmark is survivorship-flattered; breadth
+  still fails; **nothing is forward-validated and no return-based
+  forward verdict is statistically permitted before 2028-06-29**; the
+  single gate-4 pass holds only for a stopped search; the framework has
+  exercised exactly two gates, both defective. On-chain route open but
+  unadvanced. Operator-attention items, dated 2026-08-15: (a) **the
+  nightly research loop cannot authenticate** — every scheduled run
+  from 2026-08-04 to 2026-08-14 exited 1 on an expired OAuth token, and
+  it will keep doing so until the credential is refreshed on the
+  machine that runs the task; there is no in-repo fix; (b) the
+  2026-08-10 08:20 crypto shadow fire never ran, costing the 2026-08-09
+  row permanently — if that slot misses again the driver's scheduling
+  needs operator inspection; (c) iteration 40's item (a), the Taiwan
+  ingest break, is closed.
