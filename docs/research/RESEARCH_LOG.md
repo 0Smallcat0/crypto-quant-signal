@@ -890,3 +890,66 @@ cross-sectional momentum untested here → experiment 3.
   tradeable) rather than only method caveats, and the first to
   pre-refuse a shortcut around the 2028 verdict date. Neither is
   evidence of an edge; both narrow what a future iteration may claim.
+
+## 2026-08-16 — iteration 43 (P1 maintenance, shadow-task scheduling defect)
+
+- **"Do trend following strategies work in Chinese futures markets?"**
+  (Li, Zhang and Zhou, *Journal of Futures Markets* 37(12), 2017,
+  pp. 1226-1254; abstract read at RePEc, ideas.repec.org). Claim:
+  trend-following technical trading rules "yield better performance
+  than the buy and hold strategy on both individual contracts and
+  sorted portfolios", and the outperformance is "robust to transaction
+  costs, data frequency, sub-prime crisis, shorting constraint,
+  delayed execution, liquidity and parameters". The authors themselves
+  add that "the profitability of the trend following strategy may be
+  subject to data snooping bias". Testable-here: **no, and it is the
+  wrong market anyway** — Chinese commodity *futures*, which the
+  product law excludes (spot only, long-only, no leverage). Filed for
+  one reason: it is the closest external analogue to this project's
+  own P2 gate, which requires a candidate sleeve to beat buy-and-hold
+  **in its own market**. A 2017 futures result cannot license a spot
+  sleeve, and the paper's own data-snooping caveat is the same defect
+  PBO 0.7411 measures here.
+- **Bitcoin volatility-regime claim — checked and NOT verified.** A
+  search summary attributed to State Street Global Advisors the figures
+  "daily standard deviation roughly halving from approximately 5.3% in
+  2021 to about 2.1% in 2024-2025". The SSGA source
+  (ssga.com, *Bitcoin volatility and liquidity: key trends for
+  investors*, published 2026-02-03) was fetched and **contains no such
+  numbers**: it reports two-year rolling windows of weekly returns and
+  states only, qualitatively, that "BTC volatility has evolved since
+  its inception and has been trending downward over time". The S&P
+  Global piece that may carry the figures returned HTTP 403.
+  **Therefore the 5.3%/2.1% pair must not be quoted anywhere in this
+  project.** Recorded because the underlying question is real and
+  directly relevant: this program's entire measured edge comes from
+  2018-2025, and a Donchian breakout rule's value depends on the
+  volatility and trend-persistence regime it is run in. Testable-here:
+  **yes in principle** (the repo holds the daily candles), but not run
+  — under the Step 0 hard limits a realized-volatility-by-era chart
+  would be a diagnostic that does not change the standing answer or
+  close a route. It is filed as a candidate for the first iteration
+  that has a decision attached to it, e.g. an operator question about
+  whether the 2018-2025 measurement should be re-weighted.
+- **AdaptiveTrend (arXiv 2602.11708) re-encountered, not re-filed.**
+  It surfaced again as the top result for crypto time-series momentum
+  net of costs. Already recorded under iteration 41; the H6
+  (six-hourly) rebalance at the core of its Sharpe 2.41 is outside the
+  product law's daily frequency, so nothing changes. Noted only so a
+  future reader does not count it twice.
+- **Practitioner claim that daily rebalancing is cost-dominated.**
+  Several 2026 practitioner sources assert weekly or threshold-based
+  rebalancing beats daily for long-only crypto books because daily
+  turnover costs exceed the benefit. Testable-here: **already
+  answered internally and in the opposite direction for this rule** —
+  the Donchian ensemble is not a daily *rebalance*, it is a daily
+  *decision* that changes exposure only on channel events, and the
+  measured execution-latency and cost work (about -6.4 bps round trip,
+  bounded above by ~17 bps) is inside tested headroom. Filed as a
+  reminder that "daily" in practitioner writing usually means daily
+  turnover, which this book does not do. No action.
+- **Meta-observation.** Ninth consecutive external-research pass with
+  no actionable finding under P1-only. The one genuinely new thing this
+  pass produced is negative and about method: a widely-repeated
+  Bitcoin volatility statistic failed source verification, and is now
+  banned from this project's documents rather than absorbed into them.
