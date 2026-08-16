@@ -2506,3 +2506,199 @@
   row permanently — if that slot misses again the driver's scheduling
   needs operator inspection; (c) iteration 40's item (a), the Taiwan
   ingest break, is closed.
+
+## 2026-08-16 — iteration 43 (P1: the shadow track's scheduling defect found, fixed, and one missed row recovered inside its 24h window)
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iterations 27-42. Timing works
+     in crypto only; in its own universe it bought both return (14.26x
+     vs 6.05x) and drawdown (33.05% vs 80.99%); the 4.70x
+     exposure-matched twin edge is audited and robust; no return-based
+     forward verdict is statistically permitted before **2028-06-29**;
+     trial 118's gate-4 pass holds only for a stopped search; the
+     six-gate framework has exercised only gates 3 and 4, both with
+     recorded defects; the audit route is converged (iteration 35); the
+     on-chain route is open but unadvanced pending an operator
+     hypothesis lock.
+  2. **What this iteration moves.** It closes iteration 42's open
+     operator-attention item (b) — "the 2026-08-10 08:20 crypto shadow
+     fire never ran; if that slot misses again the driver's scheduling
+     needs operator inspection". It missed again on 2026-08-16. The
+     cause is now identified from the task definition rather than
+     inferred, **fixed at its source in this repo**, and the row that
+     the miss would have destroyed was recovered before it became
+     unrecoverable. Forward rows are the only evidence this program can
+     still add, so a defect that silently deletes them is the highest
+     P1 item there is.
+  3. **Why it is not sprawl.** No new script (the ten were checked;
+     none applies to a Task Scheduler settings defect). No new research
+     document. No gate rerun, no trial registered, no backtest, no
+     pre-registration or frozen contract touched. Two registration
+     scripts changed, both to make an existing scheduled task actually
+     fire. Under the analytical-routes-exhausted clause the prescribed
+     behaviour is P1 maintenance; every item here is P1.
+- **The miss, from the task itself.** Before any change,
+  `Get-ScheduledTaskInfo CryptoShadowTrial88` reported `LastRunTime
+  2026-08-15 08:20:01`, `LastTaskResult 0`, **`NumberOfMissedRuns 1`**
+  and `NextRunTime 2026-08-17 08:20`. No `shadow_20260816_*.log` exists
+  in `data/runtime/shadow_runs/`. So the 2026-08-16 08:20 slot was
+  **dropped by the scheduler, not failed by the driver** — the same
+  signature as 2026-08-10.
+- **Root cause, and it was in this repo all along.**
+  `scripts/register_shadow_task.ps1` built the task with a bare
+  `New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit
+  20m`. That cmdlet's **defaults** are `WakeToRun=$false`,
+  `DisallowStartIfOnBatteries=$true`, `StopIfGoingOnBatteries=$true`,
+  and the task was registered with a single daily trigger. Verified on
+  the live task before the fix: `StartWhenAvailable True, WakeToRun
+  False, DisallowStartIfOnBatteries True, StopIfGoingOnBatteries True,
+  ExecutionTimeLimit PT20M, triggers 1`. This machine is a laptop
+  (`Win32_Battery` reports device `L23M4PK4`, 76% charge), so any 08:20
+  where the machine is asleep or on battery is dropped, and the
+  `StartWhenAvailable` catch-up is itself blocked while on battery.
+  **The live 08:05 runtime task hit exactly this failure on 2026-07-07
+  and was fixed then** — `scripts/harden_daily_task.ps1` and
+  `docs/RUNBOOK_DAILY_CYCLE_RELIABILITY.md`. Confirmed by comparison:
+  `CryptoQuantDailySignalCycle` today has `WakeToRun True,
+  DisallowStartIfOnBatteries False`, and it caught its own missed 08:05
+  up at 12:32:04 on 2026-08-16, on the same machine, on the same
+  morning the shadow task was dropped. The hardening was simply never
+  applied to the two research-side tasks.
+- **Evidence quality, stated honestly.** The mechanism above is read
+  from task settings plus `System` power events (kernel power manager
+  shutdown transitions at 00:20:06, 05:31:06 and 05:32:05 on 2026-08-16,
+  then no system activity recorded until 12:30:17 — the 08:20 slot falls
+  inside that gap). It is **not** read from a per-launch record, because
+  `Microsoft-Windows-TaskScheduler/Operational` is **disabled** on this
+  machine (`IsEnabled False`), so no "did not launch because ..." event
+  exists for either miss. The settings defect is certain; which of
+  asleep-versus-on-battery applied on a given morning is inference.
+- **The row was recovered, and the recovery window is 24 hours.**
+  `scripts/run_shadow_track.ps1` was run manually at 2026-08-16 21:42:04
+  local (`shadow_20260816_214200.log`, `exit=0`) and appended the
+  **2026-08-15** row to both tracks — 22 rows each now. It could do this
+  only because `scripts/shadow_signal.py` appends the latest *closed*
+  daily candle, and at 13:42 UTC on 08-16 that candle was still 08-15.
+  Had the fix waited until after tomorrow's 08:20 fire, the 08-15 row
+  would have been lost exactly the way the **2026-08-09** row was lost
+  (iteration 42): the driver appends one day and never backfills.
+  **A missed slot is therefore recoverable for about 24 hours and
+  permanently lost after that** — worth knowing before the next miss.
+- **The recovered row, verified against its source.** trial 88:
+  `date 2026-08-15`, exposure `{BTCUSDT: 0, ETHUSDT: 0}`, equity
+  `993.7564267590065144761572415` — unchanged, correctly, because the
+  08-14 exposure was zero. trial 118: exposure `{BTCUSDT: 0.25,
+  ETHUSDT: 0.5}`, closes `BTCUSDT 63086.01`, `ETHUSDT 1882.64`, equity
+  `994.9074566318213201893273399`. Recomputed independently from the
+  08-14 row (equity `994.7655928691401162549420727`, closes
+  `63043.56` / `1882.20`) at the driver's per-symbol budget of 0.5:
+  day return `0.000142610242752802864757661375`, predicted equity
+  `994.9074566318213201893273399`, **difference 0E-25**. The equity
+  path is intact across the miss.
+- **Fix applied, and deliberately not applied uniformly.**
+  `scripts/register_shadow_task.ps1` now registers the task with
+  `-WakeToRun -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries`
+  plus at-logon and on-unlock catch-up triggers (2-minute delay each),
+  mirroring the runbook's three lines of defense. The unlock trigger is
+  safe here **because the driver is idempotent** — `append_day` returns
+  early when the last recorded date is already >= the latest closed
+  candle — so an extra fire is a no-op. The script was re-run and the
+  live task verified: `StartWhenAvailable True, WakeToRun True,
+  DisallowStartIfOnBatteries False, StopIfGoingOnBatteries False,
+  ExecutionTimeLimit PT20M, MultipleInstances IgnoreNew`, three triggers
+  (daily 08:20, logon +2m, session-unlock +2m), `NextRunTime
+  2026-08-17 08:20`. The OS-level gate `WakeToRun` depends on is already
+  on from 2026-07-07: `powercfg` reports allow-wake-timers `0x00000001`
+  on both AC and DC. **`RestartCount` was considered and refused** —
+  `run_shadow_track.ps1` always exits 0 (it logs Python's exit code
+  instead of propagating it), so a restart-on-failure setting could
+  never fire.
+- **`scripts/register_research_loop_task.ps1` carried the identical
+  defect and is fixed the same way, minus the catch-up triggers.**
+  `CryptoResearchLoop` also had `WakeToRun False,
+  DisallowStartIfOnBatteries True, StopIfGoingOnBatteries True`. This is
+  a **consistent explanation for the 2026-08-01 and 2026-08-02 fileless
+  21:37 slots that iteration 42 left unexplained** — not a proven one,
+  for the same reason as above (operational log disabled). Logon and
+  unlock triggers were **not** added to this task: the shadow driver is
+  idempotent but a research iteration is not — every fire writes a
+  LOOP_LOG entry and consumes a working session, so unlock-triggered
+  catch-up would manufacture duplicate iterations. One fire per day.
+  The task's live settings are updated after this entry is committed,
+  because the task is *currently running this iteration* and a
+  definition rewrite mid-run risks killing it before step 5 completes —
+  which is precisely how iteration 41 was orphaned.
+- **Track state, verified from the files themselves.**
+
+  | Track | Path | Rows | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 22 (21 real + seed) | 2026-08-15, equity 993.7564267590065144761572415, exposure `{BTC: 0, ETH: 0}` | OK — 2026-08-09 still permanently missing (iteration 42) |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 22 (21 real + seed) | 2026-08-15, equity 994.9074566318213201893273399, exposure `{BTC: 0.25, ETH: 0.5}` | OK — same single 2026-08-09 hole |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 5 (4 real + seed) | 2026-08-14, close 106.40, exposure 0.75, equity 1015.741494790171164002006047 | OK — weekly; `TwShadow0050` next fire 2026-08-22 09:40, last result 0, missed 0 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 6 (5 real + seed) | 2026-08-14, close 401.480011, exposure 0.5, equity 1003.784962641249894625805519 | OK — same weekly task |
+
+- **Loop health.** `docs/research/loop_runs/run_20260815_213702.log` is
+  3230 bytes (iteration 42, successful) and today's
+  `run_20260816_213701.log` is this run. The OAuth expiry that killed
+  eleven consecutive nights (2026-08-04 .. 2026-08-14, iteration 42) is
+  resolved on the operator's side; this is the **second consecutive**
+  successful scheduled fire.
+- **Step 2 (web research) done and recorded.** Four passes filed in
+  `RESEARCH_LOG.md` under iteration 43: (i) Li, Zhang and Zhou, *J.
+  Futures Markets* 37(12) 2017 — trend rules beat buy-and-hold in
+  Chinese commodity **futures**, robust to costs, with the authors'
+  own data-snooping caveat; out of product law (futures), filed only as
+  the closest external analogue to this project's own P2
+  beat-buy-and-hold gate; (ii) **a widely-repeated Bitcoin volatility
+  statistic that failed source verification** — "daily standard
+  deviation ~5.3% in 2021 falling to ~2.1% in 2024-2025", attributed to
+  State Street; the SSGA page (published 2026-02-03) was fetched and
+  contains **no such numbers**, only a qualitative downward-trend claim
+  on two-year rolling weekly returns, and the S&P Global piece returned
+  HTTP 403. The pair is now **banned from this project's documents**.
+  The underlying question — whether the 2018-2025 measurement came from
+  a volatility regime that no longer exists — is real and testable here,
+  and is deliberately **not** run, because under Step 0 it would be a
+  diagnostic with no decision attached; (iii) arXiv 2602.11708 resurfaced
+  and is **not** re-filed (already logged in iteration 41; its H6
+  rebalance is outside the daily product law); (iv) practitioner claims
+  that daily rebalancing is cost-dominated — inapplicable, since this
+  book makes a daily *decision*, not a daily *rebalance*. **Ninth
+  consecutive iteration** with no directly-actionable literature under
+  the P1-only constraint.
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken** over
+  81 files and 325 dependencies; `pytest -m "not network"` **383
+  passed** in 50.05s.
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false`, no research document created, no diagnostic script written,
+  no `configs/runtime/` or live-runtime file touched, **the live 08:05
+  task's definition not touched** (iron rule 1 — only the two
+  research-side tasks were changed), no shadow row fabricated, and the
+  2026-08-09 hole left as a hole.
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and
+  drawdown (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x twin edge is
+  audited and robust; the engine is free of look-ahead, verified to the
+  cent; execution-latency cost is about -6.4 bps round-trip, bounded
+  above by ~17 bps, inside tested headroom; the October holdout is
+  protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin
+  is only 5.4% and that benchmark is survivorship-flattered; breadth
+  still fails; **nothing is forward-validated and no return-based
+  forward verdict is statistically permitted before 2028-06-29**; the
+  single gate-4 pass holds only for a stopped search; the framework has
+  exercised exactly two gates, both defective. On-chain route open but
+  unadvanced. Operator-attention items, dated 2026-08-16: (a)
+  iteration 42's item (b) is **closed** — cause found, fixed in
+  `scripts/register_shadow_task.ps1`, task re-registered, and the row
+  it cost recovered; (b) iteration 42's item (a), the loop's OAuth
+  expiry, is **closed** — two consecutive successful nightly fires;
+  (c) **new, low priority:** `Microsoft-Windows-TaskScheduler/Operational`
+  is disabled on this machine, which is why both shadow misses had to be
+  diagnosed by inference; enabling it would make the next scheduling
+  failure self-documenting.
