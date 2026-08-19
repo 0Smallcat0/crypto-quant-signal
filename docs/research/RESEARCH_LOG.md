@@ -953,3 +953,67 @@ cross-sectional momentum untested here → experiment 3.
   pass produced is negative and about method: a widely-repeated
   Bitcoin volatility statistic failed source verification, and is now
   banned from this project's documents rather than absorbed into them.
+
+## 2026-08-19 — iteration 44 (P1 maintenance, two missed slots explained)
+
+- **Gueta Quant, "Gueta Research #001", pre-registered funnel of 13
+  simple strategies on EURUSD daily, 2020-01..2025-12 (in-sample
+  2020-2023, out-of-sample 2024-2025).** Headline: **13 -> 0**. Eight
+  passed gate 1 (OOS return > 0 and Sharpe > 0 at 2 pips), seven passed
+  gate 2 (walk-forward cumulative return > 0), and **zero** passed gate
+  3 (Deflated Sharpe Ratio >= 0.95) or gate 4 (PBO). Their PBO came out
+  at 0.5639 via CSCV with 16 blocks and 12,870 combinations, family
+  N=14. Their **Breakout Channel** arm returned +1.52% OOS and +16.05%
+  walk-forward and still scored **DSR 0.062**. Testable-here: **no** —
+  EURUSD spot FX is outside this project's product law. Filed anyway
+  because it is the closest external analogue yet found to this
+  program's own apparatus: an independent group, pre-registering, using
+  the **same two deciding gates at the same DSR >= 0.95 threshold**, on
+  a different market, rejected every candidate. That is independent
+  corroboration of iteration 27's finding that gates 3 and 4 reject
+  nearly everything, and it makes this project's single pass — trial
+  118 at DSR 0.950140, a margin of exactly one trial (iteration 26) —
+  look more like a property of a stopped search than less. It does not
+  change the standing answer; it hardens one clause of it.
+- **Momentum-decay literature, second look, still not actionable.**
+  Several 2025-2026 sources (a comparative time-series vs
+  cross-sectional momentum study in crypto; Grayscale's 2026 digital
+  asset outlook; Springer's *Cryptocurrency momentum has (not) its
+  moments*) converge on a qualitative claim: time-series and
+  cross-sectional crypto momentum have **compressed toward similar,
+  modest positive returns** as the market institutionalized post-2021,
+  with BTC/ETH trading more as macro-sensitive instruments than as
+  reflexive crypto assets. Testable-here: **yes in principle** — it is
+  the same regime question raised in iteration 43 by the failed State
+  Street volatility claim, and it bears directly on whether a
+  2018-2025 measurement transfers. Still **not run**, for the same
+  Step 0 reason: an era-split of the backtest is a diagnostic with no
+  decision attached to it, and P3 forbids the family re-run that would
+  give it teeth. Recorded now as the **second independent arrival** at
+  the same question; a third should be treated as a signal that the
+  operator ought to be asked whether to attach a decision to it.
+- **Minimum-track-record-length sources re-checked; iteration 25's
+  arithmetic stands.** Bailey and Lopez de Prado's DSR/PSR framework —
+  and the Portfolio Optimizer write-ups of MinTRL — restate that the
+  required track length "can substantially exceed typical evaluation
+  windows", which is exactly the 706-day (2028-06-29) figure this
+  project computed for trial 88. Also encountered: a practitioner rule
+  that a forward test "is statistically valid when it reaches at least
+  100 trades with no rule changes". **Not adopted.** A trade count is
+  not a substitute for MinTRL — it ignores Sharpe, skew and kurtosis,
+  all three of which drive this book's 706 days (SR 1.1823, skew
+  +0.227, kurtosis 12.775) — and adopting a laxer forward-read rule
+  after freezing a stricter one is precisely the goalpost move
+  `FORWARD_TRACK_READ_PREREGISTRATION.md` exists to prevent. Logged so
+  that a future iteration meeting the 100-trade rule cannot mistake it
+  for permission to read return early.
+- **arXiv 2512.22476 (AutoQuant) surfaced, not filed.** Auto-tuning
+  under execution constraints for crypto **perpetual futures** — out of
+  product law (spot, long-only), same disposal as AdaptiveTrend.
+- **Meta-observation.** Tenth consecutive external-research pass with
+  no directly-actionable finding under the P1-only constraint. Unlike
+  the previous nine, this one produced a result that touches an
+  existing conclusion: the Gueta funnel is the first outside evidence
+  about how the DSR-plus-PBO pair behaves when someone else runs it
+  honestly, and it points the same way this program's own gate-4
+  fragility measurement does.
