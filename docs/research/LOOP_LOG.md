@@ -2702,3 +2702,191 @@
   is disabled on this machine, which is why both shadow misses had to be
   diagnosed by inference; enabling it would make the next scheduling
   failure self-documenting.
+
+## 2026-08-19 — iteration 44 (P1: both missed slots explained from evidence; the loop's own log made self-documenting)
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iterations 27-43. Timing works
+     in crypto only; in its own universe it bought both return (14.26x
+     vs 6.05x) and drawdown (33.05% vs 80.99%); the 4.70x
+     exposure-matched twin edge is audited and robust; no return-based
+     forward verdict is statistically permitted before **2028-06-29**;
+     trial 118's gate-4 pass holds only for a stopped search; the
+     six-gate framework has exercised only gates 3 and 4, both with
+     recorded defects; the audit route is converged (iteration 35); the
+     on-chain route is open but unadvanced pending an operator
+     hypothesis lock.
+  2. **What this iteration moves.** Two scheduled iterations, 2026-08-17
+     and 2026-08-18, produced no LOOP_LOG entry and no commit. This
+     iteration gives each a **verified cause** rather than a
+     hypothesis, and then closes the class: the loop's own log now
+     distinguishes "killed mid-run" from "never started" without
+     forensic work, and the Task Scheduler Operational channel — open
+     as operator-attention item (c) since iteration 43 — is enabled, so
+     the next scheduling failure documents itself. Three consecutive
+     iterations have now had to diagnose a miss by inference from
+     indirect evidence; this one removes the need.
+  3. **Why it is not sprawl.** No new script (the ten were checked;
+     none applies to a logging or event-channel defect). No new
+     research document. No gate rerun, no trial registered, no
+     backtest, no pre-registration or frozen contract touched. One
+     existing script gained a start marker and an append redirect; one
+     OS event channel was enabled. Under the analytical-routes-
+     exhausted clause the prescribed behaviour is P1 maintenance, and
+     every item here is P1.
+
+- **2026-08-17: refused at the door, not killed.**
+  `docs/research/loop_runs/run_20260817_213701.log` is **218 bytes** and
+  reads, in full, that the account had hit its weekly usage limit
+  (resetting 8am Asia/Taipei), followed by `exit=1
+  finished=2026-08-17T21:37:19.1612042+08:00`. The iteration therefore
+  started at 21:37:01 and died **18 seconds later** on an account usage
+  limit. This is operator-side and outside the loop's control; the same
+  class as the eleven-night OAuth outage of iteration 42, but a
+  different mechanism (quota, not authentication). No repo change can
+  prevent it.
+
+- **2026-08-18: a working iteration killed by an operator reboot.**
+  `run_20260818_213702.log` is **0 bytes with no `exit=` line at all**,
+  which under the old script means the redirect created the file and
+  the process died before anything was flushed *and* before the
+  trailing status line could be appended. The Windows **System** log
+  supplies the mechanism directly:
+
+  | Time | Event | Content |
+  |---|---|---|
+  | 2026-08-18 21:37:02 | (log file created) | iteration starts |
+  | 2026-08-18 21:52:48 | `User32` **1074** | `StartMenuExperienceHost.exe (SMALLCAT)` initiated the **restart** of computer SMALLCAT **on behalf of user** `smallcat\Administrator`, reason `其他 (不在計劃之中)` |
+  | 2026-08-18 21:52:57 | `Kernel-Power` **109** | kernel power manager initiated a shutdown transition |
+  | 2026-08-18 21:53:09 | `Hyper-V-Hypervisor` **1** | hypervisor started (machine back up) |
+
+  The iteration ran **15 minutes 46 seconds** and was then terminated
+  by an operator-initiated restart from the Start menu. **This is the
+  same failure mode that orphaned iteration 41**, and it is not a
+  defect: the operator may reboot their own machine whenever they like.
+  What was defective was that the evidence had to be reconstructed from
+  a system log at all.
+
+  **Two hypotheses were considered and are refuted, not merely
+  unfavoured.** (i) *Scheduler settings*, the cause found in iteration
+  43 for the shadow task — refuted by inspecting the live task, which
+  already carries iteration 43's hardening: `WakeToRun True`,
+  `StartWhenAvailable True`, `DisallowStartIfOnBatteries False`,
+  `StopIfGoingOnBatteries False`. So iteration 43's fix **was**
+  applied to the live `CryptoResearchLoop`, and it is not the
+  explanation here. (ii) *`ExecutionTimeLimit` expiry* — the limit is
+  `PT6H`, which from a 21:37 start expires at 03:37, long after the
+  21:52 shutdown. Task state today: one daily trigger at 21:37,
+  `RestartCount 0`, `NextRunTime 2026-08-20 21:37`,
+  `NumberOfMissedRuns 0`.
+
+- **Fix: the loop's log now says which of the two happened.**
+  `scripts/run_research_loop.ps1` writes `started=<ISO-8601>` before
+  invoking the agent and appends the agent's output with `*>>` instead
+  of truncating with `*>`. From the next fire onward the three
+  signatures are distinct and need no event log: a file with
+  **neither** marker means the task never launched; **`started=` with
+  no `exit=`** means an interrupted iteration; **both** means it ran to
+  completion and the exit code says how it ended. The rewritten script
+  was parse-checked (`PSParser.Tokenize`, zero errors) but deliberately
+  **not** executed — running it would launch a second concurrent
+  iteration on top of this one. It takes effect at the 2026-08-20
+  21:37 fire.
+
+- **Operator-attention item (c) from iteration 43 closed.**
+  `Microsoft-Windows-TaskScheduler/Operational` was still
+  `IsEnabled=False`, which is why the 2026-08-09, 2026-08-16 and
+  2026-08-18 misses all had to be diagnosed indirectly. It is now
+  **enabled** (`wevtutil sl ... /e:true`, exit 0; verified
+  `IsEnabled=True`, `MaximumSizeInBytes=10485760`, `LogMode=Circular`).
+  Circular at 10 MB, so it self-trims and cannot fill the disk. This is
+  a diagnostic channel on the operator's machine, not a change to the
+  trading system, and it is reversible with `/e:false`.
+
+- **Track state, verified from the files themselves.**
+
+  | Track | Path | Rows | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 25 (24 real + seed) | 2026-08-18, equity 993.7564267590065144761572415, exposure `{BTC: 0, ETH: 0.25}`, closes 64725.42 / 1917.85 | OK — +3 rows since iteration 43 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 25 (24 real + seed) | 2026-08-18, equity 1002.796755227646803154754684, exposure `{BTC: 0.25, ETH: 0.5}` | OK — +3 rows since iteration 43 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 5 (4 real + seed) | 2026-08-14, close 106.40, exposure 0.75, equity 1015.741494790171164002006047 | OK — weekly; next fire 2026-08-22 09:40 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 6 (5 real + seed) | 2026-08-14, close 401.480011, exposure 0.5, equity 1003.784962641249894625805519 | OK — same weekly task |
+
+  Both crypto series span 2026-07-24..2026-08-18 with **exactly one
+  date gap, 2026-08-08 to 2026-08-10** — the permanently lost
+  2026-08-09 row from iteration 42. No new holes opened during the two
+  missed research iterations, which is the point: the shadow driver and
+  the research loop are separate tasks, and the research loop failing
+  does not cost forward rows. `TwShadow0050` last result 0, missed 0.
+
+- **Iteration 43's catch-up trigger observed working, and harmless.**
+  `CryptoShadowTrial88` shows `LastRunTime 2026-08-19 15:58:13` with
+  result 0 — that is the session-unlock trigger added in iteration 43,
+  not the 08:20 daily fire. It wrote nothing, exactly as designed: the
+  2026-08-18 row was already recorded at `2026-08-19T00:20:05Z` by the
+  daily fire, and `append_day` returns early when the last recorded
+  date is already current. The idempotence argument used to justify
+  that trigger now has a live confirmation.
+
+- **Step 2 (web research) done and recorded.** Five items filed in
+  `RESEARCH_LOG.md` under iteration 44. The one that matters: **Gueta
+  Quant's pre-registered funnel of 13 simple strategies on EURUSD
+  daily (2020-2025, OOS 2024-2025) returned 13 to 0** — 8 passed their
+  gate 1, 7 their gate 2, and **zero** passed either DSR >= 0.95 or
+  PBO, with their Breakout Channel arm scoring **DSR 0.062** despite
+  +1.52% OOS and +16.05% walk-forward return; their PBO was 0.5639
+  (CSCV, 16 blocks, 12,870 combinations, family N=14). Source-verified
+  by fetching the page, per the iteration-43 lesson. Out of product law
+  (FX, not spot crypto), so **not testable here** and no trial follows
+  from it — but it is the first outside evidence about how this
+  project's own two deciding gates behave in independent hands, and it
+  points the same way iteration 26's fragility measurement does. Also
+  filed: a second independent arrival at the momentum-regime-decay
+  question (flagged — a third should trigger asking the operator
+  whether to attach a decision to it); a practitioner "100 trades makes
+  a forward test valid" rule **explicitly refused** as a goalpost move
+  against `FORWARD_TRACK_READ_PREREGISTRATION.md`; and arXiv 2512.22476
+  (AutoQuant) disposed of as perpetual futures. Tenth consecutive pass
+  with nothing directly actionable under P1-only.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken** over
+  81 files and 325 dependencies; `pytest -m "not network"` **383
+  passed**, 1 warning, in 102.52s.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false` (`holdout_lock.json` verified), no research document created,
+  no diagnostic script written, no `configs/runtime/` or live-runtime
+  file touched, the live 08:05 task's definition not touched, no shadow
+  row fabricated, and the 2026-08-09 hole left as a hole. The Gueta
+  result was **not** used to adjust any gate threshold or to reinterpret
+  trial 118's DSR — reading someone else's failure as license to move
+  one's own bar is the error this program most needs to avoid.
+
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and
+  drawdown (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x twin edge is
+  audited and robust; the engine is free of look-ahead, verified to the
+  cent; execution-latency cost is about -6.4 bps round-trip, bounded
+  above by ~17 bps, inside tested headroom; the October holdout is
+  protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin
+  is only 5.4% and that benchmark is survivorship-flattered; breadth
+  still fails; **nothing is forward-validated and no return-based
+  forward verdict is statistically permitted before 2028-06-29**; the
+  single gate-4 pass holds only for a stopped search; the framework has
+  exercised exactly two gates, both defective. On-chain route open but
+  unadvanced. Operator-attention items, dated 2026-08-19: (a)
+  iteration 43's item (c) is **closed** — the Task Scheduler
+  Operational channel is enabled; (b) **new, informational only:** the
+  2026-08-17 slot was lost to a weekly account usage limit, which no
+  repo change can prevent — if nightly iterations matter more than
+  other usage, the operator controls that trade-off, not the loop;
+  (c) **new, informational only:** the 2026-08-18 slot was lost to an
+  operator-initiated restart 15m46s into the run. Reboots are the
+  operator's prerogative; noted only so the two blank logs are not
+  mistaken for a recurring defect.
