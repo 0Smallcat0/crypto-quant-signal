@@ -2890,3 +2890,220 @@
   operator-initiated restart 15m46s into the run. Reboots are the
   operator's prerogative; noted only so the two blank logs are not
   mistaken for a recurring defect.
+
+## 2026-08-21 — iteration 45 (P1: the 08-20 miss self-documented on the first try; three outside measurements of backtest-to-live transfer)
+
+- **Numbering note.** The 2026-08-20 slot started an agent and was
+  killed 2m04s in without writing to the repository (`git status`
+  clean at 8a92b3b, no commit, no draft file), so it is counted as a
+  **lost slot**, not an iteration — the same treatment iteration 44
+  gave 2026-08-17 and 2026-08-18. The 2026-08-03 orphan was
+  retroactively called "iteration 41" in a later entry; that precedent
+  is deliberately not followed here. The difference is bookkeeping
+  only and changes no measurement.
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iterations 27-44. Timing works
+     in crypto only; in its own universe it bought both return (14.26x
+     vs 6.05x) and drawdown (33.05% vs 80.99%); the 4.70x
+     exposure-matched twin edge is audited and robust; no return-based
+     forward verdict is statistically permitted before **2028-06-29**;
+     trial 118's gate-4 pass holds only for a stopped search; the
+     six-gate framework has exercised only gates 3 and 4, both with
+     recorded defects; the audit route is converged (iteration 35); the
+     on-chain route is open but unadvanced pending an operator
+     hypothesis lock.
+  2. **What this iteration moves.** It closes the 2026-08-20 miss with
+     a **verified mechanism and exit code** instead of an inference,
+     and in doing so it settles a question iteration 44 could only
+     assert: whether the instrumentation built that night actually
+     removes forensic work from the next failure. It did — the answer
+     came from two log queries and no System-event reconstruction. It
+     also converts a five-slot run of failures into a stated
+     reliability figure with a decision handed to the operator rather
+     than taken unilaterally.
+  3. **Why it is not sprawl.** No new script, no new research document,
+     no new instrumentation — see the explicit refusal below. No gate
+     rerun, no trial registered, no backtest, no pre-registration or
+     frozen contract touched. Under the analytical-routes-exhausted
+     clause the prescribed behaviour is P1 maintenance, and every item
+     here is P1.
+
+- **2026-08-20 diagnosed: a console-control kill, a third distinct
+  mechanism.** `run_20260820_213701.log` is **43 bytes** and contains
+  exactly `started=2026-08-20T21:37:01.5149033+08:00` with no `exit=`
+  line — which under iteration 44's scheme means *interrupted mid-run*,
+  not *never launched*. The Task Scheduler Operational channel, enabled
+  by iteration 44, supplies the rest directly:
+
+  | Time | Event | Content |
+  |---|---|---|
+  | 2026-08-20 21:37:01 | `107` / `100` / `200` | task launched by time trigger, instance `{3e44ad1f-...}`, action `powershell.exe`, PID 35720 |
+  | 2026-08-20 21:39:05 | `201` | action completed **with return code 3221225786** |
+  | 2026-08-20 21:39:05 | `102` | instance finished |
+
+  **3221225786 = 0xC000013A = `STATUS_CONTROL_C_EXIT`** — the process
+  was terminated by a console control event (Ctrl+C or window close),
+  **2 minutes 4 seconds** after starting. Three competing explanations
+  are refuted from evidence, not merely disfavoured:
+
+  - *Reboot or power transition,* the 2026-08-18 cause — refuted: the
+    **System log holds zero events** between 21:30 and 22:30 that
+    night. The machine stayed up.
+  - *Logoff or session teardown* — refuted: the TerminalServices
+    LocalSessionManager channel records no session event between 20:00
+    and 02:00; its only nearby entry is an unrelated `59` at
+    2026-08-21 00:59:30.
+  - *Quota or authentication failure,* the 2026-08-17 and iteration-42
+    causes — refuted: the agent transcript for that run
+    (`c140db9a-...jsonl`, 133 entries, 537 KB) shows a **healthy
+    iteration in mid-flight**, executing step 2 web research with tool
+    results returning normally at 13:39:01Z, four seconds before the
+    kill. Nothing failed; something outside stopped it.
+
+  The task runs `LogonType=Interactive`, `Hidden=False`, so it owns a
+  **visible console window on the operator's desktop**, and that window
+  is the only ordinary source of a console control event.
+
+- **No new instrumentation was added, on purpose.** The obvious move —
+  a `try/finally` in `run_research_loop.ps1` that appends a `killed=`
+  marker so Ctrl+C is distinguishable from a hard kill without touching
+  the event log — was considered and **refused**. Step 0's test is
+  whether a change moves a decision or closes a route; this one closes
+  nothing, because the existing chain answered the question in about a
+  minute on its first live use. The circular 10 MB event channel is the
+  only durable weakness in that chain, and at one iteration per day the
+  events are always days fresh when read. Adding a fourth log signature
+  would be a diagnostic that feels like progress and is not.
+
+- **Slot reliability, stated rather than implied.** Of the five nightly
+  21:37 slots from 2026-08-17 to 2026-08-21: **one completed**
+  (08-19, iteration 44, `exit=0`), **three were lost** (08-17 weekly
+  usage limit, `exit=1`, 218 bytes; 08-18 operator restart, 0 bytes;
+  08-20 console-control kill, 43 bytes), and one is this iteration.
+  All three losses are **operator-side** and none is a repo defect —
+  but they are no longer independent one-offs, and their union is a
+  **60% loss rate over that window**. What follows is a choice, not a
+  fix, and it is the operator's:
+
+  - **Operator-attention item (a), new.** If the 08-20 window closure
+    was **accidental**, the loop can be made unclosable by adding
+    `-WindowStyle Hidden` to the task action, which keeps
+    `LogonType=Interactive` and therefore keeps the credential and
+    OAuth path that iteration 42 proved fragile. If it was
+    **deliberate** — the operator wanting the machine back — then
+    hiding the window would remove the only convenient way to stop a
+    running iteration, and **nothing should change**. The loop cannot
+    tell these apart from evidence and must not guess, so it does
+    neither and asks.
+  - **Operator-attention items from iteration 44 carry forward
+    unchanged:** the weekly usage limit is an account-level trade-off
+    only the operator controls, and reboots are the operator's
+    prerogative.
+
+- **Track state, verified from the files themselves.**
+
+  | Track | Path | Rows | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 27 (26 real + seed) | 2026-08-20, equity 1048.230780896974809913646460, exposure `{BTC: 0.75, ETH: 0.75}`, closes 73025.15 / 2326.82 | OK — +2 rows since iteration 44 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 27 (26 real + seed) | 2026-08-20, equity 1089.580341451188033215394260, exposure `{BTC: 0.75, ETH: 0.75}` | OK — +2 rows since iteration 44 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 5 (4 real + seed) | 2026-08-14, close 106.40, exposure 0.75 | OK — weekly; last fire 2026-08-15 result 0, next 2026-08-22 09:40 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 6 (5 real + seed) | 2026-08-14, close 401.480011, exposure 0.5 | OK — same weekly task |
+
+  Both crypto series span 2026-07-24..2026-08-20 with **exactly one
+  date gap, 2026-08-09** — the permanently lost row from iteration 42,
+  unchanged. `CryptoShadowTrial88` last ran 2026-08-21 08:20:01 with
+  result 0, next 2026-08-22 08:20; `TwShadow0050` last ran 2026-08-15
+  09:40 with result 0, next 2026-08-22 09:40; both `Ready`, both with
+  `NumberOfMissedRuns 0`. **The three lost research slots cost zero
+  forward rows**, which is the point of keeping the shadow drivers on
+  separate tasks.
+
+- **Step 2 (web research) done, source-verified, and unusually
+  convergent.** Five items filed in `RESEARCH_LOG.md` under iteration
+  45; every number below was read out of the source document, not out
+  of a search summary. Three independent measurements of
+  **backtest-to-live transfer** arrived in one pass:
+
+  - **Liu (arXiv 2604.18821, 20 Apr 2026)** — 1,726 commercially
+    distributed structured strategies, ten institutions, 2009-2025.
+    Pro-forma 12-month volatility-adjusted return **4.1% p.a. against
+    1.0% live** (−3.1pp, p<0.01). Regression of live on pro-forma:
+    **beta 0.137, R² = 0.148** raw, collapsing to **0.025 (R² = 0.032)**
+    against an external index and **0.034 (R² = 0.054)** against a
+    leave-one-out peer average — **81% and 75% reductions**. 59% of
+    strategies are negative against both benchmarks.
+  - **Mroziewicz and Slepaczuk (arXiv 2602.10785, 11 Feb 2026)** —
+    spot BTC/ETH/BNB, walk-forward-optimized EMA crossover, unseen
+    out-of-sample 2019-11-07..2021-08-22. Sharpe against buy-and-hold:
+    BTC **1.1064 vs 1.1281**, ETH **1.3371 vs 1.5365**, BNB **1.1982
+    vs 1.4644**. Their own sentence: *"No strategy surpassed the
+    respective asset's Buy-and-Hold performance in terms of Sharpe
+    ratio."* Annualized returns of 90.91%, 137.27% and 140.30% did not
+    save it.
+  - **Wiecki et al. (SSRN 2745220)** — 888 algorithms with at least six
+    months out-of-sample. In-sample Sharpe predicts out-of-sample
+    Sharpe at **Pearson R² = 0.02**, while **annual volatility
+    transfers at R² = 0.67 and maximum drawdown at R² = 0.34**.
+
+  **What this does and does not do to the standing answer.** It changes
+  no clause. It hardens two: that a backtest must be read against a
+  benchmark, and that of this program's two headline numbers the
+  **drawdown** result is the more likely to travel and the **5.4%
+  return margin** the less. The Wiecki limit is stated precisely in
+  `RESEARCH_LOG.md` — drawdown *character* persists for an algorithm;
+  a drawdown *advantage over a benchmark* is a different quantity he
+  did not measure. Liu's regime-timing result was **not** used to
+  license an era-extremity diagnostic on the 2026-07-24 launch date,
+  and no forward read moves: `FORWARD_TRACK_READ_PREREGISTRATION.md`
+  stands as frozen, 2028-06-29 for return. Eleventh consecutive
+  research pass with nothing directly actionable under P1-only. Also
+  recorded: none of these is the **third** arrival at the
+  momentum-regime-decay question — that trigger is about crypto
+  momentum compressing post-2021 and remains at two.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken** over
+  81 files and 325 dependencies; `pytest -m "not network"` **383
+  passed** in 48.66s.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false` (`docs/reports/research/holdout_lock.json` verified), no
+  research document created, no diagnostic script written, no new
+  logging added, no scheduled-task definition altered — including the
+  research loop's own, whose window exposure is reported to the
+  operator rather than silently changed — no `configs/runtime/` or
+  live-runtime file touched, no shadow row fabricated, and the
+  2026-08-09 hole left as a hole. Three outside papers reporting that
+  backtests do not transfer were **not** used to discount, reinterpret
+  or re-weight any recorded number of this program's own; they are
+  filed as priors and corroboration, and the measurements stand as
+  measured.
+
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and
+  drawdown (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x twin edge is
+  audited and robust; the engine is free of look-ahead, verified to the
+  cent; execution-latency cost is about −6.4 bps round-trip, bounded
+  above by ~17 bps, inside tested headroom; the October holdout is
+  protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin
+  is only 5.4% and that benchmark is survivorship-flattered; breadth
+  still fails; **nothing is forward-validated and no return-based
+  forward verdict is statistically permitted before 2028-06-29**; the
+  single gate-4 pass holds only for a stopped search; the framework has
+  exercised exactly two gates, both defective. On-chain route open but
+  unadvanced. Operator-attention items, dated 2026-08-21: (a)
+  **new** — the 2026-08-20 slot was lost to a console-control kill of
+  the loop's visible console window; hiding that window is a one-line
+  task change the loop declines to make unilaterally, because the same
+  window is the operator's only convenient stop control; (b) carried
+  forward — the weekly account usage limit that cost 2026-08-17 is an
+  account-level trade-off only the operator controls; (c) carried
+  forward — reboots such as the one that cost 2026-08-18 are the
+  operator's prerogative, noted only so the blank logs are not
+  mistaken for a recurring defect.

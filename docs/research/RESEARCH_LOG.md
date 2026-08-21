@@ -1017,3 +1017,103 @@ cross-sectional momentum untested here → experiment 3.
   about how the DSR-plus-PBO pair behaves when someone else runs it
   honestly, and it points the same way this program's own gate-4
   fragility measurement does.
+
+## 2026-08-21 — iteration 45 (P1 maintenance, backtest-to-live transfer measured by outsiders)
+
+- **Liu (2026), "Evaluating Structured Strategy Backtests: Peer
+  Benchmarks, Regime Timing, and Live Performance", arXiv 2604.18821,
+  20 Apr 2026 — the largest measurement yet of the exact transfer this
+  program cannot make.** 1,726 commercially distributed structured
+  strategies from ten global institutions, 2009-2025, each with a
+  marketed pro-forma record and a subsequent live record. Verified by
+  extracting the PDF text, not from the search summary. Numbers: mean
+  volatility-adjusted return over the twelve months **before** launch
+  is 4.1% p.a. against **1.0%** live, a decay of −3.1pp (p<0.01); at
+  six months 3.6% against 1.5%, −2.1pp (p<0.01). The regression of
+  live on pro-forma performance gives **β̂ = 0.137 (R² = 0.148,
+  N = 1694)** in raw returns, but **0.025 (R² = 0.032)** once the
+  dependent variable is Jensen α against an external Bloomberg index
+  and **0.034 (R² = 0.054)** against a leave-one-out peer average —
+  reductions of about **81% and 75%**. Median live underperformance is
+  0.8pp p.a. against LOO peers and 3.0pp against the external index at
+  twelve months, with **59% of strategies negative** on both. The
+  authors' reading: marketed backtests "predominantly reflect the
+  common factor regime present before launch rather than strategy-
+  specific skill", and the discount should grow when launch follows an
+  extreme factor run. **Testable-here: no** — it is not a strategy
+  hypothesis and nothing here can be traded. It is evidence, and it
+  bears on two clauses this program already holds: that a backtest
+  must be judged against a benchmark (which is why
+  `VS_BUY_AND_HOLD_2026-07-26.md` exists), and that raw pro-forma
+  numbers such as 14.26x carry far less information about live
+  behaviour than their size suggests. **No goalpost moves from this**:
+  the forward read rule stays exactly as frozen in
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`, and Liu's regime-timing
+  finding is recorded as a prior, not as a reason to run an
+  era-extremity diagnostic on the 2026-07-24 launch date.
+- **Mroziewicz and Ślepaczuk (2026), arXiv 2602.10785, 11 Feb 2026 —
+  an independent walk-forward crypto study whose own headline table
+  loses to buy-and-hold.** University of Warsaw; **spot** BTC, ETH and
+  BNB; EMA-crossover, long-short, intraday bars (1 to 60 minutes);
+  0.1% per transaction with sensitivity from 0.05% to 0.50%; training
+  2018-02-08..2019-09-01, unseen out-of-sample 2019-11-07..2021-08-22;
+  81 training/testing window pairs optimized by walk-forward, with the
+  top two carried to a single unseen evaluation. Unseen-period Sharpe,
+  strategy against buy-and-hold: BTC **1.1064 vs 1.1281**, ETH
+  **1.3371 vs 1.5365**, BNB **1.1982 vs 1.4644** — the benchmark wins
+  all three, despite annualized returns of 90.91%, 137.27% and 140.30%
+  that look spectacular in isolation. The paper's own sentence,
+  verbatim: **"No strategy surpassed the respective asset's
+  Buy-and-Hold performance in terms of Sharpe ratio."** **Testable-
+  here: no** — long-short and intraday both fall outside product law
+  (spot, long-only, daily), so no trial follows. Filed because it is
+  an independent, published, walk-forward-validated instance of the
+  failure mode this program measured for Taiwan and gold: an optimized
+  trend rule that produces large absolute returns and still loses to
+  simply holding the asset.
+- **Wiecki, Campbell, Lent and Stauth (Quantopian), "All that glitters
+  is not gold", SSRN 2745220 — what survives a backtest is drawdown
+  character, not Sharpe.** 888 US-equities algorithms with at least six
+  months of out-of-sample performance. Verified from the PDF: the
+  abstract states Sharpe ratio and similar metrics "offer little value
+  in predicting out of sample performance (**R² < 0.025**)", with the
+  in-sample/out-of-sample Sharpe correlation at **Pearson R² = 0.02**,
+  while **annual volatility reaches R² = 0.67 and maximum drawdown
+  R² = 0.34**; a non-linear model on the full feature set gets to
+  R² = 0.17 on hold-out data. **Testable-here: no** (equities, and the
+  finding is about metrics, not a rule). Recorded because it puts a
+  number on which half of this program's own result should be expected
+  to travel: **drawdown character is among the most persistent
+  properties of a backtest and Sharpe rank is nearly the least.** The
+  precise claim is that an algorithm's own drawdown level persists
+  in-sample to out-of-sample — **not** that a drawdown advantage over a
+  benchmark persists, which is a different quantity and is not what
+  Wiecki measured. Under that limit it supports the clause of the
+  standing answer that treats the 33.05%-against-80.99% drawdown result
+  as the more durable half, and it argues against leaning on the 5.4%
+  return margin.
+- **ETF- and on-chain-flow commentary surveyed, nothing adoptable.**
+  The 2026 market-commentary corpus (Amberdata, VanEck and similar)
+  offers claims of the form "five or more consecutive ETF inflow days
+  marked durable bottoms in 2026". No sample definition, no
+  out-of-sample split, no cost treatment, and no paper behind it. The
+  on-chain route opened in iteration 39 remains open and unadvanced;
+  it still awaits an operator hypothesis lock, and this class of claim
+  is not one a hypothesis could honestly be locked from.
+- **arXiv 2602.11708 (AdaptiveTrend) resurfaced and stays disposed.**
+  Same paper already refused in an earlier pass: 6-hour bars,
+  long-short, asymmetric 70/30 allocation. Re-encountering a disposed
+  source is not new evidence, and it is logged only so a later
+  iteration does not count it twice.
+- **Meta-observation.** Eleventh consecutive external-research pass
+  with nothing directly actionable under the P1-only constraint. Like
+  iteration 44's, this one still touched existing conclusions rather
+  than adding routes: three independent sources — 1,726 institutional
+  strategies, 888 retail algorithms, and one walk-forward crypto study
+  — all say the same thing from different directions, that the part of
+  a backtest that survives contact with live markets is small and is
+  not the part that looks best on the page. **None of these is the
+  third arrival at the momentum-regime-decay question** flagged in
+  iteration 44; that trigger concerns crypto momentum compressing
+  post-2021 and remains at two arrivals. Conflating the two questions
+  would be exactly the loose bookkeeping the trigger exists to prevent.
