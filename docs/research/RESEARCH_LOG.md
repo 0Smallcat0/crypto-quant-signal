@@ -1117,3 +1117,88 @@ cross-sectional momentum untested here → experiment 3.
   iteration 44; that trigger concerns crypto momentum compressing
   post-2021 and remains at two arrivals. Conflating the two questions
   would be exactly the loose bookkeeping the trigger exists to prevent.
+
+## 2026-08-22 — iteration 46 web pass (P1-only; horizon redundancy inside a trend ensemble)
+
+- **arXiv 2607.19497 (Sepp and Lucic, 21 Jul 2026), "The Science and
+  Practice of Trend-Following Systems" — a closed-form theory of what a
+  trend system earns, and one sentence that touches this program.**
+  Verified by fetching the abstract page. The paper classifies trend
+  systems into European, American and time-series-momentum types and
+  derives, for the European class, an exact relationship between P&L,
+  autocorrelation and drift in volatility-normalized returns; in the
+  frequency domain the expected return is a Poisson-kernel reading of
+  the return spectrum, so that **"trend-following alpha is excess
+  spectral mass at low frequencies"** and the system profits at zero
+  drift when the kernel-weighted spectral mass exceeds one. It also
+  derives a closed-form Sharpe ratio, a **net** Sharpe and a
+  **cost-optimal span** under trading costs, and shows the positive
+  skewness of aggregated trend returns is **structural**, positive at
+  every horizon and peaking near half the filter span. Empirically it
+  reports that **"all TF systems are strongly correlated"** on liquid
+  contracts. **Testable-here: no, and deliberately not.** The
+  cost-optimal-span formula is a design rule, and using it to pick or
+  re-pick a lookback would be a new single-market parameter family,
+  which P3 refuses. Two things it does do without any run: it gives a
+  structural explanation for the **+0.227 skew** already measured on
+  trial 88's return series (a property, not a result), and its
+  strong-correlation finding is about systems on a shared contract set,
+  which is a **different quantity** from this program's cross-market
+  sleeve correlation of −0.0041 — the two must not be conflated.
+- **arXiv 2510.23150v2 (Etienne, Ohana, Benhamou, Guez, Setrouk,
+  Jacquot, 28 Oct 2025), "Revisiting the Structure of Trend Premia:
+  When Diversification Hides Redundancy" — layering horizons can hide
+  redundancy rather than add diversification.** Universe 20 liquid
+  futures across commodities, equities, rates and FX; horizons 20, 60,
+  125, 250, 500 trading days; sample 2013-2025 with the formal backtest
+  2015-2025; Bayesian reallocation across horizons on rolling 8-year
+  training windows. Numbers below were read twice from the paper's own
+  tables. Standalone Sharpe (Table 6): **20d 0.20, 60d 0.21, 125d 0.21,
+  250d 0.42, 500d 0.47, all-horizons baseline 0.36**. Pairwise
+  correlations (Table 5): **20d-60d 83%, 20d-125d 59%, 20d-250d 59%,
+  20d-500d 44%, 60d-125d 81%, 60d-250d 60%, 60d-500d 44%, 125d-250d
+  84%, 125d-500d 67%, 250d-500d 90%**. The claim is that the medium
+  band adds little once short and long are included, and that optimal
+  weight goes barbell rather than ladder. **A number was retracted
+  during verification:** the first read reported "excluding 125d lifts
+  Sharpe from 0.36 to about 0.40"; the second, targeted read found no
+  such figure in the document, so it is **not recorded** and must not
+  be cited later. **Testable-here: mechanically yes, and refused.**
+  This program's ensemble votes over windows **10/20/55/110**, so a
+  leave-one-window-out ablation is the direct analogue — but it is an
+  arm of the experiment-7 family, and P3 forbids new single-market
+  parameter families. Iteration 26's arithmetic makes the refusal
+  sharper rather than merely procedural: a 134th trial preserves trial
+  118's gate-4 pass only if its Sharpe lands in **[0.709, 1.180]**, and
+  an ablation arm that behaved like the existing ensemble (trial 88 at
+  1.1823, trial 118 at 1.2413) would land at or above the top edge and
+  destroy the pass. Recorded as evidence, not as a route.
+- **Amberdata "2026 Outlook: The End of the Four-Year Cycle" (Michael
+  Marshall, 20 Jan 2026) — search summary refused after source check.**
+  A search result attributed to this piece a claim that Bitcoin's
+  30-day realized volatility sits at 20-30% and that the ETF-flow
+  regime is eroding trend-strategy efficacy. Fetching the page found
+  **no realized-volatility figure, no dated measurement and no
+  statement about momentum or trend-strategy performance** — the
+  nearest text is the qualitative "Volatility compresses. Interest
+  fades. Then something changes." The numbers are therefore not
+  recorded, and this is **not** an arrival at the momentum-regime-decay
+  question, which stays at **two**. Logged as a worked example of the
+  iteration-43 lesson: a search summary is not a source.
+- **arXiv 2602.11708 (AdaptiveTrend) re-encountered a third time and
+  stays disposed.** 150+ pairs, 6-hour bars, long-short with asymmetric
+  70/30 allocation, 2022-2024, reported Sharpe 2.41 and max drawdown
+  −12.7%. Outside product law on two counts. Logged only so repeated
+  encounters are never counted as accumulating evidence.
+- **Meta-observation — twelfth consecutive pass with nothing actionable
+  under P1-only, and a new question opened at two arrivals.** Both new
+  sources point at the same unexamined place, from opposite directions:
+  Sepp and Lucic say trend systems are strongly correlated with one
+  another, and Etienne et al. say adjacent horizons inside one ensemble
+  can be near-duplicates carrying real cost. Applied here the question
+  is whether **10/20/55/110 is four bets or effectively two**. It is
+  tracked at **two arrivals**, on the same bookkeeping rule as the
+  momentum-regime-decay question — a third independent arrival triggers
+  asking the operator whether to attach a decision to it, and until
+  then nothing runs. The two questions are distinct and must not be
+  pooled to reach a threshold faster.
