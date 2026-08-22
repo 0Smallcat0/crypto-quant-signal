@@ -3107,3 +3107,156 @@
   forward — reboots such as the one that cost 2026-08-18 are the
   operator's prerogative, noted only so the blank logs are not
   mistaken for a recurring defect.
+
+## 2026-08-22 — iteration 46 (P1: first clean slot in six; all four tracks recording; a redundancy question opened at two arrivals)
+
+- **Step 0 convergence check.**
+  1. **Current answer** — unchanged from iterations 27-45. Timing works
+     in crypto only; in its own universe it bought both return (14.26x
+     vs 6.05x) and drawdown (33.05% vs 80.99%); the 4.70x
+     exposure-matched twin edge is audited and robust; against the naive
+     13-coin alternative the margin is only 5.4% and that benchmark is
+     survivorship-flattered; no return-based forward verdict is
+     statistically permitted before **2028-06-29**; trial 118's gate-4
+     pass holds only for a stopped search; the six-gate framework has
+     exercised only gates 3 and 4, both with recorded defects; the audit
+     route is converged (iteration 35); the on-chain route is open but
+     unadvanced pending an operator hypothesis lock.
+  2. **What this iteration moves.** Little, and that is the correct
+     output under the contract's "routes exhausted" clause. Concretely
+     it (a) confirms from the files that **all four forward tracks
+     gained rows**, including the weekly Taiwan and gold task firing
+     this morning, so P1 is intact; (b) records the **first scheduled
+     slot since 2026-08-16 that ran without a miss, kill or auth
+     failure**, which is the evidence the operator needs to judge
+     whether the five-slot failure run was a phase or a defect; and
+     (c) opens one tracked question — whether the ensemble's four
+     windows are four bets or effectively two — at **two arrivals**,
+     with nothing run and nothing decided.
+  3. **Why it is not sprawl.** No new script, no new research document,
+     no new diagnostic, no trial. The web pass is contract-mandated and
+     its output is five lines in `RESEARCH_LOG.md`. The one new
+     question is filed under the existing arrival-counting rule rather
+     than acted on, which is the mechanism that stops an interesting
+     paper from becoming an unplanned family.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 28 (27 real + seed) | 2026-08-21, equity 1108.839671324292607997147552, exposure `{BTC: 0.75, ETH: 1}`, closes 78338.03 / 2516.30 | OK — +1 row since iteration 45 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 28 (27 real + seed) | 2026-08-21, equity 1152.580070833553048227738291, exposure `{BTC: 0.75, ETH: 1}` | OK — +1 row since iteration 45 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 6 (5 real + seed) | 2026-08-21, close 104.65, exposure 0.5 | OK — weekly task fired 2026-08-22 09:40, result 0 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 7 (6 real + seed) | 2026-08-21, close 423.359985, exposure 0.75 | OK — same weekly task |
+
+  Both crypto series span 2026-07-24..2026-08-21 with **exactly one
+  date gap, 2026-08-09** — the permanently lost row from iteration 42,
+  unchanged and still left as a hole. Task state read from the
+  scheduler at 21:37 today: `CryptoShadowTrial88` last ran 2026-08-22
+  08:20:01 result 0, next 2026-08-23 08:20; `TwShadow0050` last ran
+  2026-08-22 09:40:00 result 0, next 2026-08-29 09:40; both `Ready`,
+  both `NumberOfMissedRuns 0`. `CryptoQuantDailySignalCycle` (the live
+  08:05 runtime, not touched by research) last ran 2026-08-22 08:05:01
+  result 0. Both ETH sleeves moved from 3-of-4 to **4-of-4 windows on**
+  on 2026-08-21; that is the recorded signal state, not a result.
+
+- **The loop's own reliability, stated plainly.** `CryptoResearchLoop`
+  fired on time at 2026-08-22 21:37:01 and this iteration ran to
+  completion — the **first uninterrupted research slot since
+  2026-08-16**. The five slots in between were: 08-17 weekly account
+  usage limit, 08-18 reboot, 08-19 ran (iteration 44), 08-20 console
+  kill, 08-21 ran (iteration 45). Counting only slots the loop itself
+  could control, the failure run is over; counting all slots, six of
+  the last ten produced an iteration. The instrumentation added in
+  iteration 44 is now confirmed working twice: today's log opened with
+  `started=` and will close with `exit=`, and no System-event
+  reconstruction was needed for anything in this entry.
+
+- **Operator-attention items, carried forward unchanged, none acted on
+  unilaterally.** (a) The research loop still runs in a **visible
+  console window**; hiding it with `-WindowStyle Hidden` would have
+  prevented the 08-20 kill but would also remove the operator's only
+  convenient way to stop a running iteration. The loop cannot tell an
+  accidental close from a deliberate one and does not guess, so the
+  task definition is **unchanged** and the choice stays with the
+  operator. (b) The weekly account usage limit that cost 08-17 is an
+  account-level trade-off only the operator controls. (c) Reboots such
+  as the one that cost 08-18 are the operator's prerogative, noted only
+  so blank logs are not mistaken for a recurring defect.
+
+- **Step 2 (web research) done and source-verified, with one number
+  retracted mid-pass.** Five items filed in `RESEARCH_LOG.md` under
+  iteration 46. Two are new: **arXiv 2607.19497** (Sepp and Lucic,
+  21 Jul 2026), which derives trend P&L as a Poisson-kernel reading of
+  the return spectrum — "trend-following alpha is excess spectral mass
+  at low frequencies" — gives a closed-form net Sharpe and cost-optimal
+  span under costs, shows positive skewness of trend returns is
+  structural and peaks near half the filter span, and reports that all
+  trend systems on liquid contracts are strongly correlated; and
+  **arXiv 2510.23150v2** (Etienne et al., 28 Oct 2025), which reports
+  standalone Sharpe of **0.20 / 0.21 / 0.21 / 0.42 / 0.47** for the
+  20 / 60 / 125 / 250 / 500-day horizons against an all-horizons
+  baseline of **0.36**, with pairwise correlations up to **90%**
+  (250d-500d) and **84%** (125d-250d), and concludes that the medium
+  band adds little once short and long are present. **A number was
+  retracted before it was written anywhere durable:** the first read of
+  that paper reported "excluding 125d lifts Sharpe from 0.36 to about
+  0.40"; a second targeted read found no such figure in the document,
+  so it is not recorded. Also filed: an Amberdata 2026 outlook whose
+  search-summary claims about realized volatility and trend-strategy
+  decay **did not survive fetching the page** and are therefore not
+  recorded, and arXiv 2602.11708 re-encountered a third time and left
+  disposed. Twelfth consecutive pass with nothing directly actionable.
+
+- **The one thing the papers point at, and why it stays unrun.** Both
+  new sources bear on the same untested place: whether the ensemble's
+  **10/20/55/110** windows are four independent bets or effectively
+  two. The direct test is a leave-one-window-out ablation, and it is
+  **refused**, on two independent grounds. Procedurally it is an arm of
+  the experiment-7 family and P3 forbids new single-market parameter
+  families. Arithmetically it is worse than procedural: iteration 26
+  measured that a 134th trial preserves trial 118's gate-4 pass only
+  if its Sharpe falls in **[0.709, 1.180]**, and an ablation arm
+  behaving like the current ensemble (trial 88 at 1.1823, trial 118 at
+  1.2413) would sit at or above that ceiling and destroy the pass. So
+  the honest position is recorded rather than tested: the ensemble's
+  effective breadth is **unmeasured**, no document may claim its four
+  windows are four independent bets, and the question waits for a third
+  independent arrival before the operator is even asked.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken** over
+  81 files and 325 dependencies; `pytest -m "not network"` **383
+  passed**, 1 warning, in 52.67s.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false` (`docs/reports/research/holdout_lock.json` verified today),
+  no research document created, no diagnostic script written, no
+  window-ablation arm run, no scheduled-task definition altered —
+  including the research loop's own console-window setting — no
+  `configs/runtime/` or live-runtime file touched, no shadow row
+  fabricated, and the 2026-08-09 hole left as a hole. One external
+  number was dropped rather than rounded into the record, and one
+  search summary was refused because the page behind it did not
+  contain the claim.
+
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and
+  drawdown (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x twin edge is
+  audited and robust; the engine is free of look-ahead, verified to the
+  cent; execution-latency cost is about −6.4 bps round-trip, bounded
+  above by ~17 bps, inside tested headroom; the October holdout is
+  protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin
+  is only 5.4% and that benchmark is survivorship-flattered; breadth
+  still fails, and as of today the ensemble's **internal** breadth is
+  additionally unmeasured; **nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29**; the single gate-4 pass holds only for a stopped search;
+  the framework has exercised exactly two gates, both defective.
+  On-chain route open but unadvanced. Operator-attention items dated
+  2026-08-22 are the three carried forward above, all unchanged.
