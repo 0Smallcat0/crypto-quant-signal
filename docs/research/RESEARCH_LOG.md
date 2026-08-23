@@ -1202,3 +1202,125 @@ cross-sectional momentum untested here → experiment 3.
   asking the operator whether to attach a decision to it, and until
   then nothing runs. The two questions are distinct and must not be
   pooled to reach a threshold faster.
+
+## 2026-08-23 — iteration 47 web pass (P1-only; the redundancy question reaches its third arrival)
+
+- **arXiv 2504.10914v15 (Sebastien Valeyre, v15 submitted 12 Aug 2026),
+  "Breaking the Trend: How to Avoid Cherry-Picked Signals" — the THIRD
+  independent arrival at the ensemble-breadth question opened in
+  iteration 46.** Verified in two passes: the abstract page first, then
+  a targeted second read of the v15 full text for each body number.
+  From the abstract, verbatim: *"using only one simple EMA, appears
+  optimal to capture the trend. As a consequence, using a complex basket
+  of different complex indicators as signal, does not seem to be so
+  rational or optimal and exposes to the risk of cherry-picking."* From
+  the body, each quoted back on the second read: *"ARP(80) is correlated
+  to ARP(150) with a coefficient of 0.96"*; *"the parameter of 112±10
+  business days (equivalent to a half-life period of 78 business days)
+  for simple EMA is the optimal parameter to get the optimal Sharpe
+  ratio"*; universe *"70 futures instruments in stock indices, bonds, FX
+  and commodities futures"* over *"25th of May 1990 ... 7th of December
+  2023"*. Reported Sharpe ratios for the single-EMA arms: ARP(100) 1.25,
+  ARP(120) 1.24, ARP(150) 1.21, MACD(20,120,0.4x400) 1.18. **A first-read
+  slip is corrected here rather than carried:** the initial read gave the
+  sample start as 29 May 1990; the paper's own sentence says 25 May 1990,
+  and that is what is recorded. **No multiple-testing correction is
+  applied in the paper** — it uses a bootstrap interval [1/223, 1/157]
+  and an R^2 = 0.98 fit to the Grebenkov-Serror Sharpe formula, not a
+  deflated Sharpe or an FDR control. **Testable-here: mechanically yes,
+  and still refused** — see the disposition line below.
+- **Why this is a genuine third arrival, and what it is NOT.** It is
+  independent of the two iteration-46 arrivals in author, method and
+  sample: Sepp and Lucic (arXiv 2607.19497) argue spectrally that trend
+  systems are strongly correlated with one another; Etienne et al.
+  (arXiv 2510.23150v2) measure 125d-250d at 84% and 250d-500d at 90%
+  on 20 futures 2013-2025; Valeyre measures 0.96 between ARP(80) and
+  ARP(150) on 70 futures 1990-2023 and concludes a single scale suffices.
+  Three groups, three methods, three samples, one conclusion. **But all
+  three are liquid-futures studies and none is crypto.** They are three
+  independent arrivals in the bookkeeping sense and **not** three
+  independent tests of this program's ensemble. This program already
+  holds direct measured evidence that a rule selected on crypto did not
+  transfer to Taiwan or gold; the reverse transfer — a futures-derived
+  redundancy finding into BTC/ETH spot — is equally unestablished, and
+  no document may treat these three papers as if they had measured
+  10/20/55/110 on crypto. The near-match between Valeyre's 112±10 and
+  this program's longest window of 110 is a **coincidence of different
+  indicators on different universes** (EMA on futures vs Donchian on
+  BTC/ETH) and must never be cited as corroboration.
+- **Disposition: the arrival threshold is reached, so the operator is
+  asked and nothing is run.** The arrival-counting rule says a third
+  independent arrival triggers asking the operator whether to attach a
+  decision, and until then nothing runs. The question is put to the
+  operator in today's LOOP_LOG entry, unchanged in substance: are
+  10/20/55/110 four bets or effectively two? The two standing refusals
+  are unaltered while the operator considers it — procedurally a
+  leave-one-window-out ablation is an arm of the experiment-7 family and
+  P3 forbids new single-market parameter families; arithmetically
+  iteration 26 measured that a 134th trial preserves trial 118's gate-4
+  pass only if its Sharpe lands in [0.709, 1.180], and an ablation arm
+  behaving like the current ensemble (trial 88 at 1.1823, trial 118 at
+  1.2413) would sit at or above that ceiling and destroy the pass. The
+  operator's answer must therefore price a measurement against a
+  recorded gate-4 cost, which is exactly why the loop does not decide it.
+- **arXiv 2604.26747 (Yikuan Huang, Zheqi Fan, Kaiqi Hu, Yifan Ye,
+  29 Apr 2026), "From Hypotheses to Factors: Constrained LLM Agents in
+  Cryptocurrency Markets" — an outside program with this one's audit
+  discipline and none of its statistical discipline.** Abstract verified
+  on the listing page, details on the v1 full text. Design: an agent
+  reads an *append-only experiment trace*, proposes falsifiable factor
+  hypotheses, and a deterministic engine enforces fixed splits, selection
+  gates and transaction costs, with successful and failed hypotheses
+  both auditable — structurally the same idea as this program's trial
+  registry. Reported: a ridge-combined **equal-weight long-short**
+  portfolio trained on 2020-2022, validated on 2023, tested 2024 onward,
+  daily CoinMarketCap data with a one-day execution lag and one-day
+  holding period, **44.55% annualized return and Sharpe 1.55** out of
+  sample after **5 bps one-way** costs, max drawdown **-0.236**; 25
+  single factors generated across five search rounds. **Testable-here:
+  no** — long-short violates product law's long-only constraint, and the
+  factor DSL is a different mechanism from a channel-breakout timing
+  rule. **Recorded for one reason only:** the paper reports **no
+  multiple-testing correction of any kind** — no deflated Sharpe, no PBO,
+  no family-wise control — after an explicitly *searched* factor set.
+  This program's DSR/PBO bookkeeping is therefore not excess caution
+  relative to the published literature; it is a discipline the published
+  literature here does not apply. That observation changes nothing about
+  whether this program has an edge.
+- **Buhalterines apskaitos teorija ir praktika Vol. 33 (Adedeji Daniel
+  Gbadebo, published 9 Jun 2026), "Momentum Trading in Cryptocurrencies:
+  A Comparative Study of Time-Series and Cross-Sectional Strategies" —
+  a headline crypto-momentum return published without its buy-and-hold
+  twin.** Verified from the journal's own article page, not from a search
+  summary. Universe eight coins (BTC, ETH, LTC, XRP, BNB, ADA, DOGE, SOL),
+  period **1 January 2020 to 31 October 2025**, multi-horizon EMA signals
+  with volatility normalization, two structures compared. Reported:
+  time-series momentum **31.96% annual return**, said to outperform
+  cross-sectional on a risk-adjusted basis; cross-sectional max drawdown
+  **55.0%**. **Not stated anywhere in the abstract: long-only or
+  long-short, transaction cost assumptions, Sharpe ratios, and — the
+  point — any buy-and-hold comparison.** This is the exact defect
+  `VS_BUY_AND_HOLD_2026-07-26.md` was written to correct in this
+  program's own record: over a window containing 2020-2021 and 2023-2024,
+  a crypto momentum return is uninterpretable without the passive twin
+  it must beat. **Testable-here: no.** The absence recorded above is a
+  verified absence, not an estimate; this log makes **no claim** about
+  whether 31.96% would or would not beat holding those eight coins,
+  because that number was not measured here and must not be guessed.
+- **Momentum-regime-decay question: no arrival this pass, and a search
+  direction closed.** A targeted search for post-ETF decay in Bitcoin
+  trend performance returned only flow journalism — spot-ETF net buying
+  falling from a cited $23.72bn peak, ten straight outflow days
+  15-29 May 2026 totalling $2.9623bn, and price commentary. **None of
+  it measures a trend or momentum strategy's performance**, so none of it
+  is an arrival; ETF flow is a market-structure fact, not a strategy
+  measurement, and conflating the two would manufacture a third arrival
+  out of newspaper copy. The question stays at **two arrivals**. It also
+  stays strictly separate from the redundancy question that reached
+  three today; the two must never be pooled.
+- **Meta-observation — thirteenth consecutive pass with nothing directly
+  actionable under P1-only, and the first pass to move a tracked question
+  to its trigger.** Nothing was run, no arm was tested, and the standing
+  answer is unchanged. What changed is procedural and small: one open
+  question crossed the threshold its own rule set in advance, so it goes
+  to the operator instead of quietly accumulating more citations.
