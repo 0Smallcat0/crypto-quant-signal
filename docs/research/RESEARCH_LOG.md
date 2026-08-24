@@ -1324,3 +1324,103 @@ cross-sectional momentum untested here → experiment 3.
   answer is unchanged. What changed is procedural and small: one open
   question crossed the threshold its own rule set in advance, so it goes
   to the operator instead of quietly accumulating more citations.
+
+## 2026-08-24 — iteration 48 (P1 maintenance; the closest published relative of this program's own rule, and what it does not measure)
+
+- **Zarattini, Pagani and Barbon, "Catching Crypto Trends: A Tactical
+  Approach for Bitcoin and Altcoins" (SSRN 5209907, author page last
+  revised 2025-04-09) — the closest published relative of this program's
+  own rule, and it does not settle the question the operator is
+  currently being asked.** Verified from the authors' own pages
+  (`abarbon.com/papers/catching-crypto-trends` and Concretum Group's
+  paper page), because SSRN returned **HTTP 403** for both the abstract
+  page and the delivery PDF, so the full text was **not read here**.
+  What those pages state: an "ensemble of Donchian channel-based trend
+  models, each calibrated with a different lookback period", aggregated
+  into a single signal, with volatility-based position sizing; applied
+  to a rotational portfolio of the "top 20 most liquid coins"; on a
+  "survivorship bias-free dataset covering all cryptocurrencies traded
+  since 2015"; Sharpe **above 1.5** and annualized alpha of **10.8%**
+  versus Bitcoin, described as net of fees. **Testable-here: no.** The
+  mechanism matches this program's (Donchian ensemble, crypto), but
+  rotational top-20 selection with volatility sizing is a different
+  portfolio construction from equal-weight BTC/ETH, and P3 forbids new
+  single-market parameter families in any case.
+- **The reason that paper is filed is a failure to find, and it bears
+  directly on the pending operator decision.** This is precisely where
+  a crypto measurement of **between-window redundancy** would live —
+  a Donchian ensemble, on crypto, by authors who built it deliberately
+  out of several lookbacks — and neither authors' page states one.
+  Also not stated on either page: the lookback periods themselves, the
+  sample end date, long-only versus long-short, spot versus futures,
+  the transaction-cost number, Bitcoin's own return/Sharpe/drawdown,
+  and any out-of-sample split or multiple-testing correction. This is
+  recorded as a **failure to locate**, **not** as a verified absence
+  from the paper — the full text was not retrievable, so no claim is
+  made about what its tables contain. Consequence: the ensemble-breadth
+  question stays at **three arrivals, all liquid-futures**, exactly as
+  it stood on 2026-08-23, and the literature search has produced **no
+  substitute** for measuring 10/20/55/110 directly. If the operator
+  wants that number, it appears it must be run rather than cited.
+  One point of discipline worth noting in the paper's favour: its
+  headline is stated **relative to Bitcoin** (alpha 10.8%), unlike the
+  BATP paper filed on 2026-08-23 — though regression alpha against
+  Bitcoin is **not** the same test as beating buy-and-hold on return or
+  Sharpe, which is what `VS_BUY_AND_HOLD_2026-07-26.md` requires, and
+  the two must not be treated as interchangeable.
+- **arXiv 2602.11708 (Duc Bui, Thanh Nguyen, 12 Feb 2026), "Systematic
+  Trend-Following with Adaptive Portfolio Construction: Enhancing
+  Risk-Adjusted Alpha in Cryptocurrency Markets" — verified from the
+  HTML full text, not from a search summary.** Data: "historical data
+  from Binance Futures, covering 150+ perpetual swap contracts with
+  6-hour OHLCV bars from January 2021 to December 2024"; long-short
+  with an asymmetric 70/30 allocation. Costs: "a taker fee of 4 bps per
+  trade", volume-scaled slippage, and funding "incorporated as a
+  rolling 8-hour charge/rebate", with robustness at 0, 4, 8 and 12 bps.
+  Out-of-sample 36 months (2022-2024): Sharpe **2.41**, max drawdown
+  **-12.7%**, Calmar **3.18**. Its own Table 1 benchmarks, quoted:
+  BTC buy-and-hold "Ann. Ret. 12.6%, Ann. Vol. 48.7%, Sharpe 0.17,
+  MDD -64.1%"; equal-weight buy-and-hold "Ann. Ret. 8.3%, Ann. Vol.
+  52.1%, Sharpe 0.07, MDD -72.4%". Parameters (theta_entry, alpha, L)
+  are re-optimized **monthly by grid search on the preceding month**.
+  **Multiple-testing correction: absent from the full text** — no
+  deflated Sharpe, no PBO, no White reality check, no family-wise
+  control, after an explicitly searched parameter set. **Testable-here:
+  no** — perpetual futures and long-short both violate product law, and
+  6-hour bars violate the daily constraint. Filed for two reasons: it
+  **does** report its passive twins with numbers, which is the
+  discipline the 2026-08-23 BATP entry found missing; and it is the
+  second consecutive pass to find a searched parameter set published
+  with no multiple-testing correction. That is a pattern in what this
+  program reads and it changes nothing about whether this program has
+  an edge.
+- **QuantPedia, "In-Sample vs. Out-Of-Sample Analysis of Trading
+  Strategies" (2 Jun 2023) — a fourth arrival on a question that
+  already reached its threshold, so it is one line and no more.**
+  "355 strategies for further analysis" retained from an initial 868;
+  in-sample defined as running to the source paper's backtest end and
+  out-of-sample from there to the end of QuantPedia's own backtest;
+  Sharpe "deteriorated by 33% (on average)" with delta **-0.525**, and
+  a median decline of **43.90%** with delta **-0.518**. What fraction
+  of strategies stayed profitable out of sample: **not stated**.
+  **Testable-here: no.** The backtest-to-live transfer question reached
+  three arrivals on 2026-08-21 (Liu's 1,726 structured strategies,
+  Mroziewicz and Slepaczuk's walk-forward crypto study, Quantopian's
+  888 algorithms), so this is bookkeeping only: it opens nothing,
+  strengthens nothing, and is **not** forward evidence about this
+  program's own rule.
+- **Search direction closed for the second consecutive pass: recent-
+  regime crypto trend performance.** A targeted search for measurements
+  of trend-following against buy-and-hold in the 2025-2026 regime
+  returned market-outlook publications (Kraken, Coinbase Institutional,
+  Trakx, Motley Fool) plus the AdaptiveTrend paper already filed above.
+  **None measures a trend strategy's recent performance against its
+  passive twin on a stated sample**, so none is an arrival. The
+  momentum-regime-decay question stays at **two arrivals**, unchanged
+  from 2026-08-23, and stays strictly separate from the redundancy
+  question; the two are not pooled.
+- **Meta-observation — fourteenth consecutive pass with nothing
+  directly actionable under P1-only.** Nothing was run, no arm was
+  tested, and the standing answer is unchanged. The one thing this pass
+  adds is negative and useful: the most closely matched published work
+  does not appear to hand the operator the redundancy number for free.
