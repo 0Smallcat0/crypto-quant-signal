@@ -1424,3 +1424,136 @@ cross-sectional momentum untested here → experiment 3.
   tested, and the standing answer is unchanged. The one thing this pass
   adds is negative and useful: the most closely matched published work
   does not appear to hand the operator the redundancy number for free.
+
+## 2026-08-25 — iteration 49 (P1 maintenance; the ablation the operator was asked to authorize, already published — and already unreliable)
+
+- **Etienne, Ohana, Benhamou, Guez, Setrouk and Jacquot, "Revisiting the
+  Structure of Trend Premia: When Diversification Hides Redundancy"
+  (arXiv 2510.23150v2, submitted 27 Oct 2025, revised 28 Oct 2025;
+  q-fin.PR / q-fin.PM / q-fin.RM / q-fin.TR / stat.ML; no journal
+  reference).** Read from the arXiv HTML full text, not from the abstract
+  page — every number below was extracted from the rendered tables and is
+  quoted as the paper prints it. **This is the pending operator
+  question's experiment, already run and published by someone else.** The
+  paper performs an explicit **leave-one-horizon-out ablation** on a
+  five-horizon trend ensemble.
+
+  *Setup.* Universe **23 liquid futures** across four asset classes —
+  commodities GC, CL, NG, CO, HG; equities ES, NQ, NK, SX, Z, EM; fixed
+  income TU, TY, SZ, RX, G, JGB, XM; FX EUR, JPY, GBP, AUD, CAD.
+  Horizons **H = {20, 60, 125, 250, 500} trading days**. Costs modelled in
+  three layers: transaction 2 bps round-turn, roll cost 2–15 bps by asset
+  class (2000–2025 average front-to-next spread), management fee 50 bps
+  per annum. Benchmark is the **NEIXCTAT** CTA index; the object is CTA
+  *replication*, not absolute return. Long–short futures. Tables span
+  2005–2025 with four subperiods; Tables 5–6 cover 2015-08-31 to
+  2025-08-29. **No cryptocurrency in the universe.**
+
+  *Cross-horizon correlation (Table 5, 2015–2025), the number this program
+  does not have for its own ensemble.* Adjacent pairs: 20d/60d **83%**,
+  60d/125d **81%**, 125d/250d **84%**, 250d/500d **90%**. Most distant
+  pair 20d/500d **35–44%** (the printed matrix is asymmetric at that cell:
+  44% in the 20d row, 35% in the 500d row). Single-horizon Sharpe over the
+  same decade (Table 6): 20d **0.20**, 125d **0.21**, 250d **0.42**, 500d
+  **0.47**; annual returns 4.2% / 4.4% / 4.5% / 6.7% / 7.2% for
+  20d/60d/125d/250d/500d, vol 10.0–10.9%.
+
+  *The ablation itself (Tables 7–10).* Z-score ranking (Table 7): the best
+  leave-one-out arm is **No 125 (+0.80)**, then No 60 (+0.37), then No
+  250, No 20 (**−0.38**), No 500 (**−1.12**). Sharpe by period (Table 8),
+  All Horizons versus No 125: 2005–2010 **0.91 vs 0.90**, 2010–2015
+  **1.37 vs 1.41**, 2015–2020 **0.43 vs 0.42**, 2020–2025 **0.35 vs
+  0.44**, full sample **0.74 vs 0.77**. Return/MaxDD (Table 9), same
+  pairing: 1.12 vs 1.13, 1.39 vs 1.75, 0.48 vs 0.45, 0.32 vs 0.39, full
+  sample **0.48 vs 0.52**. Correlation to NEIXCTAT (Table 10) full sample
+  **0.83 vs 0.84**. Conditional (crisis) Sharpe across all leave-one-out
+  arms ranges **0.61 to 0.65**; All Horizons 0.65, No 125 **0.63** — i.e.
+  removing the medium band very slightly *reduces* crisis performance.
+  Removing **500d** is the worst arm on every axis (Sharpe 0.74 to
+  **0.67**, Return/MaxDD 0.48 to **0.44**, correlation 0.84 to **0.81**).
+
+  *Two problems with the paper, both verified against its own text, and
+  they are the reason this does not settle anything.* (1) **Its prose
+  overstates its tables.** The abstract and the introduction say excluding
+  the 125d layer "consistently improves Sharpe ratios"; Table 8 shows No
+  125 **worse in two of the four subperiods** (2005–2010 0.90 vs 0.91,
+  2015–2020 0.42 vs 0.43). The body text at that table claims the Sharpe
+  "exceeds ... in three of the four subperiods" and then enumerates only
+  **two** subperiods plus the full-sample average — the third named item
+  is not a subperiod. (2) **No multiple-testing correction of any kind.**
+  Searching the full text for `deflated`, `multiple test`, `bootstrap`,
+  `reality check` and `PBO` returns **zero** occurrences. Overfitting is
+  addressed only by a "persistence filtering" heuristic on the weight
+  series (section 4.3). So the reported winner is the **maximum of five
+  leave-one-out arms**, selected without any correction, and its
+  full-sample Sharpe margin over the baseline is **+0.03** (0.74 to 0.77).
+  That is the third consecutive pass in which a searched configuration is
+  published with no multiple-testing control.
+
+  **Testable-here: no**, on three counts — long–short, futures with roll
+  costs, and no crypto. **Consequence for the pending operator decision,
+  stated without pressure:** the ensemble-breadth question now has a
+  **fourth arrival**, and this one differs in kind from the first three
+  because it actually ran the ablation and printed the numbers. What it
+  supplies is not the answer for 10/20/55/110 — it is a prior on what
+  running that ablation *could yield*: in the most favourable published
+  setting available (20 years, 23 markets, five horizons), the best
+  leave-one-out arm wins by **+0.03 Sharpe full-sample while losing in
+  half the subperiods**, with no correction applied. A margin that size is
+  inside what selection over five arms manufactures. This program's own
+  machinery would be obliged to discount it, and the arm would still cost
+  an N that `docs/research/GATE4_FRAGILITY_2026-07-28.md` shows destroys
+  trial 118's single gate-4 pass. The decision stays with the operator;
+  this entry adds the missing prior and nothing else.
+
+- **A structural observation about this program's own ensemble, filed as
+  an observation and not as a claim.** The paper's finding is that the
+  trend spectrum is **bimodal** — the short end (20d) and the long end
+  (250d/500d) carry the value, the middle (60–125d) is the drag, and
+  removing 500d is the single most damaging ablation of the five. This
+  program's ensemble is **10 / 20 / 55 / 110** days. Every one of its four
+  windows sits **at or below the paper's 125d medium band**, and it has
+  **no member anywhere near the 250d/500d long end the paper calls
+  indispensable**. If the paper's structure transferred, this program
+  would be holding the short-plus-middle cluster and none of the long
+  anchor. **Transfer is not established and is not assumed**: different
+  instrument (spot versus futures), different direction (long-only versus
+  long–short), different asset class (crypto versus 23 traditional
+  futures), different era (2018–2025 versus 2005–2025), and a different
+  objective (absolute return versus index replication). It is also **not
+  testable here** — P3 forbids a new single-market parameter family, and a
+  long-window arm would be exactly that. Recorded so the fact is on the
+  record rather than rediscovered later, with the caveat attached.
+
+- **Borri, Liu, Tsyvinski and Wu, "Cryptocurrency as an Investable Asset
+  Class: Coming of Age" (arXiv 2510.14435v4, 21 Mar 2026, q-fin.GN) —
+  located, abstract only, not an arrival.** Organizes crypto empirical
+  regularities into seven stylized facts, reports that "risk-adjusted
+  performance so far is broadly comparable" to traditional markets and
+  that the cross-section reduces to a small factor set, and discusses
+  "potential data quality issues". **The abstract states no return,
+  Sharpe, drawdown or sample period, and the full text was not read**, so
+  nothing here bears on the survivorship-flattered 13-coin benchmark in
+  the standing answer. Filed as **located but unverified**, not as a
+  finding. **Testable-here: no** (survey).
+
+- **Search direction closed for the third consecutive pass: recent-regime
+  crypto trend performance versus buy-and-hold.** A targeted query for
+  2025–2026 measurements returned price-prediction and outlook
+  publications only (Motley Fool, CoinLore, Phemex, CoinDCX, UEEx, Tiger,
+  Yahoo Finance) — none measures a trend rule against its passive twin on
+  a stated sample. **No arrival.** The momentum-regime-decay question
+  stays at **two arrivals**, unchanged since 2026-08-23, and remains
+  strictly separate from the redundancy question; the two are not pooled.
+  Three consecutive empty passes is now itself evidence about the channel:
+  this direction is not producing measurements and should not be re-run
+  every night.
+
+- **Meta-observation — fifteenth consecutive pass with nothing runnable
+  under P1-only, but the first in six passes that changed a pending
+  decision's inputs.** Nothing was run, no arm was tested, no trial
+  registered, and the standing answer is unchanged in every clause. What
+  changed is the evidence available to the operator on the one open
+  research question: the experiment they were asked to authorize has a
+  published precedent, and that precedent's own numbers argue it cannot
+  deliver a trustworthy answer.
