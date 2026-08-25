@@ -3691,3 +3691,196 @@
   the framework has exercised exactly two gates, both defective.
   On-chain route open but unadvanced. Operator-attention items dated
   2026-08-24 are the four above, all carried forward.
+
+## 2026-08-25 — iteration 49 (P1: fifth slot in the streak; the ensemble-breadth ablation is found already published, and its own tables argue against running ours)
+
+- **Step 0 convergence check, done first and in writing.**
+  1. **Current answer, unchanged:** measured on 2018-2025 and not
+     forward-validated, the timing rule adds real value **in crypto
+     only** — 4.70x its exposure-matched passive twin, and in its own
+     BTC/ETH universe it bought **both** return (14.26x vs 6.05x) and
+     drawdown (33.05% vs 80.99%). Against the naive thirteen-coin
+     alternative the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates**, and
+     the one gate-4 pass exists only for a stopped search.
+  2. **What this iteration moves.** It does not run anything. It changes
+     the **inputs to the one decision sitting with the operator** — the
+     ensemble-breadth question — by locating the experiment they were
+     asked to authorize **already performed and published**, with its
+     numbers, on 23 liquid futures over 2005-2025. The finding that
+     matters is not the paper's conclusion but its **precision**: the
+     best of five leave-one-out arms wins by **+0.03 full-sample Sharpe**
+     (0.74 to 0.77) while **losing in two of four subperiods**, with
+     **no multiple-testing correction anywhere in the text**. That is a
+     prior on what running our own ablation could yield, and it points
+     the same way as the N cost.
+  3. **Why it is not sprawl.** No new script, no new research document,
+     no trial, no backtest, no gate report, no arm run, no
+     pre-registration written or touched, no window family opened. The
+     web pass is contract-mandated (step 2, "never skip"). The only
+     computation performed is the recorder consistency check on today's
+     new row, which reads two rows already on disk and produces no
+     performance quantity.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 31 (30 real + seed) | 2026-08-24, equity 1104.907833794170722816361255, exposure `{BTC: 0.75, ETH: 1}`, closes 78992.75 / 2482.31 | OK — +1 row since iteration 48 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 31 (30 real + seed) | 2026-08-24, equity 1148.493134104853934685558048, exposure `{BTC: 0.75, ETH: 1}` | OK — +1 row since iteration 48 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 6 (5 real + seed) | 2026-08-21, close 104.65, exposure 0.5, `WINDOWS_ON_2_OF_4` | OK — weekly; unchanged is correct, next run 2026-08-29 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 7 (6 real + seed) | 2026-08-21, close 423.359985, exposure 0.75, `WINDOWS_ON_3_OF_4` | OK — same weekly task |
+
+  Both crypto series now span 2026-07-24..2026-08-24 with **exactly one
+  date gap**: the pair 2026-08-08 to 2026-08-10, i.e. the missing date is
+  **2026-08-09** — the permanently lost row from iteration 42, unchanged
+  and still left as a hole. Scheduler state read during this iteration:
+  `CryptoShadowTrial88` last ran 2026-08-25 08:20:01 result 0, next
+  2026-08-26 08:20; `TwShadow0050` last ran 2026-08-22 09:40:00 result 0,
+  next 2026-08-29 09:40; both `Ready`, both `NumberOfMissedRuns 0`.
+  `CryptoQuantDailySignalCycle` (the live 08:05 runtime, not touched by
+  research) last ran 2026-08-25 08:05:01 result 0, next 2026-08-26 08:05.
+  `docs/reports/research/holdout_lock.json` re-verified: `spent` still
+  `false`.
+
+- **Recorder consistency check on the new row, which passes exactly.**
+  From 2026-08-23 to 2026-08-24 BTC closed **+1.619304%** (77734.00 to
+  78992.75) and ETH **+0.767229%** (2463.41 to 2482.31). Applying the
+  exposures recorded on the 08-23 row — BTC 0.75, ETH 1.00, equal weight
+  across the two symbols — gives a predicted book move of **+0.990854%**,
+  and both books moved **+0.990854%**, a difference of **0.0000000000pp**.
+  This is a check of the recorder against its own inputs, not a
+  performance statement. The two books moved identically because they
+  held identical exposures on 08-23; **no cross-track structural
+  statistic is computed today**, because operator-attention item (d)
+  below is still open and, pending a rule, the loop does less rather than
+  more.
+
+- **Slot ledger over the twelve scheduled 21:37 slots 08-14..08-25, each
+  classified from its own log.** 08-14 `exit=1` (auth), 08-15 `exit=0`,
+  08-16 `exit=0`, 08-17 `exit=1` (weekly account usage limit, 218 bytes),
+  08-18 zero bytes (operator restart), 08-19 `exit=0`, 08-20 `started=`
+  only with no `exit=` (console-control kill, 43 bytes), 08-21 `exit=0
+  finished=2026-08-21T21:51:18.4578567+08:00`, 08-22 `exit=0
+  finished=2026-08-22T21:46:05.3708545+08:00`, 08-23 `exit=0
+  finished=2026-08-23T21:49:07.8944932+08:00`, 08-24 `exit=0
+  finished=2026-08-24T21:49:41.3381394+08:00`, 08-25
+  `started=2026-08-25T21:37:02.2626518+08:00` and still running. Iteration
+  48 recorded the streak as **four with today's slot in flight**; 08-24's
+  exit line now confirms it, so the completed streak is **four (08-21,
+  08-22, 08-23, 08-24)** and today is the fifth in flight. That is **eight
+  completed iterations out of twelve slots**, all four losses
+  operator-side, none of them a repo defect.
+
+- **Step 2 (web research): the pending operator question's experiment
+  turns out to already exist in print, and its own tables are the
+  finding.** Five items filed in `RESEARCH_LOG.md` under iteration 49.
+  The substantive one is **Etienne, Ohana, Benhamou, Guez, Setrouk and
+  Jacquot, "Revisiting the Structure of Trend Premia: When Diversification
+  Hides Redundancy" (arXiv 2510.23150v2, 27-28 Oct 2025)**, read from the
+  **arXiv HTML full text** — not an abstract-only read, unlike the
+  SSRN item iteration 48 had to label a failure to locate. It runs an
+  explicit **leave-one-horizon-out ablation** over
+  H = {20, 60, 125, 250, 500} trading days on **23 liquid futures**
+  (commodities, equities, fixed income, FX), long-short, with transaction
+  2 bps, roll 2-15 bps and a 50 bps management fee, benchmarked to
+  **NEIXCTAT**, tables spanning **2005-2025**. Three numbers matter here:
+
+  - **Adjacent-horizon correlations (Table 5, 2015-2025)** — 20d/60d
+    **83%**, 60d/125d **81%**, 125d/250d **84%**, 250d/500d **90%**; the
+    most distant pair 20d/500d is **35-44%**. This is precisely the class
+    of measurement this program does **not** have for its own 10/20/55/110
+    ensemble.
+  - **The ablation result** — best arm is `No 125` (Z-score +0.80), worst
+    is `No 500` (**-1.12**); dropping the short 20d sleeve also hurts
+    (-0.38). Sharpe by period, All Horizons vs No 125: 0.91/**0.90**,
+    1.37/**1.41**, 0.43/**0.42**, 0.35/**0.44**, full sample
+    0.74/**0.77**.
+  - **What is wrong with it**, verified against the paper's own text. Its
+    prose says excluding 125d "consistently improves Sharpe ratios" and
+    claims the improvement holds "in three of the four subperiods", then
+    enumerates only **two** subperiods plus the full-sample average —
+    Table 8 in fact shows it **worse in two of four**. And a full-text
+    search for `deflated`, `multiple test`, `bootstrap`, `reality check`
+    and `PBO` returns **zero** occurrences: overfitting is handled only by
+    a persistence-filtering heuristic. So the published winner is the
+    **maximum of five arms, uncorrected, winning by +0.03 Sharpe**.
+
+  Also filed: a **structural observation** that this program's four
+  windows (10/20/55/110) all sit **at or below** the paper's 125d medium
+  band, with **no member near the 250d/500d long end the paper finds
+  indispensable** — recorded with its transfer caveats (spot vs futures,
+  long-only vs long-short, crypto vs traditional, 2018-2025 vs 2005-2025,
+  absolute return vs index replication) and **not** as a claim about this
+  program, since it is untestable here under P3. Also filed: **arXiv
+  2510.14435v4** (Borri, Liu, Tsyvinski, Wu, 21 Mar 2026) as **located,
+  abstract only, not read, not an arrival**. And a **third consecutive
+  empty pass** on recent-regime crypto trend versus buy-and-hold —
+  outlook journalism only — so that direction is now recorded as a
+  channel that is not producing measurements, and the momentum-decay
+  question stays at **two arrivals**, still not pooled with the
+  redundancy question.
+
+- **Operator-attention items.** All four carried forward; **no new one is
+  added today**, but item (a) has materially better inputs than it had
+  yesterday. (a) The ensemble-breadth question is still with the operator:
+  *should a leave-one-window-out ablation of 10/20/55/110 be run, knowing
+  it costs an N, is a P3-forbidden family arm, and would very likely
+  destroy trial 118's single gate-4 pass?* Yesterday the loop reported it
+  could find no published crypto measurement to stand in. Today it found
+  the **experiment itself**, in the closest available non-crypto setting,
+  and the honest reading is that **it does not answer our question and
+  suggests ours would not answer it either**: twenty years and 23 markets
+  bought a +0.03 Sharpe margin that fails in half its subperiods, with no
+  correction applied. Our version would have less data, five fewer years,
+  one market, and a machinery obliged to discount the result — while
+  paying an N that is already known to be fatal to the gate-4 pass. This
+  is offered as an input, not a recommendation; the decision remains the
+  operator's. (b) The research loop still runs in a **visible console
+  window**; task definition unchanged, choice stays with the operator.
+  (c) The weekly account usage limit and the auth expiries are
+  account-level matters only the operator controls. (d) Should
+  cross-track structural comparisons of the shadow files be brought
+  explicitly under `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still
+  unanswered; today the loop **abstained** from that class of comparison
+  for the second consecutive iteration.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken** over 81
+  files and 325 dependencies; `pytest -m "not network"` **383 passed** in
+  104.25s.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false`, no research document created, no diagnostic script written, no
+  window-ablation arm run, no long-window family opened despite today's
+  finding pointing at one, no cross-track structural statistic computed
+  while item (d) is open, no scheduled-task definition altered, no
+  `configs/runtime/` or live-runtime file touched, no shadow row
+  fabricated, and the 2026-08-09 hole left as a hole. The paper's finding
+  was **not** adopted as a fact about this program; its transfer caveats
+  are recorded alongside it, and the two flaws found in it are recorded
+  even though they weaken an item that would otherwise have looked like
+  the strongest external result this loop has found.
+
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine is free of look-ahead, verified
+  to the cent; execution-latency cost is about -6.4 bps round-trip,
+  bounded above by ~17 bps, inside tested headroom; the October holdout
+  is protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin is
+  only 5.4% and that benchmark is survivorship-flattered; breadth still
+  fails, and the ensemble's **internal** breadth remains **unmeasured** —
+  now with **four** outside arrivals pointing at it, the fourth being the
+  ablation itself performed elsewhere, and an operator decision still
+  pending; **nothing is forward-validated and no return-based forward
+  verdict is statistically permitted before 2028-06-29**; the single
+  gate-4 pass holds only for a stopped search; the framework has exercised
+  exactly two gates, both defective. On-chain route open but unadvanced.
+  Operator-attention items dated 2026-08-25 are the four above, all
+  carried forward.
