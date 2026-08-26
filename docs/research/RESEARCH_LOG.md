@@ -1557,3 +1557,138 @@ cross-sectional momentum untested here → experiment 3.
   research question: the experiment they were asked to authorize has a
   published precedent, and that precedent's own numbers argue it cannot
   deliver a trustworthy answer.
+
+## 2026-08-26 — iteration 50 (P1 maintenance; iteration 48's failure to locate becomes a partial locate, through a third party rather than the paper)
+
+- **Zarattini, Pagani and Barbon, "Catching Crypto Trends; A Tactical
+  Approach for Bitcoin and Altcoins" — the lookback set is now on the
+  record, obtained from a review rather than from the paper.** SSRN
+  returned **HTTP 403** again today, for both the abstract page and the
+  `Delivery.cfm/5209907.pdf` link, so this is the **second consecutive
+  iteration** in which the full text was not retrievable and the second
+  time no claim is made about its tables. Two new sources were reachable.
+  (1) **RePEc/IDEAS `chf/rpseri/rp2580`** gives the verbatim abstract and
+  identifies it as **Swiss Finance Institute Research Paper 25-80**,
+  2025. (2) **CXO Advisory's review**
+  (`cxoadvisory.com/technical-trading/crypto-asset-trend-following-strategies`),
+  whose free portion covers the method but stops at "Subscribe to Keep
+  Reading" before any result, states the design: Donchian lookbacks of
+  **5, 10, 20, 30, 60, 90, 150, 250 or 360 days**; **long-only**; sample
+  **January 2010 through mid-March 2025** over **21,616 individual
+  crypto-assets**; transaction costs tested at **0.10%, 0.25% and
+  0.50%**; position sizing to a **25% target annualized volatility** with
+  leverage capped at **200%**. Everything in this item is **second-hand
+  and unverified against the paper's own text**, and the Sharpe, drawdown
+  and Bitcoin comparison remain unread — the review paywalls exactly the
+  numbers that would matter. **Testable-here: no.** Rotational top-20
+  selection, volatility targeting and 2x leverage are a different
+  portfolio construction from this program's unlevered equal-weight
+  BTC/ETH book, and P3 forbids a new single-market parameter family
+  regardless.
+
+- **A discrepancy inside that item, recorded rather than smoothed.** The
+  abstract says the dataset covers "all cryptocurrencies traded **since
+  2015**"; the review says the sample begins **January 2010**. Both are
+  quoted above as their sources state them. Nothing here resolves which
+  is right, and no number downstream should be taken as resting on either
+  date until the paper itself is read.
+
+- **What the paper's own abstract says about correlation, which is not
+  what this program needs.** The verbatim abstract's correlation clause
+  is "we investigate correlations between **crypto-focused
+  trend-following strategies and those applied to traditional asset
+  classes**". That is a cross-asset-class comparison, not a
+  **between-lookback** one. So even with today's partial locate, the
+  crypto measurement of internal ensemble redundancy is **still not shown
+  to exist in that paper**, and the ensemble-breadth question stays at
+  **four arrivals**, unchanged from 2026-08-25. This item is **not**
+  counted as a fifth arrival: it supplies structure, not a redundancy
+  number, and the two must not be pooled.
+
+- **A structural observation, now with a crypto-native and long-only
+  corroboration.** Iteration 49 recorded that this program's windows —
+  **10, 20, 55, 110**, verified today from the `config.windows` field of
+  the live rows in `data/runtime/shadow_trial88.jsonl` — all sit at or
+  below the 125d medium band of the liquid-futures ablation paper, with
+  no member near the 250d/500d long end that paper finds indispensable.
+  The closest **crypto**, **long-only**, **Donchian-ensemble** relative
+  reported above uses **nine** lookbacks spanning **5 to 360 days**: one
+  member faster than this program's fastest, and **three (150, 250, 360)
+  longer than its longest**. Span ratio **11x here against 72x there**.
+  This is the second independent structural datapoint pointing the same
+  way, and unlike the first it is in this program's own asset class and
+  direction. It is recorded as **structure only** — it is not evidence
+  that a longer window would help here, it is not a performance claim,
+  the surrounding construction differs in several ways at once, and it is
+  **not testable here** under P3.
+
+- **Bysik and Ślepaczuk, "Machine Learning-Based Bitcoin Trading Under
+  Transaction Costs: Evidence From Walk-Forward Forecasting" (arXiv
+  2606.00060, submitted 2026-05-19) — read from the arXiv abstract
+  page.** About **70,000 hourly** BTC-USDT observations, **2018-2026**,
+  XGBoost, LSTM and iTransformer in a **27-fold walk-forward** protocol.
+  Reported: all three models are positive gross "in selected
+  configurations"; naive sign-based strategies **fail once 10 bps costs
+  are imposed**; a cost-aware filter that trades only when forecast
+  magnitude exceeds a cost-based threshold "sharply reduces turnover and
+  restores profitability in selected configurations", the strongest
+  long-only XGBoost arm giving annualized returns above **65%** at Sharpe
+  above **one**. **Testable-here: no** — hourly, machine-learned, and a
+  new family under P3. Filed for one reason only: it is an outside
+  measurement that a cost-magnitude threshold is what separates a
+  gross-positive signal from a net-positive one, which is the same
+  mechanism this program prices at about -6.4 bps round-trip. Note the
+  selection language: "in selected configurations" appears twice, and the
+  abstract states no multiple-testing correction, so the 65% figure is a
+  **maximum over configurations**, not an expectation.
+
+- **Bui and Nguyen, "Systematic Trend-Following with Adaptive Portfolio
+  Construction: Enhancing Risk-Adjusted Alpha in Cryptocurrency Markets"
+  (arXiv 2602.11708, submitted 2026-02-12) — read from the arXiv abstract
+  page.** "AdaptiveTrend": trend-following on **6-hour** intervals with
+  monthly adaptive portfolio construction and asymmetric **long-short
+  70/30** allocation, spot, **150+ pairs**, a **36-month** window
+  **2022-2024**. Reported annualized Sharpe **2.41**, max drawdown
+  **-12.7%**, Calmar **3.18**, benchmarked against TSMOM and
+  equal-weighted buy-and-hold. Transaction-cost modelling is mentioned
+  inside robustness analyses with **no level stated in the abstract**.
+  **Testable-here: no** — 6-hour bars and long-short are both outside
+  product law. Recorded with the same skepticism this loop applies to its
+  own numbers: a Sharpe of 2.41 over a 36-month window that contains one
+  bear and one recovery, with **no deflated Sharpe, no multiple-testing
+  correction and no PBO mentioned in the abstract**, is a selected
+  maximum until shown otherwise.
+
+- **Mackic (2023) traced one level, still not read.** The "correlation of
+  only 0.17 between very fast and very slow trend models" quoted in the
+  liquid-futures ablation paper is its citation `bib.bib14`; a search
+  points to **Adi Mackic (Man AHL), "High-Level Statistics of
+  Trend-Following Speeds", 2023**, on Man Group data **January 1995 to
+  August 2022**. The **0.17 figure was not found in any primary source
+  today** — it exists here only as a secondary citation inside a paper
+  this loop has already read. Filed as a **pointer, not an arrival**, and
+  it must not be cited as a measurement until the primary is read. Two
+  further leads located and **not read**: CFA Institute, "Decoding CTA
+  Allocations by Trend Horizon" (2026-01-28), and arXiv **2507.15876**,
+  "Re-evaluating Short- and Long-Term Trend Factors in CTA Replication: A
+  Bayesian Graphical Approach".
+
+- **Search channel formally closed: recent-regime crypto trend versus
+  buy-and-hold.** Iteration 49 recorded a third consecutive empty pass on
+  this direction and wrote that it "should not be re-run every night".
+  Today the loop acted on that instead of restating it: the direction was
+  **not queried**, and it is now closed. **Reopen condition, fixed here in
+  advance so the decision is not made after seeing a result:** it reopens
+  only on a named source that measures a trend rule against its own
+  passive twin on a **stated sample with stated costs** — a dated,
+  citable measurement, not an outlook, forecast or price-prediction
+  article. Three consecutive empty passes cost real search budget;
+  closing the channel is the finding.
+
+- **Meta-observation — sixteenth consecutive pass with nothing runnable
+  under P1-only.** Nothing was run, no arm tested, no trial registered,
+  and the standing answer is unchanged in every clause. Two things did
+  change: a fact that iteration 48 had to file as a **failure to locate**
+  is now **partially located**, and one search channel is **closed** with
+  its reopen condition written down. Both are the kind of change the
+  convergence rule asks for — they shrink the search rather than grow it.
