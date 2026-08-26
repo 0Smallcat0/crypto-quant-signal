@@ -3884,3 +3884,251 @@
   exactly two gates, both defective. On-chain route open but unadvanced.
   Operator-attention items dated 2026-08-25 are the four above, all
   carried forward.
+
+## 2026-08-26 — iteration 50 (P1: sixth slot in the streak; iteration 48's "failure to locate" becomes a partial locate, and one search channel is closed for good)
+
+- **Step 0 convergence check, done first and in writing.**
+  1. **Current answer, unchanged:** measured on 2018-2025 and not
+     forward-validated, the timing rule adds real value **in crypto
+     only** — 4.70x its exposure-matched passive twin, and in its own
+     BTC/ETH universe it bought **both** return (14.26x vs 6.05x) and
+     drawdown (33.05% vs 80.99%). Against the naive thirteen-coin
+     alternative the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates**, and
+     the one gate-4 pass exists only for a stopped search.
+  2. **What this iteration moves.** Two things, both of which shrink the
+     search rather than grow it. First, it **closes a search channel**:
+     recent-regime crypto trend versus buy-and-hold returned nothing on
+     three consecutive passes, so today it was **not queried at all** and
+     is retired with a reopen condition written down in advance. Second,
+     it converts iteration 48's recorded **failure to locate** into a
+     **partial locate** — the closest published crypto relative of this
+     program's rule now has its lookback set, direction, sample and cost
+     grid on the record, obtained from RePEc and a third-party review
+     because SSRN returned **HTTP 403 for the second consecutive
+     iteration**. That partial locate says something about **structure**
+     and, importantly, still says **nothing** about redundancy.
+  3. **Why it is not sprawl.** No new script, no new research document,
+     no trial, no backtest, no gate report, no arm run, no
+     pre-registration written or touched, no window family opened. The
+     web pass is contract-mandated (step 2, "never skip"). The only
+     computation performed is the recorder consistency check on today's
+     new row plus one division against the MinTRL horizon, both of which
+     read numbers already on disk and neither of which produces a
+     performance quantity.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 32 (31 real + seed) | 2026-08-25, equity 1093.699703181384896489564028, exposure `{BTC: 0.75, ETH: 1}`, closes 78539.14 / 2442.64 | OK — +1 row since iteration 49 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 32 (31 real + seed) | 2026-08-25, equity 1136.842876353732844457158380, exposure `{BTC: 0.75, ETH: 1}` | OK — +1 row since iteration 49 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 6 (5 real + seed) | 2026-08-21, close 104.65, exposure 0.5, `WINDOWS_ON_2_OF_4` | OK — weekly; unchanged is correct, next run 2026-08-29 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 7 (6 real + seed) | 2026-08-21, close 423.359985, exposure 0.75, `WINDOWS_ON_3_OF_4` | OK — same weekly task |
+
+  Both crypto series now span 2026-07-24..2026-08-25 with **exactly one
+  date gap**, the pair 2026-08-08 to 2026-08-10, i.e. the missing date is
+  **2026-08-09** — the permanently lost row from iteration 42, unchanged
+  and still left as a hole. Scheduler state read during this iteration:
+  `CryptoShadowTrial88` last ran **2026-08-26 20:53:47** result 0, next
+  2026-08-27 08:20; `TwShadow0050` last ran 2026-08-22 09:40:00 result 0,
+  next 2026-08-29 09:40; both `Ready`, both `NumberOfMissedRuns 0`.
+  `CryptoQuantDailySignalCycle` (the live 08:05 runtime, read but not
+  touched by research) last ran 2026-08-26 20:53:47 result 0, next
+  2026-08-27 08:05. `docs/reports/research/holdout_lock.json` re-verified:
+  `spent` still `false`.
+
+- **A real duplicate invocation happened today, and the recorder refused
+  it — the first time this loop has been able to say so from a same-day
+  log.** The **08:20 scheduled** run appended the 2026-08-25 rows
+  (`data/runtime/shadow_runs/shadow_20260826_082001.log`: "trial88:
+  appended 2026-08-25", "trial118: appended 2026-08-25", `exit=0
+  finished=2026-08-26T08:20:05.3640268+08:00`). Then at **20:53** the
+  task fired **again** — `Get-ScheduledTask` confirms
+  `CryptoShadowTrial88` carries a daily trigger **plus**
+  `MSFT_TaskLogonTrigger` and `MSFT_TaskSessionStateChangeTrigger` with
+  `StartWhenAvailable=True`, the belt-and-braces set added by iteration
+  43 — and the second run wrote **no row**:
+  `shadow_20260826_205348.log` reads "trial88: already recorded through
+  2026-08-25", "trial118: already recorded through 2026-08-25", `exit=0`.
+  Line counts confirm it: 32 and 32, not 33. The idempotence argument
+  iteration 43 used to justify those extra triggers is therefore
+  **observed working against a real duplicate fire**, not merely asserted.
+  Note what this does **not** license: the same triggers on
+  `CryptoResearchLoop` would still be unsafe, because a research
+  iteration is not idempotent — that distinction, drawn in iteration 43,
+  stands unchanged.
+
+- **Recorder consistency check on the new row, which passes exactly.**
+  From 2026-08-24 to 2026-08-25 BTC closed **-0.574243%** (78992.75 to
+  78539.14) and ETH **-1.598108%** (2482.31 to 2442.64). Applying the
+  exposures recorded on the 08-24 row — BTC 0.75, ETH 1.00, equal weight
+  across the two symbols — gives a predicted book move of
+  **-1.014395071695523%**; trial 88 moved **-1.014395071695523%** and
+  trial 118 moved **-1.014395071695523%**, agreeing with the prediction
+  to **-4.7e-27 pp** and **+2.3e-26 pp** respectively. This is a check of
+  the recorder against its own inputs, not a performance statement. The
+  two books moved identically because they held identical exposures on
+  08-24; **no cross-track structural statistic is computed today**,
+  because operator-attention item (d) below is still open and, pending a
+  rule, the loop does less rather than more. That is now the **third**
+  consecutive iteration of abstention.
+
+- **Where the only unbiased evidence actually stands, stated as a
+  fraction for once.** The crypto tracks hold **31 real forward rows**
+  against the **706-day** MinTRL fixed in iteration 25 — **4.39%** of the
+  way to the date at which a return-based forward verdict first becomes
+  statistically permissible (**2028-06-29**). This is arithmetic on rows
+  already counted above, and it is recorded because it is the honest
+  scale of the wait: at one row per day, the remaining 675 rows are the
+  binding constraint on this entire program, and no amount of analysis
+  shortens them.
+
+- **Slot ledger over the thirteen scheduled 21:37 slots 08-14..08-26,
+  each classified from its own log.** Confirmed complete (`exit=0`),
+  **eight**: 08-15, 08-16, 08-19, 08-21, 08-22, 08-23, 08-24, and 08-25
+  (`exit=0 finished=2026-08-25T21:49:00.6718758+08:00`, which converts
+  iteration 49's in-flight fifth into a confirmed one). Losses, **four**,
+  all operator-side and none a repo defect: 08-14 `exit=1` (auth), 08-17
+  `exit=1` (weekly account usage limit, 218 bytes), 08-18 zero bytes
+  (operator restart), 08-20 `started=` with no `exit=` (console-control
+  kill, 43 bytes). In flight, **one**: 08-26, `started=2026-08-26T21:37:
+  02.0330289+08:00`, 43 bytes. That makes the completed streak **five
+  (08-21..08-25)** with today the sixth in flight. **A reading caution
+  for whoever audits this next:** today's in-flight log and the 08-20
+  killed log are **both 43 bytes and both "started= with no exit="** —
+  the start marker distinguishes *started* from *never started*, but it
+  does **not** by itself distinguish *interrupted* from *still running*.
+  Only the file's age relative to the reading time does. Do not classify
+  08-26 from size alone.
+
+- **Step 2 (web research): the closest crypto relative gives up its
+  design, not its results, and one channel is retired.** Nine items filed
+  in `RESEARCH_LOG.md` under iteration 50. The substantive ones:
+
+  - **Zarattini, Pagani and Barbon, "Catching Crypto Trends" — partially
+    located.** SSRN 403 again (second consecutive iteration), so the full
+    text is **still unread**. Reachable instead: **RePEc/IDEAS
+    `chf/rpseri/rp2580`**, which supplies the verbatim abstract and the
+    identifier **Swiss Finance Institute Research Paper 25-80**; and
+    **CXO Advisory's review**, whose free portion states the design and
+    then paywalls every result. Design as that review states it: Donchian
+    lookbacks of **5, 10, 20, 30, 60, 90, 150, 250 or 360 days**,
+    **long-only**, **January 2010 to mid-March 2025**, **21,616**
+    crypto-assets, costs tested at **0.10% / 0.25% / 0.50%**, sizing to
+    **25% target annualized volatility** capped at **200%** leverage.
+    All second-hand, none verified against the paper.
+  - **The redundancy question is not advanced by it, and is not recorded
+    as if it were.** The abstract's correlation clause is "correlations
+    between crypto-focused trend-following strategies and those applied
+    to traditional asset classes" — **cross-asset-class**, not
+    **between-lookback**. So the ensemble-breadth question stays at
+    **four arrivals**, unchanged from 2026-08-25, and today's item is
+    **explicitly not counted as a fifth**.
+  - **What it does advance is the structural observation, now
+    corroborated inside this program's own asset class and direction.**
+    This program's windows are **10, 20, 55, 110** (verified today from
+    `config.windows` on the live rows, not from memory). The closest
+    crypto, long-only, Donchian-ensemble relative uses **nine** lookbacks
+    from **5 to 360 days** — one faster than our fastest and **three
+    (150, 250, 360) longer than our longest**; span **11x here against
+    72x there**. Iteration 49's liquid-futures observation pointed the
+    same way. Two independent structural datapoints now say this
+    ensemble sits at the **narrow, short end** of what the literature
+    builds. Recorded as **structure only**: not a performance claim, not
+    evidence a longer window would help here, and **not testable** under
+    P3.
+  - **A discrepancy left standing rather than smoothed:** the abstract
+    says "all cryptocurrencies traded since **2015**", the review says
+    the sample starts **January 2010**. Both quoted as their sources
+    state them; neither adopted.
+  - **Two further outside crypto results, both filed with their
+    selection language intact.** Bysik and Ślepaczuk (arXiv
+    **2606.00060**, 2026-05-19): hourly BTC-USDT, 2018-2026, 27-fold
+    walk-forward; naive sign strategies **fail at 10 bps**, a
+    cost-magnitude threshold restores profitability "in selected
+    configurations", best long-only arm >**65%** annualized at Sharpe
+    >**1**. Bui and Nguyen (arXiv **2602.11708**, 2026-02-12):
+    6-hour bars, long-short 70/30, 150+ pairs, 2022-2024, Sharpe
+    **2.41**, drawdown **-12.7%**, Calmar **3.18**. **Both
+    testable-here: no** — hourly/6-hour and, for the second, long-short,
+    all outside product law. Neither abstract mentions a deflated
+    Sharpe, a multiple-testing correction or a PBO, so both headlines
+    are **selected maxima until shown otherwise**.
+  - **Mackic (2023), the 0.17 fast-versus-slow correlation, traced but
+    not read.** It is citation `bib.bib14` of the liquid-futures paper;
+    a search points to **Adi Mackic (Man AHL), "High-Level Statistics of
+    Trend-Following Speeds", 2023**, on Man Group data 1995-01 to
+    2022-08. **The number was not found in any primary source today**, so
+    it is filed as a **pointer, not an arrival**, and may not be cited as
+    a measurement.
+  - **Channel closed: recent-regime crypto trend versus buy-and-hold.**
+    Three consecutive empty passes; today it was **not queried**.
+    **Reopen condition fixed in advance:** a named source measuring a
+    trend rule against its own passive twin on a **stated sample with
+    stated costs** — a citable measurement, not an outlook or a price
+    forecast.
+
+- **Operator-attention items.** All four carried forward; **no new one is
+  added today**. (a) The ensemble-breadth question is still with the
+  operator: *should a leave-one-window-out ablation of 10/20/55/110 be
+  run, knowing it costs an N, is a P3-forbidden family arm, and would
+  very likely destroy trial 118's single gate-4 pass?* Today's material
+  does not change the recommendation-free framing, but it sharpens one
+  side of it: the **redundancy** number is still nowhere in the
+  literature for a crypto ensemble, while the **structural** point that
+  this ensemble is short and narrow now has a second, crypto-native
+  corroboration. Those pull in opposite directions — the first says our
+  ablation cannot be replaced by a citation, the second says the
+  interesting arm might be a **longer** window rather than a dropped one,
+  and that is a *new family*, which P3 forbids outright. The decision
+  remains the operator's; the loop proposes nothing. (b) The research
+  loop still runs in a **visible console window**; task definition
+  unchanged, choice stays with the operator. (c) The weekly account usage
+  limit and the auth expiries are account-level matters only the operator
+  controls. (d) Should cross-track structural comparisons of the shadow
+  files be brought explicitly under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still unanswered; today the
+  loop **abstained** from that class of comparison for the third
+  consecutive iteration.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken** over 81
+  files and 325 dependencies; `pytest -m "not network"` **383 passed** in
+  49.82s.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false`, no research document created, no diagnostic script written, no
+  window-ablation arm run, no long-window family opened despite today's
+  structural finding pointing at one, no cross-track structural statistic
+  computed while item (d) is open, no scheduled-task definition altered,
+  no `configs/runtime/` or live-runtime file touched, no shadow row
+  fabricated, and the 2026-08-09 hole left as a hole. The CXO Advisory
+  design figures were **not** adopted as facts about the Zarattini paper
+  — they are labelled second-hand at every point of use — and the
+  2010-versus-2015 discrepancy inside them was recorded rather than
+  resolved by preference.
+
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine is free of look-ahead, verified
+  to the cent; execution-latency cost is about -6.4 bps round-trip,
+  bounded above by ~17 bps, inside tested headroom; the October holdout
+  is protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin is
+  only 5.4% and that benchmark is survivorship-flattered; breadth still
+  fails, and the ensemble's **internal** breadth remains **unmeasured** —
+  four outside arrivals point at it, none of them crypto, and the closest
+  crypto relative is now known **not** to contain the measurement, so if
+  the operator wants that number it must be run rather than cited;
+  **nothing is forward-validated and no return-based forward verdict is
+  statistically permitted before 2028-06-29**, a date the tracks are
+  **4.39%** of the way to; the single gate-4 pass holds only for a
+  stopped search; the framework has exercised exactly two gates, both
+  defective. On-chain route open but unadvanced. Operator-attention items
+  dated 2026-08-26 are the four above, all carried forward.
