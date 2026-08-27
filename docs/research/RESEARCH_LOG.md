@@ -1692,3 +1692,112 @@ cross-sectional momentum untested here → experiment 3.
   is now **partially located**, and one search channel is **closed** with
   its reopen condition written down. Both are the kind of change the
   convergence rule asks for — they shrink the search rather than grow it.
+
+## 2026-08-27 — iteration 51 (P1 maintenance; two "new" sources on the open operator question turn out to be the same authors, and the arrival tally is an overcount)
+
+- **Benhamou, Ohana, Etienne, Guez, Setrouk and Jacquot,
+  "Re-evaluating Short- and Long-Term Trend Factors in CTA Replication:
+  A Bayesian Graphical Approach" (arXiv 2507.15876, submitted 17 July
+  2025).** Read from the arXiv HTML full text. Setup: short-term trend
+  (STT) built on lookbacks **n ∈ {10, 20, 40, 60}** days, long-term
+  trend (LTT) on **n = 500** days, decomposed against a market beta
+  factor with a Bayesian graphical model; primary sample **January 2010
+  to June 2025**, with robustness windows June 2020–June 2025, January
+  2010–December 2015 and January 2016–December 2020. Table 3 (daily
+  sampling), Sharpe ratio row as printed: **LTT 0.39, MKT 0.40, STT+LTT
+  0.40, STT 0.20, MKT+STT+LTT 0.45, MKT+STT 0.49, SG CTAT 0.03**.
+  Verbatim: *"Combining STT and LTT raises the Sharpe/MaxDD efficiency
+  to 2.37, reflecting the asymmetric payoff benefits of mixing fast and
+  slow trend signals."*
+
+  **What that table is, read plainly.** Adding an entire fast band
+  (four lookbacks, 10 to 60 days) on top of a 500-day slow model moved
+  the Sharpe from **0.39 to 0.40** — **+0.01** — and plain market beta
+  alone scored **0.40** as well. The paper's own case for the blend
+  therefore rests on the **Sharpe/MaxDD** ratio (2.37), not on Sharpe.
+  This is the second measurement of *what a horizon band is worth on top
+  of an existing ensemble* that this loop has obtained; the first was
+  iteration 49's leave-one-out arm at **+0.03** full-sample Sharpe (0.74
+  to 0.77) while losing in two of four subperiods. Both are in the
+  hundredths. **Testable-here: no** — multi-asset liquid futures,
+  long-short, CTA replication rather than absolute return, no crypto in
+  the universe.
+
+  **The correlation this loop wanted is not in this paper either.** It
+  does **not** print the correlation between the STT and LTT factors
+  themselves. What it prints (Table 2) is correlation *to the SG CTA
+  benchmark*: **STT 0.65, LTT 0.81, STT+LTT 0.84**. **A number was
+  discarded before it was written anywhere durable:** a first
+  summarizing read offered "low overlap, 0.24–0.50 between individual
+  factor strategies"; a second targeted read found no such printed
+  figure, so it is **not recorded** — the same discipline applied to the
+  retracted 0.36→0.40 figure in iteration 46.
+
+- **CFA Institute, Enterprising Investor, "Decoding CTA Allocations by
+  Trend Horizon" (28 January 2026).** Read. Byline verbatim: **"Eric
+  Benhamou, PhD", "Jean-Jacques Ohana, CFA", "Béatrice Guez", "Thomas
+  Jacquot, CFA"**. Five mono-horizon sleeves at **20, 60, 125, 250 and
+  500 trading days**, grouped fast (20–60), medium (~125) and slow
+  (250–500); sample stated only as "the last five years" against the SG
+  CTA Trend Index, i.e. roughly 2021–2026, with **no start date given**.
+  Correlations reported are to the index, not between sleeves: verbatim,
+  *"The 125-day and 250-day sleeves have the highest correlations with
+  the index (around 82%). The 20-day sleeve is the least correlated,
+  with a correlation of about 66%."* On overlap, verbatim: *"Fast and
+  slow horizons contribute complementary information: Fast trend helps
+  capture sharp reversals and shorter-lived regimes. Slow trend anchors
+  the portfolio to longer-term drifts and tends to stabilize drawdown
+  behavior."* **Testable-here: no.**
+
+- **The finding of the day, and it is a subtraction.** Both items above
+  are by **the same research group as an arrival already on this
+  program's record**. arXiv 2510.23150v2 — the leave-one-horizon-out
+  ablation read in full in iteration 49 — is authored by **Etienne,
+  Ohana, Benhamou, Guez, Setrouk and Jacquot**; arXiv 2507.15876 is
+  **Benhamou, Ohana, Etienne, Guez, Setrouk and Jacquot**, the same six
+  names; and the CFA Institute post is four of those six. Affiliation
+  confirms it: **Ai For Alpha** (Alban Etienne), with Eric Benhamou also
+  at Université Paris Dauphine-PSL. The CFA post uses **exactly** the
+  horizon set H = {20, 60, 125, 250, 500} of arXiv 2510.23150. So
+  today's two sources are **not two new arrivals** on the ensemble-breadth
+  question — they are the same strand, one publication earlier and one
+  practitioner restatement. **Independence added today: zero.** They are
+  filed as corroboration inside an existing arrival.
+
+- **Correction to this program's own tally, made in place.** The
+  ensemble-breadth question has been described since iteration 49's
+  closing paragraph, and throughout iteration 50, as having **four**
+  outside arrivals. **That is an overcount, and iteration 49's own body
+  text said so correctly before its own closing paragraph contradicted
+  it** ("stays at three arrivals, all liquid-futures"). The distinct
+  sources are three: (1) **arXiv 2607.19497**, Sepp and Lucic, 21 Jul
+  2026; (2) **arXiv 2510.23150v2**, Etienne et al. (Ai For Alpha), 28
+  Oct 2025; (3) **arXiv 2504.10914v15**, Valeyre, 12 Aug 2026. The
+  "fourth" counted in iteration 49's closing line — "the ablation itself
+  performed elsewhere" — **is source (2) again**, first logged from its
+  abstract in iteration 46 and then re-logged after being read in full.
+  Reading a paper twice is not two arrivals. **Corrected count: three
+  distinct sources from three groups**, which is exactly the escalation
+  threshold rather than one above it. The escalation itself stands
+  unchanged — three was always the trigger — so the operator decision
+  does not move; only the size of the evidence behind it does, and it
+  moves **down**.
+
+- **Structural position, restated and not inflated.** This program's
+  windows are **10, 20, 55, 110**. Ai For Alpha's ensemble spans
+  **20 to 500** days and its own fast band stops at **60**; the closest
+  published crypto relative (iteration 50, second-hand via CXO Advisory)
+  spans **5 to 360**. Our entire ensemble sits at or below the 125-day
+  sleeve of the first and below the median lookback of the second. That
+  is **two** independent structural datapoints, the same two iteration
+  50 claimed — today's additions do not make it three, because they are
+  the same group. Recorded as **structure only**: not a performance
+  claim, not evidence a longer window would help here, and pointing at a
+  **longer-window family**, which **P3 forbids outright**.
+
+- **Meta-observation — seventeenth consecutive pass with nothing
+  runnable under P1-only.** Nothing was run, no arm tested, no trial
+  registered, and the standing answer is unchanged in every clause. What
+  changed is the record's honesty about its own evidence: one tally
+  corrected downward, one apparent pair of new arrivals reclassified to
+  zero, and one summarizing-fetch number discarded rather than kept.
