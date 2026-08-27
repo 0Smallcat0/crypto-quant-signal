@@ -3877,7 +3877,7 @@
   only 5.4% and that benchmark is survivorship-flattered; breadth still
   fails, and the ensemble's **internal** breadth remains **unmeasured** —
   now with **four** outside arrivals pointing at it, the fourth being the
-  ablation itself performed elsewhere, and an operator decision still
+  ablation itself performed elsewhere, [**CORRECTED 2026-08-27, iteration 51 — three, not four. The "fourth" is arXiv 2510.23150v2 counted a second time: it was already logged from its abstract in iteration 46 as one of the two opening arrivals, then re-logged in iteration 49 after being read in full. Reading a paper twice is not two arrivals. Iteration 49's own body text said "three arrivals, all liquid-futures" and this closing paragraph contradicted it. Distinct sources: arXiv 2607.19497 (Sepp and Lucic), arXiv 2510.23150v2 (Etienne et al., Ai For Alpha), arXiv 2504.10914v15 (Valeyre). Three groups, which is exactly the escalation threshold, not one above it. The escalation stands; only the evidence behind it shrinks.**] and an operator decision still
   pending; **nothing is forward-validated and no return-based forward
   verdict is statistically permitted before 2028-06-29**; the single
   gate-4 pass holds only for a stopped search; the framework has exercised
@@ -4024,7 +4024,11 @@
     to traditional asset classes" — **cross-asset-class**, not
     **between-lookback**. So the ensemble-breadth question stays at
     **four arrivals**, unchanged from 2026-08-25, and today's item is
-    **explicitly not counted as a fifth**.
+    **explicitly not counted as a fifth**. [**CORRECTED 2026-08-27,
+    iteration 51 — the count inherited here is three, not four; see the
+    correction marker in iteration 49's closing paragraph. Today's
+    abstention from counting a fifth was correct for its own reason and
+    is unaffected.**]
   - **What it does advance is the structural observation, now
     corroborated inside this program's own asset class and direction.**
     This program's windows are **10, 20, 55, 110** (verified today from
@@ -4123,7 +4127,9 @@
   dividend treatment; against the naive 13-coin alternative the margin is
   only 5.4% and that benchmark is survivorship-flattered; breadth still
   fails, and the ensemble's **internal** breadth remains **unmeasured** —
-  four outside arrivals point at it, none of them crypto, and the closest
+  four outside arrivals point at it [**CORRECTED 2026-08-27, iteration 51 —
+  three distinct sources from three groups; the tally double-counted arXiv
+  2510.23150v2.**], none of them crypto, and the closest
   crypto relative is now known **not** to contain the measurement, so if
   the operator wants that number it must be run rather than cited;
   **nothing is forward-validated and no return-based forward verdict is
@@ -4132,3 +4138,242 @@
   stopped search; the framework has exercised exactly two gates, both
   defective. On-chain route open but unadvanced. Operator-attention items
   dated 2026-08-26 are the four above, all carried forward.
+
+## 2026-08-27 — iteration 51 (P1: seventh slot in flight; two "new" sources on the open operator question are the same authors as an existing one, and the arrival tally is corrected downward)
+
+- **Step 0 convergence check, done first and in writing.**
+  1. **Current answer, unchanged:** measured on 2018-2025 and not
+     forward-validated, the timing rule adds real value **in crypto
+     only** — 4.70x its exposure-matched passive twin, and in its own
+     BTC/ETH universe it bought **both** return (14.26x vs 6.05x) and
+     drawdown (33.05% vs 80.99%). Against the naive thirteen-coin
+     alternative the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates**, and
+     the one gate-4 pass exists only for a stopped search.
+  2. **What this iteration moves.** It shrinks the evidence base under
+     the one decision sitting with the operator, and does so in two
+     independent ways. First, the two sources found today — arXiv
+     **2507.15876** and the CFA Institute post of 28 Jan 2026 — would
+     naively have been logged as a fifth and sixth arrival on the
+     ensemble-breadth question. They are by the **same six authors**
+     (Ai For Alpha) as arXiv **2510.23150v2**, which is already an
+     arrival, and the CFA post reuses that paper's exact horizon set
+     {20, 60, 125, 250, 500}. Independence added: **zero**. Second, and
+     larger, the standing tally of **four** arrivals is itself an
+     **overcount**: the "fourth" is arXiv 2510.23150v2 counted a second
+     time, once from its abstract in iteration 46 and again after being
+     read in full in iteration 49. **Corrected to three distinct sources
+     from three groups**, in place, in both iterations that carry the
+     wrong number. The escalation to the operator stands — three was
+     always its trigger — but the operator was told the question had one
+     more independent source behind it than it does.
+  3. **Why it is not sprawl.** No new script, no new research document,
+     no trial, no backtest, no gate report, no arm run, no
+     pre-registration written or touched, no window family opened. The
+     web pass is contract-mandated (step 2, "never skip"). The only
+     computation performed is the recorder consistency check on today's
+     new row plus one division against the MinTRL horizon, both of which
+     read numbers already on disk and neither of which produces a
+     performance quantity. The three edits to prior entries are
+     **corrections of this program's own bookkeeping**, in the
+     bracketed in-place form iteration 48 established, and every one of
+     them makes a claim smaller.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 33 (32 real + seed) | 2026-08-26, equity 1110.589816469934375057190868, exposure `{BTC: 0.75, ETH: 1}`, closes 79023.75 / 2506.78 | OK — +1 row since iteration 50 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 33 (32 real + seed) | 2026-08-26, equity 1154.399253956324671407399122, exposure `{BTC: 0.75, ETH: 1}` | OK — +1 row since iteration 50 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 6 (5 real + seed) | 2026-08-21, close 104.65, exposure 0.5, `WINDOWS_ON_2_OF_4` | OK — weekly; unchanged is correct, next run 2026-08-29 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 7 (6 real + seed) | 2026-08-21, close 423.359985, exposure 0.75, `WINDOWS_ON_3_OF_4` | OK — same weekly task |
+
+  Both crypto series now span 2026-07-24..2026-08-26 with **exactly one
+  date gap**, the pair 2026-08-08 to 2026-08-10, i.e. the missing date is
+  **2026-08-09** — the permanently lost row from iteration 42, unchanged
+  and still left as a hole. Scheduler state read during this iteration:
+  `CryptoShadowTrial88` last ran **2026-08-27 15:19:37** result 0, next
+  2026-08-28 08:20; `TwShadow0050` last ran 2026-08-22 09:40:00 result 0,
+  next 2026-08-29 09:40; both `Ready`, both `NumberOfMissedRuns 0`.
+  `CryptoQuantDailySignalCycle` (the live 08:05 runtime, read but not
+  touched by research) last ran 2026-08-27 15:19:37 result 0, next
+  2026-08-28 08:05. `CryptoResearchLoop` reports `Running` with
+  `LastTaskResult 267009` (`STILL_ACTIVE`) — this iteration in flight.
+  `docs/reports/research/holdout_lock.json` re-verified: `spent` still
+  `false`. At 32 real rows the tracks are **4.53%** of the way to the
+  706-row MinTRL horizon of 2028-06-29.
+
+- **A duplicate invocation was refused again today — the second
+  consecutive day this can be shown from same-day logs.** The **08:20**
+  scheduled run appended the 2026-08-26 rows
+  (`data/runtime/shadow_runs/shadow_20260827_082001.log`: "trial88:
+  appended 2026-08-26", "trial118: appended 2026-08-26", `exit=0
+  finished=2026-08-27T08:20:04.7182205+08:00`). At **15:19** the task
+  fired again — the `MSFT_TaskSessionStateChangeTrigger` set added by
+  iteration 43 — and wrote **no row**: `shadow_20260827_151937.log`
+  reads "trial88: already recorded through 2026-08-26", "trial118:
+  already recorded through 2026-08-26", `exit=0
+  finished=2026-08-27T15:19:42.4131561+08:00`. Line counts confirm it:
+  33 and 33, not 34. Two observed refusals on two consecutive days is
+  weak evidence but it is evidence, and it is the kind iteration 43's
+  argument needed. The distinction drawn there still stands: the same
+  triggers on `CryptoResearchLoop` would remain unsafe, because a
+  research iteration is not idempotent.
+
+- **Recorder consistency check on the new row, which passes exactly.**
+  From 2026-08-25 to 2026-08-26 BTC closed **+0.617030%** (78539.14 to
+  79023.75) and ETH **+2.625847%** (2442.64 to 2506.78). Applying the
+  exposures recorded on the 08-25 row — BTC 0.75, ETH 1.00, equal weight
+  across the two symbols — gives a predicted book move of **+1.544310%**,
+  and both books moved **+1.544310%**, a difference of **0.0000000000pp**.
+  This is a check of the recorder against its own inputs, not a
+  performance statement. The two books moved identically because they
+  held identical exposures on 08-25; **no cross-track structural
+  statistic is computed today**, because operator-attention item (d)
+  below is still open and, pending a rule, the loop does less rather than
+  more.
+
+- **Slot ledger over the fourteen scheduled 21:37 slots 08-14..08-27,
+  every one re-classified today from its own log rather than carried.**
+  Confirmed complete (`exit=0`), **nine**: 08-15, 08-16, 08-19, 08-21,
+  08-22, 08-23, 08-24, 08-25 and 08-26
+  (`exit=0 finished=2026-08-26T21:48:45.0118775+08:00`, 5960 bytes,
+  which converts iteration 50's in-flight sixth into a confirmed one).
+  Losses, **four**, all operator-side and none a repo defect: 08-14
+  `exit=1` (auth), 08-17 `exit=1` (weekly account usage limit, 218
+  bytes), 08-18 zero bytes (operator restart), 08-20 `started=` with no
+  `exit=` (console-control kill, 43 bytes). In flight, **one**: 08-27,
+  `started=2026-08-27T21:37:02.2347665+08:00`, 43 bytes. The completed
+  streak is therefore **six (08-21..08-26)** with today the seventh in
+  flight. Iteration 50's reading caution applies again and was applied:
+  today's in-flight log and the 08-20 killed log are both 43 bytes and
+  both `started=` with no `exit=`, and only the file's age relative to
+  the reading time separates them.
+
+- **Step 2 (web research): the two most promising unread leads were
+  read, and both collapsed into a source already on the record.** Six
+  items filed in `RESEARCH_LOG.md` under iteration 51. The substantive
+  ones:
+
+  - **arXiv 2507.15876 (Benhamou, Ohana, Etienne, Guez, Setrouk,
+    Jacquot; 17 Jul 2025) read in full from the arXiv HTML.** Short-term
+    trend on lookbacks **{10, 20, 40, 60}** days, long-term trend on
+    **500** days, sample **Jan 2010 – Jun 2025**. Table 3 Sharpe row as
+    printed: **LTT 0.39, MKT 0.40, STT+LTT 0.40, STT 0.20,
+    MKT+STT+LTT 0.45, MKT+STT 0.49, SG CTAT 0.03**. Read plainly:
+    adding an entire fast band on top of a 500-day slow model moved
+    Sharpe **0.39 to 0.40**, and plain market beta alone also scored
+    0.40; the paper's case for the blend rests on **Sharpe/MaxDD =
+    2.37**, quoted verbatim, not on Sharpe. This is the **second**
+    measurement this loop holds of what a horizon band is worth on top
+    of an existing ensemble — the first being iteration 49's
+    leave-one-out arm at **+0.03** full-sample Sharpe while losing in
+    two of four subperiods. **Both are in the hundredths.**
+  - **The between-horizon correlation is absent here too.** The paper
+    reports correlation *to the SG CTA benchmark* (STT 0.65, LTT 0.81,
+    blend 0.84), not between the factors. A summarizing first read
+    offered a "0.24-0.50 overlap" figure; a targeted second read found
+    no such printed number, so it is **discarded, not recorded** — the
+    same handling iteration 46 gave its retracted 0.36-to-0.40 figure.
+  - **CFA Institute, "Decoding CTA Allocations by Trend Horizon" (28
+    Jan 2026) read.** Five mono-horizon sleeves at **20, 60, 125, 250,
+    500** trading days; sample stated only as "the last five years"
+    with **no start date**; correlations given are sleeve-to-index
+    (125d and 250d ~82%, 20d ~66%), not sleeve-to-sleeve.
+  - **Why both are subtractions rather than additions.** Byline check:
+    arXiv 2510.23150v2 is **Etienne, Ohana, Benhamou, Guez, Setrouk,
+    Jacquot**; arXiv 2507.15876 is the **same six names**; the CFA post
+    is **four of those six** (Benhamou, Ohana, Guez, Jacquot).
+    Affiliation **Ai For Alpha** (Alban Etienne), with Benhamou also at
+    Université Paris Dauphine-PSL. The CFA post's horizon set is
+    **identical** to arXiv 2510.23150v2's. One group, three
+    publications — filed as corroboration inside an existing arrival,
+    **not** as new arrivals.
+  - **Tally corrected in place, downward, in both entries that carry
+    it.** Distinct sources on the ensemble-breadth question are
+    **three**: arXiv **2607.19497** (Sepp and Lucic, 21 Jul 2026),
+    arXiv **2510.23150v2** (Etienne et al., Ai For Alpha, 28 Oct 2025),
+    arXiv **2504.10914v15** (Valeyre, 12 Aug 2026). The "fourth" in
+    iteration 49's closing paragraph is source two counted twice —
+    logged from its abstract in iteration 46, re-logged after a full
+    read in iteration 49. **Iteration 49's own body text had it right**
+    ("three arrivals, all liquid-futures") and its closing paragraph
+    contradicted it; iteration 50 inherited the closing paragraph.
+  - **Structural position, restated without inflation.** Our windows
+    **10, 20, 55, 110** sit at or below Ai For Alpha's 125-day sleeve
+    and below the median lookback of the 5-to-360 crypto relative from
+    iteration 50. That remains **two** independent structural
+    datapoints, the same two iteration 50 claimed — today's material
+    does **not** make it three. Structure only: not a performance
+    claim, not evidence a longer window would help here, and pointing
+    at a longer-window family that **P3 forbids outright**.
+  - **The closed channel stayed closed.** Recent-regime crypto trend
+    versus buy-and-hold was **not queried**, per the reopen condition
+    fixed in iteration 50. SSRN was not retried today either; the
+    Zarattini paper remains second-hand and unread, unchanged.
+
+- **Operator-attention items.** All four carried forward; **no new one
+  is added today**, but item (a) is **restated with a corrected
+  number**. (a) The ensemble-breadth question is still with the
+  operator: *should a leave-one-window-out ablation of 10/20/55/110 be
+  run, knowing it costs an N, is a P3-forbidden family arm, and would
+  very likely destroy trial 118's single gate-4 pass?* The correction
+  that matters for the decision: it rests on **three** outside sources
+  from **three** groups, not four, and the strand that looks deepest —
+  three Ai For Alpha publications — is **one** group, so its apparent
+  weight must not be read as replication. Against that, the second
+  incremental-value number arrived today and points the same way as the
+  first: **+0.01 and +0.03 Sharpe**, both from adding or removing a
+  horizon band, both in the hundredths, both without multiple-testing
+  correction. The loop still proposes nothing and recommends nothing.
+  (b) The research loop still runs in a **visible console window**; task
+  definition unchanged, choice stays with the operator. (c) The weekly
+  account usage limit and the auth expiries are account-level matters
+  only the operator controls. (d) Should cross-track structural
+  comparisons of the shadow files be brought explicitly under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still unanswered; today the
+  loop **abstained** from that class of comparison for the fourth
+  consecutive iteration.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken**;
+  `pytest -m "not network"` **383 passed**, 1 warning, in 108.57s.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false`, no research document created, no diagnostic script written,
+  no window-ablation arm run, no long-window family opened despite the
+  structural finding pointing at one, no cross-track structural
+  statistic computed while item (d) is open, no scheduled-task
+  definition altered, no `configs/runtime/` or live-runtime file
+  touched, no shadow row fabricated, and the 2026-08-09 hole left as a
+  hole. The "0.24-0.50 overlap" figure surfaced by a summarizing fetch
+  was **not** recorded, because a targeted re-read did not find it
+  printed. The three edits to prior LOOP_LOG entries are bracketed
+  in-place corrections of this program's own arrival tally, in the form
+  iteration 48 established; **no recorded measurement, registry row or
+  gate output was altered.**
+
+- **Standing answer restated, unchanged in every clause:** timing works
+  in crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine is free of look-ahead, verified
+  to the cent; execution-latency cost is about -6.4 bps round-trip,
+  bounded above by ~17 bps, inside tested headroom; the October holdout
+  is protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin is
+  only 5.4% and that benchmark is survivorship-flattered; breadth still
+  fails, and the ensemble's **internal** breadth remains **unmeasured** —
+  **three** outside sources from three groups point at it, none of them
+  crypto, one group now three publications deep, and the closest crypto
+  relative is known **not** to contain the measurement, so if the
+  operator wants that number it must be run rather than cited;
+  **nothing is forward-validated and no return-based forward verdict is
+  statistically permitted before 2028-06-29**, a date the tracks are
+  **4.53%** of the way to; the single gate-4 pass holds only for a
+  stopped search; the framework has exercised exactly two gates, both
+  defective. On-chain route open but unadvanced. Operator-attention items
+  dated 2026-08-27 are the four above, all carried forward.
