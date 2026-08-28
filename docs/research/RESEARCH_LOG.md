@@ -1801,3 +1801,109 @@ cross-sectional momentum untested here → experiment 3.
   changed is the record's honesty about its own evidence: one tally
   corrected downward, one apparent pair of new arrivals reclassified to
   zero, and one summarizing-fetch number discarded rather than kept.
+
+## 2026-08-28 — iteration 52 (P1 maintenance; four candidate sources examined, zero arrivals — and the measurement the operator question needed turns out to be inside this repo)
+
+- **Four outside items were examined today on the ensemble-breadth
+  question. All four are negatives, and the arrival tally stays at
+  three.** Listed with what each does and does not print, because a
+  failure to locate is worth as much on the record as a locate:
+
+  - **Panjabi and Robertson (Man Group), "Honey, I Shrunk the
+    Trend-Following", AIMA, 17 June 2024.** Sample stated as 1 January
+    1900 – 31 December 2023 for its long figure and January 1995 –
+    December 2023 for the primary analysis. Lookback windows: **not
+    printed**. Single-horizon versus multi-horizon Sharpe comparison:
+    **not printed**. Between-sleeve correlations: **not printed**.
+    Leave-one-out or ablation: **not performed**. Testable-here: **no** —
+    it carries no number this program can use.
+  - **Tzotchev, "Designing a Robust Trend-Following System",
+    QuantPedia, 17 July 2024.** Lookbacks named only as **2 days, 32
+    days and 1 year**; sample period **not printed**; ensemble-versus-
+    single comparison **not printed**; between-sleeve correlation **not
+    printed**; ablation **not printed**. Testable-here: **no**.
+  - **McClain (LPL Research), "A Tale of Two CTAs", 13 August 2026.**
+    Horizons named — **"20 days at the fast end to 250 days at the slow
+    end"**, plus "50, 100, or 200 days" and "6- or 12-month return".
+    Sharpe broken out by horizon: **not printed**. Between-sleeve
+    correlation: **not printed**. Ablation: **not printed**. It gives
+    index-level performance (SG Trend Index +7.9% through August against
+    the Short-Term Index +3.2%) which is a horizon *dispersion*
+    observation, not an incremental-value one. Testable-here: **no**.
+  - **Bui and Nguyen (Talyxion Research, Hanoi), "Systematic
+    Trend-Following with Adaptive Portfolio Construction: Enhancing
+    Risk-Adjusted Alpha in Cryptocurrency Markets" (arXiv 2602.11708v1,
+    12 February 2026).** This is the first **crypto** trend paper this
+    loop has found that prints a **component ablation table**, and it is
+    worth recording precisely why it still does not answer the question.
+    Universe "150+ cryptocurrency pairs", sample **January 2022 –
+    December 2024** (36 months). Table 3 as printed — Full AdaptiveTrend
+    **Sharpe 2.41 / MDD −12.7%**; w/o Dynamic Trailing Stop **1.68 /
+    −22.4%**; w/o Market Cap Filter **2.05 / −17.8%**; w/o Sharpe Ratio
+    Selection **1.92 / −19.1%**; w/o Asymmetric Allocation **2.12 /
+    −14.3%**; Fixed Parameters (no opt.) **1.34 / −28.6%**. **No row
+    removes a lookback.** The momentum lookback is a single scalar `L`
+    re-chosen **monthly by grid search**, so the paper has no horizon
+    ensemble to ablate in the first place. Two further disqualifications
+    under product law: it is **long/short on Binance perpetual futures**,
+    not spot long-only, and its headline Sharpe is produced by monthly
+    re-optimization over a 36-month window with **no multiple-testing
+    correction stated**. Testable-here: **no**, on all three counts.
+
+- **Byline check, per the discipline iteration 51 had to install.** The
+  search also surfaced the **Sepp and Lucic `TrendFollowingSystems`
+  repository, companion to SSRN 3167787**. Sepp and Lucic are already
+  arrival (1) via arXiv 2607.19497. Same authors, different paper —
+  filed as **corroboration inside an existing arrival, not a new
+  arrival**, exactly as the three Ai For Alpha publications were. The
+  Talyxion authors are a genuinely new group, but their paper is a
+  negative, so **independence added today: zero**. Distinct sources on
+  the ensemble-breadth question remain **three**: arXiv 2607.19497
+  (Sepp and Lucic), arXiv 2510.23150v2 (Etienne et al., Ai For Alpha),
+  arXiv 2504.10914v15 (Valeyre).
+
+- **The internal measurement, which is the substantive item today.**
+  Every source above was being sought because the loop believed it held
+  **no** internal number on what one horizon is worth. That belief was
+  wrong. **Experiment 7 pre-registered a window-set axis** — line 56 of
+  `GOALP_EXPERIMENT7_PREREGISTRATION.md` declares
+  `window set ∈ { {10,20,55,110}, {20,55,110,220} }` and line 80 names
+  it "Fast (10-110) vs slow (20-220) window sets" — and ran it as a
+  full 2x2x2 grid, trials **86-93**, registered 2026-07-22. Read from
+  `docs/reports/research/trial_registry.jsonl`, the four pairs differ in
+  **exactly one parameter key, `dc_windows`**, on the same BTC/ETH
+  universe, the same 2018-03-04..2025-07-01 window, the same code
+  version `6c99598` and identical cost assumptions (10 bps fee, 5 bps
+  slippage, next-bar-open fill). And because the two sets **share
+  20/55/110**, the contrast is a **single-window swap: 10 against 220**.
+
+  | Exit | Gate | Fast (T) | Slow (T) | ΔSharpe | ΔMDD | equity ratio | trades ratio |
+  |---|---|---:|---:|---:|---:|---:|---:|
+  | half_low | off | 86 (1.091622) | 90 (1.066666) | **+0.024956** | −7.2714pp | 0.9928 | 2.1015 |
+  | half_low | on | 87 (1.122056) | 91 (1.096663) | **+0.025393** | −6.9008pp | 0.9274 | 1.8145 |
+  | mid_channel | off | 88 (1.182061) | 92 (1.093639) | **+0.088422** | −14.5784pp | 1.1624 | 1.9335 |
+  | mid_channel | on | 89 (1.136883) | 93 (1.076638) | **+0.060245** | −12.2753pp | 0.9850 | 1.7259 |
+
+  Mean ΔSharpe **+0.049754**, range **+0.024956 to +0.088422**, sign
+  positive in **4 of 4**; mean ΔMDD **−10.2565pp**, favourable in **4 of
+  4**; terminal money a **wash** — the fast set wins **1 of 4** with a
+  mean equity ratio of **1.0169** — bought at a mean **1.8939x** the
+  trade count. Testable-here: **already tested**, on this program's own
+  data, at **zero additional N**, because all eight trials were
+  registered on 2026-07-22 and no new trial is created by subtracting
+  two published rows.
+
+- **What it does and does not license.** It is **not** the leave-one-out
+  the operator was asked to authorize: both arms carry four windows, so
+  it measures one window **against another window**, never **against
+  nothing**. It is also four cells of one 2x2 grid on two assets over
+  one window — the same non-independence iteration 20 recorded for the
+  eight-member family, so "4 of 4" is a sign count, not four tests. What
+  it does establish is the **scale**: on this program's own rule, its
+  own windows and its own universe, swapping a single window moves
+  Sharpe by **hundredths** — mean **+0.0498** — which is the same order
+  as the two outside numbers already on the record, **+0.01** (arXiv
+  2507.15876, adding a whole fast band to a 500-day model) and **+0.03**
+  (arXiv 2510.23150v2's leave-one-out). Three measurements, three
+  sources, one internal, all in the hundredths, all pointing the same
+  way.
