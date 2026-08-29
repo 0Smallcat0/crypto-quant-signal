@@ -1907,3 +1907,145 @@ cross-sectional momentum untested here → experiment 3.
   (arXiv 2510.23150v2's leave-one-out). Three measurements, three
   sources, one internal, all in the hundredths, all pointing the same
   way.
+
+## 2026-08-29 — iteration 53 (P1 maintenance; five candidate sources examined, zero arrivals — and the repo turns out to hold a *second* window swap that disagrees with the first)
+
+- **2026-08-29 — "What Trend Following Actually Adds to a Risk-Premia Core",
+  Beyond Passive Investing (Substack), published 2026-06-07, no individual
+  byline.** Surfaced at the top of the search for lookback ablations, and the
+  search engine's own summary attributed a leave-one-out over 20 / 60-125 /
+  500-day bands to it. **Fetched and checked: the article contains no such
+  table.** It names no lookback bands and prints no per-horizon Sharpe. It is
+  a 50/50 blend study — risk-premia core (SPY/TLT/GLD) plus a 62-market
+  futures trend replica, long and short, refit on a rolling walk-forward —
+  reporting core Sharpe about 1.1, standalone trend replica about the same,
+  blended **1.49** with drawdown 17% to 13% over 1995-2026. Explicitly
+  **gross of costs**: "no commissions, no slippage, no bid-ask, no management
+  fee". No multiple-testing correction; the author states "I make no
+  out-of-sample claim". The band figures in the search summary are almost
+  certainly arXiv 2507.15876's, which this loop already holds. Testable here:
+  **no** — long/short futures, gross of costs, and no horizon decomposition at
+  all. **Lesson repeated from iteration 50: a search-engine summary is not a
+  source.** The attributed table did not exist.
+
+- **2026-08-29 — arXiv 2512.08124, "Long-only cryptocurrency portfolio
+  management by ranking the assets: a neural network approach", Zijiang Yang,
+  submitted 2025-12-09.** The rare candidate that is genuinely **long-only,
+  crypto, and daily-rebalanced** — three of four product-law conditions. But
+  the signal is a neural ranking net, not a horizon ensemble: **no
+  per-lookback table, no ablation of any component**, and **no deflated
+  Sharpe, PBO, or multiple-testing correction**. Headline Sharpe **1.01**,
+  annualized return 64.26%, over May 2020 to November 2023. Transaction costs
+  are only qualitatively stress-tested ("robustness to the increase of
+  transaction fee"), never stated as a number in the abstract. Testable here:
+  **no** on the open question — it hands over nothing about what one horizon
+  is worth.
+
+- **2026-08-29 — arXiv 2604.26747, "From Hypotheses to Factors: Constrained
+  LLM Agents in Cryptocurrency Markets", Huang, Fan, Hu and Ye (HKUST,
+  Rutgers, BNU-HKBU), submitted 2026-04-29.** Crypto, daily rebalance,
+  one-day execution lag, **5 bps one-way** costs — and a headline of
+  **44.55%** annualized at Sharpe **1.55** on a 2024-2026 out-of-sample
+  window. Fails product law at the first hurdle: the portfolio is
+  **long-short** equal-weighted quintile sorting, top against bottom. It also
+  reports the agent ran **five search rounds generating 25 candidate factors**
+  with **no deflated Sharpe, no PBO, and no multiple-testing adjustment** —
+  the exact failure this program's gate 4 exists to price. No ablation over
+  horizons. Testable here: **no**.
+
+- **2026-08-29 — "Boundaries of Time-Series Momentum", Matti Suominen (Aalto)
+  and Erik Hjalmarsson (Gothenburg), Financial Management, Early View, first
+  published 2026-07-06, DOI 10.1111/fima.70055.** Uses **25 time-series
+  momentum strategies with lookback and holding horizons from 1 to 12 months**
+  — exactly the ensemble shape the open question is about — and then
+  **collapses them into a single equally weighted index**. No individual
+  horizon is ever broken out: no per-lookback Sharpe, no leave-one-out. Equity
+  index cash positions across the US and 20 countries, **long/short** against
+  the risk-free rate, **monthly**, and **transaction costs are not discussed
+  or deducted**. Newey-West and IVX robustness, but **no Bonferroni, no
+  deflated Sharpe, no PBO**. Testable here: **no**. Filed because it is the
+  cleanest recent example of the thing this loop keeps hitting — an ensemble
+  is built, its breadth is never priced.
+
+- **2026-08-29 — "Nonlinear Time Series Momentum", Tobias J. Moskowitz (Yale
+  and AQR), Riccardo Sabbatucci (SSE), Andrea Tamoni (Notre Dame), Bjorn Uhl
+  (Hamburg), dated 2025-12-10, FoFI 2026 working paper.** The most serious
+  candidate today by pedigree, and the one that needed real work to read — the
+  fetch returned raw PDF object streams and the byline had to be recovered by
+  local text extraction rather than guessed. 66 pages, **122 occurrences of
+  "lookback" and 143 of "Sharpe"**, and it still does not answer the question:
+  the word **"ensemble" appears zero times**, lookbacks are studied one at a
+  time, and the paper's contribution is a **nonlinear weighting function of
+  the trend**, not horizon breadth. Universe is **8 equity index, 24 commodity
+  and 21 rates/FX futures** — **zero crypto, zero spot** — and the strategy is
+  sign-based **long/short**. Occurrences of "transaction cost": **1**, and it
+  is an argument rather than a measurement ("likely to improve after
+  accounting for transactions costs"). Occurrences of "deflated": **0**.
+  "Multiple testing": **0**. Testable here: **no**.
+  **Byline check per iteration 51's discipline:** Moskowitz, Sabbatucci,
+  Tamoni and Uhl are a genuinely new group, unrelated to Sepp and Lucic, to
+  Ai For Alpha, or to Valeyre. But a new group publishing a **negative** for
+  this question adds no independence. **Arrivals added today: zero.** Distinct
+  sources on the ensemble-breadth question remain **three**: arXiv 2607.19497
+  (Sepp and Lucic), arXiv 2510.23150v2 (Etienne et al., Ai For Alpha),
+  arXiv 2504.10914v15 (Valeyre).
+
+- **The internal item, and a correction to iteration 52.** Yesterday's entry
+  closed with "Three measurements, three sources, **one internal**, all in the
+  hundredths, **all pointing the same way**." Both emphasized clauses are
+  wrong. Searching `dc_windows` across all 133 registered trials shows
+  **experiment 8 contains a second matched single-window swap**: trials
+  **94-97** ran `{10,20,55,110}` and trials **98-101** ran `{10,20,110,220}`
+  on the same 13-coin universe, the same 2018-03-04..2025-07-01 window, the
+  same code version `5e2d50e`, the same staggered mode and identical cost
+  assumptions (10 bps fee, 5 bps slippage, next-bar-open fill). The two sets
+  share **{10, 20, 110}**, so the contrast is a single-window swap of **55
+  against 220** — a *different* window from experiment 7's **10 against 220**.
+  Each of the four exit-by-gate pairs was verified to differ in **exactly one
+  parameter key, `dc_windows`**.
+
+  | Exit | Gate | {10,20,55,110} | {10,20,110,220} | dSharpe | dMDD | equity ratio | trades ratio |
+  |---|---|---:|---:|---:|---:|---:|---:|
+  | half_low | off | T94 0.972534 | T98 0.920546 | **+0.051988** | +0.2451pp | 1.0713 | 1.0625 |
+  | half_low | on | T95 0.954871 | T99 0.924608 | **+0.030263** | +0.2126pp | 1.0431 | 1.0394 |
+  | mid_channel | off | T96 1.000378 | T100 0.945654 | **+0.054724** | +0.2120pp | 1.0555 | 1.0558 |
+  | mid_channel | on | T97 0.921164 | T101 0.949161 | **-0.027997** | +0.4416pp | 0.8194 | 1.0419 |
+
+  Mean dSharpe **+0.027245**, positive in **3 of 4** — not 4 of 4. Mean dMDD
+  **+0.2778pp**, i.e. favourable to the shorter set in **0 of 4**. Mean trades
+  ratio **1.0499**, against experiment 7's **1.8939**.
+
+- **What the second swap changes.** Three things, and none of them favour
+  buying the arm. (1) **Magnitude is not stable across the registry**:
+  +0.0498 and +0.0272 differ by nearly two-to-one, so yesterday's number is
+  one of two prices, not *the* price. (2) **The drawdown story reverses.**
+  Experiment 7's swap bought -10.2565pp of drawdown in 4 of 4; experiment 8's
+  bought **+0.2778pp against** in 4 of 4. Since drawdown is the thing this
+  program's headline result actually purchased, that reversal matters more
+  than the Sharpe agreement. (3) **The turnover cost is attributable.**
+  Experiment 7's near-doubling of trades came with the **10** entering, not
+  with the **220** leaving — because swapping 55 for 220 while holding the 10
+  fixed leaves trade count almost unchanged at **1.05x**.
+
+- **The confound, stated before it can be over-read.** The two swaps differ in
+  **universe (2 coins against 13), code version (`6c99598` against
+  `5e2d50e`), execution mode (plain against staggered) and which window moved
+  — all at once.** The difference between +0.0498 and +0.0272 therefore
+  **cannot** be attributed to the window position. Each number is valid
+  **inside its own experiment only**; putting them side by side is
+  descriptive, and treating the pair as a controlled comparison would repeat
+  the universe-pooling error retracted on 2026-07-26 and again on 2026-07-28.
+  The published sign count in `GOALP_EXPERIMENT8_RESULT.md` — "the barbell
+  window set also underperformed fast in 3 of 4 pairings" — is **correct as
+  written and is not edited**; what was missing was the paired magnitude, the
+  drawdown direction and the turnover attribution.
+
+- **And the channel is now closed.** Across all **133** registered trials,
+  **every single one carries exactly four windows** — 48 carrying a
+  `dc_windows` set and all 133 carrying a four-entry `lookbacks` string.
+  There is **no trial anywhere in the registry that ran three windows**, so
+  the leave-one-out the operator was asked to authorize **cannot be answered
+  at zero N by any further reading of the registry**. Searching harder is no
+  longer a route. The registry holds exactly **two** window-against-window
+  swaps and **zero** window-against-nothing ablations, and today's pass
+  enumerated both.

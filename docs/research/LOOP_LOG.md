@@ -4602,3 +4602,274 @@
   framework has exercised exactly two gates, both defective. On-chain
   route open but unadvanced. Operator-attention items dated 2026-08-28
   are the four above, all carried forward, with (a) restated.
+
+## 2026-08-29 — iteration 53 (P1: ninth slot in flight; the registry holds a *second* single-window swap, it disagrees with yesterday's on the thing that matters, and the zero-N channel is now exhaustively closed)
+
+- **Step 0 convergence check, done first and in writing.**
+  1. **Current answer, unchanged:** measured on 2018-2025 and not
+     forward-validated, the timing rule adds real value **in crypto
+     only** — 4.70x its exposure-matched passive twin, and in its own
+     BTC/ETH universe it bought **both** return (14.26x vs 6.05x) and
+     drawdown (33.05% vs 80.99%). Against the naive thirteen-coin
+     alternative the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates**, and
+     the one gate-4 pass exists only for a stopped search.
+  2. **What this iteration moves.** It corrects yesterday and then closes
+     a channel. Iteration 52 handed the operator **one** internal price
+     for a window — experiment 7's swap of 10 against 220, mean
+     **+0.0498** Sharpe, 4 of 4 in sign, and reported it as *the* nearest
+     available number. There is a **second** one. Experiment 8 ran the
+     same 2x2 exit-by-gate grid with `{10,20,55,110}` against
+     `{10,20,110,220}`, which share **{10,20,110}** — a single-window swap
+     of **55 against 220** — and it prices the swap at **+0.0272** mean
+     Sharpe, **3 of 4** in sign, with drawdown moving **against** the
+     shorter set in **4 of 4**. Yesterday's characterization "one
+     internal, all pointing the same way" is therefore wrong on both
+     counts, and is corrected here. Then the channel is closed: **all 133
+     registered trials carry exactly four windows**, so no further reading
+     of the registry can ever produce the leave-one-out itself.
+  3. **Why it is not sprawl.** No new script, no new research document, no
+     trial registered, no backtest run, no gate report regenerated, no arm
+     run, no pre-registration written or touched, no result document
+     edited. The web pass is contract-mandated (step 2, "never skip"). The
+     only computation is subtraction between rows published in
+     `trial_registry.jsonl` on 2026-07-22, an exhaustive count of a field
+     already in that file, and the standing recorder consistency check.
+     **Subtracting two published rows does not create a trial and does not
+     spend an N** — trials 94-101 were counted in N at the time they ran.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 35 (34 real + seed) | 2026-08-28, equity 1090.244915564835404897822208, exposure `{BTC: 0.75, ETH: 1}`, closes 77845.87 / 2442.80 | OK — +1 row since iteration 52 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 35 (34 real + seed) | 2026-08-28, equity 1133.251807726974686274738578, exposure `{BTC: 0.75, ETH: 1}` | OK — +1 row since iteration 52 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 7 (6 real + seed) | 2026-08-28, close 106.95, exposure 0.75, `WINDOWS_ON_3_OF_4` | OK — **+1 row**, weekly task fired 2026-08-29 09:40 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 8 (7 real + seed) | 2026-08-28, close 408.890015, exposure 0.5, `WINDOWS_ON_2_OF_4` | OK — **+1 row**, same weekly task |
+
+  All four tracks gained a row this iteration; the weekly pair had been
+  static since 2026-08-21 and refreshed on schedule this morning. Both
+  crypto series carry the seed at 2026-07-24 and real rows
+  2026-07-25..2026-08-28 with **exactly one date gap**, the missing
+  **2026-08-09** — the permanently lost row from iteration 42, unchanged
+  and still left as a hole. Scheduler state read during this iteration:
+  `CryptoShadowTrial88` last ran **2026-08-29 08:20:01** result 0, next
+  2026-08-30 08:20; `TwShadow0050` last ran **2026-08-29 09:40:00**
+  result 0, next 2026-09-05 09:40; both `Ready`, both
+  `NumberOfMissedRuns 0`. `CryptoResearchLoop` reports `Running` with
+  `LastTaskResult 267009` (`STILL_ACTIVE`) — this iteration in flight.
+  `docs/reports/research/holdout_lock.json` re-verified: `spent` still
+  **`false`**. At **34** real rows the tracks are **4.82%** of the way to
+  the 706-row MinTRL horizon of 2028-06-29.
+
+- **Slot ledger, sixteen scheduled 21:37 slots 08-14..08-29.** The
+  2026-08-28 slot, in flight when iteration 52 read it, is now confirmed
+  complete: `exit=0 finished=2026-08-28T21:49:57.0850632+08:00`, 6868
+  bytes. That makes **eleven** confirmed complete (08-15, 08-16, 08-19,
+  08-21 through 08-28), **four** losses all operator-side and none a repo
+  defect (08-14 `exit=1` auth, 08-17 `exit=1` weekly account usage limit,
+  08-18 zero bytes operator restart, 08-20 `started=` with no `exit=`
+  console-control kill), and **one** in flight: today's
+  `run_20260829_213701.log`, `started=2026-08-29T21:37:01.3082286+08:00`,
+  43 bytes. **The completed streak is eight (08-21..08-28)**, with today
+  the ninth in flight. Iteration 50's reading caution applies again and
+  was applied: today's in-flight log and the 08-20 killed log are both
+  43 bytes and both `started=` with no `exit=`; only file age relative to
+  reading time separates them.
+
+- **Recorder consistency check on the new row, which passes exactly.**
+  From 2026-08-27 to 2026-08-28 BTC closed **-2.995293%** (80249.58 to
+  77845.87) and ETH **-2.713725%** (2510.94 to 2442.80). Applying the
+  exposures recorded on the 08-27 row — BTC 0.75, ETH 1.00, equal weight
+  across the two symbols — predicts a book move of **-2.480097%**, and
+  both books moved **-2.480097%**, agreeing to within decimal-division
+  dust below 1e-25 pp. This is a check of the recorder against its own
+  inputs, not a performance statement. The two books moved identically
+  because they held identical exposures on 08-27; **no cross-track
+  structural statistic is computed today**, because operator-attention
+  item (d) remains open and, pending a rule, the loop does less rather
+  than more.
+
+- **The substantive finding: the registry holds two single-window swaps,
+  not one, and the second one disagrees.** Iteration 52 found experiment
+  7's fast/slow window axis and read it correctly as a single-window swap
+  of **10 against 220** (the sets `{10,20,55,110}` and `{20,55,110,220}`
+  share 20/55/110). What it did not do was ask whether any *other*
+  registered pair has the same property. One does. Experiment 8, declared
+  at `GOALP_EXPERIMENT8_PREREGISTRATION.md` line 54-55 as
+  `window set in { {10,20,55,110} (fast), {10,20,110,220} (barbell) }`,
+  ran trials **94-101** on 2026-07-22 as the same 2x2 exit-by-gate grid.
+  Those two sets share **{10,20,110}**, so the contrast is a single-window
+  swap of **55 against 220**. Verified against
+  `docs/reports/research/trial_registry.jsonl`: each of the four pairs
+  differs in **exactly one parameter key, `dc_windows`**, with identical
+  universe, identical 2018-03-04..2025-07-01 window, identical code
+  version `5e2d50e`, identical strategy id and identical costs (fee 10
+  bps, slippage 5 bps, `next_bar_open`), 2676 observation days on both
+  sides.
+
+  | Exit | Gate | Shorter `{10,20,55,110}` | Barbell `{10,20,110,220}` | dSharpe | dMDD | equity ratio | trades ratio |
+  |---|---|---:|---:|---:|---:|---:|---:|
+  | half_low | off | T94 0.972534 | T98 0.920546 | **+0.051988** | +0.2451pp | 1.0713 | 1.0625 |
+  | half_low | on | T95 0.954871 | T99 0.924608 | **+0.030263** | +0.2126pp | 1.0431 | 1.0394 |
+  | mid_channel | off | T96 1.000378 | T100 0.945654 | **+0.054724** | +0.2120pp | 1.0555 | 1.0558 |
+  | mid_channel | on | T97 0.921164 | T101 0.949161 | **-0.027997** | +0.4416pp | 0.8194 | 1.0419 |
+
+  Mean dSharpe **+0.027245**, positive in **3 of 4**. Mean dMDD
+  **+0.2778pp**, favourable to the shorter set in **0 of 4**. Mean equity
+  ratio **0.9973**, shorter set ahead in 3 of 4. Mean trades ratio
+  **1.0499**.
+
+- **Side by side with yesterday, and what changes.**
+
+  | | Exp 7 (BTC/ETH, `6c99598`) | Exp 8 (13 coins, `5e2d50e`) |
+  |---|---|---|
+  | Window swapped | 10 against 220 | 55 against 220 |
+  | Held fixed | 20, 55, 110 | 10, 20, 110 |
+  | Mean dSharpe | **+0.049754** | **+0.027245** |
+  | Sign count | 4 of 4 | **3 of 4** |
+  | Mean dMDD | **-10.2565pp** (favourable 4 of 4) | **+0.2778pp** (favourable **0 of 4**) |
+  | Mean trades ratio | **1.8939** | **1.0499** |
+
+  Three consequences, none of which favours buying the arm. (1) **The
+  price is not stable**: +0.0498 and +0.0272 differ by nearly two to one,
+  so yesterday's figure is one of two prices rather than *the* price.
+  (2) **The drawdown story reverses.** Experiment 7's swap bought
+  **-10.26pp** of drawdown in 4 of 4; experiment 8's swap pays **+0.28pp**
+  against in 4 of 4. Drawdown is the thing this program's headline result
+  actually purchased, so a reversal there weighs more than the Sharpe
+  agreement. (3) **The turnover is attributable to the fast window
+  itself.** Experiment 7's near-doubling of trades arrived with the **10**
+  entering, not with the **220** leaving — because swapping 55 for 220
+  while holding the 10 fixed leaves trade count essentially unchanged at
+  1.05x.
+
+- **What the finding is not, stated before it can be over-read.** The two
+  swaps differ in **universe (2 coins against 13), code version, execution
+  mode (plain against staggered) and which window moved — all at once**,
+  so the gap between +0.0498 and +0.0272 **cannot** be attributed to the
+  window position. Each number is valid **inside its own experiment
+  only**; reading the pair as a controlled comparison would repeat exactly
+  the universe-pooling error retracted on 2026-07-26 and again on
+  2026-07-28. Neither is the leave-one-out: both arms in both experiments
+  carry four windows, so both price a window **against another window**,
+  never **against nothing**. And each is four cells of one 2x2 grid, so
+  "3 of 4" and "4 of 4" are sign counts, not tests; **no p-value is
+  claimed for either.** The qualitative half of today's finding was
+  already published — `GOALP_EXPERIMENT8_RESULT.md` records that "the
+  barbell window set (arxiv 2510.23150) also underperformed fast in 3 of 4
+  pairings". **That document is correct as written and is not edited
+  today.** What was missing was the paired magnitude, the drawdown
+  direction and the turnover attribution.
+
+- **The zero-N channel is now closed, by enumeration rather than by
+  assertion.** Every one of the **133** registered trials carries
+  **exactly four windows** — 48 with a `dc_windows` set, all 133 with a
+  four-entry `lookbacks` string, and zero trials anywhere with three. So
+  the leave-one-out the operator was asked to authorize **cannot be
+  answered by any further reading of the registry at any price**. The
+  registry contains exactly **two** window-against-window swaps and
+  **zero** window-against-nothing ablations, and this iteration enumerated
+  both. "Look harder inside what is already paid for" is no longer a
+  route; the decision in front of the operator is a genuine purchase
+  decision again, but now with **two** internal prices attached instead of
+  one, and with the disagreement between them on the record.
+
+- **Correction owed and paid, same day.** Iteration 52's RESEARCH_LOG
+  entry ended "Three measurements, three sources, **one internal**, all in
+  the hundredths, **all pointing the same way**." There are **two**
+  internal measurements, and they do **not** all point the same way — they
+  agree that the effect lives in the hundredths of Sharpe and disagree on
+  drawdown, in opposite directions, 4 of 4 each way. Both clauses are
+  corrected in today's RESEARCH_LOG entry. Per the loop's practice since
+  iteration 51, the correction is recorded in a new entry; **no prior
+  entry is edited.**
+
+- **Step 2 (web research): five candidates examined, five negatives,
+  arrival tally unchanged at three.** Full detail filed in
+  `RESEARCH_LOG.md` under iteration 53. The Beyond Passive Investing
+  Substack piece (2026-06-07) that the search engine credited with a
+  20 / 60-125 / 500-day leave-one-out **contains no such table** — the
+  bands are almost certainly arXiv 2507.15876's, already held; the piece
+  is long/short futures, explicitly **gross of costs**, and its author
+  disclaims any out-of-sample claim. arXiv 2512.08124 (Yang, 2025-12-09)
+  is genuinely **long-only, crypto, daily** but is a neural ranking net
+  with no ablation and no DSR/PBO. arXiv 2604.26747 (Huang et al.,
+  2026-04-29) is **long-short**, and searched 25 candidate factors with
+  **no multiple-testing correction of any kind**. Suominen and Hjalmarsson
+  (Financial Management, 2026-07-06) build a **25-strategy** 1-to-12-month
+  horizon ensemble and then **never break out a single horizon** — costs
+  not deducted at all. The heavyweight, **Moskowitz, Sabbatucci, Tamoni
+  and Uhl (2025-12-10)**, mentions "lookback" 122 times and "Sharpe" 143
+  times across 66 pages and still does not answer the question: the word
+  **"ensemble" appears zero times**, its contribution is a nonlinear
+  weighting function rather than horizon breadth, its universe is 53
+  futures with **zero crypto and zero spot**, it is **long/short**, and
+  "transaction cost" appears **once** as an argument, "deflated" and
+  "multiple testing" **zero** times. Byline check per iteration 51's
+  discipline: that group is genuinely new and unrelated to Sepp and Lucic,
+  Ai For Alpha or Valeyre — but a new group publishing a **negative** adds
+  no independence. **Independence added today: zero.**
+
+- **Operator-attention items.** Four carried forward, and item (a) is
+  **materially restated for the third consecutive day** — this time
+  against yesterday's own restatement. (a) The ensemble-breadth question
+  goes back to the operator with **two** internal prices rather than one:
+  **+0.0498** (exp 7, 10 against 220, BTC/ETH, 4 of 4, drawdown
+  **favourable** 4 of 4, at 1.89x trades) and **+0.0272** (exp 8, 55
+  against 220, 13 coins, 3 of 4, drawdown **unfavourable** 4 of 4, at
+  1.05x trades). Both are already paid for at **zero additional N**; the
+  leave-one-out itself is still unmeasured, still P3-forbidden, and now
+  provably **unobtainable from the registry** since no registered trial
+  anywhere carries fewer than four windows. **The loop still proposes
+  nothing and recommends nothing.** (b) The research loop still runs in a
+  **visible console window**; task definition unchanged, choice stays with
+  the operator. (c) The weekly account usage limit and the auth expiries
+  are account-level matters only the operator controls. (d) Should
+  cross-track structural comparisons of the shadow files be brought
+  explicitly under `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still
+  unanswered; today the loop **abstained** from that class of comparison
+  for the sixth consecutive iteration.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already
+  formatted**; `mypy --strict src/` **Success: no issues found in 58
+  source files**; `lint-imports` **Contracts: 13 kept, 0 broken**;
+  `pytest -m "not network"` **383 passed**, 1 warning.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  contract or pre-registration edited, no trial registered, no backtest
+  run, no gate report regenerated, holdout untouched and `spent` still
+  `false`, no research document created, no result document edited —
+  including `GOALP_EXPERIMENT8_RESULT.md`, whose 3-of-4 sign count is
+  correct as written — no diagnostic script written, no window-ablation
+  arm run, no long-window family opened, no cross-track structural
+  statistic computed while item (d) is open, no scheduled-task definition
+  altered, no `configs/runtime/` or live-runtime file touched, no shadow
+  row fabricated, and the 2026-08-09 hole left as a hole. **No prior entry
+  is edited today** — iteration 52's two wrong clauses are corrected by
+  new text, not by rewriting the old.
+
+- **Standing answer restated, unchanged in every clause:** timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine is free of look-ahead, verified
+  to the cent; execution-latency cost is about -6.4 bps round-trip,
+  bounded above by about 17 bps, inside tested headroom; the October
+  holdout is protected mechanically; the Taiwan and gold negatives are
+  robust to dividend treatment; against the naive 13-coin alternative the
+  margin is only 5.4% and that benchmark is survivorship-flattered;
+  breadth still fails, and the ensemble's **internal** breadth remains
+  **unmeasured in the leave-one-out sense** and is now known to be
+  **unmeasurable from the registry at any price** — but it is **not
+  wholly unpriced**, because the registry holds **two** registered
+  single-window swaps, **+0.0498** and **+0.0272** mean Sharpe, which
+  agree in order of magnitude with the two outside numbers and
+  **disagree with each other on drawdown, 4 of 4 in opposite
+  directions**; **nothing is forward-validated and no return-based
+  forward verdict is statistically permitted before 2028-06-29**, a date
+  the tracks are **4.82%** of the way to; the single gate-4 pass holds
+  only for a stopped search; the framework has exercised exactly two
+  gates, both defective. On-chain route open but unadvanced.
+  Operator-attention items dated 2026-08-29 are the four above, all
+  carried forward, with (a) restated.
