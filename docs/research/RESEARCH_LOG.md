@@ -2049,3 +2049,211 @@ cross-sectional momentum untested here → experiment 3.
   longer a route. The registry holds exactly **two** window-against-window
   swaps and **zero** window-against-nothing ablations, and today's pass
   enumerated both.
+
+## 2026-08-30 — iteration 54 (P1 maintenance; five candidate sources examined, and a fourth author group — missed by eighteen prior passes — finally prices horizon breadth with the architecture held fixed)
+
+- **arXiv 2406.08742v1, Joel Ong and Dorien Herremans, "DeepUnifiedMom:
+  Unified Time-series Momentum Portfolios with Multi-Task Learning"
+  (submitted 13 June 2024, q-fin.CP, 21 pages).** Read from the arXiv HTML
+  full text. Universe: **49 futures contracts** across "equity indexes,
+  fixed income, foreign exchange, and commodities"; **no cryptocurrency**.
+  Direction: **long-short** — verbatim, "establishing long positions during
+  uptrends and short positions during downtrends". Daily data from January
+  1990, out-of-sample backtest **January 2000 to December 2023**. Table 2
+  caption verbatim: *"Backtest results (net) for the period from January
+  2000 to December 2023, with transaction costs set at 3 basis points."*
+  The Sharpe annualization convention is **not stated anywhere in the
+  paper**; the ratios below are therefore internally comparable but not
+  comparable to this program's 365-period figures. No deflated Sharpe
+  ratio, no PBO, no multiple-testing correction of any kind.
+  **Testable-here: no** — long-short liquid futures, one-way 3 bps, no
+  spot and no crypto.
+
+  Table 2 Sharpe column, as printed:
+
+  | Portfolio | Sharpe |
+  |---|---:|
+  | TSMOM(1) | 0.73 |
+  | TSMOM(3) | 0.80 |
+  | TSMOM(6) | 0.82 |
+  | TSMOM(12) | 1.01 |
+  | TSMOM(1,4) | 1.00 |
+  | TSMOM(5,8) | 0.87 |
+  | TSMOM(9,12) | 1.00 |
+  | TSMOM(1,12) | 1.07 |
+  | DeepUnifiedMom(Fast) | 1.34 |
+  | DeepUnifiedMom(Medium) | 0.99 |
+  | DeepUnifiedMom(Slow) | 1.54 |
+  | DeepUnifiedMom(CAN) | 2.33 |
+  | DeepUnifiedMom(EQWT) | 2.31 |
+  | DeepUnifiedMom(MVO) | 1.72 |
+
+  Notation verified against the paper's own definitions before any
+  subtraction was performed. TSMOM(n) is "based on the past n month's
+  returns"; TSMOM(a,b) is "An equal-weighted combination of the a ... to
+  b-month TSMOMs", so **TSMOM(1,12) is a twelve-signal equal-weighted
+  ensemble and TSMOM(12) is a single signal**. Fast, Medium and Slow are
+  each trained on a **single** horizon — "20 trading days for
+  DeepUnifiedMom(Fast), 60 trading days for DeepUnifiedMom(Medium), and
+  120 trading days for DeepUnifiedMom(Slow)" — and **CAN** is the
+  "Capital Allocation Network", whose "output ... serves as a set of
+  weights assigned to the fast, medium, and slow momentum portfolios".
+
+- **The finding of the day: the first architecture-matched, naive-rule
+  price for horizon breadth, and it is in the hundredths.** Inside Table 2,
+  with no neural network anywhere in either arm, going from **one** horizon
+  to **twelve** moves the Sharpe from **1.01 to 1.07 — plus 0.06**, net of
+  3 bps. That is a subtraction between two printed rows and nothing more:
+  no standard error is given for either, one universe, one period, so it
+  is a **sign and a magnitude, not a test**. It is now the fifth
+  measurement of what horizon breadth is worth that this loop holds, and
+  **all five land in the hundredths**:
+
+  | Source | What was priced | Sharpe delta |
+  |---|---|---:|
+  | arXiv 2510.23150v2 (Ai For Alpha), iteration 49 | leave-one-horizon-out | **+0.03** (0.74 to 0.77) |
+  | arXiv 2507.15876 (Ai For Alpha), iteration 51 | whole fast band onto a slow model | **+0.01** (0.39 to 0.40) |
+  | this repo, experiment 7, iteration 52 | one window swapped (10 against 220) | **+0.0498** |
+  | this repo, experiment 8, iteration 53 | one window swapped (55 against 220) | **+0.0272** |
+  | arXiv 2406.08742 Table 2, **today** | **one horizon against twelve** | **+0.06** |
+
+  The five are **not** commensurable and no arithmetic may be done across
+  them — different asset classes, directions, cost models, periods and
+  architectures, and above all different amounts of breadth. What can be
+  said is weaker and still worth saying: **nobody who has published a
+  number on this question has found one outside the hundredths**, and the
+  largest of the five buys eleven extra horizons for it.
+
+- **Non-monotone inside the same table, and it points at span rather than
+  count.** TSMOM(9,12) — a four-signal band around the best single horizon
+  — scores **1.00**, *below* TSMOM(12)'s **1.01**; TSMOM(1,4) also scores
+  **1.00**. Only the full twelve-month span beats the best single, and by
+  0.06. So in this source, adding **neighbouring** horizons bought nothing
+  or slightly less than nothing, and the entire gain came from **spanning
+  distant** horizons. Recorded as **structure only** — this program's own
+  windows span 10 to 110, a factor of 11, against 1-to-12 months, a factor
+  of 12, and that resemblance is not evidence about anything here.
+
+- **The large breadth number in the same table is not a breadth number,
+  stated before it can be over-read.** Best single-horizon *neural* model
+  (Slow, **1.54**) against the three-horizon equal-weight combination
+  (EQWT, **2.31**) is **+0.77** — more than ten times the naive figure.
+  It is **not** attributable to breadth: the three task-specific networks
+  are **jointly trained** inside one multi-task-learning framework, so the
+  gap confounds joint training and the mixture-of-experts architecture with
+  horizon count. This program's rule is naive, so **the applicable branch
+  is +0.06, not +0.77** — and a document that cited the larger number as
+  the price of breadth would be wrong.
+
+- **Outside corroboration for a route this program closed on its own
+  evidence.** In the same table, the learned Capital Allocation Network
+  (**2.33**) beats naive equal weighting over the identical three
+  portfolios (**2.31**) by **+0.02**, and mean-variance optimization
+  (**1.72**) *loses* to equal weighting by **-0.59**. An independent group
+  carrying a full deep-learning allocator therefore measures sophisticated
+  allocation at roughly **one percent** of Sharpe over doing nothing
+  clever, and measures MVO as actively destructive. This program uses fixed
+  equal sleeve weights, refused per-market tuning, and P3 forbids
+  reopening the cash-aware allocation route with a cap parameter or a tilt.
+  **Same direction, from outside, net of costs.** It is corroboration, not
+  proof: different asset class, different allocator, no crypto.
+
+- **Byline check per iteration 51's discipline, and this one passes.**
+  **Joel Ong** and **Dorien Herremans** appear in none of the three
+  arrivals already on record — (1) **Sepp and Lucic**, arXiv 2607.19497;
+  (2) **Etienne, Ohana, Benhamou, Guez, Setrouk and Jacquot** (Ai For
+  Alpha), arXiv 2510.23150v2; (3) **Valeyre**, arXiv 2504.10914v15.
+  Institutional affiliations are **not printed on the arXiv abstract page**
+  and are therefore not recorded here; the independence claim rests on the
+  name check alone, which is the check that matters. **Arrival tally moves
+  three to four** — the first increase since iteration 49, and the exact
+  mirror of iteration 51, where two apparent arrivals collapsed into one
+  because the names repeated.
+
+- **Honesty about what kind of event this is: a search failure corrected,
+  not new literature.** arXiv 2406.08742 was submitted **13 June 2024** —
+  older than every one of the three existing arrivals — and **eighteen
+  consecutive external-research passes missed it**. Nothing arrived today;
+  something that had been sitting in the open for fourteen months was
+  finally found. Same class as iteration 50's failure-to-locate becoming a
+  locate, and it should lower rather than raise confidence in the
+  completeness of every prior pass.
+
+- **Primary-source read of the closest crypto relative, and a prior loop
+  statement narrowed.** Iteration 50 recorded the Concretum paper
+  second-hand through CXO Advisory, whose free portion "paywalls exactly
+  the numbers that would matter". The **primary source** was read directly
+  today (`concretumgroup.com/catching-crypto-trends-a-tactical-approach-for-bitcoin-and-altcoins/`)
+  and it prints two of them in the open: **"Sharpe ratio above 1.5"** and
+  **"annualized alpha of 10.8% relative to Bitcoin"**. So the paywall was
+  never the obstacle for those two. It is the obstacle for nothing else
+  either, because the number iteration 48 actually wanted — **the ensemble
+  priced against a single lookback window** — is **not present on the
+  primary page at all**, alongside no drawdown figure, no sample dates, no
+  window list and no cost levels. **Iteration 48's conclusion therefore
+  stands unchanged** — the closest published crypto relative of this
+  program's own rule does not hand over the redundancy number — but it now
+  rests on a direct read rather than on an assumption about what a paywall
+  was hiding. Authorship, newly recorded: **Carlo Zarattini, Alberto Pagani
+  and Andrea Barbon**, SSRN abstract 5209907. The paper itself remains
+  **unread**: SSRN returns HTTP 403 to this loop's fetcher, and the
+  publisher's own papers index carries only a four-sentence blurb.
+
+- **A search-engine attribution examined and rejected, for the second
+  consecutive iteration.** The engine credited that same source with a
+  "net-of-fees Sharpe ratio of 1.57" and "a maximum drawdown of only 11%".
+  The primary page prints **"above 1.5"** and **no drawdown figure
+  whatsoever**. Neither **1.57** nor **11%** is recorded anywhere, under
+  the same discipline that discarded the unfound 0.24-0.50 correlation
+  range in iteration 51 and the non-existent Substack leave-one-out table
+  in iteration 53. Three iterations, three engine-supplied figures that the
+  cited source does not print. **Treat summarizer output as a pointer to a
+  document, never as a reading of it.**
+
+- **arXiv 2606.27670, Yu Peng, Matloob Khushi and Josiah Poon, "CryptoGAT"
+  (26 June 2026).** Abstract read. Graph-attention **price forecasting**
+  for cryptocurrency, arguing that "time series models have difficulty
+  learning effective information" in crypto. No transaction costs, no
+  strategy, no Sharpe, no deflated Sharpe or PBO in the abstract.
+  **Testable-here: no** — a forecasting-accuracy result is not a costed
+  long-only spot rule, and this program has no route from one to the other.
+
+- **Beckmeyer and Wiedemann, "All Days Are Not Created Equal:
+  Understanding Momentum by Learning to Weight Past Returns", Journal of
+  Banking & Finance vol. 181 (2025).** Abstract read via RePEc;
+  ScienceDirect and SSRN both return HTTP 403 to this loop's fetcher, so
+  the full text is **unread**. Verbatim from the abstract: "By flexibly
+  weighting the information contained in past realized returns, we
+  construct a momentum strategy that outperforms and subsumes the
+  performance of traditional stock momentum" and "We find that the response
+  to earnings announcements, market-wide jumps and large individual returns
+  realized in the formation period are most informative about future stock
+  returns." **Adjacent to the open question but not the same question**: it
+  weights past *days inside one formation window*, not *horizons across an
+  ensemble*, and it is cross-sectional long-short **stock** momentum with
+  no crypto, no cost figure and no multiple-testing correction visible.
+  **Testable-here: no.** The byline is a distinct group, but a source that
+  does not address ensemble breadth adds nothing to that tally.
+
+- **Frontiers in Blockchain 10.3389/fbloc.2026.1811716 ("Microstructure
+  alpha: hierarchical learning and cross-asset transfer in cryptocurrency
+  markets") — not read.** The fetch failed with `ECONNREFUSED`. It is
+  recorded here as **attempted and unread**, not as a negative, so that a
+  future pass does not mistake it for an examined source. A search-result
+  snippet suggested it computes round-trip costs on Binance's spot
+  schedule, which would make it worth a retry.
+
+- **Meta-observation — twentieth consecutive pass with nothing runnable
+  under P1-only, and the first in six with a genuine change to the
+  evidence base.** Nothing was run, no arm tested, no trial registered, no
+  script written, and the standing answer is unchanged in every clause.
+  What changed is that the ensemble-breadth question the operator has been
+  sitting on since iteration 49 now has **four** independent groups behind
+  it instead of three, an **architecture-matched naive price** (+0.06 for
+  one horizon against twelve) instead of only learned-model and
+  cross-experiment prices, and an explicit statement of which branch of
+  that source applies here. The operator's decision does not move — the
+  leave-one-out itself is still unmeasured, still P3-forbidden, and still
+  unobtainable from the registry at any price — but the evidence behind it
+  is larger and, for the first time in this thread, not dominated by a
+  single research group.
