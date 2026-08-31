@@ -281,3 +281,122 @@ Computed with the program's own `deflated_sharpe_ratio` and
 `trial_returns/trial-000118.json` (n=2676). The hypothetical-134th-trial
 sweep varies only the new trial's annualized Sharpe, which is the only
 input a new row contributes to gate 4 besides the count itself.
+
+---
+
+## Addendum 2026-08-31 (iteration 55) — this document's own premise is wrong: gate 4 passes three trials, not one, and the robust pass is not fragile at all
+
+Zero registry cost (re-analysis of existing return series with the
+program's own functions; no backtest run, no trial registered, no gate
+rule touched).
+
+### The correction
+
+This document's title and its opening sentence — "Trial 118 is the
+program's single gate-4 pass" — are **false against the very report they
+cite**. `docs/reports/research/gate_report_2026-07-25.json` (N=133, the
+latest report, unchanged since) marks `passes_dsr: true` on **three**
+trials:
+
+| Trial | Annualized Sharpe | DSR at N=133 | Max drawdown | Family verdict |
+|---:|---:|---:|---:|---|
+| 29 | 1.410899 | **0.986670** | **75.08%** | exp-3 winner; family MDD bar 51.93%, missed by 23.15pp |
+| 37 | 1.243142 | **0.952424** | **67.53%** | exp-3 member; same bar, missed by 15.60pp |
+| 118 | 1.241113 | **0.950140** | 33.24% | exp-10 winner; **all three frozen criteria pass** |
+
+The correct sentence is the one `GOALP_EXPERIMENT10_RESULT.md` already
+wrote on 2026-07-25, three days before this document: trial 118 is "the
+first trial in the registry's history to clear the gate-4 deflation bar
+while ALSO being risk-compliant (trials 29 and 37 clear DSR at 75.1% and
+67.5% drawdown, which fails the risk bar by 23pp and 16pp; they qualify
+nothing)". `LOOP_LOG.md` recorded the same thing even earlier, at
+iteration 9: "trial 37 became the registry's SECOND gate-4 pass".
+
+So nothing about the registry was ever unknown. What happened is a
+**documentation regression**: a correct, qualified statement lost its
+qualifier when it was carried into this document, and the unqualified
+version then propagated into roughly twenty `LOOP_LOG.md` entries and
+into the standing answer's iteration-27 refinement ("gate 4 passes one
+trial"). Same failure mode as the pooling error retracted on 2026-07-26
+and again on 2026-07-28 — an inherited half-sentence, not a bad
+measurement.
+
+The original text above is **not rewritten**; it is corrected here, as
+the loop contract requires.
+
+### What the correction changes — the fragility is trial-118-specific, not gate-4-specific
+
+Applying this document's own method (registry Sharpe variance held at the
+recorded `0.00015842198033849873`, N raised, everything else fixed) to
+all three passes gives the number nobody had computed:
+
+| Trial | Highest N that still passes | DSR there | First N that fails | DSR there | Headroom vs today's N=133 |
+|---:|---:|---:|---:|---:|---:|
+| 29 | **2130** | 0.950008 | 2131 | 0.949999 | **16.0x** |
+| 37 | **148** | 0.950018 | 149 | 0.949864 | 1.11x |
+| 118 | **133** | 0.950140 | 134 | 0.949969 | **1.00x** |
+
+Method identical to the table in "What the margin actually is" above, and
+it reproduces that table to the digit (N=140 → 0.948963, N=200 →
+0.940346, N=400 → 0.921482).
+
+Therefore this document's headline — "gate 4's only pass exists only if
+the search stops" — **cannot stand as a statement about gate 4**. Gate 4
+holds a pass that would survive roughly **two thousand** trials: about
+sixteen times the entire search to date. What is one-trial fragile is
+specifically **the only pass the program would be willing to trade**.
+
+### The sharper statement that replaces it
+
+The binding constraint was never gate 4 alone. It is the **conjunction**
+of gate 4 and the families' own frozen drawdown bars, and in this
+registry those two are pulling in opposite directions at the top of the
+ranking:
+
+- The DSR-robust region (trials 29 and 37, DSR headroom 16.0x and 1.11x)
+  is **entirely outside** the risk-compliant region — 75.08% and 67.53%
+  drawdown against a 51.93% bar.
+- The risk-compliant frontier (trials 118 at 33.24%, 131 at 29.93%, 106
+  at 29.69%, 88 at 33.05%) sits **at or below** the DSR bar, with 118 at
+  it by 0.00014 and the rest under it.
+
+So "the search is over" survives the correction, but its reason changes
+from a statistical near-miss at N=133 to something structural: **the part
+of this registry that is statistically robust is the part a human could
+not sit through, and the part a human could sit through is not
+statistically robust.** That is a stronger claim than the original and it
+does not depend on the exact value of N.
+
+### Guard against the over-reading this invites
+
+The pattern above is **local to the top of the ranking and must not be
+generalized into "DSR rewards risk"**. Measured across all 133 registered
+trials, annualized Sharpe and maximum drawdown are **negatively**
+correlated — Pearson **-0.4276**, Spearman **-0.6789** — i.e. registry-wide,
+higher Sharpe generally comes with *lower* drawdown, the opposite
+direction. The inversion is confined to the two exp-3 cross-sectional
+momentum arms, which bought their Sharpe with drawdown no other family
+tolerated. Anyone citing this addendum as evidence that the deflated
+Sharpe ratio systematically favours risky strategies would be citing it
+against its own numbers.
+
+One further observation, recorded as previously-known rather than new:
+none of the three gate-4 passes is a **gate-3 candidate column** in the
+same report, while robustness trial 131 (explicitly never-nominatable) is.
+That follows from the incomplete `PRE_HOLDOUT_PROTOCOL.md` §1 dedupe key
+already recorded as a defect in `GOALP_EXPERIMENT3_RESULT.md`; it is not
+a new finding and nothing here rests on it.
+
+### Stop-condition check
+
+Unchanged and negative. The loop's stop condition requires **DSR ≥ 0.95
+AND candidates-PBO ≤ 0.05**. Three trials now visibly meet the first;
+candidates-PBO is **0.651826** (all-columns 0.732556), so the second
+fails by an order of magnitude. **No `EDGE_CANDIDATE_FOUND.md` event.**
+
+### What this addendum does not do
+
+No gate rule modified, no frozen pre-registration edited, no registry row
+touched, no result document rewritten, no trial registered, no backtest
+run, no gate report regenerated, holdout untouched, no new script written.
+Trial 118's recorded pass at N=125 and N=133 stands exactly as registered.
