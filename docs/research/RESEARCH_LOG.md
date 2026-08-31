@@ -2257,3 +2257,77 @@ cross-sectional momentum untested here → experiment 3.
   unobtainable from the registry at any price — but the evidence behind it
   is larger and, for the first time in this thread, not dominated by a
   single research group.
+
+## 2026-08-31 — iteration 55 (P1 maintenance; four candidate sources examined, one arrival — and the closest published cousin of this rule reports its numbers on the protected holdout window)
+
+- **coinquant.ai, "Donchian Channel Breakout on Crypto: Backtest vs
+  Keltner" (published 3 August 2026, author not shown).** Read by direct
+  fetch of the page. This is the closest published cousin of this
+  program's rule the loop has located: **long-only, spot BTCUSDT, daily
+  bars, no leverage**, a 20-period Donchian channel entering on a close
+  above the upper band and exiting below the lower band, with **Binance
+  standard 0.1% taker fees included and slippage explicitly 0%**. Window
+  **January 2022 to June 2026**. Numbers as printed: total return
+  **+36.50%**, max drawdown **38.52%**, **Sharpe 0.38**, **25 trades**,
+  win rate **36.0% (9W / 16L)**, profit factor **1.28**. No deflated
+  Sharpe, no PBO, no multiple-testing correction, no confidence interval,
+  and a single asset over a single window — so it is one uncontrolled
+  observation, not a test.
+  **Testable-here: no, and for a reason worth recording.** The window it
+  covers (2022-01 to 2026-06) overlaps this program's protected data.
+  Registry trials end **2025-07-01**; everything after that is either the
+  October holdout or shadow-track territory. Reproducing this source's
+  window inside the repo would **spend the holdout**, which is
+  operator-only under `PRE_HOLDOUT_PROTOCOL.md` and forbidden to the loop
+  by iron rule 2. Recorded so that a later pass does not mistake an
+  attractive outside comparison for a cheap one.
+  Read against it without arithmetic: this program's own BTC/ETH rule
+  scores Sharpe **1.1823** (trial 88) on **2018-03-04..2025-07-01**. The
+  two are **not commensurable** — different asset count, different exit
+  rule, different window, different slippage model, different ensemble
+  breadth — and no comparison is claimed. What can be said is narrow:
+  a naive single-window Donchian on spot BTC alone, net of taker fees,
+  produced a **low** Sharpe over a window this program has never tested.
+
+- **arXiv 2601.20336 — engine-supplied title and actual title do not
+  match, for the fourth consecutive iteration.** The search engine listed
+  it as "Do Whitepaper Claims Predict Market Behavior? Evidence from
+  Cryptocurrency Factor Analysis". The arXiv abstract page reads **"Are
+  Whitepaper Claims Reflected in Market Structure? A Contamination-Aware
+  Pipeline and a Power-Limited Null"** (Murad Farzulla, v1 28 January
+  2026, v6 11 July 2026). It is **not a trading-strategy paper at all**:
+  43 whitepapers across 10 semantic categories against seven
+  market-structure statistics on hourly 2023-2024 data, reporting a
+  **non-significant** alignment (φ = 0.303 dimension-matched, φ = 0.223
+  zero-padded). No strategy, no costs, no Sharpe, no drawdown.
+  **Testable-here: no.** The engine's "factor analysis" framing was
+  invented. Standing rule holds: **summarizer output is a pointer to a
+  document, never a reading of it.**
+
+- **A second engine-vs-primary mismatch, in the same pass.** The search
+  engine reported the Donchian source above as having a **"45% win
+  rate"**. The page prints **"36.0% (9W / 16L)"**, which is internally
+  consistent (9/25 = 36.0%). Only the primary figure is recorded. Two
+  mismatches in one iteration, five across the last four.
+
+- **arXiv 2508.16378, Qizhao Chen, "Sentiment-Aware Mean-Variance
+  Portfolio Optimization for Cryptocurrencies" (v1 22 August 2025, v2 4
+  March 2026).** Read from the arXiv abstract page. Combines 14-day RSI
+  and SMA with VADER and Google Gemini news sentiment inside a
+  "constrained mean-variance optimization framework", compared against a
+  momentum strategy, a Bitcoin long-short strategy and an equal-weighted
+  portfolio. The abstract states "stronger risk-adjusted returns" but
+  prints **no Sharpe ratio, no drawdown percentage, no rebalance
+  frequency and no transaction-cost assumption**; long-only vs long-short
+  and spot vs derivatives are not stated either. No multiple-testing
+  correction. **Testable-here: no** — it requires a news-sentiment feed
+  this product does not have, and its architecture is mean-variance
+  optimization, the route this program closed on its own evidence (P3)
+  and which iteration 54's outside source priced at **-0.59** Sharpe
+  against naive equal weighting.
+
+- **arXiv 2602.11708 (AdaptiveTrend) re-encountered for at least the
+  fifth time and stays disposed;** arXiv 2603.20319 (implementation risk
+  in portfolio backtesting) is already filed three times. Neither is a
+  new arrival. **Independence added today: one** (the Donchian cousin),
+  and it arrives already blocked by the holdout protocol.

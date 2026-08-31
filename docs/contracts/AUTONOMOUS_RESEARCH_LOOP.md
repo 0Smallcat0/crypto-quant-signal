@@ -164,6 +164,31 @@ Hard limits, binding:
 > `VS_BUY_AND_HOLD_2026-07-26.md` stated the correct same-universe
 > reading at its line 19 and the pooled one at its line 171; the standing
 > answer inherited the wrong half. Full addendum in that document.
+>
+> Refinement 2026-08-31 (iteration 55) — **correction to the iteration-27
+> clause "gate 4 passes one trial".** It passes **three**. The latest gate
+> report (2026-07-25, N=133, unchanged since) marks `passes_dsr: true` on
+> trial **29** (DSR 0.986670, drawdown 75.08%), trial **37** (0.952424,
+> 67.53%) and trial **118** (0.950140, 33.24%). The first two are
+> disqualified by their own family's frozen 51.93% drawdown bar, which
+> `GOALP_EXPERIMENT10_RESULT.md` stated correctly on 2026-07-25 — the
+> qualifier was lost when the sentence was carried into
+> `GATE4_FRAGILITY_2026-07-28.md`, and the unqualified version then
+> propagated. Correct wording: **the only gate-4 pass that is also
+> risk-compliant.** Consequence, newly measured with the fragility
+> document's own method: the one-trial fragility is
+> **trial-118-specific, not gate-4-specific.** Holding the recorded
+> Sharpe variance fixed and raising N, trial 118 fails at N=**134**,
+> trial 37 at N=**149**, and trial 29 survives to N=**2130** — sixteen
+> times the whole search. So "the search is over" stands, but for a
+> structural reason rather than a near-miss at N=133: **the
+> statistically robust part of this registry is the part no human could
+> sit through (75.08% and 67.53% drawdown), and the part a human could
+> sit through sits at or below the DSR bar.** Not to be over-read —
+> registry-wide, Sharpe and drawdown are *negatively* rank-correlated
+> (Spearman **-0.6789**, n=133), so this is a top-of-ranking inversion,
+> not a claim that DSR rewards risk. Full addendum in
+> `docs/research/GATE4_FRAGILITY_2026-07-28.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 

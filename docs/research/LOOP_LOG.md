@@ -5109,3 +5109,202 @@
   exactly two gates, both defective. On-chain route open but unadvanced.
   Operator-attention items dated 2026-08-30 are the four above, all
   carried forward, with (a) restated.
+
+## 2026-08-31 — iteration 55 (P1: eleventh slot in flight; the "single gate-4 pass" turns out to be three, and the one-trial fragility belongs to the trial, not to the gate)
+
+- **Step 0 convergence check, done first and in writing.**
+  1. **Current answer, unchanged in substance:** measured on 2018-2025 and
+     not forward-validated, the timing rule adds real value **in crypto
+     only** — 4.70x its exposure-matched passive twin, and in its own
+     BTC/ETH universe it bought **both** return (14.26x vs 6.05x) and
+     drawdown (33.05% vs 80.99%). Against the naive thirteen-coin
+     alternative the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates.**
+  2. **What this iteration moves.** It corrects a load-bearing clause the
+     program has been repeating for 34 days — "trial 118 is the program's
+     single gate-4 pass" — and then measures the thing that clause made
+     nobody look at. Gate 4 passes **three** trials, and the fragility
+     that was attributed to *the gate* belongs to *trial 118*: trial 29
+     survives to **N=2130**, sixteen times the entire search.
+  3. **Why it is not sprawl.** No new script (the computation is inline,
+     using the program's own imported `deflated_sharpe_ratio` and
+     `non_annualized_sharpe_variance`), no new research document (a dated
+     addendum to `GATE4_FRAGILITY_2026-07-28.md`, which is the document
+     the correction belongs to), no trial registered, no backtest run, no
+     gate report regenerated, no arm run, no pre-registration touched, no
+     frozen rule modified. The web pass is contract-mandated (step 2,
+     "never skip"). **Correcting a false sentence the standing answer
+     depends on is not a diagnostic; it is iron rule 5.**
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 37 (36 real + seed) | 2026-08-30, equity 1083.611019818506407505984381, exposure `{BTC: 0.75, ETH: 0.75}`, closes 77682.00 / 2416.88 | OK — +1 row since iteration 54 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 37 (36 real + seed) | 2026-08-30, exposure `{BTC: 0.75, ETH: 1}` | OK — +1 row since iteration 54 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 7 (6 real + seed) | 2026-08-28, close 106.95, exposure 0.75, `WINDOWS_ON_3_OF_4` | OK — unchanged, **weekly**; next fire 2026-09-05 09:40 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 8 (7 real + seed) | 2026-08-28, close 408.890015, exposure 0.5, `WINDOWS_ON_2_OF_4` | OK — unchanged, same weekly task |
+
+  Today's 08:20 slot fired clean — `shadow_20260831_082002.log` ends
+  `exit=0 finished=2026-08-31T08:20:05.6465388+08:00`, with both crypto
+  tracks appending 2026-08-30. That is the **eleventh consecutive clean
+  crypto slot**. The weekly pair is correctly static between Saturday
+  fires and is **not** a stall. The 2026-08-09 hole is still a hole and is
+  still left as one.
+
+- **The correction: "the program's single gate-4 pass" is false, and has
+  been for 34 days.** `gate_report_2026-07-25.json` (N=133, still the
+  latest report) marks `passes_dsr: true` on **three** trials, not one:
+
+  | Trial | Sharpe | DSR at N=133 | Max drawdown | Standing |
+  |---:|---:|---:|---:|---|
+  | 29 | 1.410899 | **0.986670** | **75.08%** | exp-3 winner; misses its family's frozen 51.93% drawdown bar by 23.15pp |
+  | 37 | 1.243142 | **0.952424** | **67.53%** | exp-3 member; misses the same bar by 15.60pp |
+  | 118 | 1.241113 | **0.950140** | 33.24% | exp-10 winner; all three frozen criteria pass |
+
+  **The registry never hid this.** `GOALP_EXPERIMENT10_RESULT.md` said it
+  correctly on 2026-07-25 — trial 118 is "the first trial in the
+  registry's history to clear the gate-4 deflation bar while ALSO being
+  risk-compliant (trials 29 and 37 clear DSR at 75.1% and 67.5%
+  drawdown... they qualify nothing)" — and this log said it at iteration 9
+  ("trial 37 became the registry's SECOND gate-4 pass"). The qualifier was
+  dropped three days later when the sentence was carried into
+  `GATE4_FRAGILITY_2026-07-28.md`, and the unqualified version then
+  propagated into roughly twenty entries of this log and into the standing
+  answer's iteration-27 refinement. **Same failure mode as the pooling
+  error retracted on 2026-07-26 and again on 2026-07-28: an inherited
+  half-sentence, not a bad measurement.**
+
+- **The substantive finding the false clause was hiding: the one-trial
+  fragility is trial-118-specific, not gate-4-specific.** Applying the
+  fragility document's own method — registry Sharpe variance held at the
+  recorded 0.00015842198033849873, N raised, nothing else changed —
+
+  | Trial | Highest N still passing | DSR there | First N failing | DSR there | Headroom vs N=133 |
+  |---:|---:|---:|---:|---:|---:|
+  | 29 | **2130** | 0.950008 | 2131 | 0.949999 | **16.0x** |
+  | 37 | **148** | 0.950018 | 149 | 0.949864 | 1.11x |
+  | 118 | **133** | 0.950140 | 134 | 0.949969 | **1.00x** |
+
+  The method reproduces the fragility document's published table to the
+  digit (N=140 → 0.948963, N=200 → 0.940346, N=400 → 0.921482), so this is
+  the same computation extended to the two trials it omitted. Gate 4 holds
+  a pass that would survive about **two thousand** trials. What is
+  one-trial fragile is specifically **the only pass the program would be
+  willing to trade**.
+
+- **What that changes, and what it does not.** Iteration 26's conclusion —
+  "'No new families' is not a pause, it is the search being over" —
+  **survives**, but its reason is replaced by a stronger one. It is no
+  longer a statistical near-miss at N=133; it is structural: **the
+  DSR-robust region of this registry (trials 29 and 37) lies entirely
+  outside the risk-compliant region (75.08% and 67.53% drawdown against a
+  51.93% bar), and the risk-compliant frontier (118 at 33.24%, 131 at
+  29.93%, 106 at 29.69%, 88 at 33.05%) sits at or below the DSR bar.**
+  That claim does not depend on the exact value of N. Iteration 27's
+  finding is sharpened rather than overturned: gate 4's discriminating
+  power is weaker than recorded, because two of the three trials it passes
+  are trials the program's own risk bars reject.
+
+- **Guard stated before it can be over-read.** This is **not** evidence
+  that DSR rewards risk. Across all 133 registered trials, annualized
+  Sharpe and maximum drawdown are **negatively** correlated — Pearson
+  **-0.4276**, Spearman **-0.6789** — the opposite direction. The
+  inversion is confined to the two exp-3 cross-sectional momentum arms.
+  Recorded in the addendum so a later pass cannot cite the finding against
+  its own numbers.
+
+- **Stop-condition check, run explicitly because three trials now visibly
+  clear the DSR half.** The condition requires **DSR ≥ 0.95 AND
+  candidates-PBO ≤ 0.05**. Candidates-PBO is **0.651826** (all-columns
+  0.732556), failing by an order of magnitude. **No
+  `EDGE_CANDIDATE_FOUND.md` event, and none is warranted.**
+
+- **Step 2 (web research): four candidates examined, one arrival, and it
+  arrives already blocked.** Full detail in `RESEARCH_LOG.md` under
+  iteration 55. The arrival is coinquant.ai's 3 August 2026 Donchian
+  breakout backtest — the closest published cousin of this rule the loop
+  has found: **long-only, spot BTCUSDT, daily, 20-period channel, 0.1%
+  taker fees included, slippage 0%**, January 2022 to June 2026, printing
+  return **+36.50%**, drawdown **38.52%**, **Sharpe 0.38**, 25 trades, win
+  rate **36.0% (9W / 16L)**. **Testable-here: no** — its window sits after
+  the registry's 2025-07-01 boundary, so reproducing it inside the repo
+  would **spend the holdout**, which iron rule 2 forbids the loop.
+  Recorded explicitly so a later pass does not mistake an attractive
+  comparison for a cheap one. Also examined: arXiv 2508.16378 (sentiment
+  plus mean-variance; no costs, no Sharpe, no drawdown in the abstract;
+  needs a data feed this product lacks), arXiv 2601.20336 (not a strategy
+  paper at all), and arXiv 2602.11708 (AdaptiveTrend, re-encountered at
+  least a fifth time, stays disposed).
+
+- **Two more engine-vs-primary mismatches, in one pass.** The search engine
+  gave arXiv 2601.20336 a title it does not have ("Do Whitepaper Claims
+  Predict Market Behavior? Evidence from Cryptocurrency Factor Analysis"
+  against the actual "Are Whitepaper Claims Reflected in Market Structure?
+  A Contamination-Aware Pipeline and a Power-Limited Null"), and credited
+  the Donchian source with a **45%** win rate where the page prints
+  **36.0% (9W / 16L)**. Only primary figures are recorded. That is **five
+  mismatches across four iterations**, and the standing rule holds:
+  **summarizer output is a pointer to a document, never a reading of it.**
+
+- **Operator-attention items.** Four carried forward, unchanged in
+  substance, and one added. (a) The ensemble-breadth question still
+  carries five measurements from four groups, all in the hundredths
+  (+0.03, +0.01, +0.06 outside; +0.0498, +0.0272 internal); the
+  leave-one-out is still unmeasured, still P3-forbidden and still
+  unobtainable from the registry; **the loop still proposes nothing and
+  recommends nothing.** (b) The research loop still runs in a visible
+  console window. (c) Weekly account usage limits and auth expiries are
+  account-level matters only the operator controls. (d) Should cross-track
+  structural comparisons of the shadow files be brought explicitly under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still unanswered; the loop
+  **abstained** again today, for the eighth consecutive iteration. **(e)
+  New:** the phrase "the single gate-4 pass" appears in roughly twenty
+  prior entries of this log. Those entries are **not edited** — this log
+  is append-only — but every one of them means "the single *risk-compliant*
+  gate-4 pass", and the fragility attached to it is trial 118's, not gate
+  4's.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All checks
+  passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed**, 1 warning.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  pre-registration or contract clause deleted, no registry row touched, no
+  result document rewritten, no prior log entry edited, no trial
+  registered, no backtest run, no gate report regenerated, no arm run, no
+  new script written, no new research document created, holdout untouched
+  and `spent` still `false`, no `configs/runtime/` or live-runtime file
+  touched, no scheduled-task definition altered, no shadow row fabricated,
+  no cross-track or per-day structural statistic computed while item (d)
+  is open, and the 2026-08-09 hole left as a hole. The corrections are
+  **additive**: a dated addendum in the fragility document and a dated
+  refinement block in the standing answer, both leaving the original text
+  in place.
+
+- **Standing answer restated, with one clause corrected:** timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine is free of look-ahead, verified
+  to the cent; execution-latency cost is about -6.4 bps round-trip,
+  bounded above by about 17 bps, inside tested headroom; the October
+  holdout is protected mechanically; the Taiwan and gold negatives are
+  robust to dividend treatment; against the naive 13-coin alternative the
+  margin is only 5.4% and that benchmark is survivorship-flattered;
+  breadth still fails, and the ensemble's internal breadth remains
+  unmeasured in the leave-one-out sense and unmeasurable from the registry
+  at any price, but is priced from five directions, all in the hundredths
+  of Sharpe; **nothing is forward-validated and no return-based forward
+  verdict is statistically permitted before 2028-06-29**, a date the
+  tracks are **5.10%** of the way to; **gate 4 passes three trials, not
+  one — trials 29 and 37 clear it at 75.08% and 67.53% drawdown and are
+  rejected by their own family's risk bar, so trial 118 is the only
+  *risk-compliant* pass — and the one-trial fragility belongs to trial 118
+  (fails at N=134), not to gate 4, whose most robust pass survives to
+  N=2130**; the search is still over, now for the structural reason that
+  this registry's statistically robust region and its risk-compliant
+  region do not intersect; the framework has exercised exactly two gates,
+  both defective. On-chain route open but unadvanced. Operator-attention
+  items dated 2026-08-31 are the five above.
