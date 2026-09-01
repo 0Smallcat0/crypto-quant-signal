@@ -5308,3 +5308,210 @@
   region do not intersect; the framework has exercised exactly two gates,
   both defective. On-chain route open but unadvanced. Operator-attention
   items dated 2026-08-31 are the five above.
+
+## 2026-09-01 — iteration 56 (P1: twelfth slot in flight; gate 3's verdict number turns out to be a 4224-value distribution decided by an arbitrary index, and none of the values passes)
+
+- **Step 0 convergence check, done first and in writing.**
+  1. **Current answer, unchanged in substance:** measured on 2018-2025 and
+     not forward-validated, the timing rule adds real value **in crypto
+     only** — 4.70x its exposure-matched passive twin, and in its own
+     BTC/ETH universe it bought **both** return (14.26x vs 6.05x) and
+     drawdown (33.05% vs 80.99%). Against the naive thirteen-coin
+     alternative the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates.**
+  2. **What this iteration moves.** It closes a route the program had left
+     open by never measuring it: whether gate 3's FAIL could turn on how
+     the candidate columns are composed. It cannot — **0 of 4 224
+     admissible readings** reach the 0.05 bar. Along the way it measures,
+     registry-wide and for the first time, what the frozen §1 dedupe key
+     actually collapses at N=133.
+  3. **Why it is not sprawl.** The loop's **only success exit** requires
+     `candidates-PBO ≤ 0.05`; iteration 55 recorded in one line that none
+     of the three gate-4 passes is a candidate column, and left it, because
+     the gate-4 addendum did not rest on it. **The stop condition does.**
+     No new script (inline, using the program's own
+     `probability_of_backtest_overfitting` reformulated over block sums and
+     validated by exact reproduction of both recorded numbers), no trial
+     registered, no backtest run, no gate report regenerated, no frozen
+     rule touched. One new research document, permitted because it
+     **records a closed route**.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 38 (37 real + seed) | 2026-08-31, equity 1096.851247252105204931084202, exposure `{BTC: 0.5, ETH: 0.75}`, closes 78581.29 / 2467.65 | OK — +1 row since iteration 55 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 38 (37 real + seed) | 2026-08-31, exposure `{BTC: 0.75, ETH: 1}` | OK — +1 row since iteration 55 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 7 (6 real + seed) | 2026-08-28, close 106.95, exposure 0.75 | OK — unchanged, **weekly**; next fire 2026-09-05 09:40 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 8 (7 real + seed) | 2026-08-28, close 408.890015, exposure 0.5 | OK — unchanged, same weekly task |
+
+  Today's 08:20 slot fired clean — `shadow_20260901_082002.log` ends
+  `exit=0 finished=2026-09-01T08:20:05.5871187+08:00`, both crypto tracks
+  appending 2026-08-31. That is the **twelfth consecutive clean crypto
+  slot**. A second run at 18:20 (`shadow_20260901_182054.log`) logged
+  `already recorded through 2026-08-31` for both tracks and exited 0 — the
+  idempotence guard behaving correctly, not a second row. The weekly pair
+  is correctly static between Saturday fires. The 2026-08-09 hole is still
+  a hole and is still left as one. Forward progress toward the
+  return-verdict date: **37 of 706 rows, 5.24%**.
+
+- **Method validated before anything was concluded from it.** The block-sum
+  reformulation of the program's own CSCV reproduces
+  `gate_report_2026-07-25.json` **exactly** — all-columns **0.732556**,
+  candidates **0.651826**, both to six decimals, same 2 672 usable
+  observations, same 12 870 partitions. Every number below comes from that
+  validated path.
+
+- **What §1 collapses at N=133, measured registry-wide for the first
+  time.** The rule leaves **37 columns out of 128 eligible rows** (5 cost-
+  stress rows excluded: 3, 108, 109, 132, 133). Of the 37: **34 are
+  singletons**, one is the genuine parity pair `{2, 4}` the rule was
+  written for, and the remaining two swallow **92 trials**:
+
+  | Group | Rows | Kept | Spans |
+  |---|---:|---:|---|
+  | A | 48 (22–37, 54–85) | **85** | experiments 3, 5, 6 |
+  | B | 44 (86–107, 110–131) | **131** | experiments 7, 9, 10 + both robustness batteries |
+
+  Trial **131's own operator_note reads "ROBUSTNESS (never nominatable)"**,
+  and trials 29, 37, 88, 106 and 118 — the three gate-4 passes and both
+  shadow-tracked trials — are absent. **Mechanism named exactly:**
+  `config_hash` is computed once per family run from the base config
+  snapshot **before** the sweep loop (`scripts/run_donchian_family.py:63`,
+  `scripts/run_cs_family.py:85`, `scripts/run_robustness_trial118.py:73`),
+  so it cannot distinguish a family's arms; §1's key adds only
+  `confirm_days` and three `vol_*` fields, none of which these families
+  vary. Compounding it inside group A, rows 22–37 serialize `cs_*` only in
+  `operator_note`, so those 16 are machine-indistinguishable even under a
+  full-parameter key. Both defects were already recorded per-family in
+  `GOALP_EXPERIMENT3_RESULT.md` and `ROBUSTNESS_TRIAL88_RESULT.md`; **the
+  registry-wide magnitude was not.**
+
+- **The finding: the verdict input is a distribution, and the verdict is
+  not.** Holding §1's filters and grouping exactly as written and varying
+  only its arbitrary "highest trial_id" tie-break gives **2 × 44 × 48 =
+  4 224** admissible readings:
+
+  | Reading | Picks | candidates-PBO |
+  |---|---|---:|
+  | as recorded | 4, 131, 85 | **0.651826** |
+  | lowest trial_id | 2, 86, 22 | 0.852214 |
+  | highest-Sharpe member | 4, 118, 29 | 0.454623 |
+  | forcing trial 88 | 4, 88, 85 | 0.749728 |
+  | forcing trial 118 | 4, 118, 85 | 0.624553 |
+  | minimum of 4 224 | 2, 118, 29 | **0.454468** |
+  | maximum of 4 224 | 2, 126, 28 | **0.924320** |
+
+  Distribution: min **0.454468**, 5th pct 0.648920, median **0.840676**,
+  mean 0.815265, max **0.924320**. Three consequences, in increasing order
+  of importance: (a) `0.651826` is one draw, not a property of the
+  registry; (b) it is a **favourable** draw, at the **5.2nd percentile**,
+  and repairing the key to the full machine-readable parameter set (111
+  columns) gives **0.799145**, worse than both recorded numbers; (c)
+  **0 of 4 224 readings reach 0.05** — best case misses by **9.1x**,
+  recorded by 13.0x, all-columns by 14.7x, repaired key by 16.0x.
+  **Gate 3's FAIL does not depend on candidate composition at all, and the
+  route is closed.**
+
+- **A contract sentence that no longer describes the numbers, flagged not
+  edited.** `PRE_HOLDOUT_PROTOCOL.md` §1 calls the all-columns PBO the
+  "conservative upper bound". At N=133 **88.3% of admissible candidate
+  readings exceed it**. That was plausible at N=21 when the rule was
+  written. The protocol is frozen until the holdout spend and **was not
+  touched**; this goes to the operator for October's gate-3 read-out.
+
+- **Third independent line that the search is over.** Iteration 26 reached
+  it via gate 4's fragility at N=133; iteration 55 replaced that with the
+  disjointness of the DSR-robust and risk-compliant regions; today adds a
+  third and the bluntest: the stop condition's PBO half is missed by an
+  order of magnitude under **every** reading, and this program's own
+  experiment 1 measured near-duplicate columns driving all-columns PBO
+  0.018 → 0.879 → 0.886 at N=21, so more searching moves it the wrong way.
+
+- **Stop-condition check, run explicitly.** **DSR ≥ 0.95 AND
+  candidates-PBO ≤ 0.05.** Three trials meet the first (29, 37, 118; only
+  118 risk-compliant). The second fails under all 4 224 readings, the
+  repaired key, and all columns. **No `EDGE_CANDIDATE_FOUND.md` event, and
+  none is warranted.**
+
+- **Step 2 (web research): four candidates examined, two arrivals, and one
+  correction to how the loop quotes literature.** Full detail in
+  `RESEARCH_LOG.md` under iteration 56. (a) **coinquant.ai's 17 August 2026
+  ranked page** — five daily BTCUSDT rule families on one identical window
+  (Jan 2021–Aug 2026) at 0.1% taker fees, Sharpe spanning **0.22 to 0.54**;
+  an outside prior on what daily rule *selection* on BTC is worth, and
+  **testable-here: no**, its window is inside the protected holdout.
+  (b) **Frontiers in Blockchain, Pindza, 11 June 2026, minute-level
+  long-short on six coins** — best **gross** Sharpe 0.96 becomes **net
+  −50.30** spot after VIP-0 fees at 5-minute rebalancing; **testable-here:
+  no** on three counts, but an outside price on turnover that corroborates
+  the daily, low-turnover design. (c) The widely-repeated sentence "under
+  CSCV, PBO approaches 1 as N grows" was checked against **primary** and
+  **could not be verified** — the Bailey/Borwein/López de Prado/Zhu
+  abstract contains no claim about N and no guidance on column composition,
+  and the author-hosted full text is a binary layout the fetch tool cannot
+  read. It is **not** cited anywhere in today's work; the "more columns
+  move PBO the wrong way" claim rests on **this program's own** experiment
+  1 instead. That is the **sixth engine-vs-primary caution in five
+  iterations**, and the first where the engine supplied a plausible
+  *quotation* rather than a wrong title or figure. Rule tightened by one
+  word: **summarizer output is a pointer to a document, never a reading of
+  it, and never a quotation from it.**
+
+- **Operator-attention items.** Four carried forward, one added. (a) The
+  ensemble-breadth question still carries five measurements from four
+  groups, all in the hundredths; the leave-one-out is still unmeasured,
+  still P3-forbidden and still unobtainable from the registry; **the loop
+  still proposes nothing.** (b) The research loop still runs in a visible
+  console window. (c) Weekly account usage limits and auth expiries are
+  account-level matters only the operator controls. (d) Should cross-track
+  structural comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still unanswered; the loop
+  **abstained** again today, for the ninth consecutive iteration.
+  (e) Iteration 55's item — that ~20 prior log entries say "the single
+  gate-4 pass" where they mean "the single *risk-compliant* gate-4 pass" —
+  stands as recorded; the log is append-only. **(f) New, and the one that
+  needs a decision:** §1's "conservative upper bound" description of
+  all-columns PBO is false at N=133, and the candidates number the October
+  sign-off is contractually pointed at is decided by an arbitrary index
+  within a 0.45–0.92 band. Nothing about the verdict changes — every
+  reading fails — but the operator should declare **which** number October
+  cites, and declare it before it is recomputed.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All checks
+  passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed**, 1 warning in 50.69s.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  pre-registration or contract clause deleted, no registry row or return
+  series touched, no result document rewritten, no prior log entry edited,
+  no trial registered, no backtest run, no gate report regenerated, no arm
+  run, **no new script written**, holdout untouched and `spent` still
+  `false`, no `configs/runtime/` or live-runtime file touched, no
+  scheduled-task definition altered, no shadow row fabricated, no
+  cross-track or per-day structural statistic computed while item (d) is
+  open, and the 2026-08-09 hole left as a hole. The single new research
+  document is permitted by step 0 because it **closes a route**.
+
+- **Standing answer restated, with one clause added:** timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin edge
+  is audited and robust; the engine is free of look-ahead;
+  execution-latency cost is about -6.4 bps round-trip, inside tested
+  headroom; the October holdout is protected mechanically; the Taiwan and
+  gold negatives are robust to dividend treatment; against the naive
+  13-coin alternative the margin is only 5.4% and that benchmark is
+  survivorship-flattered; breadth still fails and is priced from five
+  directions, all in the hundredths of Sharpe; **nothing is
+  forward-validated and no return-based forward verdict is statistically
+  permitted before 2028-06-29**, a date the tracks are **5.24%** of the way
+  to; gate 4 passes three trials and only trial 118 is risk-compliant, with
+  the one-trial fragility belonging to trial 118 (fails at N=134) rather
+  than to gate 4 (most robust pass survives to N=2130); **and gate 3 fails
+  under all 4 224 admissible candidate readings, the repaired key, and all
+  columns — so neither surviving gate can be moved by anything the loop is
+  permitted to do**; the search is still over; the framework has exercised
+  exactly two gates, both defective. On-chain route open but unadvanced.
+  Operator-attention items dated 2026-09-01 are the six above.
