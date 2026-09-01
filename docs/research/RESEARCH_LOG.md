@@ -2331,3 +2331,105 @@ cross-sectional momentum untested here → experiment 3.
   in portfolio backtesting) is already filed three times. Neither is a
   new arrival. **Independence added today: one** (the Donchian cousin),
   and it arrives already blocked by the holdout protocol.
+
+## 2026-09-01 — iteration 56 (P1 maintenance; four candidate sources examined, two arrivals — and the sentence everyone quotes about PBO cannot be verified from its primary source)
+
+- **coinquant.ai, "Best Crypto Trading Strategy in 2026: Backtested and
+  Ranked" (published 17 August 2026, author not shown).** Read by direct
+  fetch of the page. **A second, different page from the same site as
+  iteration 55's Donchian arrival**, and more useful than it: five
+  distinct daily rule families on the **same asset, same window, same fee
+  assumption**, which is the like-for-like comparison the loop has never
+  been able to buy. All are **BTCUSDT, daily candles, January 2021 to
+  August 2026, Binance standard taker fees 0.1%**; slippage is not stated
+  on this page. As printed:
+
+  | Rank | Strategy | Return | Max DD | Sharpe | Profit factor | Win rate | Trades |
+  |---:|---|---:|---:|---:|---:|---:|---:|
+  | 1 | BTC Breakout 1D | +118.4% | 48.6% | **0.54** | 1.45 | 50.0% | 24 |
+  | 2 | BTC Trend Following 1D | +82.8% | 37.6% | **0.49** | 2.02 | 20.0% | 25 |
+  | 3 | BTC EMA Crossover 20/50 1D | +79.2% | 51.6% | **0.48** | 1.55 | 37.5% | 16 |
+  | 4 | BTC Mean Reversion 1D | +39.3% | 24.6% | **0.35** | 2.12 | 57.1% | 14 |
+  | 5 | BTC Bollinger Mean Reversion 1D | +10.4% | 52.7% | **0.22** | 1.07 | 65.7% | 35 |
+
+  **Testable-here: no**, and for the same reason as iteration 55's arrival —
+  the window runs to **August 2026**, past the registry's 2025-07-01
+  boundary, so reproducing it in-repo would spend the holdout (iron rule 2).
+  What can be read without arithmetic, and is worth recording: across five
+  daily BTC rule families on one identical window net of taker fees, the
+  **entire Sharpe spread is 0.22 to 0.54**. That is an outside prior on how
+  much daily-timeframe *rule selection* on BTC is worth — a third of a
+  Sharpe point between the best and worst family — and it is **not
+  commensurable** with this program's trial 88 (Sharpe 1.1823, two assets,
+  ensemble of four windows, 2018-03-04..2025-07-01, two-sided costs). No
+  comparison is claimed. Note also that the same site's 3 August page put a
+  20-period Donchian on BTC at **Sharpe 0.38** over Jan 2022–Jun 2026, and
+  this page's "BTC Breakout 1D" at **0.54** over Jan 2021–Aug 2026; the two
+  are different windows and possibly different rules, and the site does not
+  reconcile them.
+
+- **Frontiers in Blockchain, Edson Pindza, "Microstructure alpha:
+  hierarchical learning and cross-asset transfer in cryptocurrency markets"
+  (published 11 June 2026).** Read by direct fetch of the full article.
+  **New arrival.** Minute-level bars, **August 2025 – February 2026**, six
+  coins (BTC, ETH, SOL, AVAX, LINK, DOT), both Binance spot and perpetual
+  futures, **long-short**, **5-minute rebalancing**, turnover **124–204x
+  notional**. Costs are Binance VIP-0: 10 bps per side spot (20 bps
+  round-trip), 2 bps maker / 5 bps taker on perps, plus Corwin-Schultz
+  half-spread slippage. Its own headline table, as printed:
+
+  | Model | Gross Sharpe | Net Sharpe (spot) | Net Sharpe (futures) |
+  |---|---:|---:|---:|
+  | AR(1) | 0.43 | **−31.29** | **−10.68** |
+  | Momentum (5 min) | 0.43 | −31.29 | −10.68 |
+  | OLS (microstructure) | −0.31 | −52.05 | −18.42 |
+  | LightGBM | **0.96** | **−50.30** | **−16.98** |
+
+  Max drawdown is **not reported**. **Testable-here: no** — minute bars, a
+  long-short book, perpetual futures and a window inside the protected
+  holdout are each independently disqualifying under product law and iron
+  rule 2. The value is as an outside price on turnover: the **best gross
+  signal in the paper (0.96) becomes the worst net one (−50.30)**, i.e. at
+  5-minute rebalancing, retail fees consume roughly fifty Sharpe points.
+  This is corroboration from outside the program that the daily,
+  low-turnover, two-sided-cost design is not a limitation of ambition; it
+  is where the arithmetic still permits a positive number. It says nothing
+  about whether any daily edge exists.
+
+- **Bailey, Borwein, López de Prado & Zhu, "The Probability of Backtest
+  Overfitting" (Journal of Computational Finance / JFQA, 2017) —
+  retrieved primary, and the sentence the loop wanted is NOT in it.**
+  Search engines returned, twice in one pass and in confident phrasing,
+  "under CSCV, PBO approaches 1 as N grows, regardless of whether any
+  individual configuration has genuine predictive power". That claim bears
+  directly on this program's standing conclusion that more searching makes
+  gate 3 worse, so it was checked. The **primary abstract**, fetched from
+  the publisher's institutional record, reads in full: *"Many investment
+  firms and portfolio managers rely on backtests… Standard statistical
+  techniques designed to prevent regression overfitting, such as hold-out,
+  tend to be unreliable and inaccurate in the context of investment
+  backtests. We propose a general framework to assess the probability of
+  backtest overfitting (PBO). We illustrate this framework with specific
+  generic, model-free and nonparametric implementations… we call these
+  implementations combinatorially symmetric cross-validation (CSCV). We
+  show that CSCV produces reasonable estimates of PBO for several useful
+  examples."* **No claim about N, and no guidance on how the N columns
+  should be composed.** The author-hosted full-text PDF is a scanned/binary
+  layout the fetch tool cannot read, so the sentence remains **unverified
+  against primary** and is **not** recorded as a finding, cited, or used to
+  support today's gate-3 measurement. Where this program needs "more
+  columns move PBO the wrong way", it uses **its own** experiment-1
+  measurement (0.018 → 0.879 → 0.886 at N=21, `PRE_HOLDOUT_PROTOCOL.md`
+  §3), not the literature. **This is the sixth engine-vs-primary caution in
+  five iterations** — the first five were wrong titles and wrong figures;
+  this one is a plausible, widely-repeated sentence that the primary
+  source does not contain where the engine implied it does. The standing
+  rule tightens by one word: **summarizer output is a pointer to a
+  document, never a reading of it, and never a quotation from it.**
+
+- **arXiv 2602.11708 (AdaptiveTrend) re-encountered for at least the sixth
+  time and stays disposed**; the Bailey PBO paper is a method reference,
+  not a strategy arrival. **Independent arrivals added today: two** (the
+  coinquant ranked page and the Frontiers microstructure paper), and both
+  arrive blocked — the first by the holdout boundary, the second by product
+  law on three separate counts.

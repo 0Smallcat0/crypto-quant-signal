@@ -189,6 +189,28 @@ Hard limits, binding:
 > (Spearman **-0.6789**, n=133), so this is a top-of-ranking inversion,
 > not a claim that DSR rewards risk. Full addendum in
 > `docs/research/GATE4_FRAGILITY_2026-07-28.md`.
+>
+> Refinement 2026-09-01 (iteration 56) — **gate 3's verdict number is a
+> distribution, and no reading of it changes the verdict.** The stop
+> condition's second half is `PRE_HOLDOUT_PROTOCOL.md` §1's
+> candidates-PBO. At N=133 that rule collapses **92 of 133 trials into
+> two columns** — 48 rows (experiments 3, 5, 6) represented by trial 85
+> and 44 rows (experiments 7, 9, 10 plus both robustness batteries)
+> represented by trial **131, a row marked "never nominatable"** —
+> because `config_hash` is computed once per family run from the base
+> config snapshot, before the sweep loop, so it does not vary across a
+> family's arms. All three gate-4 passes are therefore absent from the
+> candidate set. Varying only the rule's arbitrary "highest trial_id"
+> tie-break gives **4 224 admissible readings spanning 0.454468 to
+> 0.924320** (median 0.840676); the recorded **0.651826 sits at the 5.2nd
+> percentile**, and repairing the key to the full machine-readable
+> parameter set (111 columns) gives **0.799145**. **0 of 4 224 reach the
+> 0.05 bar** — best case misses by 9.1x. So gate 3 fails independently of
+> candidate composition, the route is closed, and §1's description of the
+> all-columns number as a "conservative upper bound" no longer holds at
+> N=133 (**88.3%** of admissible candidate readings exceed it). The
+> frozen rule is unchanged and unedited. Full measurement in
+> `docs/research/GATE3_CANDIDATE_COMPOSITION_2026-09-01.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
