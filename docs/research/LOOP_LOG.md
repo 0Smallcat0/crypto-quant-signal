@@ -5515,3 +5515,207 @@
   permitted to do**; the search is still over; the framework has exercised
   exactly two gates, both defective. On-chain route open but unadvanced.
   Operator-attention items dated 2026-09-01 are the six above.
+
+## 2026-09-04 — iteration 57 (P1: the live paper runtime has emitted no decision since 2026-07-31, exits 0 every day, and gate 6's clock for the current strategy has never started)
+
+- **Step 0 — convergence check, run first.**
+  1. **Current answer.** Unchanged, and nothing measured today touches it:
+     the timing rule adds real value in **crypto only** — in its own
+     BTC/ETH universe it bought **both** return and drawdown (14.26x vs
+     6.05x, 33.05% vs 80.99%), corroborated by the 4.70x exposure-matched
+     twin edge — and none in Taiwan (0.73x) or gold (1.00x); against the
+     naive 13-coin alternative the margin is only **5.4%** and that
+     benchmark is survivorship-flattered. **Nothing here passes the six
+     gates.**
+  2. **What this iteration moves.** It answers, for the first time since
+     the live signal was switched, whether the Goal O paper period is
+     still producing gate-6 evidence. **It is not, and has not been for 36
+     days.** The iteration identifies the exact defect, its cause, its
+     commit, its date, and the two contractual deadlines it kills.
+  3. **Why it is not sprawl.** This is **P1 in its strictest reading** —
+     "if any stops gaining rows, fix it before anything else" — applied to
+     the evidence stream P1 exists to protect. It was reached through a
+     **pre-registered trigger**, `GATE6_BASELINE_2026-07-25.md` section 2's
+     "re-check at N >= 60 quotes", written on 2026-07-25 at N=44, before
+     the data that would decide it existed. **No new script, no new
+     document** (one dated addendum to the document whose own trigger
+     fired), no trial registered, no backtest run, no gate report
+     regenerated, no frozen rule touched, no runtime file touched.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 41 (40 real + seed) | 2026-09-03, equity 1113.144093664158100581610459, exposure `{BTC: 1, ETH: 0.75}`, closes 81270.37 / 2507.51 | OK — **+3 rows** since iteration 56 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 41 (40 real + seed) | 2026-09-03, equity 1167.089050992571413844813549, exposure `{BTC: 1, ETH: 1}` | OK — **+3 rows** since iteration 56 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 7 (6 real + seed) | 2026-08-28, close 106.95, exposure 0.75 | OK — unchanged, **weekly**; next fire 2026-09-05 09:40 |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 8 (7 real + seed) | 2026-08-28, close 408.890015, exposure 0.5 | OK — unchanged, same weekly task |
+
+  Three crypto slots fired since iteration 56 (2026-09-02, -03, -04), all
+  clean; `shadow_20260904_082001.log` ends `exit=0
+  finished=2026-09-04T08:20:04.7175413+08:00`. That is the **fifteenth
+  consecutive clean crypto slot**. The weekly pair is correctly static
+  between Saturday fires. Forward progress toward the return-verdict date:
+  **40 of 706 rows, 5.67%**. **The four shadow tracks are healthy. The
+  finding below is about a different stream.**
+
+- **The finding: the live paper runtime stopped deciding on 2026-07-31 and
+  has reported success every day since.** Read-only pass over
+  `data/runtime/events.jsonl` (257 events) and `data/runtime/daily_cycle.log`.
+  Everything recorded after `2026-07-31T00:05:03Z` is **34 `health` rows
+  and 2 `exec_quote` rows, and nothing else** — zero cycles, zero signals,
+  zero targets, zero orders, zero fills. All 35 health rows are
+  `WARMUP_INSUFFICIENT_HISTORY` on both symbols, one per bar close from
+  2026-07-30 to 2026-09-03 (2026-08-09 absent — the known machine-off
+  hole). The 2026-09-04 08:05:01 block of `daily_cycle.log` reads
+  `"processed": false`, `"close_time": null`, `"equity": null`,
+  `"exec_quotes": 0`. Task Scheduler reports
+  `CryptoQuantDailySignalCycle ... LastTaskResult=0`.
+
+- **Root cause, an off-by-one with no path to clearing itself.**
+  `scripts/run_paper_runtime.py:59` sets `_LIVE_FETCH_LIMIT = 400` and
+  fetches with `closed_only=True`; Binance's `limit` counts the
+  in-progress bar, so the closed count is **399** — measured live today
+  against `api.binance.com`, 399 for BTCUSDT and 399 for ETHUSDT, first
+  close 2025-08-01, last close 2026-09-03. `src/runtime/engine.py:73` sets
+  `DONCHIAN_WARMUP_CANDLES = 400` and `engine.py:191-193` skips the cycle
+  when `len(candles) < 400`. **399 < 400, permanently.**
+
+- **The date matches the cause exactly.** Commit `2423bf6` ("Switch the
+  live signal to trial 118", 2026-07-31 22:56:33 +0800) moved
+  `configs/runtime/paper_runtime.yaml` from `daily_trend_ensemble`
+  (floor `max((20, 65, 150, 200)) = 200`, comfortably under 399) to
+  `donchian_breakout_ensemble` (floor 400). 29 cycles ran cleanly before
+  that evening; none after. The last signal ever emitted carries SMA
+  reason codes — it is a **trial-4** signal. `scripts/shadow_signal.py:45`
+  uses the same `FETCH_LIMIT = 400` but has **no warmup floor**, which is
+  exactly why the shadow tracks above are healthy while the live contract
+  is not. The pre-switch equivalence proof (138 of 138 historical windows)
+  ran offline on stored history and structurally could not see a defect
+  that exists only in the live fetch depth.
+
+- **What it costs, in the program's own contractual terms.**
+  1. **The trial-118 paper period has zero processed cycles** — not 36
+     days of evidence, zero. The 29 on record are trial 4's, and commit
+     `2423bf6` itself says that scoreboard "is not continuous with what
+     follows".
+  2. **Gate 6 cannot be executed in October 2026.** It requires at least 3
+     calendar months of runtime; the clock for the live strategy has never
+     started. Fixed today, the earliest completion is **2026-12-04**.
+  3. **`PRE_HOLDOUT_PROTOCOL.md` section 3.1's two gate-6 prerequisites are
+     unreachable on their stated schedule** — the "2026-07-03 -> 2026-10-03
+     window at earliest" and ">= 60 quote days". Quotes are frozen at
+     **56**, quote-days at **28**, so `GATE6_BASELINE_2026-07-25.md`
+     section 2's own pre-registered "re-check at N >= 60" **cannot fire**.
+     The protocol is frozen until the spend and **was not edited**; this is
+     a report that reality moved away from it.
+  4. **The dead-man switch reported success throughout.**
+     `scripts/run_daily_cycle.cmd` pings on the `CYCLE_EXIT==0` branch;
+     `processed: false` still exits 0, and the "HEALTHCHECK_PING_URL not
+     set" fallback note appears only twice in the whole log (lines 16, 76),
+     so the success ping was configured and attempted on all 36 days. The
+     monitor measures process exit, not output.
+
+- **The loop diagnosed and stopped, because iron rule 1 says it must.**
+  All three candidate repairs — raise `_LIVE_FETCH_LIMIT` above 400, lower
+  `DONCHIAN_WARMUP_CANDLES`, or revert the strategy name — land in
+  `scripts/run_paper_runtime.py`, `src/runtime/engine.py`, or
+  `configs/runtime/paper_runtime.yaml`, **all files the daily 08:05
+  runtime reads**. The loop touched none of them. The repair is the
+  operator's, and it should be paired with an **outcome** check (did today
+  append a `cycle` event?) rather than an exit-code check.
+
+- **Stop-condition check, run explicitly.** **DSR >= 0.95 AND
+  candidates-PBO <= 0.05.** Unchanged from iteration 56: three trials meet
+  the first (29, 37, 118; only 118 risk-compliant), and the second fails
+  under all 4 224 admissible readings, the repaired key, and all columns.
+  **No `EDGE_CANDIDATE_FOUND.md` event, and none is warranted.**
+
+- **Loop-scheduler health, recorded because two iterations were lost.**
+  `docs/research/loop_runs/` has **no `run_20260902_*` file at all**, so
+  the 2026-09-02 iteration never started (the start-marker line added
+  after iteration 41 makes "never started" distinguishable from
+  "interrupted"). `run_20260903_213701.log` holds `started=...` then
+  `API Error: 529 Overloaded` and `exit=1 finished=2026-09-03T21:41:06`.
+  Today's run is therefore the first since 2026-09-01, and iteration
+  numbering skips nothing — 56 was the last completed. Both causes are
+  outside the loop's control (machine availability, upstream API), and
+  neither is a repo defect.
+
+- **Step 2 (web research): four candidates examined, zero strategy
+  arrivals.** Full detail in `RESEARCH_LOG.md` under iteration 57.
+  (a) **arXiv 2602.11708 (AdaptiveTrend)**, abstract re-fetched from
+  primary — **seventh** re-encounter, still **testable-here: no** on two
+  independent counts of product law (6-hour bars, long-short).
+  (b) **"Exit 0 Is Not Success", tonsofskills.com, 13 July 2026**, fetched
+  and read — "a process can exit zero and produce nothing", "a silent
+  failure wearing a green badge", remedy is "independent outcome
+  verification" plus "watchdog + watchdog-of-watchdog". Buys no edge; it
+  is the closest published description of today's defect.
+  (c) **DRo, "Cross-Backtesting Pitfalls" (backtrader)**, fetched — a
+  *different* Donchian off-by-one (whether the current bar enters the
+  channel). The check it implies was already discharged by commit
+  `2423bf6`'s 138-of-138 equivalence proof; today's defect is one layer
+  up. (d) A dev.to pipeline piece, **pointer only, not fetched, no claim
+  recorded** — logged so the pass is fully enumerated. The
+  summarizer-output rule held: every claim above was taken from a fetched
+  page, none from a search summary.
+
+- **Operator-attention items.** Five carried forward, one added and it is
+  urgent. (a) The ensemble-breadth leave-one-out is still unmeasured,
+  still P3-forbidden, still unobtainable from the registry; **the loop
+  still proposes nothing.** (b) The research loop still runs in a visible
+  console window. (c) Weekly account usage limits and auth expiries are
+  account-level matters only the operator controls. (d) Should cross-track
+  structural comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still unanswered; the loop
+  **abstained** again today, for the tenth consecutive iteration.
+  (e) Section 1 of `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the
+  "conservative upper bound", which is false at N=133, and the operator
+  should declare which candidates number October cites **before** it is
+  recomputed. **(f) New, and it needs action rather than a decision:** the
+  live paper runtime has been a no-op for 36 days, the fix is a one-line
+  change in a file only the operator may touch, and every day unfixed
+  pushes gate 6's earliest completion date one day further out.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All checks
+  passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 51.01s. Note, recorded rather than
+  acted on: this suite is green while the live runtime is a no-op, so it
+  did not and could not catch the defect above.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  pre-registration or contract clause edited, no registry row or return
+  series touched, no result document rewritten, no prior log entry edited,
+  no trial registered, no backtest run, no gate report regenerated, no arm
+  run, **no new script written, no new research document created**,
+  holdout untouched and `spent` still `false`, **no `configs/runtime/`,
+  `src/runtime/`, `scripts/run_paper_runtime.py`, `scripts/run_daily_cycle.cmd`
+  or any other live-runtime file touched — the defect was diagnosed and
+  escalated, not repaired**, no scheduled-task definition altered, no
+  shadow row fabricated, no cross-track or per-day structural statistic
+  computed while item (d) is open, and the 2026-08-09 hole left as a hole.
+
+- **Standing answer restated, with one clause sharpened:** timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine is free of look-ahead;
+  execution-latency cost is about -6.4 bps round-trip, inside tested
+  headroom; the October holdout is protected mechanically; the Taiwan and
+  gold negatives are robust to dividend treatment; against the naive
+  13-coin alternative the margin is only 5.4% and that benchmark is
+  survivorship-flattered; breadth still fails and is priced from five
+  directions, all in the hundredths of Sharpe; nothing is forward-validated
+  and no return-based forward verdict is statistically permitted before
+  2028-06-29, a date the tracks are **5.67%** of the way to; gate 4 passes
+  three trials and only trial 118 is risk-compliant, with the one-trial
+  fragility belonging to trial 118 rather than to gate 4; gate 3 fails
+  under all 4 224 admissible candidate readings, the repaired key, and all
+  columns; the search is still over; **the framework has exercised exactly
+  two gates, both defective — and gate 6 cannot be executed in October
+  2026, because the evidence stream it depends on has been dead since the
+  day the live signal became the candidate the program is about.**
+  On-chain route open but unadvanced. Operator-attention items dated
+  2026-09-04 are the six above.

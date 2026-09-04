@@ -353,3 +353,120 @@ estimate inside the tested headroom, and a dispersion estimate that was
 itself overstated.** The concern is **narrowed to "under 17 bps and
 probably much less", not closed.** Gate 6's journaled measurement remains
 the way to close it properly, and gate 6 still has not run.
+
+## Addendum 2026-09-04 (iteration 57) — the paper runtime stopped deciding on 2026-07-31, exits 0 every day, and gate 6's clock for the live strategy has never started
+
+This addendum was reached through §2's own pre-registered trigger. §2
+closed with "**re-check at N ≥ 60 quotes**", written on 2026-07-25 at
+N=44. Sixty-four calendar days later the re-check was run, and the reason
+the threshold had not been crossed turned out to be the finding.
+
+### The measurement
+
+Read-only pass over `data/runtime/events.jsonl` (257 events) and
+`data/runtime/daily_cycle.log`. Nothing in `configs/runtime/`, the live
+contract, the store, or any file the 08:05 runtime reads was modified;
+iron rules 1 and 2 of `docs/contracts/AUTONOMOUS_RESEARCH_LOOP.md` hold.
+
+| Event kind | Count | Last occurrence |
+|---|---:|---|
+| `cycle` | 29 | close 2026-07-30, recorded 2026-07-31T00:05:02Z |
+| `signal` | 58 | `signal:ETHUSDT:2026-07-30T23:59:59.999000+00:00` |
+| `target` | 29 | close 2026-07-30 |
+| `order` | 9 | — |
+| `fill` | 9 | — |
+| `exec_quote` | 56 | `trading_day` 2026-07-30 |
+| `health` | 35 | bar close 2026-09-03 |
+
+Everything recorded after `2026-07-31T00:05:03Z` is **34 `health` rows and
+2 `exec_quote` rows, and nothing else** — no cycle, no signal, no target,
+no order, no fill. All 35 health rows carry the same payload:
+`WARMUP_INSUFFICIENT_HISTORY` on `["BTCUSDT", "ETHUSDT"]`, one per bar
+close from 2026-07-30 to 2026-09-03, with 2026-08-09 absent (the
+already-recorded machine-off hole). The most recent block of
+`daily_cycle.log`, from the 2026-09-04 08:05:01 run, reads
+`"processed": false`, `"reason": "WARMUP_INSUFFICIENT_HISTORY"`,
+`"close_time": null`, `"equity": null`, `"exec_quotes": 0`.
+
+The scheduled task disagrees: `CryptoQuantDailySignalCycle` reports
+`State=Ready`, `LastRunTime=2026/9/4 08:05:01`, **`LastTaskResult=0`**.
+
+### Root cause — an off-by-one that cannot be satisfied
+
+- `scripts/run_paper_runtime.py:59` sets `_LIVE_FETCH_LIMIT = 400`, and
+  `_fetch_latest_candles` calls `fetch_historical_candles(..., limit=400,
+  closed_only=True)`. Binance's `limit` counts the in-progress bar, so
+  `closed_only=True` drops it. Measured live today against
+  `api.binance.com`: **399 closed candles** for BTCUSDT and for ETHUSDT,
+  first close 2025-08-01, last close 2026-09-03.
+- `src/runtime/engine.py:73` sets `DONCHIAN_WARMUP_CANDLES = 400`, and
+  `engine.py:123` selects it whenever
+  `strategy_name == "donchian_breakout_ensemble"`. The guard at
+  `engine.py:191-193` skips the cycle when `len(candles) < 400`.
+- **399 < 400, every day, permanently.** The condition has no path to
+  clearing itself: the fetch will never return a 400th *closed* bar while
+  the limit is 400.
+
+The date matches the cause exactly. Commit `2423bf6` ("Switch the live
+signal to trial 118", 2026-07-31 22:56:33 +0800) changed
+`configs/runtime/paper_runtime.yaml` from `daily_trend_ensemble` to
+`donchian_breakout_ensemble`. The previous strategy's floor is
+`DAILY_TREND_WARMUP_CANDLES = max((20, 65, 150, 200)) = 200`, comfortably
+under 399, which is why 29 cycles ran cleanly before that evening and none
+after. The last signal ever emitted carries SMA reason codes
+(`ABOVE_SMA_20`, `ABOVE_SMA_65`, `BELOW_SMA_150`, `BELOW_SMA_200`,
+`LADDER_HOLD`) — it is a trial-4 signal, not a trial-118 one.
+
+`scripts/shadow_signal.py:45` uses the same `FETCH_LIMIT = 400` but has no
+warmup floor, which is why the three forward shadow tracks are unaffected
+and still recording (41 rows, last 2026-09-03). The two paths were proved
+decision-equivalent on 138 of 138 historical windows before the switch;
+that equivalence test ran offline on stored history and therefore could
+not see a defect that only exists in the live fetch depth.
+
+### What this costs, stated plainly
+
+1. **The trial-118 paper period has zero processed cycles.** Not 36 days
+   of evidence — zero. The 29 cycles on record were produced by trial 4,
+   and commit `2423bf6` itself says the scoreboard before 2026-07-31 "is
+   not continuous with what follows".
+2. **Gate 6 cannot be executed in October 2026.** Its requirement is a
+   signal runtime running ≥ 3 calendar months. The clock for the live
+   strategy has never started. Fixed on 2026-09-04, the earliest
+   completion is **2026-12-04**; every day unfixed moves that date.
+3. **`PRE_HOLDOUT_PROTOCOL.md` §3.1 has two prerequisites that are now
+   unreachable on their stated schedule** — "Paper period ≥ 3 calendar
+   months completed (… 2026-07-03 → 2026-10-03 window at earliest)" and
+   "Gate-6 baseline table refreshed with ≥ 60 quote days". Quote days are
+   frozen at 28 and quotes at 56. §2's own N ≥ 60 re-check cannot fire.
+   The protocol is frozen until the spend and **was not edited**; this is
+   a report that reality has moved away from it, not a change to it.
+4. **The dead-man switch has been reporting success throughout.**
+   `scripts/run_daily_cycle.cmd` pings `%HEALTHCHECK_PING_URL%` on the
+   `CYCLE_EXIT==0` branch and `/fail` otherwise. `processed: false` still
+   exits 0, so the success branch was taken on all 36 days; the
+   "HEALTHCHECK_PING_URL not set" fallback note appears only twice in the
+   whole log (lines 16 and 76), so the ping was configured and attempted.
+   The monitor is measuring process exit, not output. The precise
+   published description of this failure mode is recorded in
+   `RESEARCH_LOG.md` under 2026-09-04.
+
+### What the loop may not do about it
+
+All three candidate repairs — raising `_LIVE_FETCH_LIMIT` above 400,
+lowering `DONCHIAN_WARMUP_CANDLES`, or reverting the strategy name — land
+in `scripts/run_paper_runtime.py`, `src/runtime/engine.py`, or
+`configs/runtime/paper_runtime.yaml`. **All three are files the daily
+08:05 runtime reads, so iron rule 1 forbids the loop from touching any of
+them.** This addendum diagnoses and escalates; the repair is the
+operator's, and it should be paired with an outcome check (does today's
+run append a `cycle` event?) rather than an exit-code check, or the next
+instance of this will also take 36 days to notice.
+
+### Effect on the standing answer
+
+No backtest number changes and no verdict is revised. One framework
+clause sharpens: "gates 5 and 6 have never been executed" becomes **gate 6
+cannot be executed in October 2026, and the evidence stream it depends on
+has been dead since the day the live signal became the candidate the
+program is about.**
