@@ -2433,3 +2433,63 @@ cross-sectional momentum untested here → experiment 3.
   coinquant ranked page and the Frontiers microstructure paper), and both
   arrive blocked — the first by the holdout boundary, the second by product
   law on three separate counts.
+
+## 2026-09-04 — iteration 57 (four candidate sources examined, zero strategy arrivals — and the two most useful sources this pass are about operations, because that is where today's finding landed)
+
+- **Bui & Nguyen, "Systematic Trend-Following with Adaptive Portfolio
+  Construction: Enhancing Risk-Adjusted Alpha in Cryptocurrency Markets",
+  arXiv 2602.11708, submitted 12 February 2026 — seventh re-encounter,
+  disposition unchanged.** Abstract re-fetched from the primary arXiv
+  record rather than taken from the search summary, per the standing rule.
+  As printed: "high-frequency trend-following on **6-hour intervals**",
+  "**asymmetric 70/30 long-short** allocation", "monthly adaptive portfolio
+  construction", 150+ pairs over 2022-2024, "annualized Sharpe ratio of
+  **2.41**, a maximum drawdown of **-12.7%**, and a Calmar ratio of 3.18".
+  **Testable-here: no**, on two independent counts of product law —
+  6-hour bars are not daily, and a long-short book is not spot long-only.
+  Recorded again only so the count of re-encounters stays honest; it is
+  the single most persistent search result for this query and it has never
+  been admissible.
+
+- **"Exit 0 Is Not Success: Automation Assurance That Verifies Outcomes",
+  tonsofskills.com, 13 July 2026 (author not shown) — fetched and read,
+  and it describes this program's own live runtime exactly.** As printed:
+  a process can "exit zero and produce nothing", which is "a silent
+  failure wearing a green badge"; schedulers answer only "did the process
+  start and did it return 0?"; the named examples include a heartbeat
+  file lacking "a fresh timestamp" and an export writing an "empty stub".
+  Its rule, stated explicitly: "An exit code of 0 is **not** business
+  success." Its remedy is "independent outcome verification" — register
+  the expected output, check the artifact exists and is plausible from
+  *outside* the job, and run a "watchdog + watchdog-of-watchdog".
+  **Testable-here: not a strategy hypothesis, so it buys no edge**, but it
+  is the closest published description of the defect this iteration found
+  in `data/runtime/events.jsonl`, where `scripts/run_daily_cycle.cmd`
+  has pinged the dead-man switch on the success branch for **36
+  consecutive days** while the runtime emitted nothing but a health row.
+
+- **DRo, "Cross-Backtesting Pitfalls", backtrader articles (undated on the
+  page) — fetched, and it is a Donchian off-by-one, though not this
+  one.** As printed: with `lookback=-1` "the bars to consider will start 1
+  bar in the past and the current high/low may break through the channel";
+  with `lookback=0` "the current prices will be considered for the
+  Donchian Channel. This means that the price will **NEVER** break through
+  the upper/lower channel bands." StockCharts and IncredibleCharts exclude
+  the current bar; TradingView includes it. **Testable-here: no as an
+  edge; yes as a check**, and the check was run — this program's engine
+  and `scripts/shadow_signal.py` were already proved equivalent on 138 of
+  138 historical windows (commit `2423bf6`), so the channel-indexing
+  variant of the bug is not present. Today's defect is a *different*
+  off-by-one, one layer up: how many closed candles the live fetch
+  returns versus how many the warmup floor demands.
+
+- **"Your CI is green and your pipeline produced nothing" (dev.to) —
+  pointer only, not fetched, no claim recorded from it.** Listed so the
+  pass is fully enumerated. Under the standing rule the search engine's
+  paraphrase of it is not a reading of it, and nothing in this iteration
+  rests on it.
+
+- **Arrivals: zero.** Four sources examined, none admissible as a strategy
+  hypothesis under product law. Two were nonetheless the most valuable
+  sources this loop has fetched in several iterations, because the
+  iteration's finding was operational rather than statistical.
