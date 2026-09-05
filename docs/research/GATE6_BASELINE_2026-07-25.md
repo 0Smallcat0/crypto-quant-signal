@@ -470,3 +470,136 @@ clause sharpens: "gates 5 and 6 have never been executed" becomes **gate 6
 cannot be executed in October 2026, and the evidence stream it depends on
 has been dead since the day the live signal became the candidate the
 program is about.**
+
+---
+
+## Addendum 2026-09-05 (iteration 58) — the failure was never silent; it announced itself correctly 36 times, and every surface that reads the announcement reports the opposite
+
+The 2026-09-04 addendum above characterised the outage with a borrowed
+phrase, "a silent failure wearing a green badge", and concluded that the
+monitor "measures process exit, not output". The first half is wrong for
+this repository, and wrong in the direction of worse. The runtime
+diagnosed itself correctly, in machine-readable form, once per failing
+cycle, for 36 consecutive cycles. What failed is every consumer of that
+diagnosis.
+
+### 1. The outage is self-reported, correctly coded, and dated
+
+`data/runtime/events.jsonl` holds **36 events of kind `health`**, every
+one with payload `{"code": "WARMUP_INSUFFICIENT_HISTORY", "symbols":
+["BTCUSDT", "ETHUSDT"]}`, emitted at `src/runtime/engine.py:196-202` on
+the same branch that returns the skip. Their coverage, by candle close:
+
+- **2026-07-30** — the same close the last successful `cycle` event
+  processed (`cycle:2026-07-30T23:59:59.999+00:00`, recorded
+  2026-07-31T00:05:02Z). The health row is appended *after* it in file
+  order, so a later run that evening re-processed the same close and
+  failed. Commit `2423bf6` landed 2026-07-31 22:56:33 +0800.
+- **2026-07-31 through 2026-09-04** — one row per close, 36 dates, with
+  exactly **one missing: 2026-08-09**, the hole already on record.
+
+36 = 1 + (36 − 1). The event stream is complete and it says, every day,
+precisely what is wrong and for which symbols.
+
+### 2. Three operator-facing surfaces read the store; none reports the outage
+
+**`/api/health` (`src/api/app.py:183-190`)** returns `"status": "OK"`
+unconditionally. Its `last_cycle_close` comes from
+`latest_of_kind("cycle")` — the 2026-07-30 close, now 36 days stale — and
+the handler contains no comparison of that timestamp against anything.
+A stale value is returned next to a hardcoded OK.
+
+**`/api/gate` (`src/api/app.py:160-181`)** computes
+`paper_trading.days` as `(datetime.now(UTC) - cycles[0].recorded_at).days`
+— wall clock since the **first cycle ever recorded**,
+`2026-07-03T03:00:21.953997+00:00`, which is a trial-4 cycle. Today that
+is **64**. In the same payload, `cycles` is **29** and has not moved
+since 2026-07-31. One number advances with the calendar; the other is
+frozen; the endpoint presents them as equals.
+
+**`src/api/page.py`** renders the first and hides the second.
+`renderObs` (lines 290-300) sets the pill to `觀察期 ${days}/${target} 天`
+with `target = 90`. `renderGate` (lines 365-374) prints
+`${days} / ${target} 天 paper` above a progress bar of width
+`min(100, days/target*100)`. `paper.cycles` is rendered **only in the
+`demo_replay` branch** (line 372); in live mode the one number that would
+expose the outage is fetched from the API and then never displayed.
+Today the dashboard reads **觀察期 64/90 天** with the bar **71.1%** full.
+
+### 3. The dates this produces, and they land on the protocol's own date
+
+From `paper_started = 2026-07-03T03:00:21.953997+00:00`:
+
+| Event | Date | Candidate cycles behind it |
+|---|---|---:|
+| Progress bar reaches 100% (`days = 90`) | **2026-10-01** | 0 |
+| `days = 92`, i.e. three calendar months | **2026-10-03T03:00:21Z** | 0 |
+
+§3.1's first prerequisite above reads "Paper period ≥ 3 calendar months
+completed (… since 2026-07-03 → 2026-10-03 window at earliest)". On that
+exact date the dashboard will show a full bar and a 92-day count, beside
+a threshold block printing `paper_trading_months_min: 3`
+(`src/api/app.py:179`), for a strategy that has produced **zero** cycles.
+The number the operator would consult to check gate 6 will assert gate 6
+is ready.
+
+### 4. The one health line that is displayed says the stop is temporary, and cites the wrong floor
+
+`src/api/page.py:194` maps the code to `暖身中（歷史不足200日）`. Two
+defects in one string:
+
+- **暖身中** ("warming up") frames a permanent condition as transient.
+  The live fetch returns 399 closed bars against a floor of 400, so no
+  amount of waiting clears it.
+- **200** is not the active floor. 200 is
+  `DAILY_TREND_WARMUP_CANDLES = max((20, 65, 150, 200))`
+  (`src/features/daily_trend.py:17`), the SMA path's floor. The Donchian
+  path's floor is `DONCHIAN_WARMUP_CANDLES = 400`
+  (`src/runtime/engine.py:73`), selected at `engine.py:123`. The label is
+  a hardcoded string that did not follow the strategy switch of commit
+  `2423bf6`.
+
+An operator who scrolled to the health card on any of the 36 days would
+have read that the system was warming up and needed 200 days of history.
+
+### 5. What this changes
+
+- **Correct statement of the defect**, replacing the 2026-09-04 wording:
+  not a silent failure, but a **correctly-detected, correctly-emitted,
+  correctly-coded failure rendered by three surfaces as normal progress**,
+  one of which crosses the gate-6 bar on its own on 2026-10-01.
+- **The 2026-09-04 remediation is right but under-specified.** It asks
+  for "an outcome check (does today's run append a `cycle` event?)". That
+  outcome signal already exists *and is already queried* —
+  `src/api/app.py:148` reads `events_of_kind("health")` for `/api/risk`.
+  What is missing is four consumer-side changes: a staleness comparison
+  in `/api/health`, a `days` counter derived from candidate cycles rather
+  than wall clock, `cycles` rendered in the live branch, and a label that
+  does not say 暖身中.
+- **Route closed: "the operator could have caught this by looking."** No.
+  Looking on any of the 36 days would have shown an advancing
+  observation-period bar, `status: "OK"`, and at worst a line reporting
+  warm-up.
+
+### 6. What the loop may not do about it
+
+All four repairs land in `src/api/app.py` and `src/api/page.py`. These
+are operator-facing product surfaces, not research artifacts, and the
+2026-09-04 addendum's stance — diagnose and escalate, do not repair —
+carries over unchanged. No file under `src/`, `scripts/`,
+`configs/runtime/` or any scheduled task was touched by this iteration.
+
+### 7. Effect on the standing answer
+
+No backtest number changes and no verdict is revised. One clause
+sharpens: gate 6 cannot be executed in October 2026, **and the surface
+the operator would consult to check that will say it can.**
+
+### 8. Minor correction recorded under iron rule 5
+
+The 2026-09-04 `LOOP_LOG.md` entry attributes the two gate-6
+prerequisites to "`PRE_HOLDOUT_PROTOCOL.md` section 3.1". That file has
+three sections and no §3.1; the prerequisites are §3.1 of **this**
+document. The 2026-09-04 addendum's own body cites it correctly; only the
+log summary slipped. Per append-only science no prior entry was edited —
+the correction lives here and in today's entry.
