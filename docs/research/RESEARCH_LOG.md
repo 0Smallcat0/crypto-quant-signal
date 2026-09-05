@@ -2493,3 +2493,97 @@ cross-sectional momentum untested here → experiment 3.
   hypothesis under product law. Two were nonetheless the most valuable
   sources this loop has fetched in several iterations, because the
   iteration's finding was operational rather than statistical.
+
+## 2026-09-05 — iteration 58 (four candidate sources fetched, two of them new; zero strategy arrivals, and the closest external cousin of this program's own architecture publishes none of the numbers that would decide admissibility)
+
+- **arXiv 2512.08124, "Long-only cryptocurrency portfolio management by
+  ranking the assets: a neural network approach", Zijiang Yang, submitted
+  2025-12-09 — second encounter (first logged 2026-08-29), disposition
+  unchanged.** Abstract re-fetched from the primary arXiv record rather
+  than taken from the search summary, per the standing rule. As printed:
+  "in each time step, we utilize the neural network to predict the rank of
+  the future return of the managed cryptocurrencies and place weights
+  accordingly"; backtested on "real daily cryptocurrency market data from
+  May, 2020 to Nov, 2023"; "a Sharpe ratio of 1.01 and annualized return
+  of 64.26%"; "robust to the increase of transaction fee". Long-only and
+  daily are two of four product-law conditions; spot vs derivatives is
+  still not stated anywhere in the abstract. No deflated Sharpe, no PBO,
+  no multiple-testing correction. **Testable-here: no** — a neural ranking
+  family is a new single-market parameter family, which P3 refuses.
+
+- **Buhalterinės apskaitos teorija ir praktika (Accounting Theory and
+  Practice), Vol. 33 (2026), Adedeji Daniel Gbadebo, "Momentum Trading in
+  Cryptocurrencies: A Comparative Study of Time-Series and Cross-Sectional
+  Strategies", published 2026-06-09 — new, and admissibility could not be
+  established.** The publisher's landing page was fetched and yields:
+  a "multi-horizon exponential moving average (EMA) framework" with
+  volatility normalisation, two portfolio structures (time-series and
+  cross-sectional), eight major cryptocurrencies, 2020-01-01 to
+  2025-10-31. The landing page discloses **none** of the four facts that
+  decide admissibility here — long-only vs long-short, spot vs futures,
+  rebalancing frequency, transaction-cost assumptions. The full-text PDF
+  returned undecodable bytes to the fetch tool and no PDF extractor is
+  installed in `.venv`, so the full text was not read. **A "31.96% versus
+  14.59%" annual-return pair appeared in the search engine's summary and
+  is deliberately NOT recorded as verified** — under the standing rule a
+  summariser's paraphrase is not a reading of the source.
+  **Testable-here: undetermined**, pending a readable full text.
+
+- **Concretum Group, Carlo Zarattini, Alberto Pagani and Andrea Barbon,
+  "Catching Crypto Trends; A Tactical Approach for Bitcoin and Altcoins"
+  (2026 per the page footer) — new, and the closest external instance of
+  this program's own architecture found in 58 iterations.** Fetched. As
+  printed: "Donchian channel-based trend models" with "different lookback
+  periods", applied as a rotational portfolio over the "top 20 most liquid
+  cryptocurrencies", plus "a simple yet effective portfolio construction
+  technique designed to reduce trading costs". Headline: "Sharpe ratio
+  above 1.5" and "annualized alpha of 10.8% relative to Bitcoin". Two
+  things are worth recording. First, an independent author group reaches
+  for the **same architecture this registry runs** — a Donchian ensemble
+  across lookbacks on a multi-coin crypto universe — and, second, it
+  independently adopts **alpha relative to Bitcoin** as the reporting
+  frame, the same move `VS_BUY_AND_HOLD_2026-07-26.md` made when it
+  stopped quoting absolute multiples. **No numeric comparison is drawn
+  between their 10.8% and this program's 5.4% margin**: the fetched page
+  states no sample period, no cost numbers, no bar frequency, no
+  long-only/long-short declaration, no drawdown, and no data-snooping or
+  multiple-testing caveat, so the two are not commensurable and it would
+  be dishonest to line them up. **Testable-here: no** — a 20-coin Donchian
+  family is precisely what P3 refuses, and product-law admissibility is
+  undetermined from the fetched record. Flagged for the operator only:
+  an SSRN version with full method detail may exist; not chased this
+  iteration.
+
+- **Streamkap, "Data Freshness Monitoring: How to Know Your Real-Time
+  Pipeline Is Actually Real-Time", published 2026-02-25 — fetched, and it
+  states today's finding as a general principle.** As printed: "A
+  dashboard showing 'real-time' data that is actually 30 minutes old is
+  worse than a dashboard that honestly says 'updated hourly.'"; "A
+  pipeline can be running, producing events, and writing to a destination,
+  yet the data visible to analysts and applications might be minutes or
+  even hours behind reality."; and the heartbeat pattern — "a dedicated
+  table in your source database that receives a timestamped row at a fixed
+  interval… You then measure how long that heartbeat takes to appear at
+  the destination." **Testable-here: not a strategy hypothesis, so it buys
+  no edge.** Recorded because this repository's dashboard is the first
+  case exactly: `/api/gate` reports `days` from wall clock while `cycles`
+  has been frozen at 29 for 36 days, and `src/api/page.py` renders the
+  first and hides the second. Recorded honestly: the page does **not**
+  discuss jobs that exit cleanly while producing nothing, and never uses
+  the term dead-man switch — those remain the 2026-07-13 tonsofskills
+  source's contribution, not this one's.
+
+- **Pointers not fetched, enumerated so the pass is complete.** (a) Monash
+  working paper, Trinh Le and Ummul Ruthbah, "Trend-following Strategies
+  for Crypto Investors" — the PDF returned **HTTP 403 Forbidden**; no
+  claim is recorded from it and nothing in this iteration rests on it.
+  (b) pipecode.ai, "Data Freshness & SLA Monitoring" — the fetch returned
+  the page title only, no body; no claim recorded.
+
+- **Arrivals: zero.** Four sources fetched, two of them new to this log,
+  none admissible as a strategy hypothesis under product law. The most
+  significant of the four is the Concretum piece, and its significance is
+  **not** its numbers — which are unusable as published — but that an
+  independent group has converged on this program's architecture and its
+  benchmark framing without publishing a single one of the six-gate
+  quantities.
