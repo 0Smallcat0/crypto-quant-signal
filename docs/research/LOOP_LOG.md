@@ -5942,3 +5942,247 @@
   觀察期 64/90 天 and will show a full bar on 2026-10-01.** On-chain route
   open but unadvanced. Operator-attention items dated 2026-09-05 are the
   six above.
+
+## 2026-09-06 — iteration 59 (P1: the forward evidence stream — the only unbiased evidence this program can still generate — has no look-ahead and pays nothing to trade, and the read rule's one full-power test compares the half that is correct)
+
+- **Step 0 — convergence check, run first.**
+  1. **Current answer.** Unchanged in its economics: the timing rule adds
+     real value in **crypto only** — in its own BTC/ETH universe it bought
+     **both** return and drawdown (14.26x vs 6.05x, 33.05% vs 80.99%),
+     corroborated by the 4.70x exposure-matched twin edge — and none in
+     Taiwan (0.73x) or gold (1.00x); against the naive 13-coin alternative
+     the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates.**
+  2. **What this iteration moves.** It audits the accounting of the four
+     forward shadow tracks — the streams every queue revision since
+     2026-07-26 has called the only unbiased evidence left — and returns
+     **one pass and one defect**. The pass closes a real question: there
+     is **no look-ahead**, verified from the recorded data rather than
+     from a code comment. The defect forces an operator choice with a
+     **deadline before 2026-10-22**: the tracks charge no trading cost,
+     while the backtest they exist to validate charges 15 bps per fill,
+     and the frozen read rule's primary test cannot detect the difference.
+  3. **Why it is not sprawl.** It is P1 read one layer deeper than
+     iterations 57-58, which audited the **dead** stream; nobody had ever
+     audited the **live** one. It is read entirely off files that already
+     exist — the four `shadow_*.jsonl`, `trial_registry.jsonl`,
+     `scripts/shadow_signal.py`, `src/backtest/engine.py` — with **no new
+     script**, no backtest, no trial, no gate report, and no edit to any
+     frozen file. It changes the standing answer, which is the test step 0
+     sets.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---:|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 43 (42 real + seed) | 2026-09-05, equity 1098.783794613099007496698798, exposure `{BTC: 1, ETH: 0.75}`, closes 79831.75 / 2480.34 | OK — **+1 row** since iteration 58 |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 43 (42 real + seed) | 2026-09-05, equity 1150.438198728510399067615533, exposure `{BTC: 1, ETH: 1}` | OK — **+1 row** since iteration 58 |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 8 (7 real + seed) | 2026-09-04, close 107.90, exposure 0.75 | OK — unchanged, **weekly**; the task fired 2026-09-05 09:40 and today is Sunday, so unchanged is correct |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 9 (8 real + seed) | 2026-09-03, close 410.220001, exposure 0.25 | OK — unchanged, same weekly task |
+  | live paper runtime | `data/runtime/events.jsonl` | — | last `cycle` still 2026-07-31T00:05:02Z (the 2026-07-30 close); health rows now **37**, latest 2026-09-05 | **STILL DEAD, day 38** — unchanged from iterations 57-58, unrepairable by the loop under iron rule 1 |
+
+  Forward-track progress toward the MinTRL date 2028-06-29: **42 of 706
+  days, 5.95%** (was 5.81% at iteration 58).
+
+- **The finding, part 1 (PASS): there is no look-ahead, and it is now a
+  property of the data rather than of a comment.** Full measurement in
+  `docs/research/FORWARD_TRACK_COST_OMISSION_2026-09-06.md`.
+
+  Every shadow row carries `close`, `exposure` and `equity`, which is
+  enough to refit the recorder's arithmetic without trusting any source
+  line. Two models were fitted to all **99** recorded transitions across
+  the four tracks: **lag** (weights from the previous row — the
+  no-look-ahead accounting) and **same** (weights from the current row —
+  what a look-ahead defect produces). The lag model reproduces the
+  recorded equity to `Decimal` rounding: max residual **8.140e-28** on
+  `shadow_trial88` and **8.973e-28** on `shadow_trial118`, and exact
+  within 1e-12 on all 7 `shadow_tw0050` and all 8 `shadow_gld`
+  transitions. The same-day model is off by up to **0.070368** and
+  **0.039635** and matches only on days when exposure did not change —
+  3 of 7 and 4 of 8 on the weekly tracks. `scripts/shadow_signal.py:191`
+  says *"yesterday's exposure earns today's return"*; that is now
+  measured, not asserted.
+
+- **The finding, part 2 (DEFECT): the residual against the *costless* lag
+  model is zero, not small.** No fee, no slippage, no spread is charged on
+  any of the **11** turnover days in `shadow_trial88`, the **5** in
+  `shadow_trial118`, or any in the other two. Confirmed at source:
+  `scripts/shadow_signal.py:191-202` contains no cost term. The backtest
+  these tracks validate does charge — trials 88 and 118 both record
+  `cost_assumptions = {fee_bps: 10, slippage_bps: 5, cost_multiplier: 1,
+  fill_rule: next_bar_open}`, i.e. **15 bps per fill**, applied at
+  `src/backtest/engine.py:457-465`.
+
+  Magnitude, charged at the registry's own rate (turnover
+  `sum_i abs(w_i(D) - w_i(D-1))` already counts each side, so
+  turnover × 15 bps is the uncharged amount):
+
+  | Track | turnover, 42 d | annualized | uncharged drag | recorded equity | cost-charged |
+  |---|---:|---:|---:|---:|---:|
+  | `shadow_trial88` | 2.0000 | 17.381 /yr | **2.607 %/yr** | 1098.783795 | 1095.535887 |
+  | `shadow_trial118` | 1.0000 | 8.690 /yr | **1.304 %/yr** | 1150.438199 | 1148.760415 |
+
+  Gap so far **0.2965%** and **0.1461%**; extrapolated at the same
+  turnover, **4.981%** of equity by trial 88's MinTRL date 2028-06-29 and
+  **2.289%** by trial 118's 2028-04-28. No drag figure is given for
+  `shadow_tw0050` (turnover 1.0000) or `shadow_gld` (1.2500): their cost
+  assumptions live in the other repository's registry and were **not**
+  verified here, and inventing a rate is exactly what iron rule 5 forbids.
+
+- **Why it matters: the bias is one-signed, and the primary test is blind
+  to it.** A costless path can only flatter, never penalise.
+  **Test 1** — the read rule's only full-power test — compares *"the
+  recomputed exposure path against the recorded one, per symbol, per
+  date"*. Exposure only. The exposure path is correct, so **Test 1 passes
+  while the defect is present**, at 4 rows and at 4000. **Test 2** fires
+  on a drawdown breach of 33.05% / 33.24%, and costs deepen drawdown, so
+  omission makes the one-sided refutation check less likely to fire —
+  **stated honestly, currently immaterial**: forward max drawdown is
+  3.4094% recorded against 3.4456% cost-charged, 0.036 points on a
+  29.6-point gap, and trial 118's is 3.7291% either way. **Test 3** — the
+  2028-06-29 date was computed from trial 88's **cost-inclusive** SR of
+  1.1823, while the series measured on that date will be
+  **cost-exclusive**; the Sharpe inflation on the realised 42-day sample
+  is **+0.0843** and **+0.0280**. **Test 3 compliance stated explicitly:**
+  the forward Sharpe *levels* were computed in the audit and are **not
+  cited, here or anywhere, as support** in either direction before
+  2028-06-29; only the difference between two accountings of one path is
+  used.
+
+- **Nothing was repaired, and the reason is scientific rather than
+  procedural.** Three options exist and the loop takes **none**:
+  (1) charge costs from tomorrow — splices two accounting regimes into one
+  append-only series at a join date chosen after seeing 43 rows, and the
+  rule forbids back-filling; (2) declare a read-time cost adjustment —
+  arithmetically cleanest and forbidden as written by the rule's *"What
+  may not be added"* clause, so it needs an operator amendment made
+  **before** the 2026-10-22 read; (3) accept the bias and name the
+  2.607%/yr and 1.304%/yr gaps in every future citation of the tracks.
+  `FORWARD_TRACK_READ_PREREGISTRATION.md` is left **byte-for-byte
+  unchanged**, and `scripts/shadow_signal.py` is left exactly as it is.
+
+- **Whether the audit itself was permitted, stated so the operator can
+  overrule.** The read rule declares health checks unrestricted and
+  reserves Test 1 for implementation agreement; this is an
+  implementation-correctness audit of the recorder, on a non-read date,
+  drawing no verdict about return. Against that, a cost-charged equity
+  variant is a variant, and the rule forbids introducing metrics at read
+  time. The distinction relied on is that **today is not a read date**. If
+  the operator judges otherwise, the remedy is to record that judgement,
+  not to unwrite the measurement.
+
+- **Stop-condition check, run explicitly.** **DSR >= 0.95 AND
+  candidates-PBO <= 0.05.** Verified against
+  `docs/reports/research/gate_report_2026-07-25.json` (unchanged,
+  `trials_n` 133, registry still 133 rows): `gate_4_dsr` marks
+  `passes_dsr: true` on trials **29** (0.986670), **37** (0.952424) and
+  **118** (0.950140), of which only 118 is risk-compliant;
+  `gate_3_pbo.pbo` is **0.651826** against `threshold_max` 0.05, with
+  `passes: false`. `holdout_lock.json` still reads `"spent": false`.
+  **No `EDGE_CANDIDATE_FOUND.md` event, and none is warranted.**
+
+- **Step 2 (web research): four sources fetched, three new, zero strategy
+  arrivals — and for once the literature is directly about this
+  iteration's own defect.** Full detail in `RESEARCH_LOG.md` under
+  iteration 59. (a) **arXiv 2606.00060v1, Bysik and Ślepaczuk,
+  2026-05-19** — new, and the sharpest external statement of today's
+  failure mode: the same long-only XGBoost signal on hourly BTC/USDT
+  returns **73.50% annualized without costs** and **−64.00% with ten basis
+  points**, recovering only via a turnover-reducing filter; Holm-corrected
+  at 1%. **Refused on product law** (hourly, futures) and P3 (the filter
+  is a new family); recorded for the **sign flip**, not the magnitude —
+  this program's tracks turn over 17.4x/yr, not hourly, and the 2.607%/yr
+  figure comes from this repository's files, not from the paper.
+  (b) **CoinQuant Donchian vs Keltner** — new, and the **first external
+  backtest this log has found that satisfies all four product-law
+  conditions**: BTCUSDT spot, long only no leverage, daily, Jan 2022 to
+  Jun 2026, 0.1% taker fees — return +36.50%, Sharpe **0.38**, max
+  drawdown 38.52%, 25 trades. **No comparison drawn to trial 88's 1.1823**
+  (different windows, universe, sample; the page states no out-of-sample
+  or multiple-testing caveat), and it declares slippage **"0%"** — an
+  external instance of today's exact omission. (c) **StratProof,
+  2026-04-30** — new, low-authority blog and labelled as such: 22 spot
+  strategies paper-traded forward for 10 days on **real** fees and real L2
+  spread, 26 765 trades, average P&L per trade **−0.078%**, 6 of 22
+  profitable. Refused (no runnable definition, 10-day sample). (d) **Man
+  Group and CXO Advisory** surfaced and were **not fetched**; no claim
+  rests on either. The Monash PDF is **still HTTP 403** and was not
+  retried; MDPI 19/9/692 was **refused unread** on bar frequency.
+
+- **Loop-scheduler health.** `docs/research/loop_runs/run_20260906_213702.log`
+  opened normally with its start marker. Prior irregularities unchanged
+  history: no `run_20260902_*` file, and `run_20260903_213701.log` holding
+  `API Error: 529 Overloaded`, `exit=1`. Iteration numbering skips
+  nothing — 58 was the last completed.
+
+- **Operator-attention items.** Seven now, the seventh new and dated.
+  (a) The ensemble-breadth leave-one-out is still unmeasured, still
+  P3-forbidden; the loop still proposes nothing. (b) The research loop
+  still runs in a visible console window. (c) Weekly account usage limits
+  and auth expiries are account-level matters only the operator controls.
+  (d) Should cross-track structural comparisons of the shadow files be
+  brought under `FORWARD_TRACK_READ_PREREGISTRATION.md`? Still unanswered;
+  the loop **abstained** again, for the twelfth consecutive iteration —
+  and today's audit is precisely the kind of question that clause would
+  have settled in advance. (e) Section 1 of `PRE_HOLDOUT_PROTOCOL.md`
+  calls all-columns PBO the "conservative upper bound", which is false at
+  N=133. (f) The live paper runtime has been a no-op for **38 days**; the
+  repair is a one-line change in a file only the operator may touch, and
+  even after it the dashboard keeps counting wall-clock days from
+  2026-07-03, hits a full bar on **2026-10-01** and 92 days on
+  **2026-10-03**. **(g) NEW, with a deadline:** the forward tracks charge
+  no trading cost, the bias is one-signed at 2.607%/yr and 1.304%/yr, and
+  the choice among the three options above must be made **before
+  2026-10-22** — an amendment written after that read is written with data
+  in hand.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All checks
+  passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 79.40s. Recorded rather than acted on, and
+  it is the third consecutive iteration to say a version of this: the
+  suite is green while the forward recorder charges no trading cost,
+  because **no test in `tests/` references `shadow_signal` or any shadow
+  track at all**. The green tree did not and could not catch today's
+  defect, exactly as it did not catch the runtime no-op or the dashboard
+  staleness.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  pre-registration or contract clause edited (the standing answer is
+  updated in place, as that section mandates), no registry row or return
+  series touched, no shadow file written to, no result document rewritten,
+  no prior log entry edited, no trial registered, no backtest run, no gate
+  report regenerated, no arm run, **no new script written**, one new
+  research document recording a forced operator choice, holdout untouched
+  and `spent` still `false`, **no file under `configs/runtime/`,
+  `src/runtime/`, `src/api/`, `scripts/` or any scheduled-task definition
+  touched — the recorder defect was diagnosed and escalated, not
+  repaired**, no forward Sharpe level cited as support, no read date
+  moved, and the 2026-08-09 hole left as a hole.
+
+- **Standing answer restated, with one clause added:** timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine is free of look-ahead and **so,
+  now measured, is the forward recorder**; execution-latency cost is about
+  -6.4 bps round-trip, inside tested headroom; the October holdout is
+  protected mechanically; the Taiwan and gold negatives are robust to
+  dividend treatment; against the naive 13-coin alternative the margin is
+  only 5.4% and that benchmark is survivorship-flattered; breadth still
+  fails and is priced from five directions, all in the hundredths of
+  Sharpe; nothing is forward-validated and no return-based forward verdict
+  is statistically permitted before 2028-06-29, a date the tracks are
+  **5.95%** of the way to; gate 4 passes three trials and only trial 118
+  is risk-compliant, with the one-trial fragility belonging to trial 118
+  rather than to gate 4; gate 3 fails under all 4 224 admissible candidate
+  readings, the repaired key, and all columns; the search is still over;
+  the framework has exercised exactly two gates, both defective; gate 6
+  cannot be executed in October 2026 because the evidence stream it
+  depends on has been dead for 38 days while the dashboard shows 觀察期
+  65/90 天 and will show a full bar on 2026-10-01; **and the forward
+  stream that is supposed to answer the 2028 question is recorded without
+  trading costs, biased one-signed in the strategy's favour at 2.607%/yr
+  on trial 88, in a way the read rule's only full-power test is
+  structurally unable to detect.** On-chain route open but unadvanced.
+  Operator-attention items dated 2026-09-06 are the seven above.
