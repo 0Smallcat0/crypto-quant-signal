@@ -2587,3 +2587,92 @@ cross-sectional momentum untested here → experiment 3.
   independent group has converged on this program's architecture and its
   benchmark framing without publishing a single one of the six-gate
   quantities.
+
+## 2026-09-06 — iteration 59 (four candidate sources fetched, two of them new; zero strategy arrivals — and for once the literature is directly about this iteration's own finding, which is that a forward track can be honest about *what* it trades and silent about *what it pays*)
+
+- **arXiv 2606.00060v1, "Machine Learning-Based Bitcoin Trading Under
+  Transaction Costs: Evidence From Walk-Forward Forecasting", Andrei Bysik
+  and Robert Ślepaczuk, dated 2026-05-19 — new to this log, and the
+  single most relevant external source this program has fetched about the
+  defect found today.** As printed on the arXiv HTML record: roughly
+  70 000 hourly BTC/USDT observations, 2018–2026, a 27-fold walk-forward
+  protocol, "proportional transaction costs of ten basis points"
+  described as "a conservative effective cost that includes explicit
+  exchange fees, spread crossing, slippage, and other execution
+  frictions". The headline pair is the reason it is recorded: the
+  long-only XGBoost strategy returns **73.50% annualized without costs**
+  and **−64.00% with them**, recovering to 65.40% (Sharpe above 1.0) only
+  after a cost-aware execution filter that "sharply reduces turnover".
+  Multiple testing is handled with a **Holm correction** at the 1% level.
+  **Testable-here: no** — hourly futures fails product law on two of four
+  conditions (spot, daily), and the cost-aware filter is a new parameter
+  family, which P3 refuses. **Recorded because of the sign flip, not the
+  magnitude**: a 137.5-point swing between the costless and cost-charged
+  accounting of the *same* signal is the clearest published statement
+  that a costless equity path is not a slightly optimistic version of the
+  real one — at high turnover it can be the opposite verdict. This
+  program's forward tracks turn over 17.4x/yr, not hourly, so the honest
+  read of this source is **directional support, not a magnitude
+  estimate**; today's own measurement puts the effect at 2.607%/yr, and
+  that number comes from this repository's files, not from this paper.
+
+- **CoinQuant, "Donchian Channel Breakout on Crypto: Backtest vs
+  Keltner" — new, and the first external backtest this log has found that
+  satisfies **all four** product-law conditions at once.** As printed:
+  "BTCUSDT (spot)", "Long only, no leverage", "Daily (1D)", "Jan 2022 to
+  Jun 2026", fees "Binance standard (0.1% taker)". Results: total return
+  **+36.50%**, Sharpe **0.38**, max drawdown **38.52%**, win rate 36.0%
+  (9 wins / 16 losses), profit factor 1.28, 25 trades. **Testable-here:
+  no** — it is a single-window Donchian, not the 10/20/55/110 ensemble,
+  and re-running it here would be a new single-market parameter family
+  that P3 refuses. **No comparison is drawn to trial 88's 1.1823**: the
+  windows differ, the universe differs (BTC alone vs BTC+ETH), the sample
+  differs (2022-06/2026 vs 2018-2025), and the page states **no**
+  out-of-sample or multiple-testing caveat — it says only "Run the test
+  on CoinQuant before making any change live". Two things are worth
+  recording anyway. First, a plain daily long-only spot Donchian on BTC
+  with real fees earns a Sharpe of **0.38**, which is the order of
+  magnitude a reader should hold in mind when this program reports 1.18
+  from a search over 133 trials. Second, and directly on point today, the
+  page declares slippage of **"0%"** — an external instance of the exact
+  omission measured in this repository's own forward tracks this
+  iteration.
+
+- **StratProof, "I paper-traded 22 popular crypto strategies on real fees
+  for 10 days. 16 of them lost money.", published 2026-04-30 — new;
+  low-authority blog, no peer review, and recorded with that stated
+  plainly.** Method as printed: 22 strategies, forward paper-trading on
+  live Binance **spot** data from 2026-04-19 for 10 days, real fees
+  (0.075% maker / 0.1% taker at VIP 1) **and** real L2 bid-ask spread
+  sampled from the order book at 0.05–0.15% per side. Results: 26 765
+  trades, win rate 32.6%, average P&L per trade **−0.078%**, $1 000 →
+  $662.90, **6 of 22 profitable**. It states the round-trip reality as
+  "~0.25-0.30%" against "the 0.2% most backtests assume", and names the
+  omission directly — "Most retail backtesters apply a flat 0.1% fee per
+  side and call it done", with the spread component left out.
+  **Testable-here: no** — no strategy definition is published in a form
+  this repository could run, the 10-day sample is far below any MinTRL,
+  and nothing about the 22 arms' selection is disclosed. **Recorded for
+  one reason**: it is a forward paper-trading exercise that charges costs,
+  and its central claim is that the sign of the answer changes when they
+  are charged. It also cites Bailey-López de Prado 2014 deflated Sharpe
+  for multiple testing, which is the same machinery gate 4 uses — noted,
+  not verified, since the raw pages were not fetched.
+
+- **Man Group, "In Crypto We Trend", and CXO Advisory, "Crypto-asset
+  Trend-following Strategies" — surfaced, not fetched, and no claim is
+  recorded from either.** Enumerated so the pass is complete. The Monash
+  working paper (Le and Ruthbah) surfaced again and is **still** the
+  HTTP 403 of iteration 58; no retry was attempted and nothing rests on
+  it. MDPI 19/9/692 (lagged momentum and reversal, Bitcoin and Ethereum,
+  hourly Kraken 2016-2025) surfaced and is **refused unread on product
+  law** — hourly.
+
+- **Arrivals: zero.** Four sources fetched, three of them new to this log.
+  Not one is admissible as a strategy hypothesis: two fail product law on
+  bar frequency or venue, one is a single-window family P3 refuses, and
+  one publishes no runnable definition at all. The pass is nonetheless
+  the most useful in several iterations, because three of the four
+  independently describe the failure mode that this iteration measured
+  inside this repository — an equity path that is arithmetically correct
+  and pays nothing to trade.

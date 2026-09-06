@@ -211,6 +211,31 @@ Hard limits, binding:
 > N=133 (**88.3%** of admissible candidate readings exceed it). The
 > frozen rule is unchanged and unedited. Full measurement in
 > `docs/research/GATE3_CANDIDATE_COMPOSITION_2026-09-01.md`.
+>
+> Refinement 2026-09-06 (iteration 59) — **the forward evidence stream is
+> costless, and the read rule's only full-power test cannot see it.** All
+> four shadow tracks reproduce their recorded equity exactly under a
+> *costless*, correctly-lagged model (max residual 8.140e-28 on trial 88,
+> 8.973e-28 on trial 118, over 99 transitions), while the same-day-weight
+> model fails on every turnover day. Two consequences, opposite in sign.
+> **PASS:** there is no look-ahead — the recorder's own comment is now a
+> measured property of the data, not a claim about the code. **DEFECT:**
+> no fee, slippage or spread is charged on any turnover day, while the
+> backtest these tracks validate charges **15 bps per fill**
+> (`fee_bps 10 + slippage_bps 5`, registry rows 88 and 118). Uncharged
+> drag is **2.607 %/yr** on trial 88 (turnover 17.381/yr) and
+> **1.304 %/yr** on trial 118, worth **4.981 %** and **2.289 %** of equity
+> by their MinTRL dates. The bias is **one-signed** — it can only flatter.
+> Test 1 compares the exposure path only, so it **passes while the defect
+> is present**; Test 2's drawdown breach becomes less likely to fire
+> (currently immaterial: 3.4094 % vs 3.4456 % against a 33.05 % bar); and
+> the 2028-06-29 date was derived from a **cost-inclusive** SR of 1.1823
+> while the series measured on it will be **cost-exclusive**. Nothing was
+> repaired: fixing the recorder mid-track splices two accounting regimes
+> into one append-only series, and a read-time adjustment is a post-hoc
+> metric change the frozen rule forbids. **The operator must choose, and
+> before 2026-10-22.** Full measurement and the three options:
+> `docs/research/FORWARD_TRACK_COST_OMISSION_2026-09-06.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
