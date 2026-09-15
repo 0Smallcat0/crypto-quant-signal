@@ -2676,3 +2676,91 @@ cross-sectional momentum untested here → experiment 3.
   independently describe the failure mode that this iteration measured
   inside this repository — an equity path that is arithmetically correct
   and pays nothing to trade.
+
+## 2026-09-15 — iteration 60 (P1 maintenance pass; four sources, zero arrivals)
+
+- **arXiv 2602.11708, Bui and Nguyen, "Systematic Trend-Following with
+  Adaptive Portfolio Construction", submitted 2026-02-12 — NOT new: this
+  is at least the seventh encounter, and it stays disposed.** Iteration 55
+  recorded it as "re-encountered for at least the fifth time" and
+  iteration 56 as "at least the sixth"; it was fetched again today before
+  that history was checked, and the first draft of this entry called it
+  new. That was an overcount of exactly the kind iteration 51 corrected,
+  caught and fixed the same day under the standing correction duty. It is
+  refused on product law at the first line of its own abstract. Method
+  as printed: **6-hour** bars, "asymmetric 70/30 **long-short** allocation
+  scheme", 150+ cryptocurrency pairs, 36-month evaluation window
+  2022-2024, with monthly adaptive portfolio construction, a dynamic
+  trailing stop and rolling-Sharpe asset selection. Reported: annualized
+  Sharpe **2.41**, max drawdown **−12.7%**, Calmar **3.18**.
+  **Testable-here: no** — the bar frequency and the short leg each fail
+  product law independently (this program is spot, long-only, daily), and
+  the venue (spot vs perpetual) is not stated in the abstract at all.
+  **Recorded for one property, not its headline:** the abstract reports
+  a Sharpe of 2.41 from a design that selects assets by rolling Sharpe
+  over 150+ pairs and **states no multiple-testing correction** — no
+  deflated Sharpe, no PBO. That is the same selection channel this
+  program spent iterations 26, 55 and 56 measuring, run at roughly ten
+  times the universe breadth and reported without the adjustment. No
+  comparison is drawn to trial 88's 1.1823; the two numbers are not
+  commensurable and the cost rate behind 2.41 is not disclosed in the
+  abstract.
+
+- **Ernie's Leisure Code, "Backtesting Quantitative Trading Strategies:
+  From Research Bias to Production Reality", 2026-08-27 — new, blog, and
+  the closest external statement of the control this repository turns out
+  to be missing.** Its production recommendation, verbatim: *"The most
+  effective production control is live-shadow reconciliation: every day,
+  rerun the frozen model using the real data that were actually available
+  in production that day to obtain a hypothetical OOS backtest, then
+  compare it with actual live fills."* Its recommended dashboard list
+  includes **"realized vs modeled slippage"** as a standing daily metric.
+  **Testable-here: no strategy content** — it publishes no signal. It is
+  recorded because iteration 59 measured that this program's forward
+  tracks reproduce their exposure path exactly and charge **nothing** to
+  trade, and this page names the missing comparison — realized against
+  modelled cost — as a daily control rather than an audit finding.
+  **Its numbers are explicitly not evidence and are not carried:** the
+  page states in its own words that its cost table (19.0% gross CAGR to
+  10.4% net, Sharpe 1.54 to 0.84) uses **"synthetic values for
+  methodological illustration"**. The direction is corroboration; the
+  magnitudes are not cited here and must not be cited later. Asked
+  directly for a procedure that detects a shadow track and its backtest
+  disagreeing on cost assumptions, the page **has none** — it recommends
+  monitoring fill shortfall in bps, which presupposes fills that this
+  program's cost-free recorder never produces.
+
+- **arXiv 2605.24564, Li, Wang and Ma, "Summoning the Oracle to Slay
+  It", submitted 2026-05-23, revised 2026-08-29 — new, fetched on the
+  look-ahead thread of iteration 59, and it does not bear on it.** It
+  proposes **FinCAD**, an inference-time adaptation of Context-Aware
+  Decoding that attenuates memorised historical outcomes in an LLM
+  without retraining, demonstrated on five mega-cap equities.
+  **Testable-here: no** — the look-ahead it mitigates is an LLM
+  memorisation artifact, not the timestamp-alignment question iteration
+  59 settled arithmetically on this repository's own files, and it
+  contains **no discussion of missing transaction costs**. Recorded so
+  the pass is complete and so the thread is not re-opened by a future
+  iteration on the strength of a promising title.
+
+- **Not fetched, enumerated for completeness:** Coin Bureau's 2026
+  backtesting guide, the corporate-bond factor replication crisis
+  (arXiv 2604.07880), QuantStart's transaction-cost article, and a
+  GitHub research-issues thread alleging that a 2.44 Sharpe headline in
+  arXiv 2608.27076 is a selection artifact of one out-of-sample year over
+  ~150 unadjusted hyperparameter trials. The last is thematically close
+  to gate 4's subject but is an unreviewed issue comment on a paper this
+  log has not read; **no claim rests on any of the four**, and none is
+  cited elsewhere in this repository.
+
+- **Arrivals: zero.** Three sources fetched, **two** of them new to this
+  log (2605.24564 and the Ernie blog; 2602.11708 is a seventh
+  re-encounter), none admissible as a strategy hypothesis: two fail
+  product law on bar frequency or leg direction, one publishes no signal.
+  **Streak, counted against this file rather than asserted:** zero
+  strategy arrivals in iterations **57, 58, 59 and 60 — four consecutive
+  passes.** It is not longer than that: iteration 55 recorded one arrival
+  and iteration 56 two, all three blocked on arrival (holdout boundary,
+  product law) but counted. The reason for the streak is unchanged and
+  structural — product law (spot, long-only, daily, two-sided costs)
+  excludes most of what the literature publishes, and P3 refuses the rest.

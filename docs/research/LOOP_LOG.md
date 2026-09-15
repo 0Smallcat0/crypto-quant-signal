@@ -6186,3 +6186,207 @@
   on trial 88, in a way the read rule's only full-power test is
   structurally unable to detect.** On-chain route open but unadvanced.
   Operator-attention items dated 2026-09-06 are the seven above.
+
+## 2026-09-15 — iteration 60 (P1 maintenance: the loop lost eight consecutive slots to account limits and the evidence stream lost nothing — the two are decoupled, now verified rather than assumed)
+
+- **Step 0 — convergence check, run first.**
+  1. **Current answer.** Unchanged, and no measurement today touched it:
+     the timing rule adds real value in **crypto only** — in its own
+     BTC/ETH universe it bought **both** return and drawdown (14.26x vs
+     6.05x, 33.05% vs 80.99%), corroborated by the 4.70x exposure-matched
+     twin edge — and none in Taiwan (0.73x) or gold (1.00x); against the
+     naive 13-coin alternative the margin is only **5.4%** and that
+     benchmark is survivorship-flattered. **Nothing here passes the six
+     gates.**
+  2. **What this iteration moves.** Nothing analytical, by design. Every
+     analytical lever remains blocked exactly as the contract's
+     exhaustion table says, and the two live questions — the forward-track
+     cost omission (iteration 59) and the dead runtime behind gate 6
+     (iterations 57-58) — are **operator choices with deadlines**, not
+     loop work. What it does close is a question the eight-day silence
+     actually raised: **did the loop's own outage damage the evidence
+     stream?** Answer, verified from the four files: **no.** The tracks
+     gained every row they were scheduled to gain while the loop was
+     unable to run at all.
+  3. **Why it is not sprawl.** This is the contract's own prescription
+     for an iteration that reaches the exhaustion clause — "do P1
+     maintenance, confirm the tracks are gaining rows, and stop" — and
+     the confirmation was not a formality this time, because eight
+     scheduled iterations had been missed and nobody had checked. No new
+     script, no new document, no diagnostic manufactured in order to have
+     something to commit.
+
+- **P1 track state, verified from the files themselves.**
+
+  | Track | Path | Lines | Last row | Health |
+  |---|---:|---:|---|---|
+  | `shadow_trial88` | `data/runtime/shadow_trial88.jsonl` | 52 (51 real + seed) | 2026-09-14, equity 1081.573336893737279436888779, exposure `{BTC: 0.5, ETH: 0.75}`, closes 78189.21 / 2515.75 | OK — **+9 rows** since iteration 59, one per day, **no new hole** |
+  | `shadow_trial118` | `data/runtime/shadow_trial118.jsonl` | 52 (51 real + seed) | 2026-09-14, equity 1134.962870359384185623690818, exposure `{BTC: 0, ETH: 1}` | OK — **+9 rows**, no new hole |
+  | `shadow_tw0050` | `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` | 9 (8 real + seed) | 2026-09-11, exposure 0.5, equity 1019.573566594411057866030793 | OK — **+1 row** (the 2026-09-12 Saturday 09:40 task), **weekly** |
+  | `shadow_gld` | `D:/TW-Stock-Trading/data/runtime/shadow_gld.jsonl` | 10 (9 real + seed) | 2026-09-11, exposure 0, equity 999.3166935597225099601970623 | OK — **+1 row**, same weekly task |
+  | live paper runtime | `data/runtime/events.jsonl` | — | last `cycle` still `cycle:2026-07-30T23:59:59.999000+00:00`, recorded 2026-07-31T00:05:02Z; 29 cycles total | **STILL DEAD, day 46** — health rows now **46**, latest 2026-09-14, every one of them `WARMUP_INSUFFICIENT_HISTORY`. Unrepairable by the loop under iron rule 1 |
+
+  Forward-track progress toward the MinTRL date 2028-06-29: **51 of 706
+  days, 7.22%** (was 42 of 706, 5.95%, at iteration 59 — the same
+  real-rows-excluding-seed convention that entry's own table states).
+
+- **The finding: the loop's availability and the evidence stream's
+  availability are independent, and the outage proved it rather than
+  merely suggesting it.** Between iteration 59 (2026-09-06) and today the
+  scheduler fired **eight** times and completed **zero** iterations:
+
+  | Slot | Outcome (from `docs/research/loop_runs/`) |
+  |---|---|
+  | 2026-09-07 | start marker only, **no exit marker** — started, never finished |
+  | 2026-09-08 | `exit=1` — "You've hit your session limit … resets 10:30pm" |
+  | 2026-09-09 | `exit=1` — "You've hit your session limit … resets 10:10pm" |
+  | 2026-09-10 | start marker only, **no exit marker** |
+  | 2026-09-11 | `exit=1` — "You've hit your **weekly** limit … resets Sep 15, 8am" |
+  | 2026-09-12 | `exit=1` — same weekly limit |
+  | 2026-09-13 | `exit=1` — same weekly limit |
+  | 2026-09-14 | `exit=1` — "You've hit your weekly limit … resets 8am" |
+
+  Today's run is the **first slot after that weekly reset** (2026-09-15
+  08:00 Asia/Taipei). Across September as a whole the scheduler has
+  **4 completed of 14 slots** (2026-09-01, 09-04, 09-05, 09-06), 7 hard
+  failures, 3 with a start marker and no exit, and **2026-09-02 still has
+  no file at all** — unchanged from iteration 59's note.
+
+  The reason this is worth a table rather than a footnote: **the shadow
+  recorders are separate scheduled tasks**, and over the same eight days
+  they recorded **9 of 9** crypto rows and the one Saturday TW/gold row
+  that was due. The live runtime's health reporter also kept writing
+  (37 rows at iteration 59, 46 now, +9). So the failure mode that took
+  the loop out is a **Claude-account limit**, and it has **no path** to
+  the evidence. That is the good version of this news, and it is the
+  version the files support.
+
+- **Two maintenance observations, recorded so they are not rediscovered.**
+  (a) The weekly tracks are **event-sampled, not calendar-sampled**: 8 and
+  9 real rows across 50 days, with `shadow_tw0050` missing 2026-07-31
+  entirely and both files carrying mid-week rows on 2026-08-10, 08-11 and
+  08-12. Any future sentence of the form "N rows on the TW track" must not
+  be read as "N weeks". (b) The two weekly tracks disagreed on data date
+  at the 2026-09-05 run (tw0050 recorded 09-04, gld recorded 09-03) and
+  **agree again today** at 2026-09-11 — consistent with a US-ETF feed
+  lagging the Taipei Saturday read by a day, not with a defect.
+
+- **Equity moved down on both crypto tracks over the outage window**
+  (trial 88 1098.78 → 1081.57, trial 118 1150.44 → 1134.96, comparing
+  iteration 59's recorded table to today's last rows). This is stated as
+  a **health observation only**. Today is **not** a read date under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`; no forward Sharpe, drawdown or
+  any other metric was computed, and none may be cited. The rule declares
+  health checks unrestricted and reads date-bound, and that distinction is
+  being honoured here in the direction that happens to cost the strategy
+  something — which is the direction in which honouring it is worth
+  stating explicitly.
+
+- **Stop-condition check, run explicitly.** **DSR >= 0.95 AND
+  candidates-PBO <= 0.05.** Verified against
+  `docs/reports/research/gate_report_2026-07-25.json` (still the latest;
+  `trials_n` 133, `trial_registry.jsonl` still 133 rows, mtime unchanged
+  at 2026-07-25): `gate_4_dsr` marks `passes_dsr: true` on trials **29**
+  (0.986670), **37** (0.952424) and **118** (0.950140), of which only 118
+  is risk-compliant; `gate_3_pbo.pbo` is **0.651826** against
+  `threshold_max` 0.05, `passes: false`. `holdout_lock.json` still reads
+  `"spent": false`. **No `EDGE_CANDIDATE_FOUND.md` event, and none is
+  warranted.**
+
+- **Step 2 (web research): three sources fetched, two new, zero arrivals
+  — and the pass caught an error in its own first draft.** Full detail in
+  `RESEARCH_LOG.md` under iteration 60. (a) **arXiv 2602.11708, Bui and
+  Nguyen, 2026-02-12** — 6-hour bars, asymmetric 70/30 **long-short**,
+  150+ pairs, Sharpe **2.41** at −12.7% drawdown, **no multiple-testing
+  correction stated**. Refused on product law twice over. Recorded for the
+  selection channel, not the headline. **It was drafted as "new" and it is
+  not** — iterations 55 and 56 already logged it as the fifth and sixth
+  encounter; this is at least the seventh. Corrected in place the same
+  day, which is the overcount iteration 51 warned about, caught by
+  checking the file instead of trusting the draft. (b) **Ernie's Leisure
+  Code, 2026-08-27** — new; names **live-shadow reconciliation** as "the
+  most effective production control" and lists **"realized vs modeled
+  slippage"** as a standing daily dashboard metric — precisely the
+  comparison iteration 59 found missing here. Its cost table is
+  **explicitly labelled synthetic** by its own author, so the direction is
+  corroboration and **the magnitudes are not carried**. (c) **arXiv
+  2605.24564, Li, Wang and Ma** — new, fetched on the look-ahead thread
+  and **it does not bear on it**: the look-ahead it mitigates is LLM
+  memorisation on five mega-cap equities, with no transaction-cost
+  content. Recorded so the thread is not reopened on the strength of a
+  title. **Arrival streak, counted against the file rather than asserted:
+  zero strategy arrivals in iterations 57-60, four consecutive** — not
+  longer, since iterations 55 and 56 recorded one and two.
+
+- **Deadline arithmetic, unchanged in substance and shorter by nine days.**
+  **2026-10-01 is 16 days away** — the date the dashboard shows a full
+  觀察期 90-day bar with zero cycles behind it (iteration 58).
+  **2026-10-22 is 37 days away** — the 90-day implementation read, and the
+  date before which the operator must choose among the three cost-omission
+  options (iteration 59). Both choices remain unmade, both are
+  operator-only, and the loop completed 4 of its last 14 scheduled slots.
+  That rate is stated as an observed fact, not a forecast.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 164.91s. Fourth consecutive iteration to
+  record the same caveat: the suite is green while the forward recorder
+  charges no trading cost, because **no test in `tests/` references any
+  shadow track**. The green tree did not catch the cost omission, the
+  runtime no-op, or the dashboard staleness, and it would not catch them
+  today either.
+
+- **Operator-attention items.** Seven, unchanged in substance from
+  iteration 59, with (c) now carrying a measurement. (a) The
+  ensemble-breadth leave-one-out is still unmeasured and still
+  P3-forbidden. (b) The research loop still runs in a visible console
+  window. **(c) Account limits cost the loop eight consecutive slots
+  (2026-09-07..09-14) and 10 of 14 September slots; the weekly limit reset
+  2026-09-15 08:00. Account-level, operator-only, and the only item here
+  that stopped the loop outright — though it did not touch the evidence.**
+  (d) Should cross-track structural comparisons of the shadow files be
+  brought under `FORWARD_TRACK_READ_PREREGISTRATION.md`? Unanswered; the
+  loop **abstained** again, thirteenth consecutive iteration. (e) Section
+  1 of `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative
+  upper bound", which is false at N=133. (f) The live paper runtime has
+  been a no-op for **46 days**; the repair is a one-line change in a file
+  only the operator may touch, and the dashboard hits a full bar on
+  **2026-10-01**. (g) The forward tracks charge no trading cost, the bias
+  is one-signed at 2.607%/yr and 1.304%/yr, and the choice must be made
+  **before 2026-10-22**.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  pre-registration or contract clause edited, no registry row or return
+  series touched, no shadow file written to, no result document rewritten,
+  no prior log entry edited, no trial registered, no backtest run, no gate
+  report regenerated, no arm run, **no new script and no new research
+  document**, holdout untouched and `spent` still `false`, **no file under
+  `configs/runtime/`, `src/runtime/`, `src/api/`, `scripts/` or any
+  scheduled-task definition touched**, no forward metric computed and no
+  forward number cited as support, no read date moved, and the 2026-08-09
+  hole left as a hole.
+
+- **Standing answer restated, unchanged.** Timing works in crypto only and
+  in its own universe bought both return and drawdown (14.26x vs 6.05x,
+  33.05% vs 80.99%); the 4.70x exposure-matched twin edge is audited and
+  robust; the engine and the forward recorder are both free of look-ahead;
+  the Taiwan and gold negatives are robust to dividend treatment; against
+  the naive 13-coin alternative the margin is only 5.4% and that benchmark
+  is survivorship-flattered; breadth still fails and is priced from five
+  directions, all in the hundredths of Sharpe; nothing is forward-validated
+  and no return-based forward verdict is statistically permitted before
+  2028-06-29, a date the tracks are **7.22%** of the way to; gate 4 passes
+  three trials and only trial 118 is risk-compliant, with the one-trial
+  fragility belonging to trial 118 rather than to gate 4; gate 3 fails
+  under all 4 224 admissible candidate readings, the repaired key, and all
+  columns; the search is still over; the framework has exercised exactly
+  two gates, both defective; gate 6 cannot be executed in October 2026
+  because its evidence stream has been dead for 46 days; the forward
+  stream that is supposed to answer the 2028 question is recorded without
+  trading costs, biased one-signed in the strategy's favour, in a way the
+  read rule's only full-power test cannot detect; **and the eight-day loop
+  outage that preceded this entry cost the program iterations but not
+  data.** On-chain route open but unadvanced. Operator-attention items
+  dated 2026-09-15 are the seven above.
