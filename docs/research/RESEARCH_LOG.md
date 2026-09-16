@@ -2764,3 +2764,98 @@ cross-sectional momentum untested here → experiment 3.
   product law) but counted. The reason for the streak is unchanged and
   structural — product law (spot, long-only, daily, two-sided costs)
   excludes most of what the literature publishes, and P3 refuses the rest.
+
+## 2026-09-16 — iteration 61 (four sources fetched or attempted, two new; zero strategy arrivals — and for the second pass running the literature is directly about this iteration's own finding, which is that a forward track can be perfectly replayable in principle and have no archived input to replay against)
+
+- **arXiv 2512.20761v3, Marcel Meyer, Sascha Kaltenpoth, Henrik Albers,
+  Kevin Zalipski and Oliver Müller, "TS-Arena — A Live Forecast
+  Pre-Registration Platform", December 2025 — new, and it is the closest
+  external statement of the control this repository turns out to be
+  missing.** It is a platform whose entire premise is this program's own:
+  fix the evaluation rule before the data arrives, then let live data
+  decide. **The part that bears on today's finding is its archiving
+  design.** The platform maintains a historical archive
+  (`DAG-UPB/TS-Arena-Archive` on Hugging Face) that preserves the **exact
+  input snapshot each model received at forecast time**, on the stated
+  grounds that without it *"replaying"* forecasts becomes impossible,
+  because re-fetching risks obtaining updated or corrected values rather
+  than the original inputs. **Testable-here: no strategy content** — it
+  publishes a protocol, not a signal, and its domain is time-series
+  forecasting generally rather than spot crypto. It is recorded because
+  this iteration measured that this program's forward tracks record
+  `close` only, that the local candle store stops 22 days before the
+  forward window opens, and that a Test 1 replay on 2026-10-22 must
+  therefore re-fetch 112 bars per symbol that exist in no local file.
+  TS-Arena names that exact failure and its fix. **What it does not give:**
+  no guidance on a track already 54 days in, which is this program's
+  actual position, and no quantity of any kind that could be carried here.
+
+- **Concretum Group, Mohamed Gabriel, "Backtesting Data Quality: How Data
+  Providers Impact Results" — new article, previously-logged outlet, and
+  the reason today's provenance finding is a measured risk rather than a
+  theoretical one.** Claim, verbatim: *"The same provider, queried at
+  different points in time, can produce materially different datasets,
+  leading to different backtest outcomes."* Instance: an Interactive
+  Brokers TQQQ intraday series used in a February 2023 backtest, and the
+  same historical period re-downloaded **2026-03-24**, where the second
+  download contained extended sequences of flat prices — on some sessions
+  **more than 350 of 390 one-minute bars show no price movement** — and
+  the equity curve diverged substantially **under identical strategy
+  logic**. **Testable-here: no** — it publishes no signal, and the
+  magnitudes are **not transferable**: US equities, one-minute bars, one
+  broker's historical database, against this program's daily Binance spot
+  candles. It is cited in
+  `FORWARD_TRACK_REPLAYABILITY_2026-09-16.md` **for direction only**, and
+  the document says so in those words. The honest reading is that a
+  re-fetch is not guaranteed to reproduce what a recorder saw, not that
+  this program's re-fetch will differ by any particular amount.
+
+- **Klaus Grobys et al., "Using on-chain data to predict Bitcoin cycles",
+  *Research in International Business and Finance*, 2026 — new to this
+  log, fetched on the on-chain route, and NOT admissible on the available
+  record.** Scope as reported: three on-chain rule-based measures — **NUPL**
+  ratio, **MVRV Z-score** and **Cumulative Value Days Destroyed (CVDD)** —
+  over **2013-12-07..2025-04-12**, three complete cycles (2015, 2018,
+  2022), with the MVRV Z-score reported as the best performer on both
+  return and risk-adjusted performance against the benchmark, and CVDD
+  described as informative for bottoms. **The primary could not be read:**
+  the publisher returned **HTTP 403**, and the University of Vaasa
+  open-access mirror returned **ECONNREFUSED**. What is recorded above
+  comes from a **secondary practitioner summary**, which explicitly does
+  **not** state data frequency, long-only vs. other structure, transaction
+  costs, the number of thresholds or variants tried, any in-sample /
+  out-of-sample split, or any deflated-Sharpe or PBO adjustment — and
+  reports **no Sharpe, return or drawdown figure at all**. **Testable-here:
+  unknown, and that is the finding.** Every quantity that would decide
+  admissibility under product law and under gate 4 is exactly the set of
+  quantities the accessible record omits. MVRV is already in this
+  program's on-chain inventory as `CapMVRVCur` (logged 2026-07-19, flagged
+  partial), so this changes nothing about the on-chain route's status: it
+  stays **open and unadvanced**. No number from this paper is carried
+  anywhere.
+
+- **arXiv 2606.00060, Bysik et al., "Machine Learning-Based Bitcoin
+  Trading Under Transaction Costs: Evidence From Walk-Forward
+  Forecasting" — NOT new: third encounter, and it stays disposed.**
+  Re-surfaced in today's search on the product-law query. Already recorded
+  in full at two prior points in this log, most recently iteration 59.
+  Checked against this file **before** drafting rather than after, which
+  is the discipline iteration 60 had to apply retroactively to arXiv
+  2602.11708. Hourly bars fail product law; nothing has changed.
+
+- **Arrivals: zero.** Four sources handled — two new and fetched
+  (2512.20761, the Concretum data-quality article), one new and
+  **unreadable at the primary** (Grobys et al.), one a third re-encounter
+  (2606.00060). None admissible as a strategy hypothesis: two publish no
+  signal at all, one publishes a signal whose frequency, costs and
+  multiple-testing treatment are unavailable, one fails product law on bar
+  frequency. **Streak, counted against this file rather than asserted:
+  zero strategy arrivals in iterations 57, 58, 59, 60 and 61 — five
+  consecutive passes.** Not longer: iteration 55 recorded one arrival and
+  iteration 56 two, all blocked on arrival but counted. **Second
+  consecutive pass in which the useful content was methodological rather
+  than strategic** — iteration 60 found the external statement of the
+  missing cost control, and today found the external statement of the
+  missing input archive. That is a pattern worth naming, not celebrating:
+  the literature keeps confirming this program's infrastructure defects
+  and keeps failing to supply it with a testable edge.
