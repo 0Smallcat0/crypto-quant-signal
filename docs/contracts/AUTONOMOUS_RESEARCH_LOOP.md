@@ -236,6 +236,41 @@ Hard limits, binding:
 > metric change the frozen rule forbids. **The operator must choose, and
 > before 2026-10-22.** Full measurement and the three options:
 > `docs/research/FORWARD_TRACK_COST_OMISSION_2026-09-06.md`.
+>
+> Refinement 2026-09-16 (iteration 61) — **Test 1 is well defined, is not
+> offline, and is narrower than its own wording.** Three answers to the
+> question iterations 57-58 asked of gate 6, now asked of the forward
+> read's primary test. **PASS:** the recorder re-seeds a fresh all-OFF
+> state every run at index 110 of a *rolling* 400-bar window while an
+> offline replay seeds once, and Test 1 demands exact agreement — but over
+> **12 524 seed-runs** on 2017-2026 history the worst-case state burn-in
+> is **96 bars** against the recorder's **290** (trial 88 96/68, trial 118
+> 29/28 on BTC/ETH; median 0; **zero** seeds needed more than 290). Route
+> closed; the mechanism (a late seed can never be ON while an early one is
+> OFF, and the two re-converge on the first close outside
+> `[exit_level, max(prior closes)]`) predicts the atr_channel track
+> converges faster, and it does. **MISSING SPECIFICATION:** the rule states
+> no replay depth, so a replay seeded at the 110-bar channel floor can
+> disagree by up to 96 bars of state while the rule's verdict for any
+> mismatch is *"implementation defect. Halt and fix."* — **as written it
+> can manufacture a false halt on a correct recorder.** Required depth
+> ≥ **206** bars; the recorder's own 400 is safe and adds no new number.
+> **DEFECT:** the rule says "offline" and **there is no offline input.**
+> The local candle store ends **2026-07-02**, the forward window opens
+> **2026-07-24**, shadow rows record `close` only (no open/high/low, which
+> trial 118's ATR exit consumes), and `shadow_runs/` holds 88 stdout logs
+> and no candle. Test 1 on 2026-10-22 must **re-fetch 112 bars per
+> symbol** — 21 warmup, 91 forward — that exist in no local file,
+> unverifiable against what the recorder saw except through the ~90
+> recorded closes. So the October read is bounded on three sides: it
+> cannot see cost (iteration 59), cannot see a signal-math error (recorder,
+> backtest engine and live runtime all import the same
+> `evaluate_donchian_ensemble`), and cannot be run against an archived
+> input. **It remains a real harness check, and archiving is forward-only
+> — every deferred day is provenance that cannot be recovered.** Nothing
+> was repaired and nothing frozen was edited. Full measurement and the
+> three options:
+> `docs/research/FORWARD_TRACK_REPLAYABILITY_2026-09-16.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 

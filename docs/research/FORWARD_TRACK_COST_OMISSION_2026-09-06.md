@@ -174,3 +174,33 @@ Read from `data/runtime/shadow_trial88.jsonl` (43 rows, 2026-07-24 to
 application verified in `src/backtest/engine.py:457-465`; recorder
 arithmetic verified in `scripts/shadow_signal.py:191-202`. All arithmetic
 in `Decimal`. Nothing was written to any of these files.
+
+---
+
+## Addendum 2026-09-16 (iteration 61) — a second decision falls due on the same date
+
+This document asks the operator to choose, before **2026-10-22**, among
+three ways of handling the cost omission. A separate audit run that day
+found **two more choices with the same deadline**, on the same tracks and
+the same Test 1:
+
+1. **The tracks archive no input.** Shadow rows record `close` only, the
+   local candle store ends **2026-07-02**, and the forward window opens
+   **2026-07-24** — so a Test 1 replay must **re-fetch 112 bars per symbol**
+   at read time, unanchored for the 21 warmup bars and for all
+   open/high/low (which trial 118's ATR exit consumes). Archiving is
+   forward-only and cannot be back-filled.
+2. **The read rule states no replay depth.** A replay seeded at the 110-bar
+   channel floor can disagree with a correct recorder by up to **96 bars**
+   of state, and the rule's verdict for any mismatch is an unconditional
+   *"halt and fix"*. Required depth **≥ 206 bars**; the recorder's own 400
+   is safe.
+
+The same audit **closed one route in this document's favour**: the
+recorder's rolling 400-bar re-seed is harmless, with a measured **194-bar
+margin** over **12 524 seed-runs**, so the exposure path this document
+relies on is reproducible in principle. The defect is the input, not the
+procedure.
+
+Nothing in this document is retracted or amended. Full measurement:
+`FORWARD_TRACK_REPLAYABILITY_2026-09-16.md`.
