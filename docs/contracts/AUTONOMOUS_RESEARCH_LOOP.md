@@ -271,6 +271,43 @@ Hard limits, binding:
 > was repaired and nothing frozen was edited. Full measurement and the
 > three options:
 > `docs/research/FORWARD_TRACK_REPLAYABILITY_2026-09-16.md`.
+>
+> Refinement 2026-09-17 (iteration 62) — **the read rule's one refutation
+> test cannot fire, and with it the last uncharacterised part of the
+> October read closes.** The rule quantifies Test 3's power in detail
+> (SE 2.016, interval [-2.77, +5.13]) and never quantified **Test 2's**,
+> whose "counts at any N" is a statement about admissibility that has been
+> reading as one about power. **PASS:** Test 2's in-sample false-positive
+> rate is exactly **zero at every horizon**, and by construction — the bar
+> is the *maximum of the same series*, and a window whose peak resets at
+> its first bar can never exceed a full-sample peak that includes
+> everything before it. Checked, not asserted: a naive comparison reports
+> 78/141/194 "breaches" at L=706/1000/1338 and **all of them vanish at a
+> 1e-12 tolerance** (excesses 7.216e-14 to 1.776e-13 pp); an earlier pass
+> of this measurement reported those artifacts as findings and is
+> retracted inside the result document. **DEFECT of framing:** maxima grow
+> with the window, and the bar is a 2676-day maximum applied on 2026-10-22
+> to a **90**-day one. The worst 90-day stretch in the strategy's whole
+> history is **26.2856%** (trial 88) and **23.4776%** (trial 118) against
+> bars of 33.0478% and 33.2402% — the bar is **1.2573x** and **1.4158x**
+> the worst thing ever recorded, and stops being an over-reach only at
+> **706 days**, the MinTRL date reached by an independent route. Power,
+> from two crude models of opposite shape agreeing on magnitude: an even
+> chance of firing at 90 days needs an extra **0.4136 pp/day (-77.97 %/yr)**
+> bleed or a 3.4393x severity multiple (trial 88), and the gentlest
+> uniform breaching path is **0.4448 %/day for 90 consecutive days**. A
+> strategy whose edge had vanished entirely and merely held BTC/ETH
+> through a bad quarter would **not** trip it. The bar is not unreachable
+> in principle — a 50/50 BTC/ETH benchmark's worst 90-day drawdown is
+> **65.9505 %**, twice it — so what Test 2 detects is the **exit mechanism
+> failing**, placing it beside Test 1 rather than beside Test 3.
+> **Consequence: all three tests of the 2026-10-22 read are now
+> characterised, and not one of them can speak to whether the edge works.**
+> Route closed: no proposal may claim the October read produces evidence
+> about the edge, in any form. Nothing was repaired and nothing frozen was
+> edited; this is the **fourth** operator choice due before 2026-10-22.
+> Full measurement and the three options:
+> `docs/research/FORWARD_TRACK_TEST2_POWER_2026-09-17.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
