@@ -6656,3 +6656,253 @@
   2026-10-22 read is a harness check and nothing more.** On-chain route
   open but unadvanced. Operator-attention items dated 2026-09-16 are the
   nine above.
+
+## 2026-09-17 — iteration 62 (P1: the read rule quantified Test 3's power and never quantified Test 2's — measured, the October drawdown bar is 1.26x the worst 90 days this strategy has ever had, and it detects a -78%/yr bleed rather than a dead edge)
+
+- **Step 0, convergence check, run first as ordered.** (1) **Current
+  answer:** unchanged on entry — the timing rule adds value in crypto
+  only, nothing is forward-validated, no return-based forward verdict is
+  permitted before 2028-06-29, the search is over, and the framework has
+  exercised exactly two gates, both defective. (2) **What this iteration
+  moves:** it decides whether **Test 2** of
+  `FORWARD_TRACK_READ_PREREGISTRATION.md` — the only refutation test the
+  rule says "counts at any N" — can fire on 2026-10-22, and therefore
+  closes the last uncharacterised part of the October read. Iterations 59
+  and 61 characterised Test 1; the rule characterises Test 3 in its own
+  text; **nobody had ever measured Test 2's power.** (3) **Why it is not
+  sprawl:** it closes a route rather than adding a diagnostic — after
+  today there is nothing further to learn about what 2026-10-22 can
+  deliver without new data — and it needed **no new script** (the
+  one-script budget is unspent, the measurement is embedded reproducibly
+  in the result document, as in iteration 61) and **no new data**.
+
+- **P1 first, all four forward tracks healthy.** `shadow_trial88.jsonl`
+  and `shadow_trial118.jsonl` both at **54 rows**, last row **2026-09-16**
+  recorded 2026-09-17T00:21Z — today's 08:20 local fire landed, and the
+  one-day lag is correct behaviour (the 2026-09-17 UTC bar is not closed).
+  Exposure trial 88 BTC 0.5 / ETH 0.5, trial 118 BTC 0 / ETH 1.
+  `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` **9 rows** and
+  `shadow_gld.jsonl` **10 rows**, both last dated 2026-09-11 recorded
+  2026-09-12T02:41Z — the weekly Saturday fire, next due 2026-09-19, so
+  neither is stale. **Nothing to fix; nothing was touched.**
+
+- **Loop slot health.** `docs/research/loop_runs/` shows
+  `run_20260915`, `run_20260916` and `run_20260917`, all at 21:37 —
+  **three consecutive completed slots**, so the eight-slot account-limit
+  outage of 2026-09-07..09-14 is over and stays over.
+
+- **Stop-condition check, run explicitly.** **DSR >= 0.95 AND
+  candidates-PBO <= 0.05.** `docs/reports/research/gate_report_2026-07-25.json`
+  is still the latest (directory unchanged since 2026-07-25),
+  `trial_registry.jsonl` still 133 rows, `holdout_lock.json` still
+  `"spent": false`. Gate 3 PBO **0.651826** against a 0.05 threshold.
+  **No `EDGE_CANDIDATE_FOUND.md` event, and none is warranted.**
+
+- **Step 2 (web research): four sources, three new, zero arrivals.** Full
+  detail in `RESEARCH_LOG.md` under iteration 62. (a) **Quantreo, "Max
+  Drawdown Is a Distribution, Not a Number"** — new; states the mechanism
+  behind today's finding in one clause, that a block bootstrap must keep
+  the original path length "since max drawdown grows mechanically with the
+  window". Cited for **direction only**. (b) **arXiv 2503.23221,
+  Rubilar-Torrealba, Fermin and Torres, PDMP models of max drawdown
+  records** — new, fetched, **not usable**: no horizon-scaling result, no
+  fixed-horizon distribution. (c) **Delphic Alpha, daily long/short trend
+  following across four asset classes** — new, **inadmissible twice over**
+  (shorts, futures); its universe-depth finding that "more instruments is
+  not always better" is consistent with this program's breadth failure and
+  licenses nothing. (d) **arXiv 2009.12155** — **not new**, checked against
+  the file before drafting. **Arrival streak: zero strategy arrivals in
+  iterations 57-62, six consecutive.**
+
+- **The bar was verified at source before anything was computed** (iron
+  rule 5). Registry `max_drawdown_fraction` is
+  **0.3304782446654657897565823246** (trial 88) and
+  **0.3324023474578522547374688075** (trial 118); recomputing from
+  `trial_returns/trial-000088.json` and `trial-000118.json` (n=**2676**
+  each, 2018-03-05..2025-07-01) reproduces **33.0478%** and **33.2402%**,
+  and terminal **14.2315x** / **16.8986x** against registry `final_equity`
+  14231.46886767244 / 16898.57716383774. Exact. So the series measured
+  below is the series the bar came from.
+
+- **PASS — Test 2's in-sample false-positive rate is exactly zero, and it
+  is zero by construction.** The bar is the **maximum of the same series**
+  the forward track continues. For any window the peak resets at the
+  window's first bar while the full-sample peak at that instant also
+  includes everything before it, so every within-window drawdown is
+  bounded above by the full-sample drawdown — **no window of any length
+  can exceed the bar**, with no statistics involved. Checked against the
+  data rather than asserted: a naive `> bar` comparison reports 78 / 141 /
+  194 "breaches" at L = 706 / 1000 / 1338 on trial 88 and 91 / 178 / 280 on
+  trial 118, and **every one of them vanishes at a 1e-12 tolerance** — the
+  excesses are **7.216e-14 to 1.776e-13 pp**, windows containing the full
+  drawdown episode and reproducing it to within one ulp. A refutation test
+  that cannot fire on in-sample-consistent behaviour has a clean zero
+  false-positive rate, and an actual breach would be unambiguous.
+
+- **A first pass of this measurement was wrong and was caught before it
+  was written down.** That naive comparison produced "P(breach) 3.96% at
+  L=706, first reachable at L=423, first P>=5% at L=530". Two independent
+  implementations — direct equity multiplication and a log-cumsum — agreed
+  on every distribution statistic and **disagreed on exactly those
+  numbers** (530 versus 792, 415 versus 419), which is the only reason the
+  tolerance check was run. The numbers are artifacts, they are recorded as
+  retracted inside `FORWARD_TRACK_TEST2_POWER_2026-09-17.md` section 1,
+  and they appear nowhere as findings.
+
+- **DEFECT of framing — at 90 days the bar is 1.26x deeper than anything
+  this strategy has ever done.** Maxima grow with the window; the bar is a
+  maximum over **2676** days and on 2026-10-22 it is applied to a maximum
+  over **90**. Within-window drawdown across the strategy's own history, at
+  each of the rule's four read dates:
+
+  | Read date | L | windows | t88 worst ever | bar - worst | bar / worst | t118 worst ever | bar - worst | bar / worst |
+  |---|---:|---:|---:|---:|---:|---:|---:|---:|
+  | 2026-10-22 | 90 | 2587 | **26.2856%** | **6.7622 pp** | **1.2573x** | **23.4776%** | **9.7627 pp** | **1.4158x** |
+  | 2027-01-24 | 184 | 2493 | 26.2856% | 6.7622 pp | 1.2573x | 27.0914% | 6.1489 pp | 1.2270x |
+  | 2027-07-24 | 365 | 2312 | 30.9439% | 2.1039 pp | 1.0680x | 30.3857% | 2.8545 pp | 1.0939x |
+  | 2028-06-29 | 706 | 1971 | 33.0478% | 0.0000 pp | 1.0000x | 33.2402% | 0.0000 pp | 1.0000x |
+
+  Medians and p95 at L=90: **11.0101% / 21.9404%** (trial 88) and
+  **11.6201% / 21.1636%** (trial 118). For Test 2 to fire in October the
+  forward quarter must be **26% worse than the worst 90 days of
+  2018-2025** — a span that contains March 2020 and the 2022 bear — or
+  **42% worse** on trial 118. The horizon at which the bar stops being an
+  over-reach is **706 days**, which is the MinTRL date arrived at by a
+  completely independent route.
+
+- **Power, two crude models of opposite shape, agreeing on magnitude.**
+  Applied to all 2587 90-day windows. Model A scales severity in log space
+  (`log(1+r') = k*log(1+r)`, chosen because a linear scaling of `r` drives
+  returns below -100% and poisons the comparison with NaN — the first
+  attempt did exactly that and was discarded). Model B subtracts a constant
+  daily bleed. To reach a **coin-flip** chance of firing at 90 days, trial
+  88 needs **k = 3.4393x** or **0.4136 pp/day (-77.97%/yr)**; trial 118
+  needs **3.2711x** or **0.4173 pp/day (-78.27%/yr)**. To reach **any**
+  chance at all, **1.3155x / 0.1314 pp/day (-38.12%/yr)** and **1.5101x /
+  0.1802 pp/day (-48.22%/yr)**. Analytic cross-check independent of both
+  models: the gentlest **uniform** breaching path is
+  `1-(1-0.330478)^(1/90)` = **0.4448%/day for 90 consecutive days**,
+  annualized **-80.35%** (trial 118: 0.4480%/day, **-80.58%**), landing on
+  Model B's 50% row as it should. **Test 2 at 90 days detects a -60% to
+  -80%/yr bleed. A strategy whose edge had vanished entirely and simply
+  held BTC/ETH through a bad quarter would not trip it.**
+
+- **What Test 2 is therefore testing — the exit mechanism, not the edge.**
+  The bar is not unreachable in principle: over the identical window a
+  50/50 daily-rebalanced BTC/ETH benchmark's worst **90-day** drawdown is
+  **65.9505%**, twice the bar, rising to 73.7503% at 184 days and
+  **82.9121%** at 365. The market crosses the bar routinely in a quarter
+  and the strategy never did; the difference is the exit rule. So **Test 2
+  fires only if the exit mechanism catastrophically fails — it sits beside
+  Test 1 as a second mechanism check, not beside Test 3.** (Benchmark
+  series provenance checked: a no-rebalance 50/50 hold over the same dates
+  reconstructs to 6.0283x at 81.0519% against the **6.05x / 80.99%**
+  recorded in `VS_BUY_AND_HOLD_2026-07-26.md` — a sub-1% gap from the
+  window's first day, close enough to confirm the right series and **not**
+  close enough to restate a recorded number, so nothing was restated.)
+
+- **Route closed, and it is the last one the October read had.** All three
+  tests are now characterised: **Test 1** returns "the exposure path
+  reproduces, or halt" (mechanism, and per iteration 61 not runnable
+  against any archived input); **Test 2** returns "the exit rule did not
+  catastrophically fail" (mechanism); **Test 3** is forbidden from
+  confirming and its refutation half is swamped by the rule's own SE of
+  2.016. **Not one of the three can say anything about whether the edge
+  works. No proposal may claim otherwise, in any form.** Interaction with
+  iteration 59's cost omission, one-signed in the same direction: the
+  uncharged fees understate forward drawdown and push Test 2 **further**
+  from firing, immaterial against a 6.76 pp gap.
+
+- **Nothing was repaired and nothing frozen was edited.** Three options are
+  recorded for the operator in `FORWARD_TRACK_TEST2_POWER_2026-09-17.md`
+  section 5 — (A) accept and re-scope, costing nothing and leaving the
+  "counts at any N" wording in place; (B) declare a **length-matched** bar
+  in a new, separately registered document before the read, the measured
+  p95 candidates being **21.9404%** and **21.1636%**, at the honestly
+  stated cost that this is a metric chosen after 54 forward rows exist
+  even though the frozen prohibition is specifically on introducing
+  metrics *at read time*, mitigated by the verifiable fact that the
+  recorded forward drawdown (3.4094%, iteration 59) is far below every
+  candidate bar so the choice cannot be fitted to the data; (C) do
+  nothing, at the cost iteration 27 named, a true and uninformative "no
+  breach" reading as reassurance. **This is the fourth choice now due
+  before 2026-10-22.**
+
+- **Deadline arithmetic.** **2026-10-01 is 14 days away** — the date the
+  dashboard shows a full 觀察期 90-day bar with zero cycles behind it.
+  **2026-10-22 is 35 days away**, and the operator now has **four**
+  choices due before it: the cost omission (iteration 59), the
+  archive-vs-reconstruct choice and the replay-depth specification
+  (iteration 61), and today's Test 2 framing. The live runtime has been a
+  no-op for **48 days** and still self-reports correctly.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 118.40s. **Sixth consecutive iteration to
+  record the same caveat:** the suite is green while the forward recorder
+  charges no trading cost, archives no input, and is read by a rule whose
+  refutation test cannot fire — because **no test in `tests/` references
+  any shadow track**. The green tree has now failed to catch four separate
+  defects in four iterations.
+
+- **Operator-attention items.** Ten — the nine of iteration 61, with (c)
+  now closed and two added. (a) Ensemble-breadth leave-one-out still
+  unmeasured and still P3-forbidden. (b) The research loop still runs in a
+  visible console window. (c) **CLOSED** — the eight-slot account-limit
+  outage is over; three consecutive slots have completed. (d) Should
+  cross-track structural comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? The loop **abstained** again,
+  fifteenth consecutive iteration. (e) Section 1 of
+  `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative upper
+  bound", which is false at N=133. (f) The live paper runtime has been a
+  no-op for **48 days**; the dashboard hits a full bar on **2026-10-01**.
+  (g) The forward tracks charge no trading cost (2.607%/yr and
+  1.304%/yr, one-signed). (h) The forward tracks archive no input; Test 1
+  must re-fetch 112 bars per symbol at read time and archiving is
+  forward-only. (i) The read rule states no replay depth, so a replay
+  seeded at the 110-bar floor can trigger an unconditional "halt and fix"
+  on a correct recorder; required >= 206 bars. **(j) NEW — Test 2 cannot
+  fire at 90 days on anything short of mechanism failure**, and its
+  "counts at any N" wording describes admissibility while reading as
+  power. Items (g) through (j) are all due **before 2026-10-22**.
+
+- **What this iteration does NOT do:** no gate rule modified, no frozen
+  pre-registration or contract clause edited (the contract's *standing
+  answer* is appended to, as the contract itself directs), no registry row
+  or return series touched, no shadow file written to or read for a
+  metric, no prior result document rewritten, no prior log entry edited,
+  no trial registered, no backtest run, no gate report regenerated, no arm
+  run, **no new script** (the one-script budget is unspent; the
+  measurement is embedded reproducibly in the result document and was
+  re-run verbatim from the document's own method note to confirm it
+  reproduces every published figure), holdout untouched and `spent` still
+  `false`, **no file under `configs/runtime/`, `src/`, `scripts/` or any
+  scheduled-task definition touched**, no ingest run, no forward metric
+  computed and no forward number cited as support, no read date moved, and
+  the 2026-08-09 hole left as a hole.
+
+- **Standing answer restated, extended by one clause.** Timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin edge
+  is audited and robust; the engine and the forward recorder are both free
+  of look-ahead; the Taiwan and gold negatives are robust to dividend
+  treatment; against the naive 13-coin alternative the margin is only 5.4%
+  and that benchmark is survivorship-flattered; breadth still fails and is
+  priced from five directions; nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29; gate 4 passes three trials and only trial 118 is
+  risk-compliant, with the one-trial fragility belonging to trial 118
+  rather than to gate 4; gate 3 fails under all 4 224 admissible candidate
+  readings, the repaired key, and all columns; the search is still over;
+  the framework has exercised exactly two gates, both defective; gate 6
+  cannot be executed in October 2026 because its evidence stream has been
+  dead for 48 days; the forward stream is recorded without trading costs
+  and against no archived input, its primary test is well defined but
+  under-specified in a way that can manufacture a false halt; **and its
+  one refutation test cannot fire at 90 days unless the exit mechanism
+  fails outright, needing a -78%/yr bleed for an even chance, so all three
+  tests of the 2026-10-22 read are mechanism checks or nothing and none of
+  them can speak to the edge.** On-chain route open but unadvanced.
+  Operator-attention items dated 2026-09-17 are the ten above.

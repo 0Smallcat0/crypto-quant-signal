@@ -2859,3 +2859,84 @@ cross-sectional momentum untested here → experiment 3.
   missing input archive. That is a pattern worth naming, not celebrating:
   the literature keeps confirming this program's infrastructure defects
   and keeps failing to supply it with a testable edge.
+
+## 2026-09-17 — iteration 62 (four sources, three of them new; zero strategy arrivals — and for the third pass running the useful content is methodological, this time stating the exact mechanism that makes today's finding true)
+
+- **Quantreo newsletter, "Max Drawdown Is a Distribution, Not a Number" —
+  new to this log, and it states in one clause the mechanism this
+  iteration measured.** Its argument: an observed max drawdown is "one
+  realization of a path dependent statistic, not a ceiling", closer to a
+  sample maximum than to a stable parameter, because it depends on the
+  ordering of returns rather than their average. Its method is a block
+  bootstrap that resamples returns in consecutive chunks to preserve loss
+  clustering — and the load-bearing detail for today is **why the
+  resampled paths keep the original length**: "since max drawdown grows
+  mechanically with the window." Its worked example is a trend strategy
+  at observed 17.9%, bootstrap median 15.7%, 95th percentile 26.9%.
+  **Testable-here: no, and it is not a strategy source.** It publishes no
+  signal, and its numbers are its own strategy's. It is cited in
+  `FORWARD_TRACK_TEST2_POWER_2026-09-17.md` **for direction only**, and
+  that document says so in those words — the magnitudes there (bar 1.2573x
+  the worst 90-day stretch on trial 88, 1.4158x on trial 118) are measured
+  on this program's own return series, not borrowed. It does **not**
+  discuss comparing a backtest drawdown against a shorter out-of-sample
+  window, which is the specific defect of framing found today; the
+  external record supplies the mechanism and not the application.
+
+- **arXiv 2503.23221, Rolando Rubilar-Torrealba, Lisandro Fermin and
+  Soledad Torres, "Modeling Maximum Drawdown Records with Piecewise
+  Deterministic Markov Processes in Capital Markets", 29 March 2025 — new,
+  fetched, and not usable for today's question.** It derives mean and
+  variance for the *sequence of maximum drawdown records* under a PDMP,
+  with simulation studies and parameter estimation. The abstract does not
+  state how max drawdown scales with the observation horizon and gives no
+  fixed-horizon distributional result, which is the one thing that would
+  have let it anchor section 2 analytically instead of empirically.
+  **Testable-here: no.** Recorded so the next iteration that reaches for a
+  drawdown-distribution citation does not re-fetch it; the empirical route
+  taken today needs no such citation, since the bound it relies on
+  (no sub-window can exceed the full-sample maximum) is proved directly
+  and then checked against the data.
+
+- **Delphic Alpha, "Daily Long/Short Trend Following: Parameters, Asset
+  Classes, and Universe Depth" — new to this log, and inadmissible under
+  product law on two independent counts.** Scope as published:
+  cross-sectional **long/short**, market-neutral by construction, across
+  futures (111 contracts, 2008-2026), crypto (80 coins, 2017-2026), US
+  stocks (2,627 names, 2000-2026) and FX (79 pairs, 2010-2026); N per leg
+  3-10, holding periods 5-63 days; costs 5 bps per unit of turnover for
+  futures and crypto, 3 bps stocks, 2 bps FX. Headline net Sharpes:
+  futures **0.73**, crypto **0.56** at -41% max drawdown, stocks 0.42, FX
+  0.24. **Testable-here: no** — it shorts, and it is designed for futures
+  rather than spot, so it fails product law twice over before the numbers
+  matter. One finding is worth carrying as a methodological note, since it
+  is the same shape as this program's own breadth result: it sweeps
+  increasing universe sizes (top 10, top 20, up to the full universe) and
+  concludes that "more instruments is not always better", each asset class
+  having "a peak beyond which adding illiquid instruments dilutes the
+  signal". This program measured breadth failing on 13 symbols; the
+  external record is consistent with that and does **not** license
+  re-opening it, since P3 still refuses new families and nothing here is a
+  long-only spot test.
+
+- **arXiv 2009.12155, "A Decade of Evidence of Trend Following Investing
+  in Cryptocurrencies" — NOT new: re-encounter, and it stays where it
+  was.** Already recorded in this log during the 2026-07 forward-validation
+  searches. Checked against this file **before** drafting, which is now the
+  third consecutive iteration to apply that discipline rather than
+  discover a duplicate afterwards. Nothing about it has changed.
+
+- **Arrivals: zero.** Four sources handled — three new (Quantreo,
+  2503.23221, Delphic Alpha), one re-encounter (2009.12155). None
+  admissible as a strategy hypothesis: two publish no tradeable signal at
+  all, one is long/short futures, one was already disposed. **Streak,
+  counted against this file rather than asserted: zero strategy arrivals
+  in iterations 57, 58, 59, 60, 61 and 62 — six consecutive passes.**
+  **Third consecutive pass in which the useful content was methodological
+  rather than strategic** — iteration 60 found the external statement of
+  the missing cost control, iteration 61 the external statement of the
+  missing input archive, and today the external statement of why a
+  full-sample maximum cannot be a 90-day bar. The pattern named in
+  iteration 61 holds and is worth restating without celebration: the
+  literature keeps supplying this program with the vocabulary for its own
+  infrastructure defects and keeps failing to supply it with an edge.
