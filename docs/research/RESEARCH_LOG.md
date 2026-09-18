@@ -2940,3 +2940,66 @@ cross-sectional momentum untested here → experiment 3.
   iteration 61 holds and is worth restating without celebration: the
   literature keeps supplying this program with the vocabulary for its own
   infrastructure defects and keeps failing to supply it with an edge.
+
+## 2026-09-18 — iteration 63 (four sources, three new; zero strategy arrivals — and for the fourth pass running the useful content is methodological, this time independently corroborating today's measurement of what one year of holdout can carry)
+
+- **arXiv 2608.23808, Santoni / Jouanne / Scullin (Minerva), "Equity
+  Strategy Backtesting: Luck or Edge? The MinervaScore as a Statistical
+  Robustness Grade" (August 2026) — NEW, and directly corroborating.**
+  Fetched and read, not taken from a search snippet. It builds a
+  four-gate post-selection robustness grade whose fourth gate is **the
+  identical Bailey & López de Prado MinTRL formula this program already
+  uses**, quoted in the paper as `MinTRL = 1+(1−γ₃SR+(γ₄−1)/4·SR²)·
+  (Φ⁻¹(1−α)/SR)²` with α = 0.05. The claim that matters here is its
+  synthetic validation: at **252 bars (~1 year)** of history **zero**
+  strategies earned its robustness seal — *including genuine ones* —
+  against 17% at 1 260 bars (~5 years) and 73% at 5 040 bars (~20 years).
+  Today's gate-5 measurement says the October holdout is 366 days and its
+  sealed nomination needs 2 207.8 days at 90% confidence; an independently
+  constructed framework reaches the same conclusion about what one year of
+  out-of-sample data can carry. **Testable here: not as a strategy** (it
+  publishes a grading scheme, not a signal, and it is equities) — but it is
+  external confirmation of a number this program derived on its own series,
+  which is the stronger use.
+- **Anthropic-independent search for "statistical power of a single-use
+  holdout" — one snippet chased and REJECTED for lack of verification.**
+  The search result attributed to arXiv 1709.03904 (Hämäläinen & Webb, "A
+  Tutorial on Statistically Sound Pattern Discovery", 2017/2018) the claim
+  that "the actual overall power of a testing procedure using split holdout
+  data can be significantly lower than what is achieved by a test which
+  uses the entire data". That claim is exactly what today's result would
+  want to cite, which is precisely why it was checked rather than used:
+  the PDF would not text-extract, and **the paper's abstract does not
+  contain or confirm it**. Recorded here as **unverified and not cited
+  anywhere in `GATE5_HOLDOUT_POWER_2026-09-18.md`.** Iron rule 5 applies to
+  borrowed sentences as well as to numbers.
+- **SSRN 7198158, López de Prado & Porcu, "The Deflated Sharpe Ratio: A
+  Unified Framework for Search-Adjusted Performance Inference" — NEW by
+  title, INACCESSIBLE.** SSRN returned HTTP 403 to the fetch, so only the
+  title and author line are known. It is logged because a *unified*
+  restatement of DSR by its own author is the one piece of literature that
+  could legitimately bear on gate 4's recorded defects — and because a
+  future iteration should not waste a slot rediscovering that the page is
+  fetch-blocked. **Not cited, not relied on, no claim taken from the
+  search snippet.**
+- **Practitioner sweep for long-only daily spot crypto trend rules net of
+  two-sided cost — nothing admissible, as in the six prior passes.** The
+  2026 practitioner material is the usual shape: a BTC daily-breakout
+  template reported at +118.4% over 2021-2026 with a Sharpe of **0.54** at
+  a 0.1% taker fee, published without a registry, a trial count, or any
+  deflation. A 0.54 Sharpe is **below** gate 5's own 0.5-decayed bar's
+  parent level and far below anything in this registry, and an
+  undeflated single-configuration result is not a hypothesis this program
+  can register. **Testable here: no.**
+- **Arrivals: zero.** Four sources handled — three new (2608.23808,
+  SSRN 7198158, the practitioner sweep), one snippet chased and rejected.
+  Checked against this file before drafting, the fourth consecutive
+  iteration to apply that discipline. **Streak, counted against this file
+  rather than asserted: zero strategy arrivals in iterations 57 through 63
+  — seven consecutive passes.** The pattern named in iteration 61 holds
+  for a fourth reading: iteration 60 found the external statement of the
+  missing cost control, 61 the missing input archive, 62 the mechanism
+  making a full-sample maximum useless as a 90-day bar, and today the
+  external confirmation that one year of holdout cannot grade a strategy.
+  The literature keeps handing this program the vocabulary for its own
+  measurement limits and keeps failing to hand it an edge.

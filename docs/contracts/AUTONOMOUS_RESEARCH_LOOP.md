@@ -308,6 +308,50 @@ Hard limits, binding:
 > edited; this is the **fourth** operator choice due before 2026-10-22.
 > Full measurement and the three options:
 > `docs/research/FORWARD_TRACK_TEST2_POWER_2026-09-17.md`.
+>
+> Refinement 2026-09-18 (iteration 63) — **the second unblocking lever is
+> now characterised too, and the October holdout cannot decide anything
+> either.** Iterations 25 and 59-62 exhausted lever 1; lever 2 had never
+> been measured, and `HOLDOUT_INTEGRITY_2026-07-28.md` deliberately
+> measured only its *cleanliness*, which is a different property from
+> power. **DEFECT of reference:** `PRE_HOLDOUT_PROTOCOL.md` §2 was sealed
+> **2026-07-19** and fixes N2 by trial id but N1 by *role* — "the live
+> contract, `daily_trend_ensemble`, no overlay". On **2026-07-31**, twelve
+> days later, commit `2423bf6` moved that role to trial 118, and
+> `paper_runtime.yaml` says so in its own comment. The sealed text settles
+> its own ambiguity on internal evidence: the bar reads "Sharpe ≥ 0.5
+> (half the pre-holdout level)", and half of trial 4's **1.0230** is
+> **0.5115** while half of trial 118's **1.2411** would be **0.6206**, so
+> **N1 as sealed is trial 4** — which has not been live for seven weeks.
+> Both resolutions cost something and neither act was improper on its own;
+> what went unrecorded for **49 days** is the interaction. **DEFECT of
+> power, three-fold.** At the holdout's archived L=**366** days the pass
+> bar is a point estimate with SE **1.0034**, so a **completely dead**
+> strategy clears it **30.91 %** of the time while a **fully intact** one
+> fails **30.1 %** — on a single-use, irreversible test. Empirically over
+> 2311 rolling 366-day windows N1-A clears 0.5 in **68.07 %** of them and
+> the registry's **own** benchmark — a no-rebalance 50/50 BTC/ETH hold,
+> provenance confirmed by reconstructing it to **5.9764x** against the
+> recorded `benchmark_final_equity` — clears the same bar in **68.15 %**,
+> so at today's horizon the sealed nomination scores **-0.08 pp against
+> doing nothing** (the gap reverses to +7.73 pp at L=478, stated in both
+> directions). And the drawdown half repeats iteration 62's Test 2 defect
+> exactly: a 2676-day maximum applied to a 366-day window plus 10 pp of
+> slack, giving a bar **1.2801x** the worst year the strategy ever had and
+> **0 of 2311** in-sample breaches, structurally rather than by luck.
+> **The gate's own arithmetic agrees:** MinTRL against gate 5's SR\* = 0.5
+> is **2 207.8 days (2031-07-19)** at 90 % for the sealed nomination
+> against the **366** the window holds — short by **6.0x**, and by
+> **9.9x** at 95 %. Even substituting trial 118 lands on **2028-07-01**,
+> one day after the forward track's independently derived MinTRL date.
+> Route closed: **no proposal may treat the October holdout spend as
+> evidence that decides whether the edge works.** It remains a legitimate
+> single-use out-of-sample read; it is not a verdict. **Two of the three
+> unblocking states named below are now measured and neither decides
+> anything.** Nothing was repaired and nothing frozen was edited; this is
+> the **fifth** operator choice due before 2026-10-22. Full measurement
+> and the three options:
+> `docs/research/GATE5_HOLDOUT_POWER_2026-09-18.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
@@ -343,7 +387,21 @@ cannot improve it without data that does not exist yet.
    `docs/research/FORWARD_TRACK_READ_PREREGISTRATION.md`; no read may be
    moved earlier, and a positive forward Sharpe may not be cited as
    support before the MinTRL date.
-2. The October holdout spend, per `PRE_HOLDOUT_PROTOCOL.md`, operator-run.
+2. ~~The October holdout spend, per `PRE_HOLDOUT_PROTOCOL.md`,
+   operator-run.~~ **CORRECTED 2026-09-18 (iteration 63) on measurement —
+   this lever does not unblock anything either.** The spend is still
+   available and still clean (`spent: false`, no trial ever crossed the
+   boundary), but it cannot decide: at the holdout's 366 days a dead
+   strategy clears the SR ≥ 0.5 bar **30.91%** of the time while an
+   intact one fails **30.1%**; a passive 50/50 BTC/ETH hold clears the
+   same bar at **68.15%** against the sealed nomination's **68.07%**; the
+   drawdown half is **1.2801x** the worst year on record and breaches in
+   **0 of 2311** in-sample windows; and MinTRL against the gate's own
+   SR* = 0.5 is **2 207.8 days (2031-07-19)** at 90%, short by **6.0x**.
+   Separately, §2's N1 has not named the live contract since
+   **2026-07-31**. No proposal may treat this spend as evidence that
+   decides whether the edge works.
+   `docs/research/GATE5_HOLDOUT_POWER_2026-09-18.md`.
 3. An operator override of P3 that accepts the recorded cost of a new
    family.
 
