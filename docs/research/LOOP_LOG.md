@@ -6906,3 +6906,263 @@
   tests of the 2026-10-22 read are mechanism checks or nothing and none of
   them can speak to the edge.** On-chain route open but unadvanced.
   Operator-attention items dated 2026-09-17 are the ten above.
+
+## 2026-09-18 — iteration 63 (P1: the *other* unblocking lever had never been characterised — measured, the October holdout spend is a near-coin-flip whose subject stopped being what the sealed protocol named on 2026-07-31)
+
+- **Step 0, convergence check, run first as ordered.** (1) **Current
+  answer:** unchanged on entry — the timing rule adds value in crypto
+  only, nothing is forward-validated, no return-based forward verdict is
+  permitted before 2028-06-29, the search is over, the framework has
+  exercised exactly two gates and both are defective, and as of iteration
+  62 none of the three tests of the October forward read can speak to the
+  edge. (2) **What this iteration moves:** the contract names **three**
+  states that could unblock this program. Iterations 25 and 59-62
+  exhausted lever 1 (forward validation). **Lever 2 — the October holdout
+  spend — had never been characterised at all**, and
+  `HOLDOUT_INTEGRITY_2026-07-28.md` explicitly measured only its
+  *cleanliness*. This iteration decides whether that spend can settle
+  anything. (3) **Why it is not sprawl:** it closes a route rather than
+  adding a diagnostic, it forces an operator choice that has a hard
+  deadline, and it needed **no new script** (one-script budget unspent;
+  the measurement is embedded reproducibly in the result document, as in
+  iterations 61 and 62) and **no new data**.
+
+- **P1 first, all four forward tracks healthy.** `shadow_trial88.jsonl`
+  and `shadow_trial118.jsonl` both at **55 rows**, last row **2026-09-17**
+  recorded 2026-09-18T00:21Z — today's 08:20 local fire landed, and the
+  one-day lag is correct behaviour (the 2026-09-18 UTC bar is not closed).
+  Exposure trial 88 BTC 0.5 / ETH 0.5 (equity 1061.8906), trial 118 BTC 0
+  / ETH 1 (equity 1119.7611). The single date gap remains the known
+  2026-08-09 hole and nothing else.
+  `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` **9 rows** and
+  `shadow_gld.jsonl` **10 rows**, both last dated 2026-09-11 recorded
+  2026-09-12T02:41Z — the weekly Saturday fire; today is a **Friday** and
+  the next fire is due 2026-09-19, so neither is stale. **Nothing to fix;
+  nothing was touched.**
+
+- **Loop slot health.** `docs/research/loop_runs/` shows an unbroken run
+  of **ten consecutive daily slots**, `run_20260909` through
+  `run_20260918`, all at 21:37. The eight-slot account-limit outage of
+  2026-09-07..09-14 is over and stays over.
+
+- **Stop-condition check, run explicitly.** **DSR >= 0.95 AND
+  candidates-PBO <= 0.05.** `gate_report_2026-07-25.json` is still the
+  latest, `trial_registry.jsonl` still **133** rows, `holdout_lock.json`
+  still `"spent": false`. Gate 3 candidates-PBO **0.651826**
+  (all-columns 0.732556) against a 0.05 threshold. **No
+  `EDGE_CANDIDATE_FOUND.md` event, and none is warranted.**
+
+- **The finding, part 1 — DEFECT: holdout nomination N1 stopped naming
+  what it named, seven weeks ago, unnoticed.** `PRE_HOLDOUT_PROTOCOL.md`
+  section 2 was sealed on **2026-07-19** (commit `970f1e5`) and fixes two
+  nominations that may never be extended. N2 names a trial id ("trial 7's
+  exact configuration"). **N1 names a role** — "the live contract:
+  `daily_trend_ensemble`, no overlay" — and on **2026-07-31**, twelve days
+  after the seal, commit `2423bf6` "Switch the live signal to trial 118"
+  moved that role to a different strategy. `paper_runtime.yaml` records it
+  in its own comment: "Switched 2026-07-31 from daily_trend_ensemble
+  (trial 4) to trial 118." **The sealed text settles its own ambiguity on
+  internal evidence:** the bar is written as "Sharpe >= 0.5 (half the
+  pre-holdout level)", and half of trial 4's **1.0230** is **0.5115**
+  while half of trial 118's **1.2411** would be **0.6206** — so N1 as
+  sealed is **trial 4**, fixed by arithmetic inside the frozen document
+  rather than by anyone's recollection. Both resolutions cost something:
+  spending as sealed consumes the one irreversible spend on a
+  configuration that has not been live for seven weeks and routes its PASS
+  branch to a Goal O subject that no longer exists; substituting trial 118
+  moves a nomination after the seal toward a configuration chosen on
+  post-seal backtest results, which section 2 forbids in substance.
+  **Neither underlying act was improper** — the protocol binds
+  nominations, not the runtime, and the switch is operator-attributed and
+  was recorded by iteration 40 on 2026-08-03. What went unrecorded for
+  **49 days** is the interaction.
+
+- **The finding, part 2 — the Sharpe half is a near-coin-flip in both
+  directions.** Section 2's bar is a **point estimate** with no confidence
+  requirement. At the holdout's archived length of **L=366** days
+  (2025-07-02..2026-07-02), using the same Bailey-Lopez de Prado machinery
+  the forward read already adopted (reproduces the pre-registration's
+  published SE column to three digits at L=182 and L=365, 0.3% at L=90):
+
+  | Nomination | pre-holdout SR | SE(SR) | P(pass, edge intact) | P(**pass**, edge **dead** at SR=0) |
+  |---|---:|---:|---:|---:|
+  | **N1-A trial 4 (sealed)** | 1.0230 | 1.0034 | 0.6989 → **fails 30.1%** | **0.3091** |
+  | N2 trial 7 | 1.1270 | 1.0030 | 0.7341 → fails 26.6% | 0.3091 |
+  | N1-B trial 118 (live now) | 1.2411 | 1.0012 | 0.7704 → fails 23.0% | 0.3088 |
+
+  **A completely dead strategy passes gate 5 about three times in ten; a
+  perfectly intact one fails about three times in ten** — on a single-use,
+  irreversible test whose FAIL branch sends the family back to research.
+  Empirical cross-check over all 2311 rolling 366-day windows of the
+  2676-day pre-holdout history agrees with the analytic column: N1-A
+  clears 0.5 in **68.07%** against the analytic 69.89%, N2 **72.26%**,
+  N1-B **71.31%**. Those windows overlap heavily — **7.31**
+  non-overlapping equivalents — so they describe what the series did and
+  the analytic column carries the probability claim.
+
+- **The finding, part 3 — the bar does not separate the strategy from
+  doing nothing.** Against the registry's **own** benchmark, provenance
+  checked rather than assumed: a **no-rebalance** 50/50 BTC/ETH hold
+  reconstructed from `data/candles_preholdout/` terminates at
+  **5.9764x**, matching the registry's recorded `benchmark_final_equity`
+  of 5976.443218 to four decimal places on all three trials (a
+  daily-rebalanced 50/50 gives 6.2597x and does **not** match, so it was
+  discarded and used nowhere).
+
+  | Series | pass rate L=366 | pass rate L=478 |
+  |---|---:|---:|
+  | **registry benchmark (held)** | **0.6815** | **0.6712** |
+  | N1-A trial 4 (sealed) | 0.6807 (**-0.08pp**) | 0.7485 (+7.73pp) |
+  | N2 trial 7 | 0.7226 (+4.11pp) | 0.7767 (+10.55pp) |
+  | N1-B trial 118 | 0.7131 (+3.16pp) | 0.7731 (+10.19pp) |
+
+  **At the horizon the holdout actually has today, the sealed nomination
+  clears gate 5's Sharpe bar slightly less often than simply holding BTC
+  and ETH.** Stated in both directions: the gap reverses to +7.7pp at
+  L=478 if the operator re-ingests before spending, and a Sharpe bar
+  applied to two series of different volatility is not a like-for-like
+  tournament. What survives both caveats is the magnitude — a bar a
+  passive hold clears in two of every three year-long windows is not a bar
+  that identifies skill.
+
+- **The finding, part 4 — the drawdown half cannot fire, the same defect
+  iteration 62 found in forward Test 2.** Section 2's second bar is
+  *holdout MDD <= pre-holdout MDD + 10pp*, i.e. a **2676-day** maximum
+  applied to a **366-day** window, plus ten points of further slack. Bars
+  **61.9332% / 57.3748% / 43.2402%** against worst-ever 366-day drawdowns
+  of **48.3826% / 42.1087% / 30.3857%** — the bar is **1.2801x / 1.3625x /
+  1.4230x** the worst thing each nomination has ever done, and **0 of
+  2311** in-sample windows breach any of them. The zero is structural, not
+  luck: a sub-window's peak resets at its first bar and is never above the
+  full series' running peak at the same date. As in iteration 62 the bar
+  is **not** unreachable in principle — the registry benchmark's worst
+  366-day drawdown is **81.2218%**, above every bar — so what it detects
+  is the **exit mechanism failing**, not the edge decaying. **Third
+  pre-declared drawdown bar in this program measured to have that
+  property.**
+
+- **The finding, part 5 — the gate's own bar needs 6x to 10x more holdout
+  than will ever exist.** MinTRL against gate 5's **SR\* = 0.5** (the
+  forward read used SR\* = 0 and got 706 days; a positive benchmark needs
+  strictly more): N1-A **2207.8 d → 2031-07-19** at 90% and **3636.3 d →
+  2035-06-16** at 95%; N2 1534.8 d → 2029-09-14 and 2527.7 d → 2032-06-03;
+  N1-B 1095.1 d → **2028-07-01** and 1803.4 d → 2030-06-09. Against the
+  366 days the holdout has today the sealed nomination is short by
+  **6.0x** at 90% and **9.9x** at 95%, and even the best-case substitution
+  lands **one day after** the forward track's independently derived
+  2028-06-29 MinTRL date.
+
+- **Route closed, and it is the second of the contract's three unblocking
+  levers.** **No proposal may treat the October holdout spend as evidence
+  that decides whether the edge works.** It stays a legitimate single-use
+  out-of-sample *read* — its numbers would be honest and unseen — but its
+  pass/fail verdict is close to a coin flip and must never be reported as
+  a gate this program "passed" or "failed" in the discriminating sense.
+  Two of three unblocking states are now measured and **neither decides
+  anything**; the third is an operator override of P3 that this program's
+  own PBO measurement says would produce an untrustworthy winner.
+
+- **Nothing was repaired and nothing frozen was edited.** Three options
+  are recorded for the operator in `GATE5_HOLDOUT_POWER_2026-09-18.md`
+  section 7 — **(A)** resolve N1 to trial 4 and spend as sealed, honest to
+  the frozen document, at the cost of consuming the one irreversible spend
+  on a seven-week-dead subject; **(B)** resolve N1 to trial 118 and record
+  the substitution openly, at the cost of the protocol's central
+  guarantee, mitigated only by the verifiable fact that 0.5 is **not** half
+  of trial 118's Sharpe so the bar cannot have been fitted to it; **(C)**
+  do not spend in October, at the cost of leaving the one reserved clean
+  read unread until **2031** under the sealed nomination or **2028-07-01**
+  under trial 118, and of having to re-derive section 2's decay bar for
+  whatever is live then, which can no longer be done blind. **This is the
+  fifth choice now due before 2026-10-22.**
+
+- **Step 2 (web research) done and recorded.** Four sources filed in
+  `RESEARCH_LOG.md` under iteration 63; **zero strategy arrivals, seventh
+  consecutive pass**. One is directly corroborating and was fetched rather
+  than snippet-read: **arXiv 2608.23808** (Minerva, August 2026) uses the
+  identical MinTRL formula as one of four validation gates and reports
+  that at **252 bars (~1 year)** of history **zero** strategies earned its
+  robustness seal — including genuine ones — against 17% at five years and
+  73% at twenty. **One snippet was chased and rejected:** a search result
+  attributed to arXiv 1709.03904 the claim that split-holdout testing has
+  strictly lower power than whole-data testing — exactly what today's
+  result would want to cite, which is why it was checked; the PDF would
+  not text-extract and the abstract does not confirm it, so it is logged
+  as **unverified and cited nowhere**.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 109.48s. **Seventh consecutive iteration to
+  record the same caveat:** the suite is green while the forward recorder
+  charges no trading cost, archives no input, is read by a rule whose
+  refutation test cannot fire, and the holdout protocol's N1 has pointed
+  at the wrong strategy for 49 days — because **no test in `tests/`
+  references any shadow track or checks that a nomination still
+  resolves.** The green tree has now failed to catch five separate defects
+  in five iterations.
+
+- **Operator-attention items.** Eleven — the ten of iteration 62 with one
+  added. (a) Ensemble-breadth leave-one-out still unmeasured and still
+  P3-forbidden. (b) The research loop still runs in a visible console
+  window. (c) CLOSED since iteration 62 — the account-limit outage is
+  over; ten consecutive slots have now completed. (d) Should cross-track
+  structural comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? The loop **abstained** again,
+  sixteenth consecutive iteration. (e) Section 1 of
+  `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative upper
+  bound", which is false at N=133. (f) The live paper runtime has been a
+  no-op for **49 days** (last `cycle` 2026-07-31T00:05:02Z; **49** health
+  rows, latest 2026-09-17, every one `WARMUP_INSUFFICIENT_HISTORY`); the
+  dashboard hits a full 90-day observation-period bar on **2026-10-01**,
+  now **13 days away**. (g) The forward tracks charge no trading cost
+  (2.607%/yr and 1.304%/yr, one-signed). (h) The forward tracks archive no
+  input; Test 1 must re-fetch 112 bars per symbol at read time. (i) The
+  read rule states no replay depth, so a replay seeded at the 110-bar
+  floor can trigger an unconditional "halt and fix" on a correct recorder;
+  required >= 206 bars. (j) Test 2 cannot fire at 90 days on anything
+  short of mechanism failure. **(k) NEW — holdout nomination N1 has not
+  named the live contract since 2026-07-31**, and the gate-5 pass bar it
+  carries is a near-coin-flip that a passive BTC/ETH hold clears at the
+  same rate. Items (g) through (k) are all due **before 2026-10-22**.
+
+- **What this iteration does NOT do:** the holdout was **not read, not
+  fetched and not unsealed**; `spent` is still `false` and no candle at or
+  after `holdout_start` was opened. No gate rule modified, no frozen
+  pre-registration or contract clause edited (the contract's *standing
+  answer* is appended to, as the contract itself directs), no nomination
+  substituted, no registry row or return series touched, no shadow file
+  written to or read for a metric, no prior result document rewritten, no
+  prior log entry edited, no trial registered, no backtest run, no gate
+  report regenerated, no arm run, **no new script** (the one-script budget
+  is unspent), **no file under `configs/runtime/`, `src/`, `scripts/` or
+  any scheduled-task definition touched** — `paper_runtime.yaml` was read
+  and quoted, never written — no ingest run, no forward metric computed
+  and no forward number cited as support, no read date moved, and the
+  2026-08-09 hole left as a hole.
+
+- **Standing answer restated, extended by one clause.** Timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine and the forward recorder are both
+  free of look-ahead; the Taiwan and gold negatives are robust to dividend
+  treatment; against the naive 13-coin alternative the margin is only 5.4%
+  and that benchmark is survivorship-flattered; breadth still fails and is
+  priced from five directions; nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29; gate 4 passes three trials and only trial 118 is
+  risk-compliant; gate 3 fails under all 4 224 admissible candidate
+  readings; the search is still over; the framework has exercised exactly
+  two gates, both defective; gate 6 cannot be executed in October 2026
+  because its evidence stream has been dead for 49 days; the forward
+  stream is costless and unarchived and all three of its October tests are
+  mechanism checks that cannot speak to the edge; **and the October
+  holdout — the second of three unblocking levers — cannot decide either:
+  its sealed nomination has not named the live contract since 2026-07-31,
+  a dead strategy clears its Sharpe bar ~31% of the time while an intact
+  one fails ~30%, a passive BTC/ETH hold clears the same bar at the same
+  rate, its drawdown half is 1.28x the worst year on record, and its own
+  MinTRL is 2 207.8 days against the 366 the window holds.** On-chain
+  route open but unadvanced. Operator-attention items dated 2026-09-18 are
+  the eleven above.
