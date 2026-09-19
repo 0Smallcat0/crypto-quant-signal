@@ -352,6 +352,57 @@ Hard limits, binding:
 > the **fifth** operator choice due before 2026-10-22. Full measurement
 > and the three options:
 > `docs/research/GATE5_HOLDOUT_POWER_2026-09-18.md`.
+>
+> Refinement 2026-09-19 (iteration 64) — **the third and last unblocking
+> lever is measured, and it is the only one that is NOT closed — but the
+> reason this contract refuses it is measurably wrong.** P3's stated
+> mechanism is "they cost N, raise every trial's bar". **DEFECT of
+> premise:** `run_gate_report.py` recomputes the Sharpe variance from all
+> registry rows every run, and E[max] scales as its square root while N
+> enters only through Phi-inverse(1 - 1/N), so the two inputs move in
+> opposite directions. Read out of this program's own three dated reports,
+> variance fell **1.852337e-04 -> 1.689797e-04 -> 1.584220e-04** across
+> N = 85 -> 101 -> 133 and **the N=85 -> 101 step LOWERED every trial's
+> bar by 0.00071475** — sixteen new trials made gate 4 *easier*, in a
+> report generated 2026-07-21T16:00:42Z, before
+> `N_ARITHMETIC_2026-07-23.md` stated the premise. Across N=101 -> 133 the
+> variance channel absorbed **87.62%** of the raw-N cost (realized
+> +0.00015329 against +0.00123827 at fixed variance). **Gate 4 does not
+> bind a new family:** a 44-arm family — the largest ever run here —
+> raises its own winner's required Sharpe from **1.240607** to
+> **1.263775**, **+1.87%**, and at the Sharpe gate 3 requires the same
+> candidate scores DSR **0.995079**. **Gate 3 binds, and its bar is
+> quantified for the first time.** A new parameter family adds K rows to N
+> but exactly **one** column to the candidate matrix (`config_hash` is
+> computed once per family run — `run_atr_family.py:63` — and no swept
+> parameter is in the six-field candidate key; demonstrated twice, 48 rows
+> -> 1 column and 44 rows -> 1 column). One maximally-dominant column
+> drives PBO to its own OOS-below-median frequency, and measured over all
+> 12 870 splits **the best of the 37 existing columns would still record
+> 0.105361 — 2.11x the bar — with 0 of 37 reaching 0.05.** Bisecting a
+> constant-alpha improvement from five base shapes puts the PBO=0.05
+> crossing at annualized Sharpe **1.5814 / 1.6253 / 1.6294 / 1.6993 /
+> 1.7857** (median **1.6294**), a floor rather than an estimate. **0 of
+> 133 trials reach even 1.5814**; the best ever registered is **1.410899**
+> (disqualified at 75.08% drawdown). **DEFECT of gate 4, newly found:** its
+> variance input is analyst-controllable — **39 arms at the registry's own
+> mean Sharpe (0.944374) turn trial 88 from a gate-4 failure (0.931948)
+> into a pass (0.950291)** and lift trial 118 to 0.964308, on no new
+> information. This is a property of the gate, not an allegation
+> (iteration 26 verified no unregistered arms exist), and it completes
+> iteration 26's [0.709, 1.180] window rather than contradicting it: a
+> 134th trial at the registry mean *raises* trial 118's DSR to 0.950626,
+> so "a margin of exactly one trial" is a margin of exactly one **good**
+> trial. **Route explicitly NOT closed** — a family whose representative
+> column reached ~1.63 would trip the stop condition — but no proposal may
+> justify or refuse a new family by its N-cost, and any override must
+> pre-declare an anti-dilution rule and the fact that gate 3 sees a
+> family's **last-registered** arm, not its best (the 48-arm group is
+> represented by trial 85, ranked 26th of 48). Nothing was repaired and
+> nothing frozen was edited; `N_ARITHMETIC_2026-07-23.md` has an
+> append-only dated addendum. This is the **sixth** operator choice now
+> due and the first with **no deadline**. Full measurement and the three
+> options: `docs/research/P3_OVERRIDE_POWER_2026-09-19.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
@@ -362,7 +413,7 @@ lever is blocked, and the block is structural rather than temporary:
 |---|---|
 | Forward validation | Needs **time**. Crypto gains one row/day at 08:20; Taiwan and gold one row/week. Analysis cannot accelerate it. |
 | October holdout | **Operator-only**, single-use, nominations fixed. |
-| A new parameter family | **P3 refuses it**, and the PBO/family measurements say the winner would not be trustworthy anyway. |
+| A new parameter family | **P3 refuses it**, and the PBO/family measurements say the winner would not be trustworthy anyway. **QUALIFIED 2026-09-19 (iteration 64): this is the one lever that is not structurally blocked — it can trip the stop condition. P3's N-cost rationale is refuted (+1.87% at K=44; the N=85->101 report shows the bar falling); what binds is a gate-3 pass bar near annualized Sharpe 1.63 that 0 of 133 trials reach. See item 3 below.** |
 | Revising gate 3 after finding it misranks | Changing the rules after seeing results. Refused by design, even though the defect is real and recorded. |
 | More diagnostics | Would not change the standing answer. Step 0 forbids running them. |
 
@@ -402,8 +453,24 @@ cannot improve it without data that does not exist yet.
    **2026-07-31**. No proposal may treat this spend as evidence that
    decides whether the edge works.
    `docs/research/GATE5_HOLDOUT_POWER_2026-09-18.md`.
-3. An operator override of P3 that accepts the recorded cost of a new
-   family.
+3. ~~An operator override of P3 that accepts the recorded cost of a new
+   family.~~ **CORRECTED 2026-09-19 (iteration 64) on measurement — this
+   is the only one of the three that still works, and "the recorded cost"
+   is not what this contract says it is.** The N-cost is **+1.87%** of
+   required Sharpe at K=44 and the premise that every family raises every
+   trial's bar is refuted by this program's own 2026-07-21 gate report,
+   which shows the bar **falling** as N went 85 -> 101. What binds is
+   **gate 3**: a parameter family buys exactly one candidate column, one
+   maximally-dominant column sets PBO to its own OOS-below-median rate,
+   and the best of the 37 existing columns would still record **0.105361**
+   against a 0.05 bar. The crossing sits at annualized Sharpe **~1.63**
+   (five base shapes, 1.5814-1.7857), which **0 of 133 trials reach**.
+   Gate 4's variance input is separately **diluteable** — 39 arms at the
+   registry mean convert trial 88 from failure to pass. So the lever can
+   trip the stop condition, cannot produce forward evidence sooner
+   (winner's own MinTRL 377.2 d at 95% vs SR* = 0), and must not be
+   refused or granted on N-cost grounds.
+   `docs/research/P3_OVERRIDE_POWER_2026-09-19.md`.
 
 ## One iteration, in order
 

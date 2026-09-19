@@ -7166,3 +7166,277 @@
   MinTRL is 2 207.8 days against the 366 the window holds.** On-chain
   route open but unadvanced. Operator-attention items dated 2026-09-18 are
   the eleven above.
+
+## 2026-09-19 — iteration 64 (P1: the *last* unblocking lever had never been measured either — and it is the only one of the three that is not closed, but the gate that binds it is not the gate the contract refuses it for)
+
+- **Step 0, convergence check, run first as ordered.** (1) **Current
+  answer:** unchanged on entry — the timing rule adds value in crypto
+  only, nothing is forward-validated, no return-based forward verdict is
+  permitted before 2028-06-29, the search is over, the framework has
+  exercised exactly two gates and both are defective, and as of iterations
+  62-63 neither the October forward read nor the October holdout spend can
+  speak to the edge. (2) **What this iteration moves:** the contract names
+  **three** states that could unblock this program. Iterations 25 and
+  59-62 exhausted lever 1; iteration 63 closed lever 2. **Lever 3 — an
+  operator override of P3 — has never been measured at all.** What existed
+  in its place was an assertion carried since 2026-07-26 that a new family
+  "would produce an untrustworthy winner", with a stated mechanism ("they
+  cost N, raise every trial's bar") that had never been checked against a
+  gate report. This iteration decides what that override could actually
+  buy, and at what price. (3) **Why it is not sprawl:** it characterises
+  the last uncharacterised route rather than adding a diagnostic, it
+  corrects a premise that three documents rest on, and it needed **no new
+  script** (one-script budget unspent, fourth iteration running; the
+  measurement is embedded reproducibly in the result document) and **no
+  new data**.
+
+- **P1 first, all four forward tracks healthy, and every one gained a
+  row.** `shadow_trial88.jsonl` and `shadow_trial118.jsonl` both at **56
+  rows**, last row **2026-09-18** recorded 2026-09-19T00:21Z — today's
+  08:20 local fire landed, and the one-day lag is correct behaviour.
+  Exposure trial 88 BTC 0.75 / ETH 1 (equity 1095.2919), trial 118 on the
+  same 2026-09-18 close (BTC 80883.87, ETH 2612.14). The single date gap
+  remains the known 2026-08-09 hole and nothing else.
+  `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` **10 rows**
+  (**+1**), last dated **2026-09-18**, close 109.85, exposure 0.25,
+  equity 1029.7504; `shadow_gld.jsonl` **11 rows** (**+1**), last dated
+  2026-09-18, close 401.170013, exposure 0, equity 999.3167 — both
+  recorded 2026-09-19T01:49Z, which is today's Saturday 09:40 weekly fire
+  landing as scheduled. **Nothing to fix; nothing was touched.**
+
+- **Loop slot health.** `docs/research/loop_runs/` shows an unbroken run
+  of **eleven consecutive daily slots**, `run_20260909` through
+  `run_20260919`, all at 21:37.
+
+- **Stop-condition check, run explicitly.** **DSR >= 0.95 AND
+  candidates-PBO <= 0.05.** `gate_report_2026-07-25.json` is still the
+  latest, `trial_registry.jsonl` still **133** rows, `holdout_lock.json`
+  still `"spent": false`. Gate 3 candidates-PBO **0.651826**
+  (all-columns 0.732556) against a 0.05 threshold. **No
+  `EDGE_CANDIDATE_FOUND.md` event, and none is warranted.**
+
+- **Baseline reproduced before anything was measured**, because today's
+  result depends on re-deriving two recorded statistics rather than
+  quoting them. The gate report's Sharpe variance reproduces **exactly**
+  (`0.00015842198033849873`); its 37 candidate trial ids reproduce
+  **list-equal**; **candidates-PBO reproduces to 0.651826** over 12 870
+  combinations, computed from per-block sums and sums-of-squares rather
+  than by re-slicing; DSR reproduces on trials 118 (**0.950140**), 88
+  (**0.931948**), 29 (**0.986670**) and 37 (**0.952424**); iteration 25's
+  MinTRL for trial 88 reproduces at **705.7 d** against the recorded 706;
+  and iteration 55's Spearman(Sharpe, maxDD) reproduces at **-0.6789**.
+
+- **The finding, part 1 — the structural asymmetry, verified in code and
+  twice in the registry.** `config_hash` is computed **once per family
+  run, before the sweep loop** — visible at `run_atr_family.py:63`,
+  `run_alloc_family.py:64`, `run_combo_family.py:63`. Gate 3's candidate
+  key (`run_gate_report.py:73-80`) contains six fields, none of which is a
+  swept parameter of the kind P3 forbids. So a new single-market parameter
+  family of K arms puts **K rows on gate 4's N and exactly one column on
+  gate 3's candidate matrix**. The registry demonstrates it in both
+  directions: the 48-row cs-momentum group collapses to **1** column and
+  the 44-row donchian group to **1**, while the 16-arm vol-target grid
+  produced **16** columns because it swept `vol_target_annualized`,
+  `vol_window_days` and `vol_rebalance`, which *are* in the key.
+
+- **The finding, part 2 — DEFECT of premise: "every family raises every
+  trial's bar" is false, and a gate report that already existed refutes
+  it.** `N_ARITHMETIC_2026-07-23.md` rests on that sentence and projects
+  trial 88's DSR to 0.9283 at N=133 by holding the Sharpe variance fixed.
+  The gate report recomputes the variance from all registry Sharpes every
+  run, and E[max] scales as its square root while N enters only through
+  the inverse normal CDF of (1 - 1/N). Read out of the three dated
+  reports: variance fell **1.852337e-04 → 1.689797e-04 → 1.584220e-04**
+  across N = 85 → 101 → 133, and E[max] went **0.03365610 → 0.03294135 →
+  0.03309464**. So the **N=85 → 101 step LOWERED every trial's bar by
+  0.00071475** — sixteen new trials made gate 4 easier, and that report
+  carries `generated_at` 2026-07-21T16:00:42Z, before the premise was
+  written. Across N=101 → 133 the bar would have risen **+0.00123827** at
+  fixed variance and actually rose **+0.00015329**: the variance channel
+  absorbed **87.62%** of the raw-N cost, and trial 88's DSR fell
+  **0.001037** against the projected 0.0047.
+
+- **The finding, part 3 — gate 4 is not what binds a new family.**
+  Holding variance at the registry value and raising only N, the required
+  winner Sharpe goes **1.240607 (K=0) → 1.263775 (K=44, +1.87%) →
+  1.485843 (K=4096)**. The largest family this program has ever run would
+  raise its own winner's bar by under two percent. At the Sharpe gate 3
+  requires, the same candidate scores DSR **0.995079** at K=44 against a
+  0.95 bar — gate 4 is 0.045 of DSR away from mattering.
+
+- **The finding, part 4 — gate 3 binds, and its bar is an annualized
+  Sharpe near 1.63.** PBO is decided by which column wins in-sample and
+  where it lands out-of-sample, so a maximally dominant single new column
+  drives the recorded PBO to its own OOS-below-median frequency. Measured
+  over all 12 870 splits for each of the 37 existing columns, the **best
+  one — trial 131 — would still record PBO 0.105361, 2.11x the bar, and
+  0 of 37 reach 0.05.** Bisecting a constant-alpha improvement from five
+  different base shapes puts the PBO=0.05 crossing at annualized Sharpe
+  **1.5814 / 1.6253 / 1.6294 / 1.6993 / 1.7857** (median **1.6294**) —
+  the required alpha varies three-fold, the Sharpe endpoint does not, so
+  the bar is a property of the gate. Against this registry: **0 of 133
+  trials reach even 1.5814**; the best ever registered is **1.410899**
+  (trial 29, 75.08% drawdown, disqualified), **13.4% short**; the live
+  contract is 1.2411. The 1.63 is a **floor**, since constant alpha is the
+  kindest possible improvement.
+
+- **The finding, part 5 — DEFECT: gate 4 can be diluted into passing.**
+  The variance input is the population variance of every registry Sharpe,
+  recomputed each run, so arms at the pool mean shrink it as 133/(133+K)
+  while E[max] falls as its square root. **Thirty-nine arms at the
+  registry's own mean Sharpe (0.944374) turn trial 88 from a gate-4
+  failure (0.931948) into a pass (0.950291) and lift trial 118 to
+  0.964308 — with no new information of any kind**; a thousand puts both
+  above 0.99. Stated precisely: this is **not an allegation** (iteration
+  26 already verified no unregistered arms exist), the **math is
+  textbook-correct** (the defect is that the variance is estimated from
+  the same trials being graded, so the input is controllable by the
+  searcher), and it **completes rather than contradicts iteration 26** —
+  that iteration's preserving window of Sharpe [0.709, 1.180] for a 134th
+  trial implies a converse it never stated, namely that a 134th trial at
+  the registry mean *raises* trial 118's DSR to **0.950626**. "A margin of
+  exactly one trial" is a margin of exactly one **good** trial.
+
+- **The finding, part 6 — a procedural hazard nobody has recorded.**
+  Within a collapsed group the candidate rule keeps the **highest
+  trial_id**, i.e. the arm registered last, not the best. Gate 3 therefore
+  represents this registry's largest family by trial **85, SR 0.8576,
+  ranked 26th of its own 48 arms**, while that family's best arm is trial
+  29 at 1.410899; the donchian group's representative (trial 131, 2nd of
+  44) is near-best only because a robustness battery happened to run after
+  trial 118. Fixable by re-running the winner last, at +1 on N — but it
+  has to be done deliberately, and no pre-registration has ever said so.
+
+- **Route NOT closed — and that is the result.** Unlike levers 1 and 2,
+  lever 3 **can** trip the contract's stop condition: a family whose
+  representative column reaches ~1.63 would record PBO <= 0.05 and DSR
+  around 0.995, which is exactly `DSR >= 0.95 AND candidates-PBO <= 0.05`.
+  What it cannot do is produce forward evidence sooner — such a winner
+  starts its own clock, MinTRL **377.2 d** at 95% against SR\* = 0 and
+  **783.9 d** against gate 5's SR\* = 0.5 — and it cannot be refused for
+  the reasons P3 gives, two of which are measurably wrong. **The emphasis
+  reverses: P3 forbids new families for a cost that is 1.87%, while the
+  thing actually standing in the way is a gate-3 bar 15.5% above the best
+  Sharpe in 133 trials, protected by a gate-4 test that uninformative arms
+  can dilute into passing.**
+
+- **Nothing was repaired and nothing frozen was edited.** Three options
+  are recorded for the operator in `P3_OVERRIDE_POWER_2026-09-19.md`
+  section 7 — **(A)** leave P3 in force and correct its rationale, cost
+  nothing material, benefit that the contract stops asserting an N-cost
+  measurement does not support; **(B)** override P3 with a pre-declared
+  bar and an anti-dilution rule (winner re-run last so it is the gate-3
+  representative; representative-column Sharpe >= 1.63 declared before any
+  nomination; gate-4 variance frozen at its pre-family value), at the
+  measured cost that a family carrying a 1.6294 winner drops trial 118
+  below the DSR bar at K=1 (**0.945210**) and K=8 (**0.948763**) and only
+  restores it at K=44 (**0.961963**) *through the dilution channel rule
+  (iii) exists to neutralise*; **(C)** repair gate 4's variance input
+  first and decide afterwards, declaring the convention before
+  recomputing, which is the same duty iteration 27 recorded for
+  `effective_N`. **This is the sixth operator choice now due — and the
+  first with no deadline, which is why it went unmeasured for eight
+  weeks.** `N_ARITHMETIC_2026-07-23.md` receives a dated append-only
+  addendum recording the refuted premise; nothing above it was edited.
+
+- **Step 2 (web research) done and recorded.** Four sources filed in
+  `RESEARCH_LOG.md` under iteration 64; **zero strategy arrivals, eighth
+  consecutive pass**. One was fetched specifically because its headline
+  would have cleared today's bar and was then **rejected on product law**:
+  **arXiv 2602.11708** (Bui & Nguyen, February 2026) reports Sharpe 2.41
+  at -12.7% drawdown, but its abstract says **long/short**, **6-hour**
+  intervals, **150+ pairs**, a **2022-2024** window (not the snippet's
+  "Jan 2022 – Oct 2025"), **no disclosed cost numbers** and **no trial
+  count, DSR or PBO**. One source directly corroborates today's part 5:
+  the `ml4trading.io` DSR reference insists the variance "must" be
+  computed from all K strategies tested and warns only against
+  **undercounting** — the opposite failure mode from the one measured
+  here. **One snippet was chased and rejected:** a search result
+  attributed to Bailey/Borwein/Lopez de Prado/Zhu the claim that CSCV's
+  PBO approaches 1 as N grows regardless of genuine predictive power; two
+  mirrors would not text-extract and SSRN returned **HTTP 403**, so it is
+  logged as **unverified and cited nowhere** — the second iteration
+  running that this discipline caught something.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed**. **Eighth consecutive iteration to record the
+  same caveat**, today with a new instance: the suite is green while the
+  forward recorder charges no trading cost, archives no input, is read by
+  a rule whose refutation test cannot fire, the holdout protocol's N1 has
+  pointed at the wrong strategy for 50 days, **and gate 4's variance input
+  can be moved by arms that carry no information** — because no test in
+  `tests/` references any shadow track, checks that a nomination still
+  resolves, or asserts anything about the monotonicity of the DSR bar. The
+  green tree has now failed to catch six separate defects in six
+  iterations.
+
+- **Operator-attention items.** Twelve — the eleven of iteration 63 with
+  one added, and (f) re-dated. (a) Ensemble-breadth leave-one-out still
+  unmeasured and still P3-forbidden. (b) The research loop still runs in a
+  visible console window. (c) CLOSED since iteration 62 — eleven
+  consecutive slots have now completed. (d) Should cross-track structural
+  comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? The loop **abstained** again,
+  seventeenth consecutive iteration. (e) Section 1 of
+  `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative upper
+  bound", which is false at N=133. (f) The live paper runtime has been a
+  no-op for **50 days** (last `cycle` 2026-07-31T00:05:02Z; **50** health
+  rows, latest 2026-09-18, every one `WARMUP_INSUFFICIENT_HISTORY`); the
+  dashboard hits a full 90-day observation-period bar on **2026-10-01**,
+  now **12 days away**. (g) The forward tracks charge no trading cost.
+  (h) The forward tracks archive no input. (i) The read rule states no
+  replay depth; required >= 206 bars. (j) Test 2 cannot fire at 90 days on
+  anything short of mechanism failure. (k) Holdout nomination N1 has not
+  named the live contract since 2026-07-31. **(l) NEW — gate 4's variance
+  input is analyst-controllable: 39 arms at the registry mean convert a
+  gate-4 failure into a pass, and the candidate rule hands gate 3 a
+  family's last-registered arm rather than its best.** Items (g) through
+  (k) are due **before 2026-10-22**; (l) has no deadline.
+
+- **What this iteration does NOT do:** no family was run and no arm
+  registered; the holdout was **not read, not fetched and not unsealed**
+  and `spent` is still `false`. No gate rule modified, no frozen
+  pre-registration or contract clause edited (the contract's *standing
+  answer* is appended to, as the contract itself directs), no nomination
+  substituted, no registry row or return series touched, no shadow file
+  written to or read for a metric, no prior result document rewritten
+  (`N_ARITHMETIC_2026-07-23.md` receives an append-only dated addendum,
+  the established pattern), no prior log entry edited, no trial
+  registered, no backtest run, no gate report regenerated, no arm run,
+  **no new script** (the one-script budget is unspent for the fourth
+  iteration running), **no file under `configs/runtime/`, `src/`,
+  `scripts/` or any scheduled-task definition touched** — four scripts
+  were read and quoted, never written — no ingest run, no forward metric
+  computed and no forward number cited as support, no read date moved, and
+  the 2026-08-09 hole left as a hole.
+
+- **Standing answer restated, extended by one clause.** Timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine and the forward recorder are both
+  free of look-ahead; the Taiwan and gold negatives are robust to dividend
+  treatment; against the naive 13-coin alternative the margin is only 5.4%
+  and that benchmark is survivorship-flattered; breadth still fails and is
+  priced from five directions; nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29; gate 4 passes three trials and only trial 118 is
+  risk-compliant; gate 3 fails under all 4 224 admissible candidate
+  readings; the framework has exercised exactly two gates, both defective;
+  gate 6 cannot be executed in October 2026 because its evidence stream
+  has been dead for 50 days; the forward stream is costless and unarchived
+  and all three of its October tests are mechanism checks; the October
+  holdout cannot decide either; **and the third and last unblocking lever
+  — an operator override of P3 — is the only one that is NOT closed, but
+  not for the reason the contract gives: the N-cost it is refused for is
+  1.87%, a gate report from 2026-07-21 shows a family LOWERING every
+  trial's bar, what actually binds is a gate-3 pass bar near annualized
+  Sharpe 1.63 that 0 of 133 trials reach, and the gate-4 test protecting
+  it can be lifted from failure to pass by 39 arms carrying no
+  information.** So "the search is over" now rests on an unreachable
+  gate-3 bar rather than on the N-arithmetic, and the one route that could
+  still trip the stop condition is the one this program forbids for
+  reasons it can no longer support. On-chain route open but unadvanced.
+  Operator-attention items dated 2026-09-19 are the twelve above.

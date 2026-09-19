@@ -3003,3 +3003,84 @@ cross-sectional momentum untested here → experiment 3.
   external confirmation that one year of holdout cannot grade a strategy.
   The literature keeps handing this program the vocabulary for its own
   measurement limits and keeps failing to hand it an edge.
+
+## 2026-09-19 — iteration 64 (four sources, three new; zero strategy arrivals for the eighth pass — and the one paper the search surfaced as a candidate edge was rejected on product law, on its own abstract rather than on a snippet)
+
+- **arXiv 2602.11708, Bui & Nguyen, "Systematic Trend-Following with
+  Adaptive Portfolio Construction: Enhancing Risk-Adjusted Alpha in
+  Cryptocurrency Markets" (submitted 2026-02-12) — NEW, FETCHED, and
+  REJECTED.** The search snippet reported Sharpe **2.41**, max drawdown
+  **-12.7%**, Calmar **3.18** over "Jan 2022 – Oct 2025" — a number above
+  today's measured gate-3 bar of ~1.63, which is exactly why it was
+  fetched instead of cited. The abstract says: **long/short** with an
+  "asymmetric 70/30 long-short allocation scheme", **6-hour** intervals,
+  **150+ cryptocurrency pairs**, and a **36-month evaluation window
+  (2022-2024)** — not the snippet's Jan 2022 – Oct 2025. It discloses
+  **no numerical cost assumptions** (only "transaction cost modeling" as a
+  robustness exercise) and reports **no trial count, no DSR, no PBO, and
+  no multiple-testing adjustment** of any kind. **Testable here: no** —
+  long/short and intraday both fail product law (spot, long-only, daily)
+  before the evidence question is reached, and an undeflated
+  single-configuration headline is not a registrable hypothesis. Logged
+  chiefly because it is the eighth consecutive pass in which the one
+  result that would clear this program's own bar turns out, on inspection,
+  to be measured under rules this program cannot adopt.
+- **`ml4trading.io` DSR diagnostic reference — NEW, fetched, and directly
+  relevant to today's §4.** Quoted verbatim: "You **must** compute the
+  actual variance from all K strategies tested"; "Using
+  `variance_trials=1.0` as a 'reasonable default' defeats the purpose";
+  "If you don't have access to all K Sharpe ratios, DSR cannot be
+  meaningfully calculated"; and on counting, "Every parameter variation,
+  feature combination, and lookback period counts as a trial. If you
+  tested 10 signals x 5 lookbacks x 3 thresholds = 150 trials, not 10."
+  **The direction of every one of those warnings is against
+  UNDERCOUNTING.** Today's measurement found the opposite failure mode —
+  padding the registry with arms near its mean Sharpe *shrinks* the
+  variance input and lifts every trial's DSR, taking trial 88 from
+  0.931948 to 0.950291 on 39 uninformative arms. The standard guidance
+  does not warn about it, which is the gap
+  `P3_OVERRIDE_POWER_2026-09-19.md` §4 records. **Testable here: not a
+  strategy** — it is external confirmation that the variance term is an
+  analyst-supplied input rather than a property of the candidate.
+- **Bailey, Borwein, López de Prado & Zhu, "The Probability of Backtest
+  Overfitting" — snippet claim CHASED and REJECTED as unverified.** A
+  search result asserted that "under CSCV, the probability of backtest
+  overfitting approaches 1 as N grows, regardless of whether any
+  individual configuration has genuine predictive power." If true it would
+  bear directly on §3 — it would mean gate 3's bar tightens with registry
+  size. Two independent mirrors of the paper
+  (`davidhbailey.com/dhbpapers/backtest-prob.pdf`,
+  `carmamaths.org/jon/backtest2.pdf`) returned PDFs that would not
+  text-extract, and the SSRN abstract page (2326253) returned **HTTP 403**,
+  as it did in iteration 63 for a different paper. **The claim is recorded
+  as unverified and is cited nowhere in today's result document**, which
+  instead measures PBO's behaviour directly on this registry's own matrix.
+  Iron rule 5, applied to a borrowed sentence — the second iteration
+  running that this discipline has caught something.
+- **Practitioner sweep for long-only daily spot crypto trend rules net of
+  two-sided cost — nothing admissible, the eighth consecutive pass.** The
+  2026 material clusters around two claims: a diversified crypto
+  trend book at "net-of-fees Sharpe **1.57**, maximum drawdown of only
+  **11%**" (Concretum), and a BTC daily-breakout template at Sharpe
+  **0.54** on 0.1% taker fees (Coinquant), both published without a
+  registry, a trial count, or any deflation. Worth one sentence of
+  contrast rather than a hypothesis: **today's measurement puts gate 3's
+  pass bar at annualized Sharpe ~1.63 — inside the range the literature
+  routinely claims and outside the range this program's own 133 trials
+  ever produced (best 1.410899).** The gap between those two facts is the
+  whole reason a registry exists. **Testable here: no.**
+- **Arrivals: zero.** Four sources handled — three new (2602.11708, the
+  ml4trading DSR reference, the practitioner sweep), one snippet chased
+  and rejected. Checked against this file before drafting, the fifth
+  consecutive iteration to apply that discipline. **Streak, counted
+  against this file rather than asserted: zero strategy arrivals in
+  iterations 57 through 64 — eight consecutive passes.** The pattern named
+  in iteration 61 holds for a fifth reading and today with a new twist:
+  iteration 60 found the external statement of the missing cost control,
+  61 the missing input archive, 62 the mechanism making a full-sample
+  maximum useless as a 90-day bar, 63 the confirmation that one year of
+  holdout cannot grade a strategy, and today the external statement that
+  DSR's variance term must be computed from all K trials — a rule whose
+  stated failure mode is the reverse of the one measured here. The
+  literature keeps handing this program vocabulary for its own measurement
+  defects and keeps failing to hand it an edge.
