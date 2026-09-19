@@ -112,3 +112,65 @@ via direct field extraction; historical DSR values quoted from
 `docs/research/GOALP_EXPERIMENT8_RESULT.md`. σ_effective back-solved from
 Bailey DSR closed form using trial 88's report row. Committed with this
 iteration's LOOP_LOG entry.
+
+---
+
+## Addendum 2026-09-19 (iteration 64) — the premise of this document is false, and a gate report that already existed refuted it
+
+This document's trigger sentence, quoted in its own opening —
+
+> every family raises every trial's bar
+
+— is not true of the gate as implemented, and the correction is large
+enough to change what this weigh-in concluded. Nothing above is edited;
+this addendum is the record.
+
+**The mechanism the projections missed.** The "What one more family
+costs" table projects trial 88's DSR at N=117 and N=133 by moving N and
+holding the Sharpe variance fixed ("static-projected", the table's own
+word). But `scripts/run_gate_report.py` recomputes
+`non_annualized_sharpe_variance` from **every registry Sharpe** on each
+run, so a family moves both inputs. E[max] scales as √V while the trial
+count enters only through Φ⁻¹(1−1/N), so arms clustered near the registry
+mean **lower** the bar faster than the extra N raises it.
+
+**What the reports actually recorded**, read out of the three dated files
+rather than projected:
+
+| Gate report | N | Variance (de-annualized) | E[max] |
+|---|---:|---:|---:|
+| `gate_report_2026-07-21.json` | 85 | 1.852337e-04 | 0.03365610 |
+| `gate_report_2026-07-22.json` | 101 | 1.689797e-04 | **0.03294135** |
+| `gate_report_2026-07-25.json` | 133 | 1.584220e-04 | 0.03309464 |
+
+- **The N=85 → 101 step lowered every trial's bar** by 0.00071475.
+  Sixteen new trials made gate 4 *easier*. That report carries
+  `generated_at` 2026-07-21T16:00:42Z and this document was written
+  2026-07-23, so the counter-example was on disk before the premise was
+  stated.
+- **The N=101 → 133 step:** at fixed variance E[max] would have reached
+  **0.03417962** (+0.00123827); it actually reached **0.03309464**
+  (+0.00015329). The variance channel absorbed **87.62%** of the raw-N
+  cost. Trial 88's recorded DSR moved 0.932985 → 0.931948, a fall of
+  **0.001037** against this document's projected **0.0047** — right in
+  sign, overstated about four-fold.
+
+**What survives.** The direction of the N=101→133 conclusion, and the
+cost table's qualitative ranking of wrapper re-sweeps against genuinely
+new architectures. The N-arithmetic still says do not spend N on
+re-parameterising the same wrapper — but for the reason in
+`PBO_SCOPE_DIAGNOSTIC_2026-07-26.md` (correlated arms buy no breadth),
+not because of a bar rise that the reports do not show.
+
+**What does not survive**, and matters for anything that cites this file:
+the N-cost of a family is not a reason to refuse one. Measured at the
+current registry, a 44-arm family — the largest this program has ever run
+— raises its own winner's DSR bar from annualized Sharpe **1.240607** to
+**1.263775**, a rise of **1.87%**. The binding constraint on a new family
+is gate **3**, whose bar sits near annualized Sharpe **1.63**, above
+anything in 133 trials.
+
+Full measurement, including the dilution defect this same mechanism
+implies — 39 arms at the registry mean turn trial 88 from DSR 0.931948
+into 0.950291 with no new information — is in
+`docs/research/P3_OVERRIDE_POWER_2026-09-19.md`.
