@@ -403,6 +403,60 @@ Hard limits, binding:
 > append-only dated addendum. This is the **sixth** operator choice now
 > due and the first with **no deadline**. Full measurement and the three
 > options: `docs/research/P3_OVERRIDE_POWER_2026-09-19.md`.
+>
+> Refinement 2026-09-20 (iteration 65) — **the sixth and last gate is
+> characterised, and it cannot fail.** Iteration 27 measured gates 1 and
+> 2, 56 and 64 gate 3, 26/55/64 gate 4, 63 gate 5; **gate 6 had never been
+> measured at all**, and it is the only gate with a live deadline
+> (`GATE6_BASELINE_2026-07-25.md` §3.1's first checkbox becomes
+> date-eligible **2026-10-03**; the dashboard bar reaches 100 % on
+> **2026-10-01**). Gate 6 (`VALIDATION_GATE_CONTRACT.md:92-101`)
+> decomposes into ten clauses. **Four cannot fail under any
+> circumstances:** "0 real order attempts" (the only broker is
+> `PaperBroker`, `src/execution/broker.py:34`; the only POSTs in `src/`
+> are Discord, `src/notify/channels.py:87,130`), "0 private API usage"
+> (`src/config/models.py:129-133` raises at config load, `:30-34`), "no
+> duplicate notifications/orders" (`src/runtime/store.py:111-112` refuses
+> duplicate keys, as its own docstring states), and **"ledger
+> reconciliation passes", which has no implementation and whose absence is
+> a recorded design decision** — `docs/ENGINEERING_DECISIONS.md:41` chose
+> "a two-level recovery lattice **with no reconciliation pass**" on
+> **2026-07-03**, the day the paper period began. **Four more are strictly
+> easier to pass when dead:** "0 critical crashes" is impossible to fail
+> because `src/runtime/engine.py:202` returns before every downstream
+> path; "every fill has fee/slippage" (**9/9**) and "every reject has a
+> reason code" (**1/1**) are frozen, where measured rates of **0.3214
+> fills/day** and **0.0357 rejections/day** over the 28 decision days mean
+> a live 93-day window would have graded ~**29.9** and ~**3.3**; and the
+> cost-recalibration trigger needs a per-side spread above **12.5 bps**
+> against a frozen BTC median of **0.0000** and ETH median **0.0500**
+> (round-trip **20.00** / **20.10 bps**, i.e. **250x** the ETH median
+> away), on a sample that cannot grow because zero `exec_quote` events
+> have been emitted in **51 days**. **One clause is activity-independent**
+> (">= 3 calendar months"). **One — "measure actual costs" — is the only
+> clause a dead runtime fails, and gate 6 attaches no bar to it.** So nine
+> clauses carry a verdict, **not one of them can be failed by a runtime
+> emitting nothing**, and gate 6's pass probability for such a subject is
+> **1.0 by construction** — not a near-coin-flip like gate 5, a certainty.
+> The window it will grade holds **28 deciding days of 93 (30.11 %)**.
+> Stated fairly, three of the four unfailable clauses are unfailable
+> because product law and idempotency are enforced in **types and
+> validators** rather than by discipline — good engineering; the defect is
+> that gate 6 **credits them as three months of accumulated evidence**.
+> The one instrument that would catch a dead paper period — §3.1's ">= 60
+> quote days", observed **28**, frozen **52** days — lives in an
+> **unfrozen research document**, not a contract. Route closed: **no
+> document may treat a gate-6 pass as evidence that the paper period
+> validated the runtime** unless the window's deciding-day count is
+> reported with it. **All six gates are now characterised: gate 2 cannot
+> bind, gate 6 cannot fail, gate 5 is a near-coin-flip, gates 3 and 4 are
+> the only two that ever decided anything and both carry recorded defects,
+> gate 1 is process discipline.** Nothing was repaired and nothing frozen
+> was edited. This is the **seventh** operator choice due and the second
+> with an October date (**2026-10-03** for option C, which is a rule
+> change and must be declared before the window it governs). Full
+> measurement and the three options:
+> `docs/research/GATE6_POWER_2026-09-20.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
