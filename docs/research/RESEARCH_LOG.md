@@ -3084,3 +3084,107 @@ cross-sectional momentum untested here → experiment 3.
   stated failure mode is the reverse of the one measured here. The
   literature keeps handing this program vocabulary for its own measurement
   defects and keeps failing to hand it an edge.
+
+## 2026-09-20 — iteration 65 (four sources, all four new; zero strategy arrivals for the ninth pass — and for the sixth running the useful content is methodological, this time an independent paper that measures exactly the quantity today's finding measures: a gate's pass probability for a null subject)
+
+- **arXiv 2609.14859, Nicholas Hall, "Gate Design and Stage-Dependent
+  Incentives in Retail Proprietary-Trading Evaluations: Why Passing Is Not
+  Standalone Evidence of Skill, and Why the Product Fails to Pay Under
+  Measured Trading Constraints" (submitted 2026-09-14) — NEW, FETCHED,
+  abstract read verbatim, and directly corroborating.** The paper's
+  method is the one applied to gate 6 today: measure what a gate does to a
+  subject with **no** edge. Its headline is that the evaluation stage "is
+  defeatable at zero skill: position sizing alone yields a pass
+  probability near **0.40**, against a measured cohort rate of
+  **0.168**", and that "a pass rate confounds" skill with sizing because
+  "a real edge and aggressive sizing move it by nearly the same amount".
+  Every account-level result is "reported against a zero-edge control".
+  **The correspondence is the method, not the subject** — Hall grades a
+  commercial product's profit-target gate; today's measurement grades this
+  program's own process gate. But the conclusion has the same shape and is
+  stronger here: Hall's null subject passes 40% of the time, whereas gate
+  6's null subject — a runtime emitting no decisions — passes **nine of
+  its ten clauses with probability 1 by construction**. Hall's paper is
+  the external statement that "pass probability for a null" is the right
+  question to ask of a gate; it is cited in today's result document for
+  that framing only, and no number of his is imported. **Testable here:
+  no** (retail prop evaluations are not in this product's law).
+
+- **abyrint.com, Ivar Strand, "Silent Failure Modes — Detecting Latent
+  Errors in Financial Technology" (published 2025-06-21) — NEW, FETCHED,
+  and it names the exact failure this program recorded 51 days ago.** Two
+  sentences verbatim: "Traditional system monitoring focuses on uptime and
+  availability — is the system on or off? It is not typically designed to
+  validate the correctness of the system's outputs," and "**The absence of
+  an alarm is misinterpreted as evidence of correct function.**" It later
+  restates this as "the absence of noise is not proof of integrity". The
+  proposed remedy is "independent verification" including "**end-to-end
+  data reconciliation across system boundaries**". Two things follow.
+  First, this is the generic form of iteration 58's finding — the outage
+  self-reported 36 (now 51) times and every consumer of the report showed
+  progress. Second, and newly relevant today: the remedy Strand names is
+  the *exact clause* gate 6 already contains ("ledger reconciliation
+  passes") and the exact clause this repository has **no implementation
+  of** — `grep -rni reconcil src/ scripts/ tests/ configs/` returns two
+  hits, both prose in a test docstring, and `ENGINEERING_DECISIONS.md` §2
+  records a deliberate 2026-07-03 decision to run "**with no
+  reconciliation pass**". Asked and answered honestly: the page is a
+  consultancy perspective piece, not peer-reviewed, so it is used as
+  vocabulary and corroboration, never as authority. **Testable here: not
+  as a strategy; as a defect description, already confirmed against the
+  repository.**
+
+- **Zenodo 19671502 / JOIREM vol. 4 iss. 4, M. Pranav Kumar & B. Monica
+  Jenefer, "Time-Series Momentum in Cryptocurrency Markets: A Pre and Post
+  Spot Bitcoin ETF Analysis" (published 2026-04-21) — NEW, FETCHED, and
+  REJECTED on its own reported statistics.** It is the closest thing this
+  quarter's sweep produced to an admissible hypothesis: **long-only**,
+  volatility-scaled TSMOM, **daily** price data, **2018-01 to 2026-03**,
+  six assets (BTC-USD, ETH-USD, IBIT, FBTC, GLD, SPY) — a universe that
+  even overlaps this program's own crypto + gold sleeves. Headline:
+  annualized **18.03%** pre-ETF and **28.58%** post-ETF, Sharpe
+  **0.82 → 1.22**. Three disqualifications, all from the paper's own
+  metadata. (i) **Rebalance is monthly**, not daily — a different
+  mechanism from the one this program trades. (ii) **Transaction costs are
+  not disclosed**, so no net-of-two-sided-cost number exists to compare.
+  (iii) Decisively, the paper's **own** test of its own headline is
+  **p = 0.5835** — the pre/post-ETF Sharpe improvement it is named after
+  **fails to reject at any conventional level**, and no trial count, DSR
+  or PBO is disclosed anywhere. A 0.82 → 1.22 Sharpe that its authors
+  cannot distinguish from noise is not a hypothesis worth spending N on.
+  **Testable here: no.**
+
+- **zorost.com, "Paper-First Promotion Gates, Earning the Right to Trade"
+  (dated 2026-05-06) — NEW, FETCHED, and its gap is the finding.** Fetched
+  specifically to answer one question: *does anyone else's paper-trading
+  gate require a minimum number of decisions rather than a minimum number
+  of calendar days?* It is the best-structured practitioner statement the
+  search returned — "each stage retires a specific risk, each gate is
+  written before the run, and demotion is as mechanical as promotion", and
+  it names "decision parity" as "the paper-stage measurement that matters
+  most". **And it states no numeric threshold for decisions, and does not
+  address an idle or inactive system at all.** So the defect measured in
+  this repository today is not local sloppiness: the one practitioner
+  framework that identifies decision parity as the thing that matters
+  still specifies its gate in calendar time. Recorded as a **negative
+  external result** — the loop looked for prior art that would have caught
+  a dead paper period and did not find it. **Testable here: no.**
+
+- **Arrivals: zero.** Four sources handled, **all four new to this file**
+  (checked by grep before drafting — `19671502`, `2609.14859`, `abyrint`,
+  `zorost`, `Pranav`, `Nicholas Hall` all returned 0 hits; the one
+  `Strand` hit is the English word inside an unrelated 2026-08 sentence).
+  Sixth consecutive iteration to run that check. **Streak, counted against
+  this file rather than asserted: zero strategy arrivals in iterations 57
+  through 65 — nine consecutive passes.** The pattern named in iteration
+  61 now holds for a sixth reading: iteration 60 found the external
+  statement of the missing cost control, 61 the missing input archive, 62
+  the mechanism making a full-sample maximum useless as a 90-day bar, 63
+  the confirmation that one year of holdout cannot grade a strategy, 64
+  the rule that DSR's variance must come from all K trials, and today an
+  independent paper whose entire method is **measuring a gate's pass rate
+  for a subject with no edge** — the quantity gate 6 has never had
+  computed. One near-miss was fetched and rejected on the significance of
+  its own headline. The literature has now handed this program vocabulary
+  for six consecutive measurement defects and has not once handed it an
+  edge.

@@ -7440,3 +7440,296 @@
   still trip the stop condition is the one this program forbids for
   reasons it can no longer support. On-chain route open but unadvanced.
   Operator-attention items dated 2026-09-19 are the twelve above.
+
+## 2026-09-20 — iteration 65 (P1: the sixth and last gate had never been characterised — measured, gate 6 cannot fail, and the only clause a dead runtime does fail carries no verdict)
+
+- **Step 0 — convergence check, run first.**
+  1. **Current answer.** Unchanged, and nothing measured today touches it:
+     the timing rule adds real value in **crypto only** — in its own
+     BTC/ETH universe it bought **both** return and drawdown (14.26x vs
+     6.05x, 33.05% vs 80.99%), corroborated by the 4.70x exposure-matched
+     twin edge — and none in Taiwan (0.73x) or gold (1.00x); against the
+     naive 13-coin alternative the margin is only **5.4%** and that
+     benchmark is survivorship-flattered. **Nothing here passes the six
+     gates** — and after today, "the six gates" is a phrase with a fully
+     measured meaning.
+  2. **What this iteration moves.** Since iteration 27 the loop has been
+     measuring, one at a time, **what each gate can actually decide**
+     rather than what it says. Five were done: gate 1 process discipline
+     and gate 2 cannot bind (iteration 27), gate 3 fails under all 4 224
+     admissible readings (56, 64), gate 4 passes three trials on an
+     analyst-controllable variance (26, 55, 64), gate 5 is a near-coin-flip
+     (63). **Gate 6 had never been characterised at all** — and it is the
+     only gate with a live deadline, since `GATE6_BASELINE_2026-07-25.md`
+     §3.1 makes its first checkbox date-eligible on **2026-10-03** and the
+     operator dashboard's observation bar reaches 100% on **2026-10-01**,
+     eleven days from today. This iteration decides what a gate-6 pass in
+     October would be worth. **The sweep is now complete.**
+  3. **Why it is not sprawl.** It closes the last uncharacterised gate
+     rather than adding a diagnostic, it is read entirely off files that
+     already exist, it produces a dated route closure and a seventh
+     operator choice, and it needed **no new script** (one-script budget
+     unspent for the **fifth** iteration running) and **no new data**.
+
+- **P1 first, all four forward tracks healthy; the crypto pair gained a
+  row and the weekly pair is correctly static.**
+  `shadow_trial88.jsonl` and `shadow_trial118.jsonl` both at **57 rows**
+  (**+1** each), last row **2026-09-19** written by today's 08:20 fire
+  (`shadow_runs/shadow_20260920_082002.log` ends `exit=0
+  finished=2026-09-20T08:21:10.5231079+08:00`); the one-day lag is correct
+  behaviour. Trial 88 exposure BTC 0.75 / ETH 1, equity
+  1101.459481418090148043953650; trial 118 BTC 0.25 / ETH 1, equity
+  1162.685147611592436065461534; both on closes BTC **81249.99**, ETH
+  **2632.69**. The single date gap remains the known **2026-08-09** hole
+  and nothing else. `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl`
+  **10 rows** and `shadow_gld.jsonl` **11 rows**, both unchanged at
+  **2026-09-18** (close 109.85 exposure 0.25 equity 1029.7504; close
+  401.170013 exposure 0 equity 999.3167) — correct, because the weekly
+  Saturday 09:40 task fired **yesterday** and today is Sunday; next fire
+  2026-09-26. Forward progress toward the MinTRL date 2028-06-29:
+  **56 of 706 days, 7.93%**. **Nothing to fix; nothing was touched.**
+
+- **The live paper runtime is unchanged and is now on day 51.** Last
+  `cycle` event still `2026-07-31T00:05:02Z` for the 2026-07-30 close;
+  **51** `health` rows, the newest for close **2026-09-19**, every one
+  `WARMUP_INSUFFICIENT_HISTORY` on `["BTCUSDT","ETHUSDT"]`. Today's 08:05
+  run is in `daily_cycle.log` and reads `"processed": false`,
+  `"exec_quotes": 0`, `"fills": []`, `"rejections": []`,
+  `"notifications": []`. Unrepairable by the loop under iron rule 1, and
+  it is the **subject** of today's measurement rather than its finding.
+
+- **The finding — gate 6 is monotone in the wrong direction, and its pass
+  probability for a runtime that emits nothing is 1.0 by construction.**
+  Full measurement in `docs/research/GATE6_POWER_2026-09-20.md`.
+
+  Gate 6 (`VALIDATION_GATE_CONTRACT.md:92-101`) decomposes into ten
+  checkable clauses. Each was asked two separate questions — *can it fail
+  at all?* and *is it easier to pass when nothing is emitted?*
+
+  - **Four clauses cannot fail under any circumstances.** "0 real order
+    attempts": the only broker in the tree is `PaperBroker`
+    (`src/execution/broker.py:34`) and the only HTTP POSTs in `src/` are
+    Discord notifications (`src/notify/channels.py:87,130`) — no code
+    exists that could attempt a real order. "0 private API usage":
+    `src/config/models.py:129-133` routes `private_api_enabled` and
+    `api_key_required` into `_reject_enabled_flag`, which **raises**
+    `ValueError` (`:30-34`) — the process will not start if the clause
+    would be violated. "no duplicate notifications/orders across
+    restarts": `src/runtime/store.py:111-112` is `if key in self._keys:
+    return False`, and the module docstring says so verbatim — "duplicate
+    keys are refused, which is what makes a restart unable to re-send or
+    re-execute anything." **"ledger reconciliation passes": there is no
+    implementation, and its absence is a recorded design decision** —
+    `grep -rni reconcil` returns **two** hits outside `.venv/`, both in
+    `tests/backtest/test_engine_parity.py` and both about backtest-vs-
+    runtime engine parity rather than ledger-vs-broker reconciliation,
+    while `docs/ENGINEERING_DECISIONS.md:41` records the **2026-07-03**
+    choice of "a two-level recovery lattice **with no reconciliation
+    pass**" — decided the same day the paper period began.
+  - **Four more are strictly easier to pass when dead.** "0 critical
+    crashes" is not merely less likely but impossible: the early return at
+    `src/runtime/engine.py:202` means every downstream path is never
+    reached, and the scheduled task reports `LastTaskResult=0` daily.
+    "every fill has fee/slippage" is **9/9** and "every reject has a
+    reason code" is **1/1**, both frozen — measured rates over the 28
+    decision days are **0.3214 fills/day** and **0.0357 rejections/day**,
+    so a deciding runtime would have produced ~**29.9** fills and ~**3.3**
+    rejections across the 93-day window against the **9** and **1** that
+    will actually be graded: ~**20.89** fills and ~**2.32** rejections of
+    failure opportunity forgone. And the cost-recalibration trigger needs
+    a per-side spread above **12.5 bps**; the frozen sample is BTC median
+    **0.0000** / ETH median **0.0500** (max 0.0600), round-trip **20.00**
+    and **20.10 bps** — ETH would need **250x** its median (**208x** its
+    max) and BTC's observed spread is identically zero. Zero `exec_quote`
+    events in 51 days, so the sample cannot grow. **The trigger is frozen
+    below itself permanently.**
+  - **One clause is activity-independent** (">= 3 calendar months" — today
+    is day **80** of 93).
+  - **One clause — the tenth — is the only one a dead runtime fails, and
+    it carries no verdict.** "Measure actual costs: current exchange fee
+    schedule, observed spread, and notification->execution delay" is the
+    only clause whose subject is the *presence* of evidence rather than
+    the *absence* of faults, and gate 6 attaches **no pass/fail bar to
+    it**. So of ten clauses, **nine carry a verdict and not one can be
+    failed by a runtime emitting nothing**, and the single clause a dead
+    runtime demonstrably cannot satisfy is the one with no verdict.
+  - **The window it will actually be applied to**: 2026-07-03 to
+    2026-10-03, 93 calendar days, **28 deciding days** (**30.11%**) and
+    **65 dead** (**69.89%**).
+  - **Stated fairly:** three of the four unfailable clauses are unfailable
+    because they are **good engineering** — product law and idempotency
+    are enforced in types, config validators and the append path rather
+    than by operator discipline. The defect is not that the invariants
+    hold. It is that **gate 6 credits them as three months of accumulated
+    paper-trading evidence** when they are load-time and write-time
+    properties that would read "pass" with the process never started.
+  - **The only instrument in this program that would catch a dead paper
+    period is not a contract.** `GATE6_BASELINE_2026-07-25.md` §3.1
+    checkbox 2 requires ">= 60 quote days"; observed is **28**
+    (**46.67%**), frozen for **52** days, and the 60th would have arrived
+    **2026-08-31** had the runtime lived. §2's own re-check trigger
+    ("re-check at N >= 60 quotes", written 2026-07-25 at N=44) stands at
+    **N=56** and can never reach 60 — iteration 57 stated this correctly
+    and that wording is confirmed here, not corrected. **That checkbox
+    lives in a research document: unfrozen, not append-only, editable by
+    any iteration.** The protected gate cannot fail; the thing that can
+    fail has no protection.
+  - **Route closed:** no document, report or proposal may treat a gate-6
+    pass — in October 2026 or later — as evidence that the paper period
+    validated the runtime, unless the window is reported alongside it with
+    its deciding-day count. **Nothing was repaired and nothing frozen was
+    edited.** Three options are recorded in §7 for the operator: **(A)**
+    tick nothing on 2026-10-01/10-03 and record that the window held 28
+    deciding days of 93 — costs nothing, and is the option the loop would
+    take if permitted to decide; **(B)** repair the one constant
+    (`_LIVE_FETCH_LIMIT = 400`, `scripts/run_paper_runtime.py:59`,
+    iteration 57), restart the gate-6 clock, and accept that the honest
+    earliest gate-6 verdict for the current strategy moves to **2027-01**;
+    **(C)** amend gate 6 to require decisions rather than days (a quorum
+    clause plus a bar for the cost-measurement clause) — **which is a rule
+    change and must be declared before the window it governs**, the same
+    duty iteration 27 recorded for `effective_N` and iteration 64 for the
+    anti-dilution rule, with a deadline of **2026-10-03**. **This is the
+    seventh operator choice now due and the second with an October date.**
+  - **What it does NOT establish:** that the runtime is unsound (iteration
+    57 named the specific off-by-one, and the C2/C3/C8 invariants are
+    genuinely enforced); that anyone has passed gate 6 dishonestly (no box
+    has been ticked); that a *repaired* gate 6 would fail this strategy
+    (unknown until the runtime decides again); or **anything whatsoever
+    about whether the edge works** — gate 6 is a process gate, and like
+    the three October tests (iteration 62) and the October holdout
+    (iteration 63) it cannot speak to return.
+
+- **Minor correction recorded under iron rule 5 — operator-attention item
+  (c)'s slot count has been wrong for two iterations.** Decoding every
+  `docs/research/loop_runs/run_*.log` for its `exit=` line: the
+  account-limit outage is **2026-09-07 through 2026-09-14, exactly eight
+  consecutive slots with no exit line** — which confirms iteration 60's
+  headline precisely. Recovery slots with `exit=0` are **2026-09-15, -16,
+  -17, -18 and -19: five**, with today's (`run_20260920_213701.log`, 43
+  bytes, `started=` only) in flight as the sixth. Iteration 62 said
+  "three consecutive slots have completed" and was **correct**; iteration
+  63 said "**ten**" and iteration 64 said "**eleven**", and both are
+  **overstated by six**. Nothing scientific rests on this number — it is a
+  bookkeeping line in the attention list, not an input to any gate — but
+  the count is corrected here rather than carried, and the correct figure
+  below is **six**, today's included. Prior log entries are not edited
+  (append-only science); this entry is the correction of record.
+
+- **Step 2 (web research) done and recorded.** Four sources filed in
+  `RESEARCH_LOG.md` under iteration 65, **all four new to that file**
+  (checked by grep before drafting — `19671502`, `2609.14859`, `abyrint`,
+  `zorost`, `Pranav`, `Nicholas Hall` all returned 0 hits). **Zero
+  strategy arrivals, ninth consecutive pass.** The strongest corroboration
+  is **arXiv 2609.14859** (Nicholas Hall, submitted **2026-09-14**), whose
+  entire method is the one applied to gate 6 today — measure a gate
+  against a subject with no edge. Its abstract reports that the evaluation
+  stage "is defeatable at zero skill: position sizing alone yields a pass
+  probability near **0.40**, against a measured cohort rate of **0.168**",
+  and that every result is "reported against a zero-edge control". The
+  correspondence is the **method**, not the subject, and no number of his
+  is imported; the conclusion here is stronger, since gate 6's null
+  subject passes with probability **1**. Second, **abyrint.com** (Ivar
+  Strand, 2025-06-21) states the generic form of iterations 57-58's
+  finding verbatim — "**the absence of an alarm is misinterpreted as
+  evidence of correct function**" — and names as its remedy "end-to-end
+  data reconciliation", which is exactly the clause gate 6 contains and
+  this repository has no implementation of. Third, **zorost.com**
+  (2026-05-06) is recorded as a **negative external result**: the one
+  practitioner framework that names "decision parity" as the paper-stage
+  measurement that matters still specifies its gate in **calendar time**
+  and states no decision threshold — so the defect measured today is not
+  local sloppiness. **One near-miss was fetched and rejected on its own
+  reported statistics:** Zenodo **19671502** (Kumar & Jenefer,
+  2026-04-21), long-only volatility-scaled TSMOM on daily data 2018-01 to
+  2026-03 over BTC/ETH/IBIT/FBTC/GLD/SPY, headline Sharpe **0.82 -> 1.22**
+  pre/post spot-ETF — disqualified because rebalancing is **monthly**,
+  costs are **not disclosed**, and its own two-sample test of its own
+  headline returns **p = 0.5835**, with no trial count, DSR or PBO
+  anywhere.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 157.96s. **Ninth consecutive iteration to
+  record the same caveat**, today with the sharpest instance yet: the
+  suite is green while the runtime it certifies has emitted no decision in
+  51 days, because **no test in `tests/` asserts that the paper runtime
+  produced a cycle, a fill, or a quote on any day** — the same reason no
+  test catches the costless shadow recorder, the unarchived input, the
+  unresolvable holdout nomination or the diluteable DSR variance. The
+  green tree has now failed to catch **seven** separate defects in seven
+  iterations, and today's is the one it is most naturally expected to
+  catch.
+
+- **Operator-attention items.** Thirteen — the twelve of iteration 64 with
+  one added, and (c) and (f) re-dated. (a) Ensemble-breadth leave-one-out
+  still unmeasured and still P3-forbidden. (b) The research loop still
+  runs in a visible console window. (c) **CORRECTED, see above** — the
+  account-limit outage remains closed; the correct count of consecutive
+  completed slots is **six** including today's, not eleven. (d) Should
+  cross-track structural comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? The loop **abstained** again,
+  eighteenth consecutive iteration. (e) Section 1 of
+  `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative upper
+  bound", which is false at N=133. (f) The live paper runtime has been a
+  no-op for **51 days** (last `cycle` 2026-07-31T00:05:02Z; **51** health
+  rows, latest for close 2026-09-19); the dashboard hits a full 90-day
+  observation-period bar on **2026-10-01**, now **11 days away**. (g) The
+  forward tracks charge no trading cost. (h) The forward tracks archive no
+  input. (i) The read rule states no replay depth; required >= 206 bars.
+  (j) Test 2 cannot fire at 90 days on anything short of mechanism
+  failure. (k) Holdout nomination N1 has not named the live contract since
+  2026-07-31. (l) Gate 4's variance input is analyst-controllable, and the
+  candidate rule hands gate 3 a family's last-registered arm rather than
+  its best. **(m) NEW — gate 6 cannot fail: nine of its ten verdict-
+  carrying clauses are passed with probability 1 by a runtime that emits
+  nothing, four of them by any runtime at all, and the tenth clause has no
+  bar.** Items (g) through (k) are due **before 2026-10-22**; (m) is due
+  **before 2026-10-03**, the earliest date its checkbox is eligible; (l)
+  has no deadline.
+
+- **What this iteration does NOT do:** no family was run and no arm
+  registered; the holdout was **not read, not fetched and not unsealed**
+  and `spent` is still `false`. No gate rule modified — in particular
+  gate 6's text is **quoted and not touched** — no frozen pre-registration
+  or contract clause edited (the contract's *standing answer* is appended
+  to, as the contract itself directs), no nomination substituted, no
+  registry row or return series touched, no shadow file written to or read
+  for a metric, no prior result document rewritten, no prior log entry
+  edited (the item-(c) correction is recorded here, not applied
+  retroactively), no trial registered, no backtest run, no gate report
+  regenerated, no arm run, **no new script** (the one-script budget is
+  unspent for the fifth iteration running; the measurement is embedded
+  reproducibly in the result document), **no file under `configs/runtime/`,
+  `src/`, `scripts/` or any scheduled-task definition touched** — eight
+  source files were read and quoted, never written — no ingest run, no
+  forward metric computed and no forward number cited as support, no read
+  date moved, no checkbox ticked, and the 2026-08-09 hole left as a hole.
+
+- **Standing answer restated, extended by one clause.** Timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine and the forward recorder are both
+  free of look-ahead; the Taiwan and gold negatives are robust to dividend
+  treatment; against the naive 13-coin alternative the margin is only 5.4%
+  and that benchmark is survivorship-flattered; breadth still fails and is
+  priced from five directions; nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29; the forward stream is costless and unarchived and all three
+  of its October tests are mechanism checks; the October holdout cannot
+  decide either; the P3 override is the only unblocking lever still open
+  and what binds it is an unreachable gate-3 bar near Sharpe 1.63 rather
+  than the N-cost the contract refuses it for; **and with today's
+  measurement all six gates are characterised — gate 2 cannot bind, gate 6
+  cannot fail, gate 5 is a near-coin-flip, gates 3 and 4 are the only two
+  that have ever decided anything and both carry recorded defects, and
+  gate 1 is process discipline.** So the sentence "nothing here passes the
+  six gates" is now true in a second and harder sense: it was never
+  possible for six gates to grade anything, because two of them return
+  their verdict by construction and a third is barely better than a coin.
+  **No document may say this program "survived six gates"** — iteration
+  27's rule, now resting on six measurements rather than four. On-chain
+  route open but unadvanced. Operator-attention items dated 2026-09-20 are
+  the thirteen above.

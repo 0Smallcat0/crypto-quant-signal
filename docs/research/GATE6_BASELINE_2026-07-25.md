@@ -603,3 +603,46 @@ three sections and no §3.1; the prerequisites are §3.1 of **this**
 document. The 2026-09-04 addendum's own body cites it correctly; only the
 log summary slipped. Per append-only science no prior entry was edited —
 the correction lives here and in today's entry.
+
+## Addendum 2026-09-20 (iteration 65) — section 3.1's quote-day checkbox is the only thing in this program that can fail a dead paper period, and gate 6 itself cannot
+
+Cross-reference only; nothing above is edited. Full measurement in
+`docs/research/GATE6_POWER_2026-09-20.md`.
+
+Gate 6 was measured for **power** — the question iteration 63 asked of
+gate 5 — and it has none. Of its ten clauses
+(`VALIDATION_GATE_CONTRACT.md:92-101`), **four cannot fail under any
+circumstances** (no real-order code path exists; private-API flags raise
+at config load; duplicate keys are refused by the store; and "ledger
+reconciliation" has no implementation, its absence being the recorded
+2026-07-03 decision at `docs/ENGINEERING_DECISIONS.md:41`), **four are
+strictly easier to pass when the runtime emits nothing**, **one is
+activity-independent**, and **the one clause a dead runtime cannot satisfy
+— "measure actual costs" — carries no pass/fail bar**. Gate 6's pass
+probability for a runtime that never decides is therefore **1.0 by
+construction**.
+
+Two consequences for this document specifically:
+
+1. **Section 3.1 checkbox 2 is the binding instrument, not gate 6.**
+   ">= 60 quote days" stands at **28** (**46.67 %**), frozen since
+   2026-07-30 (**52** days). Had the runtime lived, the 60th quote day
+   would have arrived **2026-08-31**. This checkbox is the only bar in the
+   repository that distinguishes the dead window from a live one — and it
+   lives in a research document, unfrozen and editable, while the gate
+   that has contractual protection cannot fail.
+2. **Section 2's re-check trigger is confirmed, not corrected.** "Re-check
+   at N >= 60 quotes" (written 2026-07-25 at N=44) stands at **N=56** and
+   can never reach 60. The iteration-57 addendum's wording — "the reason
+   the threshold had not been crossed turned out to be the finding" — is
+   verified here against the event store and stands unchanged.
+
+Recomputed section-1 baseline at the full frozen sample (2026-07-03 to
+2026-07-30, 28 quote days per symbol): BTCUSDT median spread **0.0000**
+bps, max **0.0000**, round-trip **20.00** bps; ETHUSDT median **0.0500**,
+max **0.0600**, round-trip **20.10** bps. The 45 bps recalibration trigger
+needs a per-side spread above **12.5** bps — **250x** the ETH median and
+**208x** its observed maximum, on a sample that cannot grow.
+
+Nothing was repaired, no checkbox was ticked, and no frozen text was
+edited.
