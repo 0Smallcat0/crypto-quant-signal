@@ -7733,3 +7733,265 @@
   27's rule, now resting on six measurements rather than four. On-chain
   route open but unadvanced. Operator-attention items dated 2026-09-20 are
   the thirteen above.
+
+## 2026-09-21 — iteration 66 (P1: the three levers and all six gates were measured, but the *queue* never was — measured, P2 cannot reach the stop condition, and the object it builds is the best thing this program has ever produced)
+
+- **Step 0 — convergence check, run first.**
+  1. **Current answer.** Unchanged in its headline: the timing rule adds
+     real value in **crypto only** — in its own BTC/ETH universe it bought
+     **both** return and drawdown (14.26x vs 6.05x, 33.05% vs 80.99%),
+     corroborated by the 4.70x exposure-matched twin edge — and none in
+     Taiwan (0.73x) or gold (1.00x); against the naive 13-coin alternative
+     the margin is only **5.4%** and that benchmark is
+     survivorship-flattered. **Nothing here passes the six gates.**
+     Extended today by one clause that is genuinely new in direction: the
+     best *risk-adjusted* object this program has built is not a trial at
+     all, it clears gate 4, and the gate that refuses it is refusing it
+     for other columns' failures.
+  2. **What this iteration moves.** Iterations 25/59-62 characterised
+     lever 1, 63 lever 2, 64 lever 3, and 65 finished the gates. **The
+     queue itself was never measured.** Its P2 item ("a fourth sleeve is
+     permitted") is the only entry that is an *action* rather than
+     maintenance or a refusal, and no iteration had ever asked whether it
+     can reach the mission's only success exit. Today closes that: it
+     cannot, structurally, and the reason is not that sleeves are bad.
+  3. **Why it is not sprawl.** It closes the last open *action* in the
+     queue and changes the standing answer. Without it the next iteration
+     that follows the queue honestly would spend itself building a fourth
+     sleeve whose gate verdict was already determined before it started.
+     **No new script** (budget unspent for the sixth iteration running);
+     the measurement reuses `analyze_sleeve_combination.py` and
+     `run_gate_report.py`'s own functions and is embedded reproducibly in
+     the result document.
+
+- **P1 first, as the queue requires: all four forward tracks are current.**
+  Crypto daily — `shadow_trial88.jsonl` and `shadow_trial118.jsonl`, **58**
+  rows each, last date **2026-09-20**, both written today at 08:21 by the
+  08:20 task (`shadow_20260921_082002.log`, the 97th run log). Weekly —
+  `D:/TW-Stock-Trading/data/runtime/shadow_tw0050.jsonl` **10** rows and
+  `shadow_gld.jsonl` **11** rows, both last date **2026-09-18**, written
+  **2026-09-19 09:49**, which is the most recent Saturday 09:40 slot; the
+  next is 2026-09-26. **Nothing to fix.** The live paper runtime remains a
+  no-op: the latest `events.jsonl` row is
+  `health:WARMUP_INSUFFICIENT_HISTORY` for close **2026-09-20**, now **52**
+  days since the last `cycle` (2026-07-31T00:05:02Z).
+
+- **The measurement: can P2 reach the stop condition?** Two halves, both
+  answered. Full document: `docs/research/P2_SLEEVE_ROUTE_POWER_2026-09-21.md`.
+
+- **Half (a) — STRUCTURAL CLOSURE: the object is unregistrable.** Four
+  facts, each read from source today. `append_trial`
+  (`src/backtest/registry.py:89`) has exactly **one** non-test caller in
+  the repository — `src/backtest/runner.py:129`, inside
+  `run_registered_backtest` (`:45`), which takes `candles_by_symbol`, runs
+  **one** engine over **one** universe, and writes the return series from
+  its own `report.equity_curve` (`_write_trial_returns`, `:264`, called at
+  `:188`); **no path accepts an externally computed equity curve.**
+  `analyze_sleeve_combination.py` states it in its own docstring: "Runs no
+  backtest and **registers no trial**." All **133** registry rows are
+  crypto (**72** 13-coin, **61** BTC/ETH; 132 `daily_trend_ensemble` + 1
+  `confirmed_trend_ensemble`), while the Taiwan and gold sleeves are trials
+  **23** (0050, SR 0.426168, mdd 0.3085) and **24** (GLD, 0.498551,
+  0.2501) of a **separate 24-row registry** in another repository. And the
+  book's window is **2018-03-06..2025-07-01, 2675** consecutive days
+  against the registry's **2018-03-05..2025-07-01, 2676** — **one day
+  short**, so a naive registration does not fail the gate, it **aborts
+  every future gate report** (`scripts/run_gate_report.py:87` raises
+  `SystemExit` rather than truncate, by explicit design).
+
+- **Half (b) — measured anyway, because that gap is a 20-line fix.**
+  Method validated before use: the vectorised PBO reimplementation
+  reproduces the recorded 2026-07-25 gate report **exactly** — candidates
+  **0.651826** and all-columns **0.732556**, both to six decimals, at
+  12 870 combinations and 2672 usable rows, on the identical **37**-column
+  candidate set. DSR comes from `src.backtest.deflated_sharpe_ratio`
+  unmodified. Alignment: registry columns truncated by their first row so
+  all 2675 dates match the book's exactly.
+
+- **The book: SR 1.410785 at 14.8988% drawdown, 3.9396x.** Reproduced from
+  `python -m scripts.analyze_sleeve_combination` (1.4108 / 0.1490 / 3.94,
+  matching `SLEEVE3_GOLD_RESULT.md`) then recomputed at full precision.
+  **Second-highest Sharpe ever produced here**, short of trial 29's
+  **1.410899** by **0.000114** — at **one fifth** of its 75.08% drawdown.
+  The near-tie is coincidence and is labelled as such; the drawdown column
+  is not.
+
+- **GATE 4 PASSES — DSR 0.981583**, E[max] 0.033463, on the variance
+  recomputed across all 134 (**1.616543e-04** vs the recorded
+  **1.584220e-04**). Holding that variance fixed it **survives to N=1195**
+  and fails at 1196, against trial 118's **134**, trial 37's **149**,
+  trial 29's **2130**. **This is the first object that breaks iteration
+  55's trade-off** — nine times the registry's N of robustness at the
+  **lowest** drawdown of anything on the list. The N objection was
+  computed, not waved: **N=157** (every registered row behind all three
+  sleeves, 133+24) gives **0.979936**, still PASS; it fails only under the
+  multiplicative view **N=3192** (**0.929199**), and **which accounting is
+  correct is an `effective_N` method choice the loop does not get to
+  make** — iteration 27 already fixed that the operator declares it before
+  computing. Recorded as open, not resolved in the flattering direction.
+
+- **GATE 3 FAILS — 0.294794, 5.90x the bar — and the failure is not the
+  book's.** The same 37 candidates alone score **0.629526** on that
+  window, so the book **more than halves** the recorded number and still
+  fails. Decomposed over all 12 870 splits: the book is in-sample winner
+  in **8 019 (62.31%)** and lands OOS-below-median in **264** of them
+  (**3.2922%**); the **4 851 (37.69%)** splits won by a legacy column fail
+  at **3 530 (72.7685%)**. The book's own unconditional rate — iteration
+  64's maximally-dominant-column quantity — is **0.020513, below the
+  bar.** **Third recorded gate-3 defect, and the mirror of iteration
+  64's:** PBO is a property of the **pool**, so a candidate whose own
+  overfit rate is 0.020513 is recorded as 0.294794 for failures belonging
+  to 37 columns it has nothing to do with, and no candidate can retire
+  more than its in-sample-win share of the pool's 72.77%. **Not repaired**
+  — changing gate 3 after seeing a result it produced is the
+  change-the-rules-after-seeing-results move the contract refuses by
+  design, and it is refused here in the one case where the change would
+  have been favourable.
+
+- **The crossing corroborates ~1.63 rather than escaping it.** By
+  iteration 64's own constant-alpha bisection applied to this sixth base
+  shape: alpha **0.00010693/day**, annualized Sharpe **1.6905**, PBO
+  **0.049728**, at which point the book wins **94.61%** of splits. That
+  sits **inside** iteration 64's five-shape range
+  (1.5814/1.6253/1.6294/1.6993/1.7857, median 1.6294). The book is short
+  by **0.2797** of annualized Sharpe, and 0 of 133 trials reach even
+  1.5814.
+
+- **Every counterweight, computed rather than acknowledged.** Zero forward
+  rows exist for the book — none of the four recording tracks is the
+  combined book — and its MinTRL against SR* = 0 at 95% one-sided (daily
+  SR 0.073844, skew 0.1898, kurtosis 11.6409) is **497.4 days**, so even a
+  track opened today could not speak to return before **2028-01**. It is
+  100% in-sample on the same 2018-2025 window, and its crypto sleeve *is*
+  trial 88, carrying that selection premium whole. It still makes **less
+  money** than holding the same three assets equally (**3.94x vs 5.42x**).
+  And **its gold sleeve is inadmissible under P2's own rule**: on the
+  common window gold returns **1.51x** against buy-and-hold's **2.46x** at
+  Sharpe **0.6432** against **0.9012** — it loses **both**
+  (`VS_BUY_AND_HOLD_2026-07-26.md:27-34`), so the best object this program
+  has built contains a component its current admission rule forbids, and
+  the rule postdates the build. The P2-admissible **two**-sleeve book was
+  therefore measured too and gives the same verdict — SR **1.343746**, mdd
+  **19.73%**, **DSR 0.972597** surviving to **N=497**, **PBO 0.379565**,
+  IS-win share 50.92% — so the finding is **not** confined to the
+  inadmissible object.
+
+- **Step 2 (web research) done and recorded.** Four sources filed in
+  `RESEARCH_LOG.md` under iteration 66, **all four new to that file**
+  (checked by grep before drafting — `quantfirm`, `yuyank`, `gmo-coin`,
+  `2201.06635`, `iqueipopg`, `sacha9214`, `backtest-autopsy` all returned
+  0 hits; `2510.23150` and `Man Group` returned **15** and **5** and were
+  therefore deliberately **not** re-recorded). **Zero strategy arrivals,
+  tenth consecutive pass.** The strongest corroboration is
+  **vinilpolepalli/quantfirm PR #75**, an independent campaign that
+  reached today's junction from the opposite side: their round-2 sleeve
+  scores standalone Sharpe **1.028**, correlation **-0.156** to the core
+  book, blend Sharpe **1.694** and P(blend beats core) **0.947**, and
+  "still FAILS the gauntlet ... The deflated Sharpe is **0.695** against a
+  bar of **0.95**" — the combination is what improves and the trial-level
+  statistic is what refuses. It is also a dated external example of
+  publishing a registered negative, which this loop has claimed is rare
+  and now has a citation for. Second, **yuyank-code/bitcoin-ml-trading
+  issue #54** is a **negative** external result: the most complete
+  external DSR/PBO/SPA/MinTRL gate specification found states **no numeric
+  thresholds** and contains **no language about applying these gates to
+  combinations** — the exact gap measured here, for the third consecutive
+  iteration in which the best prior art states the question and leaves the
+  number blank. **One near-miss was fetched and rejected as
+  already-registered:** `Wataru1987/gmo-coin-trend-lab`, genuinely
+  product-law-compliant (daily, spot, long-only, **5 bp/side** disclosed),
+  reporting CAGR 16.9% / Sharpe 1.10 / mdd -17.7% / 149 trades and a
+  walk-forward OOS Sharpe of **0.85** over **108 parameter sets** — but
+  its mechanism (Donchian breakout + 2xATR trailing exit) is trial
+  **118**'s, its honest 0.85 is below this registry's best (1.410899) and
+  far below today's 1.6905 crossing, and no trial count, DSR or PBO is
+  disclosed. Fourth, **arXiv 2201.06635** (Valeyre 2022-01-17) was fetched
+  for an external sleeve-scaling anchor; the abstract carries none and the
+  PDF returned binary, so **no number was imported** and today's crossing
+  is stated as locally measured with no outside corroboration.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All
+  checks passed!**; `ruff format --check` **128 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 165.88s. **Tenth consecutive iteration to
+  record the same caveat**, and today it has a new instance: no test in
+  `tests/` asserts that anything this program builds can actually be
+  *graded*, so nothing caught that the highest-Sharpe risk-compliant
+  object in the repository has no path into the registry. The green tree
+  has now failed to catch **eight** separate defects in eight iterations.
+
+- **Operator-attention items.** Fourteen — the thirteen of iteration 65
+  with one added, and (f) re-dated. (a) Ensemble-breadth leave-one-out
+  still unmeasured and still P3-forbidden. (b) The research loop still
+  runs in a visible console window. (c) The account-limit outage remains
+  closed; consecutive completed slots now **seven** including today's.
+  (d) Should cross-track structural comparisons of the shadow files be
+  brought under `FORWARD_TRACK_READ_PREREGISTRATION.md`? The loop
+  **abstained** again, nineteenth consecutive iteration. (e) Section 1 of
+  `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative upper
+  bound", which is false at N=133. (f) The live paper runtime has been a
+  no-op for **52 days** (last `cycle` 2026-07-31T00:05:02Z; latest health
+  row for close 2026-09-20); the dashboard hits a full 90-day
+  observation-period bar on **2026-10-01**, now **10 days away**. (g) The
+  forward tracks charge no trading cost. (h) The forward tracks archive no
+  input. (i) The read rule states no replay depth; required >= 206 bars.
+  (j) Test 2 cannot fire at 90 days on anything short of mechanism
+  failure. (k) Holdout nomination N1 has not named the live contract since
+  2026-07-31. (l) Gate 4's variance input is analyst-controllable, and the
+  candidate rule hands gate 3 a family's last-registered arm rather than
+  its best. (m) Gate 6 cannot fail. **(n) NEW — the program's best
+  risk-adjusted object cannot be graded at all, and gate 3 scores a
+  candidate for the pool's failures: the sleeve book clears gate 4 at
+  DSR 0.981583 / N=1195 with 14.90% drawdown, has no registration path,
+  and records PBO 0.294794 while its own rate is 0.020513.** Items (g)
+  through (k) are due **before 2026-10-22**; (m) **before 2026-10-03**;
+  (l) and (n) have no deadline.
+
+- **What this iteration does NOT do:** no family was run and no arm
+  registered; the holdout was **not read, not fetched and not unsealed**
+  and `spent` is still `false`. No registration path was written and **no
+  sleeve was registered** — the structural gap found today was measured
+  and left exactly as it is. No gate rule modified — in particular gate 3
+  was **not** repaired, re-read, or re-scored on its candidate-only rate,
+  in the one case where doing so would have favoured the program. No
+  frozen pre-registration or contract clause edited (the contract's
+  *standing answer* is appended to and the live P2 queue item carries a
+  dated QUALIFIED note, as the contract itself directs); no nomination
+  substituted, no registry row or return series touched, no shadow file
+  written to or read for a metric, no prior result document rewritten, no
+  prior log entry edited, no trial registered, no backtest run, no gate
+  report regenerated, **no new script** (budget unspent for the sixth
+  iteration running), **no file under `configs/runtime/`, `src/`,
+  `scripts/` or any scheduled-task definition touched** — seven source
+  files were read and quoted, never written — no ingest run, no forward
+  metric computed and no forward number cited as support, no read date
+  moved, no checkbox ticked, and the 2026-08-09 hole left as a hole.
+
+- **Standing answer restated, extended by one clause.** Timing works in
+  crypto only and in its own universe bought both return and drawdown
+  (14.26x vs 6.05x, 33.05% vs 80.99%); the 4.70x exposure-matched twin
+  edge is audited and robust; the engine and the forward recorder are both
+  free of look-ahead; the Taiwan and gold negatives are robust to dividend
+  treatment; against the naive 13-coin alternative the margin is only 5.4%
+  and that benchmark is survivorship-flattered; breadth still fails and is
+  priced from five directions; nothing is forward-validated and no
+  return-based forward verdict is statistically permitted before
+  2028-06-29; the forward stream is costless and unarchived and all three
+  of its October tests are mechanism checks; the October holdout cannot
+  decide either; the P3 override is the only unblocking lever still open
+  and what binds it is an unreachable gate-3 bar near Sharpe 1.63; all six
+  gates are characterised — gate 2 cannot bind, gate 6 cannot fail, gate 5
+  is a near-coin-flip, gates 3 and 4 are the only two that ever decided
+  anything and both carry recorded defects, gate 1 is process discipline;
+  **and with today's measurement the queue is characterised too: P2 is a
+  product route and not a route to the stop condition, because the best
+  risk-adjusted object this program has ever built — SR 1.410785 at 14.90%
+  drawdown, DSR 0.981583 surviving to N=1195 — has no path into the
+  registry, and the gate that refuses it scores it 0.294794 for failures
+  belonging to 37 other columns while its own rate is 0.020513.** So the
+  honest summary of sixty-six iterations is now: the search has one open
+  lever (P3, needing ~1.63), one unbuildable-into-evidence product route
+  (P2), and a measurement apparatus in which **the two gates that decide
+  are the two that mis-attribute.** On-chain route open but unadvanced.
+  Operator-attention items dated 2026-09-21 are the fourteen above.

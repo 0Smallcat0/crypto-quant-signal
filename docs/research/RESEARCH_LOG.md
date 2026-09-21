@@ -3188,3 +3188,103 @@ cross-sectional momentum untested here → experiment 3.
   its own headline. The literature has now handed this program vocabulary
   for six consecutive measurement defects and has not once handed it an
   edge.
+
+## 2026-09-21 — iteration 66 (four sources, all four new; zero strategy arrivals for the tenth pass — and for the seventh running the useful content is methodological, this time an external campaign that records the exact asymmetry today's measurement found: a combination that improves the book and a trial-level gate that will not credit it)
+
+- **vinilpolepalli/quantfirm PR #75, "perps: research campaign — 22 trials
+  scored, none passes the gauntlet" — NEW, FETCHED, and the closest
+  external analogue this loop has yet found to its own finding.** An
+  independent campaign running the same two statistics against the same
+  bars (DSR bar **0.95**, PBO bar **0.10**, so a *looser* PBO bar than the
+  0.05 used here). Round 1: "No family passes. The best campaign trial,
+  `basis_crowding`, scores OOS Sharpe **1.100** against `vol_target_hold`'s
+  **1.131** and is **0.996**-correlated with it", PBO **0.586**. Round 2 is
+  the one that matters here: they build a **sleeve** with standalone Sharpe
+  **1.028**, correlation to the core book **−0.156**, blend Sharpe at 30%
+  allocation **1.694**, and P(blend beats core) **0.947** — and it "still
+  FAILS the gauntlet, and the report says so in its first line. The
+  deflated Sharpe is **0.695** against a bar of **0.95**." So an
+  independent group reached the same junction from the opposite side:
+  **the combination is what improves, and the trial-level statistic is
+  what refuses.** Their sleeve fails on DSR where this repository's passes
+  (0.9816); the shared structure is that neither gate is scoring the
+  object that was actually built. Recorded also as an external instance of
+  publishing a registered negative, which this loop has claimed is rare
+  and now has a dated example of. **Testable here: no** — it is a perps
+  universe, outside product law (spot, long-only). 
+- **yuyank-code/bitcoin-ml-trading issue #54, "H106: post-selection
+  robustness gate combining PBO, DSR, SPA and track-record length" — NEW,
+  FETCHED, recorded as a NEGATIVE external result.** Fetched to answer one
+  question: *does any external gate design say what to do when the object
+  being graded is a combination rather than a single candidate?* This is
+  the most complete external gate specification the search returned — four
+  statistics, and an explicit protocol clause that is better than this
+  repository's ("Do not use the composite robustness score to tune the
+  model; it is a post-selection admissibility/reporting gate"). **And it
+  specifies no numeric threshold for any of the four, and addresses only
+  individual strategy candidates — it contains no language about applying
+  these gates to portfolio combinations or multi-strategy ensembles.** So
+  the gap measured here today — a gate battery with no path for a combined
+  book — is again not local sloppiness. This is the third consecutive
+  iteration in which the best external prior art states the right question
+  and leaves the number blank. **Testable here: no.**
+- **Wataru1987/gmo-coin-trend-lab — NEW, FETCHED, and a genuine near-miss
+  on product law, rejected on its own reported statistics.** The closest
+  thing to a product-law-compliant external result in ten passes: daily
+  bars, **spot only, no leverage or shorting**, BTC/ETH/XRP against JPY,
+  **5 bp per side** disclosed (against 15 bps here), entry "close above the
+  prior 20-day high and above the 50-day average", exit "close below the
+  prior 10-day low, or below a 2×ATR trailing stop", sizing "risk 1% of
+  equity per trade, max 40% per symbol". Reported 2018-09 → 2026-09: CAGR
+  **16.9%**, Sharpe **1.10**, max drawdown **−17.7%**, **149** trades, and
+  a walk-forward (2-year IS / 1-year OOS, **108 parameter sets**) with OOS
+  Sharpe **0.85**. Three reasons it is not an arrival, in order of force.
+  (i) **The mechanism is already registered here**: Donchian breakout entry
+  with an ATR trailing exit is trial **118**'s configuration
+  (`exit=atr_channel`, `atr_multiple 2`, windows 10/20/55/110), and a
+  50-day trend filter is what the 55-window member of the ensemble already
+  supplies. (ii) Its honest number — OOS **0.85** — is **below** what this
+  registry already holds (best **1.410899**) and far below the gate-3
+  crossing measured today (**1.6905** for the sleeve-book shape). (iii)
+  **108 parameter sets and no trial count, DSR or PBO disclosed** in the
+  free tier, so the 1.10 is an unknown draw from at least 108. Credit
+  where due: the cost assumption is disclosed and conservative against the
+  venue's actual maker fee, which is more than most. **Testable here: no —
+  already registered.**
+- **arXiv 2201.06635, Sebastien Valeyre, "Optimal trend following
+  portfolios" (submitted 2022-01-17) — NEW, abstract fetched verbatim,
+  recorded as a partial and honestly incomplete read.** Fetched to find an
+  external formula for how a trend book's Sharpe scales with the number of
+  uncorrelated sleeves, which would have given today's "how much better
+  would it have to be" an outside anchor. The abstract decomposes the
+  optimal trend portfolio "into four basic components that yield four basic
+  portfolios: Markowitz, risk parity, agnostic risk parity, and trend
+  following on risk parity" and confirms overperformance "applied to
+  cross-asset trading universe" by empirical backtest. **The PDF fetch
+  returned binary and the abstract page carries no scaling result, so no
+  number was imported and none is cited today.** Recorded so the next
+  iteration does not re-spend the fetch: the anchor this loop wanted is
+  not in the abstract, and today's crossing figure (**1.6905**) is
+  therefore measured on this repository's own data by this repository's
+  own bisection method, with no external corroboration. **Testable here:
+  no.**
+- **Arrivals: zero.** Four sources handled, **all four new to this file**
+  (checked by grep before drafting — `quantfirm`, `yuyank`, `gmo-coin`,
+  `2201.06635`, `iqueipopg`, `sacha9214`, `backtest-autopsy` all returned
+  0 hits; `2510.23150` and `Man Group` returned 15 and 5 hits and were
+  therefore **not** re-recorded). Seventh consecutive iteration to run that
+  check. **Streak, counted against this file rather than asserted: zero
+  strategy arrivals in iterations 57 through 66 — ten consecutive passes.**
+  The pattern holds for a seventh reading, and today's instance is the
+  sharpest: iteration 60 found the external statement of the missing cost
+  control, 61 the missing input archive, 62 the mechanism making a
+  full-sample maximum useless as a 90-day bar, 63 the confirmation that one
+  year of holdout cannot grade a strategy, 64 the rule that DSR's variance
+  must come from all K trials, 65 an independent paper measuring a gate's
+  pass rate against a zero-edge control, and today **an independent
+  campaign that built a negatively-correlated sleeve, measured
+  P(blend beats core) = 0.947, and was refused by a trial-level deflated
+  Sharpe** — the same asymmetry measured here, arrived at from the other
+  direction. One near-miss was fetched and rejected as already-registered.
+  The literature has now handed this program vocabulary for seven
+  consecutive measurement defects and has not once handed it an edge.

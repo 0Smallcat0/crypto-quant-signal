@@ -457,6 +457,71 @@ Hard limits, binding:
 > change and must be declared before the window it governs). Full
 > measurement and the three options:
 > `docs/research/GATE6_POWER_2026-09-20.md`.
+>
+> Refinement 2026-09-21 (iteration 66) — **the queue's own P2 route cannot
+> reach the stop condition, and the object it produces is the best thing
+> this program has ever built.** Iterations 25/59-62 measured lever 1,
+> 63 lever 2, 64 lever 3 and 65 finished the gates; **the queue itself was
+> never measured**, and P2 ("a fourth sleeve is permitted") is its only
+> item that is an action rather than maintenance or a refusal.
+> **STRUCTURAL CLOSURE:** a sleeve book is unregistrable by every
+> production path here — `append_trial`
+> (`src/backtest/registry.py:89`) has exactly **one** non-test caller,
+> `src/backtest/runner.py:129` inside `run_registered_backtest`, which
+> takes `candles_by_symbol` and runs **one** engine over **one** universe;
+> `analyze_sleeve_combination.py` says in its own docstring that it "runs
+> no backtest and registers no trial"; all **133** registry rows are
+> crypto (**72** 13-coin, **61** BTC/ETH) while the Taiwan and gold
+> sleeves are trials 23 and 24 of a **separate 24-row registry** in
+> another repository; and the book's window (**2018-03-06..2025-07-01,
+> 2675** days) is **one day short** of the registry's **2676**, so a naive
+> registration does not fail the gate, it **aborts every future gate
+> report** (`scripts/run_gate_report.py:87` raises rather than truncate).
+> **MEASURED ANYWAY, because that gap is a 20-line fix.** On a validated
+> reimplementation (it reproduces the recorded **0.651826** and
+> **0.732556** exactly): the three-sleeve book's annualized Sharpe is
+> **1.410785** at **14.90%** drawdown — the **second-highest Sharpe ever
+> produced here**, short of trial 29's **1.410899** by **0.000114**, at
+> **one fifth** of its 75.08% drawdown. **Gate 4 PASSES: DSR 0.981583**
+> at N=134 on the recomputed variance (1.616543e-04), surviving to
+> **N=1195** against trial 118's 134 and trial 37's 149 — so this is the
+> first object that breaks iteration 55's trade-off, carrying nine times
+> the registry's N of robustness at the **lowest** drawdown of anything
+> listed, and it still passes at **N=157** (**0.979936**), every
+> registered row behind all three sleeves. **Gate 3 FAILS at 0.294794**,
+> 5.90x the bar — **and not for the book's reasons.** The same 37
+> candidates alone score **0.629526** on that window, so the book more
+> than halves the recorded number; decomposed over all 12 870 splits, the
+> book is in-sample winner in **8 019 (62.31%)** and lands OOS-below-median
+> in only **3.29%** of those, while the **4 851** splits won by a legacy
+> column fail at **72.77%**. The book's own unconditional rate is
+> **0.020513 — below the bar.** **Third recorded gate-3 defect, the mirror
+> of iteration 64's:** PBO is a property of the **pool**, so a candidate
+> whose own overfit rate is 0.020513 is recorded as 0.294794 for failures
+> belonging to 37 columns it has nothing to do with, and no candidate can
+> retire more than its in-sample-win share of the pool's 72.77%. The
+> crossing, by iteration 64's own bisection applied to this sixth base
+> shape, is annualized Sharpe **1.6905** — **inside** its 1.5814-1.7857
+> range, so this route corroborates the ~1.63 bar rather than escaping it.
+> **Not an edge and explicitly not claimed as one:** zero forward rows
+> exist for the book (the four recording tracks are trials 88 and 118
+> daily and 0050/GLD weekly, none of them the combined book), its MinTRL
+> is **497.4 days**, it is 100% in-sample, its crypto sleeve carries trial
+> 88's full selection premium, DSR fails under a multiplicative N
+> (**0.929199** at 133x24) which this loop does **not** get to choose, it
+> still makes **less money** than holding the same three assets equally
+> (3.94x vs 5.42x), and its **gold sleeve is inadmissible under P2's own
+> buy-and-hold rule** (1.51x vs 2.46x and Sharpe 0.6432 vs 0.9012 — it
+> loses both). The admissible two-sleeve book gives the same verdict
+> (SR **1.343746**, DSR **0.972597** to N=497, PBO **0.379565**), so the
+> finding is not confined to the inadmissible object. Route closed:
+> **no proposal may treat a new sleeve as a path to the stop condition**,
+> and gate 3 must not be re-read or repaired on the strength of this
+> result — the loop declines the rule change that would favour it.
+> Nothing was repaired and nothing frozen was edited. This is the
+> **eighth** operator choice due and the third with no deadline. Full
+> measurement and the three options:
+> `docs/research/P2_SLEEVE_ROUTE_POWER_2026-09-21.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
@@ -569,6 +634,21 @@ cannot improve it without data that does not exist yet.
      portfolio-level Sharpe improvement alone. The market-shopping
      guard in `SLEEVE3_GOLD_PREREGISTRATION.md` still binds: every
      market tried is reported, not only the survivor.
+     **QUALIFIED 2026-09-21 (iteration 66): a sleeve is a product route,
+     not a route to the stop condition, and no proposal may present it as
+     one.** A sleeve book is unregistrable by every production path here
+     (`append_trial` has one non-test caller, inside
+     `run_registered_backtest`, which runs one engine over one universe),
+     so no gate report can see it; and if registered it fails gate 3 at
+     **0.294794** — a verdict set by the 37 legacy columns, which fail at
+     **72.77%** in the 37.69% of splits they win, not by the book, whose
+     own rate is **0.020513**. It does clear gate 4 (**DSR 0.981583**,
+     surviving to **N=1195**) at the lowest drawdown in the program,
+     and the existing three-sleeve book already contains a gold sleeve
+     this very rule would refuse (1.51x vs 2.46x, Sharpe 0.6432 vs
+     0.9012 — it loses both). Build a fourth sleeve for the book if the
+     operator wants a better book; do not book it as search progress.
+     `docs/research/P2_SLEEVE_ROUTE_POWER_2026-09-21.md`.
    - **P3 (unchanged): no new single-market parameter families**, and
      no re-opening the cash-aware allocation route with a cap parameter
      or a tilt.
