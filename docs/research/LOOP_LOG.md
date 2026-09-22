@@ -7995,3 +7995,244 @@
   (P2), and a measurement apparatus in which **the two gates that decide
   are the two that mis-attribute.** On-chain route open but unadvanced.
   Operator-attention items dated 2026-09-21 are the fourteen above.
+
+## 2026-09-22 — iteration 67 (P1: the three levers, all six gates and the queue were measured — but never *what this engine can build*; measured, the ceiling is 1.578665, it fails gate 3 at 4.70x the bar, and the search that finds it is larger than it can survive)
+
+- **Step 0 — convergence check, run first.**
+  1. **Current answer.** Unchanged in its headline: the timing rule adds
+     real value in **crypto only** — in its own BTC/ETH universe it bought
+     **both** return and drawdown (14.26x vs 6.05x, 33.05% vs 80.99%) —
+     and none in Taiwan (0.73x) or gold (1.00x); against the naive 13-coin
+     alternative the margin is only **5.4%**. **Nothing here passes the six
+     gates.** Changed today in its *forward-looking* half, which is the
+     part that mattered: the standing answer has said since 2026-09-19
+     that "the search has one open lever (P3)". It has none.
+  2. **What this iteration moves.** Iterations 25/59-62 closed lever 1,
+     63 lever 2, 65 the gates, 66 the queue — and **64 left lever 3 open**,
+     with a quantified bar (~1.63) and an explicit "route NOT closed". The
+     question it did not ask is whether that bar is **reachable**: "0 of
+     133 trials reach it" describes what was *tried*, not what is
+     *available*. Today closes that, and with it the last open route.
+  3. **Why it is not sprawl.** It decides the ninth operator choice and
+     changes line 1's forward half. Without it the next honest iteration
+     that follows the queue would spend itself building a parameter family
+     whose gate verdict was already fixed before it started. **One new
+     script, the first in seven iterations** — and the budget had to be
+     spent: all ten existing `analyze_*` scripts are re-analysis of
+     durable artifacts and **none of them runs a backtest**, which this
+     measurement requires.
+
+- **P1 first, as the queue requires: all four forward tracks are current.**
+  Crypto daily — `shadow_trial88.jsonl` and `shadow_trial118.jsonl`, **59**
+  rows each, last date **2026-09-21**, both written by the 08:20 task
+  (`shadow_20260922_082001.log`, the 98th run log). Weekly —
+  `shadow_tw0050.jsonl` **10** rows and `shadow_gld.jsonl` **11** rows,
+  both last date **2026-09-18**, the most recent Saturday 09:40 slot; next
+  is 2026-09-26. **Nothing to fix.** The live paper runtime remains a
+  no-op: **29** `cycle` events total, the last at **2026-07-31T00:05:02Z**,
+  now **53** days ago, against a latest `health:WARMUP_INSUFFICIENT_HISTORY`
+  for close 2026-09-21.
+
+- **The measurement: is the gate-3 bar reachable by anything this engine
+  can build?** Full document:
+  `docs/research/ARCHITECTURE_CEILING_2026-09-22.md`.
+
+- **Method, and the guarantee it does and does not carry.** An **exhaustive
+  hindsight sweep** of the engine's whole expressible parameter space. The
+  argmax of a hindsight sweep is an upper bound on what an *honest* family
+  of the same architecture can produce, because an honest family picks its
+  winner without seeing the future and cannot beat the arm picked with full
+  hindsight over a superset of its grid. That is the only sense in which
+  any number here is a ceiling. Pre-committed before the sweep ran and
+  kept: **nothing found is nominated, registered, proposed, or called an
+  edge.**
+
+- **Validated before anything was trusted.** The engine reproduced four
+  registered trials to six decimals — **88** (1.182061), **118**
+  (1.241113), **131** (1.229837), **56** (1.165094) — all at
+  `observation_days = 2676`. A vectorised PBO (the reference
+  implementation needs **over fifteen minutes** per call and could not be
+  used per-arm) reproduced **both** recorded gate values exactly:
+  candidates **0.651826** and all-columns **0.732556**. The DSR bar table
+  reproduced iteration 64's **1.240607 / 1.245398 / 1.263775** at
+  N=133/141/177. Window alignment is exact **by construction**: the
+  200-close warmup is the module constant `DAILY_TREND_LOOKBACKS`
+  (`src/features/daily_trend.py:16`), so no swept parameter can move the
+  decision-day set.
+
+- **The sweeps: 40 010 arms, 39 020 valid.** cs-momentum 13-coin **1 980**
+  valid of 2 970 (**990 rejected by the engine's own validator** —
+  cs_rebalance_cadence must be weekly or monthly — reported, not silently
+  dropped), max **1.578665**; Donchian BTC/ETH stage 1 **29 070** arms
+  exhaustive over the whole 4 845-set window space, max **1.333084**;
+  stage 2 the **full** 3x6 ATR grid over the 250 leading window sets,
+  5 000 arms, max **1.333084 — unmoved**, which is the evidence that stage
+  1's exit subset hid nothing; Donchian 13-coin **2 970** arms, max
+  **1.144485**. The staging is a real limitation and is reported as one:
+  the full BTC/ETH cross product is 96 900 arms at the measured 7.5-8.1
+  arms/s, **215 minutes**, which does not fit one iteration.
+
+- **THE CEILING IS 1.578665** — cross-sectional momentum, K=3, 120-day
+  lookback, monthly, absolute filter on, regime gate **SMA 50**, at
+  **38.4135%** drawdown and 60.25x. It is **outside the registry on two
+  dimensions at once**, both read out of the registry rather than assumed:
+  across 64 cs rows the only gate windows ever run are None/**100**/**200**
+  and the only lookbacks **90**/**180**. It sits **0.173%** below
+  iteration 64's lowest crossing (1.5814) and 3.114% below the median
+  (1.6294) — **and that margin is deliberately not the finding.** A 0.17%
+  shortfall decides nothing.
+
+- **THE FINDING — the ceiling arm against the stop condition: gate 4
+  PASSES at DSR 0.994802 (N=134), gate 3 FAILS at 0.235120, 4.70x the
+  bar.** The best object this engine can express, chosen with full
+  hindsight over its entire parameter space, **does not qualify**. No
+  `EDGE_CANDIDATE_FOUND.md` is written and none is warranted.
+
+- **A second closure, self-referential, on gate 4.** Holding the
+  recomputed variance (1.654042e-04) fixed, the arm **survives to
+  N=17 113** and fails at 17 114 (0.950000 then 0.949999), while the sweep
+  that found it is **39 020** arms — DSR **0.935112** at N=39 153. **The
+  search that locates the ceiling costs more deflation than the ceiling
+  can carry.** Stated against this loop's own interest: that binds the
+  *program's total search*, not any one family — an operator running only
+  the 1 980-arm cs grid keeps the gate-4 pass (**0.977331**), and it is
+  gate 3, which does not depend on N at all, that refuses the arm
+  unconditionally.
+
+- **FOURTH RECORDED GATE-3 DEFECT, and the sharpest yet.** Decomposed over
+  all **12 870** partitions: the arm wins in-sample in **75.9751%** of
+  them and lands OOS-below-median in only **6.3714%** of those, while the
+  legacy 37 columns fail in **77.7167%** of the 24.0249% they win.
+  Arithmetic checks to six decimals (0.759751 x 0.063714 + 0.240249 x
+  0.777167 = **0.235120**). So **the arm's own unconditional rate is
+  0.048407 — below the 0.05 bar — and 79.41% of the recorded verdict
+  belongs to 37 columns it has nothing to do with.** The pooled statistic
+  and the candidate's own statistic fall on **opposite sides of the bar**.
+  This is iteration 66's sleeve-book structure (own rate 0.020513,
+  recorded 0.294794) reproduced on the highest-Sharpe object the engine
+  can express. **The loop declines the rule change**, exactly as iteration
+  66 declined it, in the one case where making it would convert the
+  program's best measured object from a fail into a pass.
+
+- **Iteration 64 corroborated, measured rather than assumed.** It called
+  ~1.63 "a floor, not an estimate" because constant alpha is the
+  friendliest possible improvement and a real arm of different shape would
+  need more. Never tested against a real arm until today: a real arm at
+  **1.578665** records **0.235120** where a constant-alpha arm near that
+  Sharpe records ~0.05. The floor reading was right, and the gap is the
+  cost of changing shape rather than adding a constant.
+
+- **Two secondary measurements, recorded because they were free.** Within
+  the 34 070 swept Donchian BTC/ETH arms the live contract **trial 118
+  sits at the 95.49th percentile** (trial 131 93.91st, trial 88 85.01st),
+  **773** arms beat it, and the best is only **+7.41%** above it — so the
+  live parameters are **not** a lucky corner of their own space, which
+  corroborates iterations 19-20's +14.2% premium from a grid four hundred
+  times smaller. And the ladder family has **no sweepable signal parameter
+  at all**; its only parameter family is experiment 2's 16-arm vol
+  overlay, registered maximum **1.127022** (trial 7).
+
+- **Step 2 (web research) done and recorded.** Four sources filed in
+  `RESEARCH_LOG.md` under iteration 67, **all four new** (checked by grep
+  before drafting). **Zero strategy arrivals, eleventh consecutive pass** —
+  but the shape changed for the first time in eight: today's best source is
+  **empirical**, not methodological, and it points the same way as the
+  local measurement. **dev.to/maymay5692 (2026-03-28)** is an outside
+  instance of today's own experiment under this project's product law
+  almost line for line — daily, spot, long-only, BTC/ETH/SOL, **0.1%
+  commission + 0.05% slippage = 15 bps**, the same total charged here — and
+  its **49**-strategy sweep tops out at **1.50** on 2 trades, **1.30** on
+  its best honest arm, with **no DSR, PBO or OOS split**. Second,
+  **paperswithbacktest (2026-06-02)** combines **140+** strategies across
+  equities, crypto and futures 1990-2025 to an ex-ante Sharpe of
+  **1.442** — also below the 1.5814 floor, from the breadth direction, and
+  also with no trial-level control. Third, **arXiv 2501.03938** (Jacquier,
+  Muhle-Karbe, Mulligan) names the quantity today's method depends on, the
+  out-of-sample **replication ratio**, which "diminishes for complex
+  strategies with many assets based on numerous weak trading signals" and
+  "increases when more training data is used"; **its abstract carries no
+  numeric factor, so nothing was imported.** Fourth,
+  **hmaquant.substack (2026-08-30)** is recorded against the still-open
+  forward-track cost defect, not against today's finding: gross Sharpe 1.5
+  at 200% turnover nets **0.15** after costs — in **small-cap equities**,
+  so nothing transfers numerically.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted** (128
+  yesterday, +1 for today's script); `mypy --strict src/` **Success: no
+  issues found in 58 source files**; `lint-imports` **Contracts: 13 kept,
+  0 broken**; `pytest -m "not network"` **383 passed** in 144.77s.
+  **Eleventh consecutive iteration to record the same caveat**, and today
+  it has a pointed instance: the suite type-checks `src/` only, so the
+  one new script is covered by `ruff` but not by `mypy --strict` — and
+  more to the point, **no test in `tests/` asserts anything about what the
+  engine's parameter space can reach**, so nothing in a green tree could
+  have told this program that its own ceiling fails the gate it has been
+  aiming at for sixty-seven iterations. The green tree has now failed to
+  catch **nine** separate defects in nine iterations.
+
+- **Operator-attention items.** Fifteen — the fourteen of iteration 66
+  with one added, and (f) re-dated. (a) Ensemble-breadth leave-one-out
+  still unmeasured. (b) The research loop still runs in a visible console
+  window. (c) The account-limit outage remains closed; consecutive
+  completed slots now **eight**. (d) Should cross-track structural
+  comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? The loop **abstained** again,
+  twentieth consecutive iteration. (e) Section 1 of
+  `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative upper
+  bound", which is false at N=133. (f) The live paper runtime has been a
+  no-op for **53 days** (last `cycle` 2026-07-31T00:05:02Z; 29 cycles
+  total); the dashboard hits a full 90-day observation-period bar on
+  **2026-10-01**, now **9 days away**. (g) The forward tracks charge no
+  trading cost. (h) The forward tracks archive no input. (i) The read rule
+  states no replay depth; required at least 206 bars. (j) Test 2 cannot
+  fire at 90 days. (k) Holdout nomination N1 has not named the live
+  contract since 2026-07-31. (l) Gate 4's variance input is
+  analyst-controllable. (m) Gate 6 cannot fail. (n) The sleeve book cannot
+  be graded at all. **(o) NEW — the gate-3 bar is unreachable and the gate
+  refuses the ceiling for other columns' failures: the best object this
+  engine can express scores DSR 0.994802 and PBO 0.235120, while its own
+  overfit rate is 0.048407, below the bar.** Items (g)-(k) are due
+  **before 2026-10-22**; (m) **before 2026-10-03**; (l), (n) and (o) have
+  no deadline.
+
+- **What this iteration does NOT do:** no trial was registered, no arm
+  nominated, and **no backtest output written next to the registry** — the
+  entire 40 010-arm sweep lives in the gitignored `data/` tree, so N is
+  still **133**. The holdout was **not read, not fetched and not
+  unsealed**; `spent` is still `false`. No gate rule modified — in
+  particular **gate 3 was not repaired, re-read, or re-scored on its
+  candidate-only rate**, in the one case where doing so would have turned
+  the program's best measured object from a fail into a pass. No frozen
+  pre-registration edited (the contract's *standing answer* is appended to
+  and the live P3 queue item carries a dated QUALIFIED note, as the
+  contract directs); no nomination substituted, no registry row or return
+  series touched, no shadow file written to or read for a metric, no prior
+  result document rewritten, no prior log entry edited, no gate report
+  regenerated, **no file under `configs/runtime/`, `src/` or any
+  scheduled-task definition touched** — `src/` was read and quoted, never
+  written. One new script, `scripts/analyze_architecture_ceiling.py`,
+  which imports `run_backtest` only and never `run_registered_backtest` or
+  `append_trial`.
+
+- **Standing answer restated, and its forward half is now empty.** Timing
+  works in crypto only and in its own universe bought both return and
+  drawdown; the engine and the forward recorder are free of look-ahead;
+  the Taiwan and gold negatives are robust; against the naive 13-coin
+  alternative the margin is 5.4% and that benchmark is
+  survivorship-flattered; nothing is forward-validated and no return-based
+  forward verdict is permitted before 2028-06-29; the forward stream is
+  costless and unarchived and all three October tests are mechanism
+  checks; the October holdout cannot decide either; all six gates are
+  characterised; P2 is a product route and not a route to the stop
+  condition; **and with today's measurement the last open lever closes
+  too — the ceiling of everything this engine can express is 1.578665,
+  it fails gate 3 at 0.235120, and the search needed to find it (39 020
+  arms) is more than twice what it can survive (17 113).** So the honest
+  summary of sixty-seven iterations is: **all three unblocking states are
+  measured and none of them decides**, the two gates that decide are the
+  two that mis-attribute, and the only thing left that is not measured is
+  a **new architecture** — new signal code, not a new parameter family,
+  outside both P3 and this measurement. On-chain route open but
+  unadvanced. Operator-attention items dated 2026-09-22 are the fifteen
+  above.

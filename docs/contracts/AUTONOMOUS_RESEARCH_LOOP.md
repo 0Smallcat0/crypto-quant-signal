@@ -522,6 +522,67 @@ Hard limits, binding:
 > **eighth** operator choice due and the third with no deadline. Full
 > measurement and the three options:
 > `docs/research/P2_SLEEVE_ROUTE_POWER_2026-09-21.md`.
+>
+> Refinement 2026-09-22 (iteration 67) — **the last open lever is measured
+> and it cannot reach the stop condition either; the search has no open
+> lever left.** Iteration 64 quantified what gate 3 *requires* of a new
+> parameter family (~1.63) and observed that 0 of 133 trials reach it, but
+> "0 of 133" is a statement about what was **tried**, not about what is
+> **available**. Nobody had asked the opposite question. **METHOD,
+> validated before use:** an exhaustive *hindsight* sweep of the engine's
+> whole expressible parameter space — **40 010** arms, **39 020** valid —
+> whose argmax is by construction an upper bound on any honest family of
+> the same architecture. The engine reproduced trials **88, 118, 131 and
+> 56** to six decimals; a vectorised PBO reproduced the recorded
+> **0.651826** and **0.732556** exactly; and the DSR bar table reproduced
+> iteration 64's **1.240607 / 1.245398 / 1.263775**. Every arm returned
+> `observation_days = 2676`, the registry window, because the 200-close
+> warmup is a module constant. **THE CEILING IS annualized Sharpe
+> 1.578665** — cross-sectional momentum, K=3, 120-day lookback, monthly,
+> absolute filter on, regime gate SMA **50**, at **38.41 %** drawdown and
+> 60.25x — an arm outside the registry on two dimensions at once (of 64
+> cs rows the only gate windows ever run are None/100/200 and the only
+> lookbacks 90/180). It sits **0.173 %** below iteration 64's lowest
+> crossing (1.5814), **and that margin is not the finding.** **THE
+> FINDING:** put through the stop condition, the ceiling arm **passes
+> gate 4 (DSR 0.994802 at N=134) and fails gate 3 at 0.235120 — 4.70x the
+> bar.** So the best object this engine can express, chosen with full
+> hindsight over its entire parameter space, does not qualify. **A second,
+> self-referential closure on gate 4:** the arm survives to N=**17 113**
+> and fails at 17 114, while the sweep that found it is **39 020** arms
+> (DSR **0.935112** at N=39 153) — the search that locates the ceiling
+> costs more deflation than the ceiling can carry. Stated against this
+> loop's own interest, that binds the *program's total search* and not any
+> one family: an operator running only the 1 980-arm cs grid would keep
+> the gate-4 pass (**0.977331**). **FOURTH RECORDED GATE-3 DEFECT, and the
+> sharpest:** decomposed over all 12 870 partitions the arm wins in-sample
+> in **75.9751 %** of them and fails OOS in only **6.3714 %** of those,
+> while the legacy 37 columns fail in **77.7167 %** of the 24.0249 % they
+> win — so **the arm's own unconditional rate is 0.048407, below the 0.05
+> bar**, and **79.41 %** of the recorded verdict belongs to columns it has
+> nothing to do with. The pooled statistic and the candidate's own
+> statistic fall on **opposite sides of the bar**. **The loop declines the
+> rule change**, exactly as iteration 66 declined it, in the one case
+> where making it would convert the program's best measured object from a
+> fail into a pass. Also corroborated, measured rather than assumed:
+> iteration 64 called ~1.63 "a floor, not an estimate" because constant
+> alpha is the friendliest improvement — a real arm at 1.578665 records
+> **0.235120** where a constant-alpha arm near that Sharpe records ~0.05,
+> so the floor reading was right. Secondary and free: trial 118 sits at
+> the **95.49th percentile** of its own 34 070-arm architecture (trial 88
+> at the 85.01st, 773 arms beat trial 118) and the best is only **+7.41 %**
+> above it, so the live contract is not a lucky corner of its own space;
+> and the ladder family has **no sweepable signal parameter at all**
+> (`DAILY_TREND_LOOKBACKS` is the module constant `(20, 65, 150, 200)`,
+> `src/features/daily_trend.py:16`). Route closed: **no proposal may treat
+> a new single-market parameter family as a path to the stop condition**,
+> and with it **all three unblocking states are measured and none of them
+> decides.** Explicitly NOT closed and not to be confused with it: a new
+> *architecture* — new signal code rather than a new parameter family — is
+> outside both P3 and this measurement. Nothing was repaired and nothing
+> frozen was edited. This is the **ninth** operator choice due and the
+> fourth with no deadline. Full measurement and the three options:
+> `docs/research/ARCHITECTURE_CEILING_2026-09-22.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
@@ -532,7 +593,7 @@ lever is blocked, and the block is structural rather than temporary:
 |---|---|
 | Forward validation | Needs **time**. Crypto gains one row/day at 08:20; Taiwan and gold one row/week. Analysis cannot accelerate it. |
 | October holdout | **Operator-only**, single-use, nominations fixed. |
-| A new parameter family | **P3 refuses it**, and the PBO/family measurements say the winner would not be trustworthy anyway. **QUALIFIED 2026-09-19 (iteration 64): this is the one lever that is not structurally blocked — it can trip the stop condition. P3's N-cost rationale is refuted (+1.87% at K=44; the N=85->101 report shows the bar falling); what binds is a gate-3 pass bar near annualized Sharpe 1.63 that 0 of 133 trials reach. See item 3 below.** |
+| A new parameter family | **P3 refuses it**, and the PBO/family measurements say the winner would not be trustworthy anyway. **QUALIFIED 2026-09-19 (iteration 64): this is the one lever that is not structurally blocked — it can trip the stop condition. P3's N-cost rationale is refuted (+1.87% at K=44; the N=85->101 report shows the bar falling); what binds is a gate-3 pass bar near annualized Sharpe 1.63 that 0 of 133 trials reach. See item 3 below.** **CLOSED 2026-09-22 (iteration 67): the bar is not reachable. An exhaustive hindsight sweep of the engine's whole expressible parameter space (39 020 valid arms) tops out at 1.578665, and that arm fails gate 3 at 0.235120 — 4.70x the bar — while passing gate 4. It also survives only to N=17 113 against the 39 020 arms needed to find it. A new *architecture* is a different thing and is not measured.** |
 | Revising gate 3 after finding it misranks | Changing the rules after seeing results. Refused by design, even though the defect is real and recorded. |
 | More diagnostics | Would not change the standing answer. Step 0 forbids running them. |
 
@@ -590,6 +651,22 @@ cannot improve it without data that does not exist yet.
    (winner's own MinTRL 377.2 d at 95% vs SR* = 0), and must not be
    refused or granted on N-cost grounds.
    `docs/research/P3_OVERRIDE_POWER_2026-09-19.md`.
+   **CLOSED 2026-09-22 (iteration 67) on measurement — the bar iteration
+   64 quantified is not reachable, so this lever does not unblock anything
+   either.** An exhaustive hindsight sweep of the engine's whole
+   expressible parameter space (**40 010** arms, **39 020** valid, across
+   the architectures behind 112 of the 133 registry rows) tops out at
+   annualized Sharpe **1.578665**. Put through the stop condition that
+   ceiling arm **passes gate 4 (DSR 0.994802 at N=134) and fails gate 3 at
+   0.235120**, 4.70x the bar; and it survives only to N=**17 113** against
+   the **39 020** arms needed to find it (DSR **0.935112** at N=39 153).
+   The gate-3 verdict is **79.41 %** attributable to the 37 legacy columns
+   — the arm's own unconditional rate is **0.048407**, below the bar — and
+   the loop **declines** the rule change that would convert it. No
+   proposal may treat a new single-market parameter family as a path to
+   the stop condition. A new *architecture* is a different thing and is
+   not measured.
+   `docs/research/ARCHITECTURE_CEILING_2026-09-22.md`.
 
 ## One iteration, in order
 
@@ -652,6 +729,17 @@ cannot improve it without data that does not exist yet.
    - **P3 (unchanged): no new single-market parameter families**, and
      no re-opening the cash-aware allocation route with a cap parameter
      or a tilt.
+     **QUALIFIED 2026-09-22 (iteration 67): P3's refusal now rests on a
+     measurement rather than on its own stated rationale, and the route it
+     refuses is closed as a path to the stop condition.** Iteration 64
+     refuted the "they cost N" premise (+1.87 % at K=44) and left the
+     lever open; today's exhaustive hindsight sweep of the engine's whole
+     expressible parameter space — **39 020** valid arms — puts its
+     ceiling at **1.578665**, and that arm fails gate 3 at **0.235120**
+     while passing gate 4. So a new parameter family may still be run for
+     a **product** reason, exactly as iteration 66 said of a fourth
+     sleeve, but **no proposal may present one as search progress.**
+     `docs/research/ARCHITECTURE_CEILING_2026-09-22.md`.
    - **Standing correction duty:** three independent lines now say the
      crypto result does not generalize — PBO 0.7411, trial 118's
      cross-market refutation, and the buy-and-hold comparison above.

@@ -3288,3 +3288,101 @@ cross-sectional momentum untested here → experiment 3.
   direction. One near-miss was fetched and rejected as already-registered.
   The literature has now handed this program vocabulary for seven
   consecutive measurement defects and has not once handed it an edge.
+
+## 2026-09-22 — iteration 67 (four sources, all four new; zero strategy arrivals for the eleventh pass — and for the first time in eight passes the most useful source is not methodological but *empirical*: an independent sweep run under this project's exact product law, whose maximum lands below the bar measured here)
+
+- **dev.to / maymay5692, "I Backtested 49 Crypto Trading Strategies.
+  Here's Every Single Result" (2026-03-28, edited 03-31) — NEW, FETCHED,
+  and the closest external analogue to today's measurement that this loop
+  has found.** It is an outside instance of the exact experiment run here
+  today — sweep a strategy space, report the maximum — and its product law
+  matches this repository's almost line for line: **daily** bars, **spot**,
+  **long-only**, BTCUSDT/ETHUSDT/SOLUSDT, $10 000 initial, and **0.1%
+  commission + 0.05% slippage**, i.e. **15 bps per trade**, the same total
+  this registry charges (`fee_bps 10 + slippage_bps 5`). Window
+  2023-01 → 2026-02 (~37 months) against this program's 2018-03 → 2025-07.
+  Of **49** strategies **39** produced valid results. The maximum is
+  Sharpe **1.50** (`multi_timeframe`) and the author flags it as
+  unreliable on **2 trades**; the best statistically sound arm is an **EMA
+  crossover at Sharpe 1.30**, 34 trades, 491% return; the top 11 cluster
+  **0.80–1.50**, and **9 of the top 11 are trend-following** at roughly
+  35% win rates. **No deflated Sharpe, no PBO, no out-of-sample split** is
+  reported, which is the usual gap and is why the 1.50 cannot be compared
+  to a gate number directly. What it *can* anchor is the ceiling question:
+  an independent 49-arm sweep under this project's own cost and
+  instrument rules tops out at **1.50 on its best arm and 1.30 on its best
+  honest arm**, both **below** the 1.5814–1.7857 gate-3 crossing measured
+  here on 2026-09-19. **Testable here: no** — the mechanisms (EMA
+  crossover, multi-timeframe trend) are the registered ladder family's,
+  and its window post-dates the pre-holdout boundary. Recorded as an
+  external bound, not as a candidate.
+- **arXiv 2501.03938, Jacquier, Muhle-Karbe and Mulligan, "In-Sample and
+  Out-of-Sample Sharpe Ratios for Linear Predictive Models" (v1
+  2025-01-07, v3 2025-12-01) — NEW, abstract fetched, and it names the
+  quantity today's method depends on.** The paper "compute[s] the in- and
+  out-of-sample means and variances of the corresponding PnLs and use[s]
+  these to derive a closed-form approximation for the corresponding Sharpe
+  ratios", and reports that the out-of-sample **replication ratio**
+  "diminishes for complex strategies with many assets based on numerous
+  weak trading signals rather than a few strong ones" and "increases when
+  more training data is used". That is the sign structure today's bound
+  relies on — an in-sample maximum is an upper bound on what the same
+  shape delivers out of sample, and the gap widens with the number of
+  weakly-informative degrees of freedom swept. **The abstract carries no
+  numeric factor**, so nothing is imported: today's bound is stated as a
+  bound, and no shrinkage figure is claimed from this paper. **Testable
+  here: no** — the result is derived for linear predictive models, and
+  nothing in this registry is one.
+- **paperswithbacktest.com, "What Happens When You Combine 140+ Trading
+  Strategies?" (2026-06-02) — NEW, FETCHED, a second external ceiling
+  anchor and this one from the combination direction.** 140+ systematic
+  strategies across equities, crypto and futures, 1990–2025, allocated by
+  a custom optimizer (exponentially normalized Calmar and Sharpe blended
+  by harmonic mean, with 12-month max-drawdown and Ulcer-Index fragility
+  penalties). The ex-ante combined book records Sharpe **1.442**, max
+  drawdown **−3.66%**, CAGR **2.49%**, annualized volatility **1.72%** —
+  and **no deflated Sharpe, PBO or walk-forward** is reported. Two things
+  are worth recording. First, 140 strategies over three asset classes and
+  35 years combine to **1.442**, which is *below* the 1.5814 floor this
+  program's gate 3 requires of a single new column — a bar that is not
+  obviously reachable by stacking breadth either. Second, it repeats
+  iteration 66's structure exactly: the combination is what improves, and
+  the article distinguishes ex post from ex ante but runs no trial-level
+  overfitting control. **Testable here: no** — it is an allocation result
+  over a proprietary strategy library, not a mechanism.
+- **hmaquant.substack.com, Héctor Melchor Alaiz, "Transaction Costs: The
+  Silent Alpha Killer" (2026-08-30) — NEW, FETCHED, recorded against the
+  forward tracks' open cost defect rather than against today's
+  measurement.** Worked arithmetic for a different asset class —
+  small-cap equities, **not** crypto, so nothing transfers numerically:
+  "a gross Sharpe 1.5 strategy at 200% turnover in small caps nets out at
+  **0.15** after spread, impact, fees and borrow", from 40 bps half-spread,
+  100 bps square-root impact, 10 bps commissions and 75 bps/yr borrow —
+  **6.75% of NAV annually**, turning 7.5% of gross excess return into
+  **0.75%**. The transferable sentence is the author's framing, "alpha is
+  a forecast; costs are a certainty", which is the precise shape of the
+  defect iteration 59 recorded and which is still open: the four shadow
+  tracks charge **nothing** while the backtest they validate charges 15
+  bps per fill. **Testable here: no** — the cost model is equity
+  microstructure and this book trades two large-cap spot pairs.
+- **Arrivals: zero.** Four sources handled, **all four new to this file**
+  (checked by grep before drafting — `maymay`, `dev.to` as an author
+  citation, `2501.03938`, `Jacquier`, `Muhle-Karbe`, `140 trading`,
+  `hmaquant`, `DaniyalMlk`, `2604.17251`, `2510.12725`, `1410.8409`,
+  `adventuresofgreg`, `AgentTrading`, `AlgoXpert` all returned 0 hits;
+  `2602.11708`, `AdaptiveTrend`, `Concretum`, `iqueipopg`,
+  `paperswithbacktest` and `Man Group` returned 16/10/13/1/2/5 and were
+  therefore deliberately **not** re-recorded, except
+  `paperswithbacktest`, whose two prior hits are a different article and
+  which is cited above for a piece this file does not yet hold).
+  **Streak, counted against this file rather than asserted: zero strategy
+  arrivals in iterations 57 through 67 — eleven consecutive passes.** The
+  pattern changes shape today for the first time in eight: iterations
+  60–66 each returned *methodological* vocabulary for a defect measured
+  here, whereas today's best source is **empirical** and points the same
+  way as the local measurement — an independent 49-arm sweep under this
+  project's own product law and cost, whose best honest arm is **1.30**,
+  and a 140-strategy multi-asset combination at **1.442**, both under the
+  **1.5814** floor gate 3 requires. The literature has now handed this
+  program vocabulary for seven consecutive measurement defects, an
+  outside bound for the eighth, and not once an edge.
