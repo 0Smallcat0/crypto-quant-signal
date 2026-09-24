@@ -583,6 +583,64 @@ Hard limits, binding:
 > frozen was edited. This is the **ninth** operator choice due and the
 > fourth with no deadline. Full measurement and the three options:
 > `docs/research/ARCHITECTURE_CEILING_2026-09-22.md`.
+>
+> Refinement 2026-09-24 (iteration 68) — **the one route iteration 67 left
+> open is closed too, and gate 3 turns out to charge a novelty premium.**
+> Iteration 67 closed the parameter-family route and wrote that "a new
+> *architecture* — new signal code rather than a new parameter family — is
+> outside both P3 and this measurement." That route cannot be closed by
+> enumeration, and it does not have to be: **gate 3's bar is a property of
+> the incumbent pool, and every new architecture faces the same pool.**
+> **DEFECT OF CURRENCY, and it inverts the reading:** iterations 64, 66 and
+> 67 all priced gate 3 in annualized Sharpe by adding constant alpha to a
+> base shape, and **all six base shapes are columns already inside the
+> candidate pool** (64's five are trials 131, 14, 7, 15 and 85; four are
+> among the pool's top in-sample winners). Gate 3 never reads Sharpe.
+> Writing **w** for a candidate's in-sample win share, **f** for its own
+> failure rate where it wins and **g** for the legacy pool's rate where it
+> keeps, PBO = w·f + (1 − w)·g exactly, so **PBO ≤ 0.05 requires
+> (1 − w)·g ≤ 0.05** — arithmetic, not an estimate. Measured across 43
+> bisected crossings (five construction families over five base shapes,
+> five seeds and seven resemblance levels; 41 independent, two `mix` rows
+> duplicating trial 131's endpoints by construction with no effect on the
+> statistics), the required win share is **shape-independent
+> at w ≈ 0.95** (min 0.932246, median **0.949495**, max 0.956410), every
+> row landing inside pooled PBO [0.049883, 0.049961]. **So what iterations
+> 64/66/67 measured was not the bar — it was the Sharpe price of that win
+> share for one kind of candidate.** Priced for a candidate *uncorrelated
+> with the pool*, which is what a new architecture is, the crossing is
+> **1.886356 to 2.355461** (31 rows; day-permuted median 2.084465,
+> block-permuted median 2.198848, a maximally-uniform synthetic
+> **1.908769**) against **1.630716** for a boosted incumbent — a paired
+> penalty of **+10.59% to +29.47%, median +22.15%**, on bases whose exact
+> marginal return distribution is preserved. The dose-response is monotone
+> across seven resemblance levels (**+15.68%** end to end) while required w
+> never leaves [0.9435, 0.9479]. **Mechanism measured, and the obvious
+> hypothesis refuted first:** it is *not* a head start (twin-overlap is
+> identical for both constructions, 0.3642 vs 0.3645 on trial 131); it is
+> the **variance of the margin** over the legacy max — sd falls **57.5%**
+> as resemblance rises while the required mean margin falls **49.6%**, so
+> the variance channel carries most but not all of it. **FIFTH RECORDED
+> GATE-3 DEFECT, and the first directional against the program's goal: at
+> equal statistical quality the gate is cheaper to pass by duplicating the
+> registry than by bringing something new.** Consequence: iteration 67
+> closed the family route on a **+3.21%** shortfall against the engine's
+> 1.578665 ceiling; the route it left open falls short by **+19.49% at its
+> most favourable measured point** — and that point is **not** an
+> idealisation: the lowest novel crossing **1.886356** is a day-permuted
+> copy of trial 131, carrying a registered strategy's exact marginal return
+> distribution with only its pool alignment removed, while the
+> maximally-uniform synthetic object costs **more** still at **1.908769**. Route closed: **no proposal may treat a new
+> architecture as a path to the stop condition.** Explicitly not closed: a
+> new architecture built for a **product** reason, exactly as iteration 66
+> said of a sleeve and 67 of a family. **The loop declines the rule change
+> for the fifth time** — a candidate-only PBO would fix both the fourth and
+> fifth defects and would convert the engine's ceiling arm from 0.235120 to
+> 0.048407, which is why it is refused here rather than made. Nothing was
+> repaired and nothing frozen was edited; no new script (iteration 67's
+> gained a `gate3-currency` mode). This is the **tenth** operator choice due
+> and the fifth with no deadline. Full measurement and the three options:
+> `docs/research/GATE3_NOVELTY_PENALTY_2026-09-24.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
@@ -667,6 +725,21 @@ cannot improve it without data that does not exist yet.
    the stop condition. A new *architecture* is a different thing and is
    not measured.
    `docs/research/ARCHITECTURE_CEILING_2026-09-22.md`.
+   **AND THE REMAINDER CLOSED 2026-09-24 (iteration 68) — a new
+   *architecture* does not unblock anything either, and it did not need
+   enumerating.** Gate 3's requirement is a **fixed in-sample-win share
+   w ≈ 0.95** (43 bisected crossings: min 0.932246, median **0.949495**,
+   max 0.956410), not a Sharpe number; Sharpe only sets the *price* of that
+   share, and the price depends on how much the candidate resembles the
+   incumbent pool. Iterations 64/66/67 priced it with boosted copies of
+   pool members — the cheapest case, **1.630716** median. Priced for a
+   candidate uncorrelated with the pool, which is what a new architecture
+   is, it is **1.886356–2.355461** (31 rows), a paired novelty penalty of
+   **+10.59% to +29.47%**. Against iteration 67's engine ceiling of
+   **1.578665** the shortfall goes from **+3.21%** to **+19.49% at its most
+   favourable point**. Best w ever achieved here: **0.759751** (the ceiling
+   arm); best incumbent column **0.345221**.
+   `docs/research/GATE3_NOVELTY_PENALTY_2026-09-24.md`.
 
 ## One iteration, in order
 
@@ -740,6 +813,19 @@ cannot improve it without data that does not exist yet.
      a **product** reason, exactly as iteration 66 said of a fourth
      sleeve, but **no proposal may present one as search progress.**
      `docs/research/ARCHITECTURE_CEILING_2026-09-22.md`.
+     **EXTENDED 2026-09-24 (iteration 68): the same now holds for a new
+     *architecture*, which P3 does not cover and iteration 67 left open.**
+     Gate 3 requires an in-sample-win share of **w ≈ 0.95** across the
+     12 870 partitions — shape-independent over 43 bisected crossings — and
+     charges a candidate **uncorrelated with the incumbent pool** between
+     **1.886356 and 2.355461** annualized Sharpe for it, against
+     **1.630716** for a boosted pool member (**+22.15%** median paired
+     penalty). Every new architecture is by definition uncorrelated with
+     the pool, so it faces the higher price; the lowest novel crossing
+     sits **19.49%** above iteration 67's engine ceiling of 1.578665 and
+     the median novel crossing **33.38%** above it. **New signal code may still be written for a product
+     reason — no proposal may present one as search progress.**
+     `docs/research/GATE3_NOVELTY_PENALTY_2026-09-24.md`.
    - **Standing correction duty:** three independent lines now say the
      crypto result does not generalize — PBO 0.7411, trial 118's
      cross-market refutation, and the buy-and-hold comparison above.

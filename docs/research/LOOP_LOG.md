@@ -8236,3 +8236,247 @@
   outside both P3 and this measurement. On-chain route open but
   unadvanced. Operator-attention items dated 2026-09-22 are the fifteen
   above.
+
+## 2026-09-24 — iteration 68 (P1: iteration 67 closed the last lever and left exactly one route open — a new *architecture*; measured, gate 3 does not price Sharpe, it prices resemblance, and novelty costs +22.15%)
+
+- **Step 0 — convergence check, run first.**
+  1. **Current answer.** Unchanged in its headline: the timing rule adds
+     real value in **crypto only** — in its own BTC/ETH universe it bought
+     **both** return and drawdown (14.26x vs 6.05x, 33.05% vs 80.99%) —
+     and none in Taiwan (0.73x) or gold (1.00x); against the naive 13-coin
+     alternative the margin is only **5.4%**. **Nothing here passes the six
+     gates.** Changed today in its forward half again: since 2026-09-22 it
+     has said "the only thing not measured is a new architecture". That is
+     now measured, and it does not decide either.
+  2. **What this iteration moves.** Iteration 67 closed the parameter
+     family route and wrote that a new *architecture* "is outside both P3
+     and this measurement". That route cannot be closed by enumeration —
+     you cannot sweep the strategies nobody has written — and it **does
+     not have to be**: gate 3's bar is a property of the **incumbent
+     pool**, and every new architecture faces the same pool. Today prices
+     the bar in the currency the gate actually reads.
+  3. **Why it is not sprawl.** It decides the tenth operator choice, closes
+     the last open route, and corrects the reading of a number three
+     iterations have relied on. **No new script** — the budget was not
+     needed: iteration 67's `analyze_architecture_ceiling.py` already holds
+     the validated fast CSCV path and its decomposition, so it gained a
+     `gate3-currency` mode instead. This is the eleventh iteration in
+     twelve to add no script.
+
+- **P1 first, as the queue requires: all four forward tracks are current.**
+  Crypto daily — `shadow_trial88.jsonl` and `shadow_trial118.jsonl`, **61**
+  rows each (59 at iteration 67), last date **2026-09-23**, both written by
+  the 08:20 task (`shadow_20260924_082002.log`, the **99th** of 100 run logs).
+  Weekly — `shadow_tw0050.jsonl` **10** rows and `shadow_gld.jsonl` **11**
+  rows in `D:\TW-Stock-Trading`, both last date **2026-09-18**, the most
+  recent Saturday 09:40 slot; next is **2026-09-26**. **Nothing to fix.**
+  The loop itself lost the **2026-09-23** slot; the evidence stream lost
+  nothing, which is iteration 60's decoupling holding for a ninth time.
+  The live paper runtime remains a no-op: **29** `cycle` events total, the
+  last recorded at **2026-07-31T00:05:02Z**, now **55** days ago.
+
+- **Step 3 — the measurement. Gate 3's bar is not a Sharpe number.**
+  Baseline re-validated before anything was computed: the fast CSCV path
+  reproduces the recorded candidates-PBO **0.651826** exactly on the 37
+  columns, and reproduces iteration 67's ceiling-arm decomposition to six
+  decimals (PBO **0.235120**, w **0.759751**, f **0.063714**, g
+  **0.777167**, unconditional **0.048407**) — so both documents measure
+  the same object with the same instrument.
+  **One deviation is disclosed rather than buried:** re-measured here,
+  iteration 64's five incumbent crossings come out **+0.34% at worst**
+  from its recorded 1.6294 / 1.5814 / 1.7857 / 1.6253 / 1.6993 —
+  consistent with bisection tolerance (1e-4 here, unrecorded there) and
+  not with a different quantity. Nothing turns on it: today's finding is a
+  **ratio** between two crossings measured by one instrument in one run,
+  and the incumbent leg would have to move more than 15% to overturn it.
+
+- **The defect of currency, and it inverts the reading for the open
+  route.** Iterations 64, 66 and 67 each priced gate 3 in annualized
+  Sharpe by adding constant alpha to a base shape and bisecting to
+  PBO = 0.05, giving 1.5814–1.7857 (median 1.6294), 1.6905, and a
+  confirmation. **All six base shapes are columns already inside the
+  candidate pool** — iteration 64's five are trials 131, 14, 7, 15 and 85,
+  and four of those are among the pool's top in-sample winners
+  (131 **w=0.345221**, 7 **0.329681**, 47 **0.131546**). Gate 3 never
+  reads Sharpe. With w the candidate's in-sample win share, f its own
+  failure rate where it wins and g the legacy pool's where it keeps,
+  **PBO = w·f + (1 − w)·g** exactly, so **PBO ≤ 0.05 requires
+  (1 − w)·g ≤ 0.05** — arithmetic, not an estimate.
+
+- **The requirement, measured and shape-independent.** Across **43**
+  bisected crossings — five construction families over five base shapes,
+  five seeds and seven resemblance levels, of which 41 are independent
+  (two `mix` rows duplicate trial 131's endpoints by construction, and
+  the statistics are identical either way) — every row landing in pooled
+  PBO
+  **[0.049883, 0.049961]** — the required in-sample win share is
+  **min 0.932246, median 0.949495, max 0.956410**. **Gate 3's actual
+  requirement is to win the in-sample Sharpe comparison in ~95% of 12 870
+  split geometries against 37 fixed incumbent columns.** Best ever
+  achieved here: **0.759751** by the engine's ceiling arm, **0.345221** by
+  the best incumbent column. What iterations 64/66/67 measured was not the
+  bar — it was the **Sharpe price of that win share for one kind of
+  candidate**.
+
+- **The price depends on resemblance, and novelty is the expensive side.**
+  Priced for a candidate **uncorrelated with the pool**, which is what a
+  new architecture is: day-permuted real shapes (5 bases × 5 seeds)
+  **1.886356–2.355461**, median **2.084465**; block-permuted (preserving
+  within-block serial structure, answering the objection that day
+  permutation flatters the result) **2.066681–2.263266**, median
+  **2.198848** — **higher**, not lower; a maximally-uniform synthetic
+  Gaussian **1.908769**. Against **1.630716** median for a boosted
+  incumbent. Paired on the same base at a common seed the penalty is
+  **+15.68% / +29.20% / +10.59% / +22.15% / +29.47%**, median **+22.15%**,
+  on bases whose exact marginal return distribution is preserved. Three
+  structurally independent constructions of "uncorrelated" agree.
+
+- **Dose-response monotone, mechanism measured, obvious hypothesis
+  refuted first.** Interpolating one novel shape toward its incumbent twin
+  across seven levels, the crossing falls **1.886356 → 1.630716**
+  (**+15.68%** end to end) while required w never leaves
+  **[0.9435, 0.9479]** — one requirement, priced differently. The head
+  start hypothesis (a boosted copy inherits its twin's splits) was tested
+  and **refuted**: twin-overlap at each shape's own crossing is
+  **identical** for both constructions (trial 131 **0.3642** vs
+  **0.3645**; trial 14 0.0355 vs 0.0301; trial 7 0.3470 vs 0.3105; trial
+  15 0.0005 vs 0.0005; trial 85 0.0313 vs 0.0306). The mechanism is the
+  **variance of the margin** over the legacy max: as resemblance rises,
+  corr(candidate IS Sharpe, legacy max) goes **0.4658 → 0.9288**, the sd
+  of the margin falls **57.5%** (0.349773 → 0.148776) and the required
+  mean margin falls **49.6%** (0.558903 → 0.281946) — so the variance
+  channel carries **most but not all** of it, stated as measured rather
+  than as a clean Gaussian story.
+
+- **Fifth recorded gate-3 defect, and the first directional against the
+  program's goal.** After iteration 56 (the verdict is a 4 224-value
+  distribution), 64 (a family buys one column, not K), 66 (the pool sets a
+  candidate's verdict) and 67 (79.41% of the ceiling arm's verdict belongs
+  to foreign columns): **at equal statistical quality gate 3 is cheaper to
+  pass by duplicating the registry than by bringing something new.** A gate
+  meant to punish overfitting charges a **novelty premium** of 10.59% to
+  29.47%. **The loop declines the rule change for the fifth time** — a
+  candidate-only PBO would repair both the fourth and fifth defects and
+  would convert the engine's ceiling arm from **0.235120** to
+  **0.048407**, a fail into a pass, which is exactly why it is refused
+  here rather than made.
+
+- **What closes.** Iteration 67 closed the family route on a **+3.21%**
+  shortfall against the engine's **1.578665** ceiling — close enough that
+  "nearly reachable" was defensible. The route it left open falls short by
+  **+19.49% at its most favourable measured point** (median **+33.38%**,
+  worst **+49.21%**), and that point is **not** an idealisation — the
+  lowest novel crossing, **1.886356**, is a day-permuted copy of trial 131,
+  carrying a registered strategy's exact marginal return distribution with
+  only its pool alignment removed. The maximally-uniform synthetic object
+  is **more** expensive still at **1.908769**.
+  **Route closed: no proposal may treat a new architecture as a path to
+  the stop condition**, and the closure needs no enumeration because it
+  rests on one property — a new architecture is by definition not already
+  in the pool. Explicitly **not** closed: new signal code written for a
+  **product** reason, exactly as iteration 66 said of a sleeve and 67 of a
+  family. Iterations 64, 66 and 67 are **not retracted**; their numbers
+  are correct for what they measured, and what is corrected is the reading
+  that those numbers are the bar. They are its **lowest** price.
+
+- **Step 2 (web research) done and recorded.** Three sources filed in
+  `RESEARCH_LOG.md` under iteration 68, **all three new** (checked by grep
+  before drafting; `gmo-coin`, `Wataru`, `iqueipopg`, `concretum` returned
+  2/1/2/14 hits and were deliberately not re-recorded). **Zero strategy
+  arrivals, twelfth consecutive pass.** **arXiv 2608.27734** (Gençay,
+  2026-08-27) is the outside statement of today's premise — "a
+  deliberately leaky oracle posting a Sharpe ratio of **35** survives
+  Deflated Sharpe and probability-of-backtest-overfitting testing
+  completely", and across a 453-stock and a 39-ETF universe honest
+  evaluation "certifies passive benchmarks … rejects **every**
+  LLM-discovered strategy". **github.com/cmd-lopez/crypto-edge** is the
+  closest external match to this product law yet found (long-only, spot,
+  daily, crypto, pre-registered, 12-month train / 3-month test, 20 folds,
+  2021-07-01..2026-06-30): Sharpes **−0.15 / −0.34 / −0.48**, best raw
+  **p = 0.26**, "Per the spec's kill criterion, the trading system was not
+  built" — recorded for **what it did**, not what it found, since its
+  **80 bps per side** is more than five times this project's 15 bps.
+  **delphicalpha** (2026-07-21) puts daily cross-sectional trend at net
+  Sharpe **0.56** in crypto over 80 coins — long/short, so not testable
+  here, but the **fourth** independent outside anchor to land below the
+  gate-3 floor.
+
+- **Verification (rule 7), run bare, all green.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **Contracts: 13 kept, 0 broken**; `pytest -m "not
+  network"` **383 passed** in 181.53s. **Twelfth consecutive iteration to
+  record the same caveat**, with today's instance the most direct yet: the
+  suite type-checks `src/` only, so the modified script is covered by
+  `ruff` but not by `mypy --strict` — and **no test in `tests/` asserts
+  anything about what gate 3 requires of a candidate**, so nothing in a
+  green tree could have told this program that the bar it has quoted for
+  four iterations was the *discount* price. The green tree has now failed
+  to catch **ten** separate defects in ten iterations.
+
+- **Operator-attention items.** Sixteen — the fifteen of iteration 67 with
+  one added, and (f) re-dated. (a) Ensemble-breadth leave-one-out still
+  unmeasured. (b) The research loop still runs in a visible console window.
+  (c) The account-limit outage remains closed; the **2026-09-23** slot was
+  lost, so consecutive completed slots reset to **one**. (d) Should
+  cross-track structural comparisons of the shadow files be brought under
+  `FORWARD_TRACK_READ_PREREGISTRATION.md`? The loop **abstained** again,
+  twenty-first consecutive iteration. (e) Section 1 of
+  `PRE_HOLDOUT_PROTOCOL.md` calls all-columns PBO the "conservative upper
+  bound", which is false at N=133. (f) The live paper runtime has been a
+  no-op for **55 days** (last `cycle` 2026-07-31T00:05:02Z; 29 cycles
+  total); the dashboard hits a full 90-day observation-period bar on
+  **2026-10-01**, now **7 days away**. (g) The forward tracks charge no
+  trading cost. (h) The forward tracks archive no input. (i) The read rule
+  states no replay depth; required at least 206 bars. (j) Test 2 cannot
+  fire at 90 days. (k) Holdout nomination N1 has not named the live
+  contract since 2026-07-31. (l) Gate 4's variance input is
+  analyst-controllable. (m) Gate 6 cannot fail. (n) The sleeve book cannot
+  be graded at all. (o) The gate-3 bar is unreachable and the gate refuses
+  the ceiling for other columns' failures. **(p) NEW — gate 3 charges a
+  novelty premium: the bar is a fixed in-sample-win share of ~0.95, and
+  buying it costs a boosted incumbent 1.630716 against 1.886356–2.355461
+  for a candidate uncorrelated with the pool.** Items (g)-(k) are due
+  **before 2026-10-22**, now **28 days**; (m) **before 2026-10-03**, now
+  **9 days**; (l), (n), (o) and (p) have no deadline.
+
+- **What this iteration does NOT do:** no trial was registered, no arm
+  nominated, and **no backtest output written next to the registry** — N
+  is still **133**, and the single backtest run (iteration 67's ceiling
+  arm, re-run only to confirm the instrument agrees) went nowhere durable.
+  The holdout was **not read, not fetched and not unsealed**; `spent` is
+  still `false`. No gate rule modified — in particular **gate 3 was not
+  repaired, re-read, or re-scored on its candidate-only rate**, in the
+  second consecutive iteration where doing so would have turned the
+  program's best measured object from a fail into a pass. No frozen
+  pre-registration edited (the contract's *standing answer* is appended to
+  and the P3 queue item carries a dated EXTENDED note, as the contract
+  directs); no nomination substituted, no registry row or return series
+  touched, no shadow file written to or read for a metric, no prior result
+  document rewritten, no prior log entry edited, no gate report
+  regenerated, **no file under `configs/runtime/`, `src/` or any
+  scheduled-task definition touched**. No new script: one existing script
+  gained one mode.
+
+- **Standing answer restated, and the search now has no open route at
+  all.** Timing works in crypto only and in its own universe bought both
+  return and drawdown; the engine and the forward recorder are free of
+  look-ahead; the Taiwan and gold negatives are robust; against the naive
+  13-coin alternative the margin is 5.4% and that benchmark is
+  survivorship-flattered; nothing is forward-validated and no return-based
+  forward verdict is permitted before 2028-06-29; the forward stream is
+  costless and unarchived and all three October tests are mechanism
+  checks; the October holdout cannot decide either; all six gates are
+  characterised; P2 is a product route; the engine's expressible ceiling is
+  1.578665 and fails gate 3; **and with today's measurement the one route
+  iteration 67 left open closes too — gate 3 requires a ~0.95 in-sample-win
+  share, charges a candidate uncorrelated with the incumbent pool between
+  1.886356 and 2.355461 annualized Sharpe for it, and that is 19.49% above
+  everything this engine can build even at its most favourable measured
+  point.** So the honest summary of sixty-eight iterations is: **all three
+  unblocking states are measured, all six gates are characterised, the
+  queue is measured, the engine's ceiling is measured, and the last open
+  route is priced — none of them decides**, and the two gates that do
+  decide are the two that mis-attribute, one of which now also charges
+  novelty a premium. On-chain route open but unadvanced.
+  Operator-attention items dated 2026-09-24 are the sixteen above.

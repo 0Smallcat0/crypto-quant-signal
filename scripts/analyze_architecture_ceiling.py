@@ -34,6 +34,7 @@ Usage:
     python -m scripts.analyze_architecture_ceiling --mode sweep --grid donchian-btceth-atr
     python -m scripts.analyze_architecture_ceiling --mode sweep --grid donchian-13
     python -m scripts.analyze_architecture_ceiling --mode stop-condition --grid cs-13
+    python -m scripts.analyze_architecture_ceiling --mode gate3-currency
 
 ``validate`` and ``pbo-validate`` come first and are not optional: the
 sweep's numbers mean nothing until the engine reproduces four registered
@@ -49,7 +50,7 @@ import itertools
 import json
 import multiprocessing as mp
 import time
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -621,11 +622,268 @@ def validate() -> None:
         print(f"{label}: recorded {recorded} got {got} obs {observed} {verdict}")
 
 
+# --- Gate 3 in its own currency (iteration 68) ------------------------------
+# Iterations 64, 66 and 67 all priced gate 3 in annualized Sharpe by adding
+# constant alpha to a base shape and bisecting until PBO crossed 0.05. Every
+# base shape they used is a column already inside the candidate pool. Gate 3
+# does not read Sharpe: it reads which column wins in-sample on each of the
+# 12 870 partitions. This mode separates the two — the IS-win share the gate
+# actually requires, and the Sharpe price of buying that share at a given
+# resemblance to the incumbent pool.
+NOVELTY_SEEDS = (20260924, 1, 7, 99, 2026)
+NOVELTY_BASES = (131, 14, 7, 15, 85)
+DOSE_MIX = (0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
+ANNUALIZER = 365.0
+
+
+def _pool() -> tuple[list[int], list[list[float]], int, int]:
+    ids = _candidate_ids()
+    columns = [_series(trial_id) for trial_id in ids]
+    total = len(columns[0])
+    usable = total - (total % CSCV_BLOCKS)
+    return ids, columns, total, usable
+
+
+def _padded(values: Any, total: int) -> list[float]:
+    """Extend a usable-length series to the pool's length; CSCV truncates the tail."""
+
+    import numpy as np
+
+    column = np.zeros(total)
+    column[: len(values)] = values
+    return [float(value) for value in column]
+
+
+def _at_sharpe(values: Any, target: float) -> Any:
+    """Shift the mean so the series carries ``target`` annualized Sharpe, shape held."""
+
+    import numpy as np
+
+    return values - values.mean() + target / np.sqrt(ANNUALIZER) * values.std(ddof=1)
+
+
+def _crossing(
+    build: Callable[[float], list[float]],
+    columns: Sequence[Sequence[float]],
+    *,
+    low: float = 0.8,
+    high: float = 4.5,
+    tolerance: float = 1e-4,
+) -> float:
+    """Lowest annualized Sharpe at which the built column takes pooled PBO to <= 0.05."""
+
+    while high - low >= tolerance:
+        middle = (low + high) / 2.0
+        if fast_pbo([*columns, build(middle)]) <= PBO_MAX:
+            high = middle
+        else:
+            low = middle
+    return high
+
+
+def _pool_correlation(values: Any, matrix: Any) -> tuple[float, float]:
+    import numpy as np
+
+    scores = [
+        abs(float(np.corrcoef(values, matrix[:, index])[0, 1])) for index in range(matrix.shape[1])
+    ]
+    return max(scores), float(np.mean(scores))
+
+
+def _split_sharpes(data: Any, usable: int) -> tuple[Any, Any]:
+    """Per-partition IS and OOS Sharpe for every column, same definition as fast_pbo."""
+
+    import numpy as np
+
+    block = usable // CSCV_BLOCKS
+    blocks = data[:usable].reshape(CSCV_BLOCKS, block, data.shape[1])
+    block_sum = blocks.sum(axis=1)
+    block_sq = (blocks**2).sum(axis=1)
+    half = CSCV_BLOCKS // 2
+    train_sets = np.array(list(itertools.combinations(range(CSCV_BLOCKS), half)), dtype=np.int64)
+    mask = np.zeros((len(train_sets), CSCV_BLOCKS), dtype=bool)
+    np.put_along_axis(mask, train_sets, True, axis=1)
+
+    def score(selected: Any) -> Any:
+        count = float(half * block)
+        mean = (selected @ block_sum) / count
+        variance = ((selected @ block_sq) - count * mean**2) / (count - 1.0)
+        stdev = np.sqrt(np.maximum(variance, 0.0))
+        return np.where(stdev > 0.0, mean / np.where(stdev > 0.0, stdev, 1.0), 0.0)
+
+    return score(mask.astype(np.float64)), score((~mask).astype(np.float64))
+
+
+def gate3_currency() -> None:
+    """Measure gate 3's requirement as an IS-win share, and its price against novelty."""
+
+    import numpy as np
+
+    ids, columns, total, usable = _pool()
+    matrix = np.asarray(columns).T[:usable]
+    block = usable // CSCV_BLOCKS
+    print(f"pool: {len(ids)} candidate columns, {usable} usable days, {CSCV_BLOCKS} blocks")
+    print(f"recorded gate-3 candidates-PBO reproduced: {fast_pbo(columns):.6f}")
+
+    # 1. What the incumbent pool already achieves, in the gate's own currency.
+    shares: list[tuple[int, float]] = []
+    for index in range(len(ids)):
+        rotated = [*columns[:index], *columns[index + 1 :], columns[index]]
+        shares.append((ids[index], pbo_decompose(rotated)["arm_is_win_share"]))
+    shares.sort(key=lambda pair: -pair[1])
+    print("\nbest IS-win shares already in the pool:")
+    for trial_id, share in shares[:5]:
+        print(f"  trial {trial_id:>4}  w={share:.6f}")
+
+    # 2. Three constructions of "uncorrelated with the pool", against the
+    #    incumbent-boosted construction iterations 64/66/67 used.
+    from statistics import NormalDist
+
+    normal = NormalDist()
+    grid = np.array([normal.inv_cdf((i + 0.5) / block) for i in range(block)])
+    grid = (grid - grid.mean()) / grid.std(ddof=0)
+    legacy_sd = float(np.median(matrix.std(axis=0, ddof=1)))
+
+    rows: list[dict[str, Any]] = []
+
+    def record(shape: str, base: str, build: Callable[[float], list[float]]) -> None:
+        crossing = _crossing(build, columns)
+        decomposition = pbo_decompose([*columns, build(crossing)])
+        values = np.asarray(build(crossing))[:usable]
+        peak, mean = _pool_correlation(values, matrix)
+        rows.append(
+            {
+                "shape": shape,
+                "base": base,
+                "crossing_annualized_sharpe": round(crossing, 6),
+                "max_pool_correlation": round(peak, 4),
+                "mean_pool_correlation": round(mean, 4),
+                **{key: round(value, 6) for key, value in decomposition.items()},
+            }
+        )
+        print(json.dumps(rows[-1], sort_keys=True), flush=True)
+
+    print("\ncrossings by candidate shape:")
+    record(
+        "block-uniform-gaussian",
+        "synthetic",
+        lambda target: _padded(np.tile(_at_sharpe(legacy_sd * grid, target), CSCV_BLOCKS), total),
+    )
+    for trial_id in NOVELTY_BASES:
+        base_series = np.asarray(_series(trial_id))[:usable]
+        record(
+            "incumbent-plus-constant-alpha",
+            f"trial {trial_id}",
+            lambda target, values=base_series: _padded(_at_sharpe(values, target), total),
+        )
+        for seed in NOVELTY_SEEDS:
+            shuffled = base_series.copy()
+            np.random.default_rng(seed).shuffle(shuffled)
+            record(
+                f"day-permuted-seed-{seed}",
+                f"trial {trial_id}",
+                lambda target, values=shuffled: _padded(_at_sharpe(values, target), total),
+            )
+        order = np.random.default_rng(NOVELTY_SEEDS[0]).permutation(CSCV_BLOCKS)
+        reordered = base_series.reshape(CSCV_BLOCKS, block)[order].reshape(-1)
+        record(
+            "block-permuted",
+            f"trial {trial_id}",
+            lambda target, values=reordered: _padded(_at_sharpe(values, target), total),
+        )
+
+    # 3. Dose-response: interpolate one novel shape toward its incumbent twin.
+    print("\ndose-response (trial 131, novel -> incumbent):")
+    base_series = np.asarray(_series(131))[:usable]
+    shuffled = base_series.copy()
+    np.random.default_rng(NOVELTY_SEEDS[0]).shuffle(shuffled)
+    standard = (base_series - base_series.mean()) / base_series.std(ddof=1)
+    permuted = (shuffled - shuffled.mean()) / shuffled.std(ddof=1)
+    for weight in DOSE_MIX:
+        mixed = weight * standard + (1.0 - weight) * permuted
+        record(
+            f"mix-{weight:.2f}",
+            "trial 131",
+            lambda target, values=mixed: _padded(_at_sharpe(values, target), total),
+        )
+
+    # 4. Mechanism. Two competing explanations for why resemblance is cheaper,
+    #    both measured rather than asserted: an inherited head start (refuted),
+    #    and the variance of the margin over the legacy maximum (supported).
+    train, _ = _split_sharpes(np.asarray(columns).T[:usable], usable)
+    legacy_winner = train.argmax(axis=1)
+    legacy_max = train[np.arange(len(train)), legacy_winner]
+
+    head_start: list[dict[str, Any]] = []
+    margin: list[dict[str, Any]] = []
+    print("\nhead start (arm's IS wins that its twin already held) and margin over legacy max:")
+    for row in rows:
+        if row["shape"] not in ("incumbent-plus-constant-alpha",) and not row["shape"].startswith(
+            "day-permuted-seed-20260924"
+        ):
+            continue
+        trial_id = int(row["base"].split()[1])
+        base_series = np.asarray(_series(trial_id))[:usable]
+        if row["shape"].startswith("day-permuted"):
+            base_series = base_series.copy()
+            np.random.default_rng(NOVELTY_SEEDS[0]).shuffle(base_series)
+        arm = _at_sharpe(base_series, row["crossing_annualized_sharpe"])
+        extended = np.column_stack([np.asarray(columns).T[:usable], arm])
+        arm_train, _ = _split_sharpes(extended, usable)
+        wins = arm_train.argmax(axis=1) == len(ids)
+        overlap = int(((legacy_winner == ids.index(trial_id)) & wins).sum())
+        head_start.append(
+            {
+                "shape": row["shape"],
+                "base": row["base"],
+                "arm_is_wins": int(wins.sum()),
+                "of_which_twin_already_won": overlap,
+                "share": round(overlap / int(wins.sum()), 4),
+            }
+        )
+        print(json.dumps(head_start[-1], sort_keys=True), flush=True)
+
+    for row in [r for r in rows if r["shape"].startswith("mix-")]:
+        weight = float(row["shape"].split("-")[1])
+        mixed = weight * standard + (1.0 - weight) * permuted
+        arm = _at_sharpe(mixed, row["crossing_annualized_sharpe"])
+        arm_train, _ = _split_sharpes(arm.reshape(-1, 1), usable)
+        gap = arm_train[:, 0] - legacy_max
+        margin.append(
+            {
+                "mix": weight,
+                "crossing_annualized_sharpe": row["crossing_annualized_sharpe"],
+                "corr_with_legacy_max": round(
+                    float(np.corrcoef(arm_train[:, 0], legacy_max)[0, 1]), 4
+                ),
+                "mean_margin_annualized": round(float(gap.mean()) * float(np.sqrt(ANNUALIZER)), 6),
+                "sd_margin_annualized": round(
+                    float(gap.std(ddof=1)) * float(np.sqrt(ANNUALIZER)), 6
+                ),
+            }
+        )
+        print(json.dumps(margin[-1], sort_keys=True), flush=True)
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    path = OUT_DIR / "gate3_currency.json"
+    payload = {
+        "baseline_candidates_pbo": round(fast_pbo(columns), 6),
+        "pool_is_win_shares": [
+            {"trial_id": trial_id, "w": round(share, 6)} for trial_id, share in shares
+        ],
+        "crossings": rows,
+        "head_start": head_start,
+        "margin_variance": margin,
+    }
+    path.write_text(json.dumps(payload, indent=1, sort_keys=True), encoding="utf-8")
+    print(f"\nwrote {path}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--mode",
-        choices=("validate", "pbo-validate", "sweep", "stop-condition"),
+        choices=("validate", "pbo-validate", "sweep", "stop-condition", "gate3-currency"),
         required=True,
     )
     parser.add_argument("--grid", choices=sorted(GRIDS), default="donchian-btceth")
@@ -642,6 +900,8 @@ def main() -> None:
         pbo_validate()
     elif args.mode == "sweep":
         run_sweep(args.grid, workers=args.workers)
+    elif args.mode == "gate3-currency":
+        gate3_currency()
     else:
         stop_condition(args.grid, top=args.top)
 

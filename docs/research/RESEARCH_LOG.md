@@ -3386,3 +3386,90 @@ cross-sectional momentum untested here → experiment 3.
   **1.5814** floor gate 3 requires. The literature has now handed this
   program vocabulary for seven consecutive measurement defects, an
   outside bound for the eighth, and not once an edge.
+
+
+## 2026-09-24 — iteration 68
+
+Searched for (a) critiques of CSCV/PBO that turn on **candidate-pool
+composition**, which is what today's local measurement is about, and (b)
+the standing product-law query (spot, long-only, daily, two-sided costs).
+Three sources filed, **all three new to this file** (checked by grep
+before drafting: `2608.27734`, `Gencay`/`Gençay`, `crypto-edge`,
+`cmd-lopez`, `delphicalpha` all returned 0 hits; `gmo-coin`, `Wataru`,
+`iqueipopg` and `concretum` returned 2/1/2/14 and were therefore
+deliberately **not** re-recorded).
+
+- **arXiv 2608.27734, Eray Gençay, submitted 2026-08-27 — "What survives
+  honest evaluation? Leakage-safe, search-aware assessment of LLM-driven
+  trading strategy discovery."** Claim, quoted from the abstract: "a
+  deliberately leaky oracle posting a Sharpe ratio of **35** survives
+  Deflated Sharpe and probability-of-backtest-overfitting testing
+  completely." Across a **453**-stock point-in-time US equity universe and
+  a **39**-ETF multi-asset universe with transaction, impact and borrow
+  costs, honest evaluation "certifies passive benchmarks (out-of-sample
+  confidence intervals excluding zero), rejects **every** LLM-discovered
+  strategy (across two frontier models, search budgets up to **one
+  hundred** candidates, and **five** repeated runs)."
+  **Testable here: no** (different universes, and this program has no LLM
+  discovery loop). **Relevant anyway, on two counts.** First, it is the
+  outside statement of today's finding's premise — DSR and PBO are not
+  measuring what a reader assumes, and the failure is *structural*, not a
+  matter of thresholds. Second, "certifies passive benchmarks, rejects
+  every discovered strategy" is this program's own standing answer stated
+  by a third party on different data: 14.26x against 13.53x for holding
+  thirteen coins is a 5.4% margin, and the registry's own benchmark clears
+  gate 5's bar at 68.15% against the sealed nomination's 68.07%
+  (iteration 63). **No number imported** — nothing in it is measured on
+  crypto.
+
+- **github.com/cmd-lopez/crypto-edge — "Pre-registered, survivorship-safe
+  walk-forward test of long-only crypto trend rules on Coinbase. Verdict:
+  no edge."** The closest external match to this project's product law yet
+  found: long-only, spot, daily, crypto, pre-registered, with a written
+  kill criterion. Three rules ("H1 BTC trend gate", "H2 per-asset trend",
+  "H3 trend composite") walk-forwarded **12-month train / 3-month test, 20
+  folds**, 2021-07-01 through 2026-06-30, at **0.6% fee + 0.2% slippage
+  per side, stress-tested at 2×**. Sharpes **−0.15 / −0.34 / −0.48**;
+  "the smallest raw p-value across all 11 trials is **0.26**"; "None of the
+  signals beats BTC even at zero cost"; "Per the spec's kill criterion,
+  the trading system was not built."
+  **Testable here: no** — its cost assumption is **80 bps per side**
+  against this project's **15 bps** (`fee_bps 10 + slippage_bps 5`), more
+  than five times higher, so its negative cannot be read against trial 88
+  or 118. **Recorded because of what it did, not what it found:** it is
+  the first outside instance in this file of a pre-registered crypto trend
+  study that **honoured its own kill criterion and did not build**. That
+  is the behaviour iterations 26 and 67 argued this program is obliged to,
+  and it is evidence the obligation is not idiosyncratic.
+
+- **delphicalpha.substack.com, 2026-07-21 — "Daily Long/Short Trend
+  Following: Parameters, Asset Classes, and Universe Depth."** Daily
+  cross-sectional momentum over **2 897** instruments in four asset
+  classes: futures **111** contracts 2008-2026, crypto **80** coins
+  2017-2026, US stocks **2 627** 2000-2026, FX **79** pairs 2010-2026, at
+  "futures 5bps, stocks 3bps, FX 2bps, crypto 5bps per unit of turnover".
+  Net Sharpe by class: futures **0.73**, **crypto 0.56**, US stocks
+  **0.42**, FX **0.24**.
+  **Testable here: no** — it is **long/short**, which product law forbids,
+  and 5 bps per unit of turnover is a third of this project's 15 bps per
+  fill. **Recorded as an outside anchor:** a crypto net Sharpe of **0.56**
+  on an **80**-coin universe over nine years, from an author sweeping
+  universe depth deliberately, sits far below the **1.886356** a novel
+  candidate needs to clear gate 3 here (today's measurement) and below the
+  **1.578665** ceiling of this engine (iteration 67). It is the fourth
+  independent outside estimate in this file to land under the gate-3 floor
+  — after dev.to/maymay5692's best honest arm at **1.30**,
+  paperswithbacktest's 140-strategy combination at **1.442**, and
+  gmo-coin-trend-lab's walk-forward **0.85**.
+
+- **Arrivals: zero. Twelfth consecutive pass.** Three sources handled,
+  all three new. Today's shape is a return to the methodological pattern
+  of iterations 60–66 for the first source and a continuation of
+  iteration 67's empirical pattern for the other two — and for the first
+  time in this file, an outside study **stopped** rather than published a
+  survivor. **Streak, counted against this file rather than asserted:
+  zero strategy arrivals in iterations 57 through 68 — twelve consecutive
+  passes.** The literature has now handed this program vocabulary for
+  eight consecutive measurement defects, an outside bound for the ninth,
+  four independent Sharpe anchors all below the gate-3 floor, and not once
+  an edge.
