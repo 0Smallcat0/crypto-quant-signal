@@ -8480,3 +8480,196 @@
   decide are the two that mis-attribute, one of which now also charges
   novelty a premium. On-chain route open but unadvanced.
   Operator-attention items dated 2026-09-24 are the sixteen above.
+
+## 2026-09-25 — iteration 69 (P1: every route is closed and every gate characterised, but nobody had asked whether the *success exit itself* can be bought; measured, gate 3 alone is purchasable with 32 junk arms and the conjunction is not — the first defence of the framework in this program's record)
+
+- **Standing answer restated, and for the first time a measurement moved it in
+  the framework's favour.** Timing works in crypto only and in its own universe
+  bought both return and drawdown; the engine and the forward recorder are free
+  of look-ahead; the Taiwan and gold negatives are robust; against the naive
+  13-coin alternative the margin is 5.4 % on a survivorship-flattered benchmark;
+  nothing is forward-validated and no return-based forward verdict is permitted
+  before 2028-06-29; the forward stream is costless and unarchived and all three
+  October tests are mechanism checks; the October holdout cannot decide; all six
+  gates are characterised; P2 is a product route; the engine's expressible
+  ceiling is 1.578665 and fails gate 3; a new architecture pays a +22.15 %
+  novelty premium and falls 19.49 % short. **Added today: gate 3's verdict IS
+  individually purchasable — 32 deliberately bad registered arms take the
+  ceiling arm from 0.235120 to 0.023776, and 64 take the legacy pool alone from
+  0.651826 to 0.028749 with no new candidate at all — but the stop condition is
+  a conjunction, and over 36 measured (padding-shape, K) cells 0 pass both
+  gates, because the distance from the registry mean that makes a column
+  OOS-dominated is the same distance that inflates the Sharpe variance gate 4
+  divides by.** So the honest summary of sixty-nine iterations is unchanged in
+  its verdict and stronger in its footing: **no route reaches the stop
+  condition, and that is now known not to be an artifact of who else is in the
+  pool.** On-chain route open but unadvanced.
+
+- **Step 0 — convergence check, run first.** (1) *Current answer:* as above,
+  and before today it rested on gate-3 numbers whose pool-sensitivity had never
+  been tested. (2) *What this iteration moves:* it decides whether the loop's
+  only success exit is a statement about an edge. Iteration 64 proved gate 4's
+  variance input is analyst-controllable; the mirror question had never been
+  asked of gate 3, the gate that did the refusing in every closure of iterations
+  66, 67 and 68. Either answer changes line 1 — purchasable means "no route
+  reaches the stop condition" is a claim about pool composition; not
+  purchasable means iterations 67 and 68 are stronger than they were stated.
+  (3) *Why it is not sprawl:* it closes the last structural question about the
+  framework, it is measured **against this loop's own interest** (a purchasable
+  exit is the loop's own exit), and it needed **no new script** — the existing
+  `analyze_architecture_ceiling.py` gained two modes, `gate3-purchasability` and
+  `gate3-frontier`. Twelfth iteration in thirteen to add no script.
+
+- **P1 first, as the queue requires: all four forward tracks are current.**
+  Crypto daily — `shadow_trial88.jsonl` and `shadow_trial118.jsonl`, **62** rows
+  each (61 at iteration 68), last date **2026-09-24**, both written by the 08:20
+  task (`shadow_20260925_082002.log`, the **101st** run log). Weekly —
+  `shadow_tw0050.jsonl` **10** rows and `shadow_gld.jsonl` **11** rows in
+  `D:\TW-Stock-Trading`, both last date **2026-09-18**, written
+  2026-09-19T01:49:42Z; today is **Friday** and the slot is Saturday 09:40, so
+  unchanged is correct and the next fire is **2026-09-26**. **Nothing to fix.**
+  The live paper runtime remains a no-op: **29** `cycle` events total, the last
+  at **2026-07-31T00:05:02Z**, now **56** days ago, and **56** `exec_quote`
+  events frozen at the same date.
+
+- **Step 2 — web research, three sources, all three new** (grep-checked before
+  drafting). Dube's MQL5 CSCV walk-through (2023-11-21) is the first outside
+  source in this file to state that PBO is a property of the supplied pool
+  rather than of a strategy — the premise of gate-3 defects 4 and 5 — and it
+  makes a **directional prediction that today's measurement refutes in scope**:
+  it says junk inflates PBO, and with the candidate held fixed junk *deflates*
+  it. Quant Beckman (2025-09-01) states the deflation premise and, asked whether
+  a candidate's own degradation can be separated from the pool's, has no
+  vocabulary for it — the third outside source with none. Trading-bot PR #6
+  (2026-09-16) is a 4 053-trade long/short 4-hour Donchian+ATR walk-forward at
+  **Sharpe 1.29**, inadmissible on product law and on bar interval, recorded as
+  the **fifth** independent outside anchor below the gate-3 floor (1.29, 1.30,
+  1.442, 0.85, 0.56). **Zero strategy arrivals, thirteenth consecutive pass.**
+
+- **Step 3 — the measurement. Baseline re-validated before anything was
+  computed**, as the script's own rule requires: the fast CSCV path reproduces
+  the recorded candidates-PBO **0.651826** and all-columns **0.732556** exactly,
+  and reproduces iteration 67's ceiling-arm decomposition to six decimals
+  (PBO **0.235120**, w **0.759751**, f **0.063714**, g **0.777167**, own
+  unconditional rate **0.048407**). Iteration 68's identity
+  **PBO = w·f + (1 − w)·g** holds with residual **0.0** in all 14 ladder rows.
+  The registry mean annualized Sharpe comes out **0.944374** and the engine
+  ceiling **1.578665**, both matching iterations 64 and 67.
+
+  **FINDING 1 — gate 3 alone is purchasable, and the mechanism is rank
+  arithmetic.** Padding the pool with the 64 lowest-Sharpe valid sweep arms
+  (span **−0.053085** to **−0.759738**) while holding the candidate fixed moves
+  candidates-PBO **0.235120 → 0.235120 → 0.195726 → 0.188733 → 0.172727 →
+  0.144056 → 0.023776 (PASS) → 0.005594 (PASS)** at K = 0/1/2/4/8/16/32/64.
+  With **no new candidate at all**, K=64 takes the 37-column legacy pool from
+  **0.651826 to 0.028749**, also a pass — and `gate_3_pbo.passes` is a
+  report-level field while trials 29, 37 and 118 already carry
+  `passes_dsr: true` in the recorded report, so on the stop condition's literal
+  wording that is enough to trip it. **The K=1 step is exactly inert** (PBO and
+  w/f/g unchanged to six decimals) because the fail threshold is
+  `floor(0.5·(N+1))` and one uniformly-dominated column advances the winner's
+  rank and the threshold by 1 each; after j columns the test is
+  `rank ≤ floor(0.5·(38+j+1)) − j`, which tightens with j and becomes nearly
+  unsatisfiable by j=64. **Sixth recorded gate-3 defect, and the first whose
+  direction is unexpected: the gate rewards registering junk, so honest full
+  disclosure of bad arms and a lower PBO are the same act.**
+
+  **FINDING 2 — the stop condition is NOT purchasable, and this is the first
+  defence of the framework this program has recorded.** Over **36 distinct
+  (padding-shape, K) cells** — 14 in the two extreme ladders, 20 in a Sharpe-band
+  scan, 2 frontier extension points — **0 pass both gates.** The junk that buys
+  gate 3 destroys gate 4 on the same columns: Sharpe variance rises
+  **1.584220e-04 → 3.037061e-04 → 4.153607e-04 → 5.808302e-04 → 8.549405e-04**
+  and the ceiling arm's DSR falls **0.994802 → 0.972130 → 0.930822 (fails) →
+  0.820492 → 0.539019** at K = 0/8/16/32/64. And the padding that protects gate
+  4 destroys gate 3: padding **at** the registry mean — iteration 64's own
+  dilution attack — drives the variance *down* to **8.461149e-05** and DSR *up*
+  to **0.998472** at K=128 while PBO **rises to 0.258353**, worse than unpadded.
+  Mechanism measured, not asserted: the pool's own failure rate g, the term that
+  must be small since PBO ≤ 0.05 requires (1 − w)·g ≤ 0.05, is monotone in the
+  padding band's centre — **0.037013 / 0.387743 / 0.745297 / 0.993754** at
+  K=64 for bands 0.0 / 0.4 / 0.944374 / 1.2. **The two gates read the same
+  distance from the registry mean with opposite signs**, and no third direction
+  exists because a column's OOS rank and its full-sample Sharpe are the same
+  quantity measured on overlapping data.
+
+  **FINDING 3 — the frontier is an interior minimum.** Minimum candidates-PBO
+  subject to DSR ≥ 0.95, over all 36 cells: **0.095571** (band 0.4, K=128,
+  DSR **0.969577**, w 0.735354, g 0.361127) — **1.9114x the 0.05 bar**. Extended
+  by 512 further engine runs so saturation is measured rather than extrapolated:
+  K=256 gives **0.098601** (DSR 0.983973) and K=512 **0.144522** (DSR 0.993604),
+  so PBO *rises* past K=128 as the band's own arms begin winning splits
+  (w 0.735354 → 0.729759 → 0.706138). **Independently corroborated:** 0.095571
+  sits **10.2 %** from iteration 64's separately measured **0.105361**, the best
+  any of the 37 existing columns would record.
+
+  **Three controls, all negative, which is what makes finding 2 load-bearing.**
+  (a) **Duplication does not work** — 1 to 32 extra copies of the candidate
+  leave PBO in **[0.205128, 0.240249]**, every one a fail, so today's mechanism
+  is distinct from iteration 68's resemblance premium rather than a restatement
+  of it. (b) **Good padding does not work** — the 64 highest-Sharpe arms
+  (1.470270 to 1.331424) raise PBO monotonically to **0.828283** while w
+  collapses **0.759751 → 0.276923**. (c) **The forbidden attack does not work
+  either** — greedy legacy pruning, i.e. silent survivor filtering, saturates
+  after **14 drops** at **0.094406** with **24 of 37** columns left and no
+  further single removal lowering it; two unrelated attacks land on **0.094406**
+  and **0.095571**.
+
+  **Scope limit stated rather than buried:** padding is drawn from the **39 020**
+  valid arms this engine can express, so the claim is *"not purchasable with
+  anything this repository can build"* — iteration 67's framing — and not a proof
+  over all mathematically possible columns.
+
+- **Decision, and the sixth consecutive refusal.** The attack is **refused**: no
+  proposal may register arms to move a gate-3 verdict and no document may cite a
+  PBO improvement obtained by growing the pool. **Route closed:** pool
+  composition is not a path to the stop condition. **Iterations 67 and 68 are
+  strengthened** — the ceiling arm's 0.235120 cannot be padded away while gate 4
+  holds. This is the **eleventh** operator choice due and the **sixth with no
+  deadline**; options in
+  `docs/research/GATE3_PURCHASABILITY_2026-09-25.md`.
+
+- **Verification, run bare per iron rule 7.** `ruff check` all checks passed;
+  `ruff format --check` 129 files already formatted (the new modes were
+  reformatted once and rechecked); `mypy --strict src/` success, no issues in 58
+  source files; `lint-imports` **13 contracts kept, 0 broken**;
+  `pytest -m "not network"` **383 passed** in 56.24s.
+
+- **Operator-attention items, dated 2026-09-25 — seventeen.** (a) Gate 3
+  misranks and rejects everything; (b) the one risk-compliant gate-4 pass is
+  one-trial-fragile; (c) two of six gates have ever decided a candidate; (d) the
+  contract's own MinTRL for trial 88 is **2028-06-29**, not 90 days; (e)
+  `PRE_HOLDOUT_PROTOCOL.md` §1 calls all-columns PBO a "conservative upper
+  bound", false at N=133; (f) the live paper runtime has been a no-op for **56
+  days** and the dashboard hits a full 90-day observation bar on **2026-10-01**,
+  now **6 days away**; (g) the forward tracks charge no trading cost; (h) they
+  archive no input; (i) the read rule states no replay depth, ≥206 bars
+  required; (j) Test 2 cannot fire at 90 days; (k) holdout nomination N1 has not
+  named the live contract since 2026-07-31; (l) gate 4's variance input is
+  analyst-controllable; (m) gate 6 cannot fail; (n) the sleeve book cannot be
+  graded at all; (o) the gate-3 bar is unreachable and the gate refuses the
+  ceiling for other columns' failures; (p) gate 3 charges a novelty premium.
+  **(q) NEW — gate 3's verdict is purchasable with 32 junk arms, the recorded
+  candidates-PBO is therefore not comparable across reports with different N,
+  and nothing in the contract says so; the conjunction with gate 4 is what
+  blocks the attack, and that protection is undocumented.** Items (g)-(k) are
+  due **before 2026-10-22**, now **27 days**; (m) **before 2026-10-03**, now
+  **8 days**; (l), (n), (o), (p) and (q) have no deadline.
+
+- **What this iteration does NOT do:** **no arm was registered** — N is still
+  **133**, no `append_trial` call was made, no return series was written next to
+  the registry, no gate report was regenerated, and every one of the ~1 300
+  engine runs went to the gitignored `data/research/ceiling/` tree. **In
+  particular the padding attack measured here was measured and not performed:**
+  not one of the 64 junk arms, 512 band arms or the ceiling arm exists as a
+  registry row. The holdout was **not read, not fetched and not unsealed**;
+  `spent` is still `false`. No gate rule modified — **gate 3 was not repaired,
+  re-read or re-scored on its candidate-only rate**, in the third consecutive
+  iteration where doing so would have turned this program's best measured object
+  from a fail into a pass. No frozen pre-registration edited (the contract's
+  *standing answer* is appended to and the P3 queue item carries a dated note,
+  as the contract directs); no nomination substituted, no registry row or return
+  series touched, no shadow file written to or read for a metric, no prior result
+  document rewritten, no prior log entry edited, **no file under
+  `configs/runtime/`, `src/` or any scheduled-task definition touched**. No new
+  script: one existing script gained two modes.

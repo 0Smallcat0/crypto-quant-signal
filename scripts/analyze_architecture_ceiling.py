@@ -35,6 +35,8 @@ Usage:
     python -m scripts.analyze_architecture_ceiling --mode sweep --grid donchian-13
     python -m scripts.analyze_architecture_ceiling --mode stop-condition --grid cs-13
     python -m scripts.analyze_architecture_ceiling --mode gate3-currency
+    python -m scripts.analyze_architecture_ceiling --mode gate3-purchasability
+    python -m scripts.analyze_architecture_ceiling --mode gate3-frontier
 
 ``validate`` and ``pbo-validate`` come first and are not optional: the
 sweep's numbers mean nothing until the engine reproduces four registered
@@ -879,11 +881,352 @@ def gate3_currency() -> None:
     print(f"\nwrote {path}")
 
 
+# --- Is gate 3's verdict purchasable? (iteration 69) ------------------------
+# Iteration 64 found gate 4's variance input is analyst-controllable: 39 arms
+# at the registry's own mean Sharpe turn trial 88 from a gate-4 failure into a
+# pass, on no new information. The mirror question was never asked of gate 3,
+# which is the gate that actually refused every route iterations 66-68 closed.
+# CSCV scores the in-sample winner by its OOS RANK inside the same pool
+# (``rank / (N + 1) <= 0.5``), so the verdict is measured against the pool's
+# own median. This mode holds the candidate fixed and changes only the pool.
+#
+# Every column added here is a real backtest of a real config, obtained by an
+# act the contract permits (iterations 66-68: a family may be run for a
+# product reason). Nothing is fabricated and nothing is hidden. That is the
+# point: if the verdict moves, it moves without dishonesty.
+PURCHASE_K = (1, 2, 4, 8, 16, 32, 64)
+CEILING_ARM: dict[str, Any] = {
+    "family": "cs",
+    "top_k": 3,
+    "lookback": 120,
+    "cadence": "monthly",
+    "absolute_filter": True,
+    "gate_sma": 50,
+    "decision_start": CS_DECISION_START,
+}
+SWEEP_METRIC_KEYS = (
+    "sharpe",
+    "error",
+    "final_equity",
+    "max_drawdown",
+    "observation_days",
+    "trades",
+    "turnover",
+)
+
+
+def _sweep_rows() -> list[tuple[dict[str, Any], tuple[str, ...], float]]:
+    """Every valid arm of every recorded sweep, with the universe it was run on."""
+
+    rows: list[tuple[dict[str, Any], tuple[str, ...], float]] = []
+    for grid, (symbols, _family) in GRIDS.items():
+        path = OUT_DIR / f"sweep_{grid}.jsonl"
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            row = json.loads(line)
+            if "sharpe" not in row:
+                continue
+            arm = {key: value for key, value in row.items() if key not in SWEEP_METRIC_KEYS}
+            rows.append((arm, symbols, float(row["sharpe"])))
+    return rows
+
+
+def _same_arm(left: Mapping[str, Any], right: Mapping[str, Any]) -> bool:
+    return all(left.get(key) == right.get(key) for key in set(left) | set(right))
+
+
+def _greedy_prune(columns: Sequence[Sequence[float]]) -> list[dict[str, Any]]:
+    """Price the forbidden attack: drop legacy columns until the verdict flips.
+
+    The candidate is the last column and is never a removal candidate. This is
+    silent survivor filtering and is recorded as forbidden, not proposed.
+    """
+
+    working = [list(column) for column in columns]
+    labels = list(range(len(working) - 1))
+    trail: list[dict[str, Any]] = []
+    while len(working) > 4:
+        current = fast_pbo(working)
+        best_index = None
+        best_value = current
+        for position in range(len(labels)):
+            trimmed = [column for index, column in enumerate(working) if index != position]
+            value = fast_pbo(trimmed)
+            if value < best_value:
+                best_value = value
+                best_index = position
+        if best_index is None:
+            break
+        dropped = labels.pop(best_index)
+        working = [column for index, column in enumerate(working) if index != best_index]
+        trail.append(
+            {"dropped_position": dropped, "columns": len(working), "pbo": round(best_value, 6)}
+        )
+        print(f"  prune {len(trail)}: columns={len(working)} pbo={best_value:.6f}", flush=True)
+        if best_value <= PBO_MAX:
+            break
+    return trail
+
+
+def gate3_purchasability() -> None:
+    """Hold the candidate fixed, change only the pool, and watch gate 3 move."""
+
+    ids, columns, total, _usable = _pool()
+    baseline = fast_pbo(columns)
+    print(f"legacy candidate columns {len(ids)} baseline candidates-PBO {baseline:.6f}")
+
+    ceiling_returns = _returns_from_report(CEILING_ARM, tuple(UNIVERSE_13))
+    ceiling = _padded(ceiling_returns, total)
+    with_arm = fast_pbo([*columns, ceiling])
+    arm_parts = pbo_decompose([*columns, ceiling])
+    print(f"+ ceiling arm -> {with_arm:.6f} (iteration 67 recorded 0.235120)")
+
+    rows = _sweep_rows()
+    ceiling_sharpe = next(
+        (sharpe for arm, _symbols, sharpe in rows if _same_arm(arm, CEILING_ARM)), 0.0
+    )
+    print(f"ceiling arm sharpe from sweep file: {ceiling_sharpe:.6f}")
+    ranked = sorted(
+        (row for row in rows if not _same_arm(row[0], CEILING_ARM)), key=lambda row: -row[2]
+    )
+    print(f"sweep arms available as padding: {len(ranked)}")
+
+    largest = max(PURCHASE_K)
+    sources = {"best": ranked[:largest], "worst": ranked[-largest:]}
+    padding: dict[str, list[list[float]]] = {}
+    for label, source in sources.items():
+        padding[label] = [
+            _padded(_returns_from_report(arm, symbols), total) for arm, symbols, _s in source
+        ]
+        print(
+            f"padding[{label}] {len(padding[label])} columns, "
+            f"sharpe {source[0][2]:.6f} .. {source[-1][2]:.6f}"
+        )
+
+    results: list[dict[str, Any]] = []
+    for label in ("best", "worst"):
+        for k in PURCHASE_K:
+            pad = padding[label][:k]
+            no_candidate = fast_pbo([*columns, *pad])
+            full = [*columns, *pad, ceiling]
+            parts = pbo_decompose(full)
+            share = parts["arm_is_win_share"]
+            identity = (
+                share * parts["arm_fail_rate_when_winning"]
+                + (1.0 - share) * parts["legacy_fail_rate_when_winning"]
+            )
+            row = {
+                "padding": label,
+                "k": k,
+                "columns_without_candidate": len(columns) + k,
+                "pbo_without_candidate": round(no_candidate, 6),
+                "passes_without_candidate": bool(no_candidate <= PBO_MAX),
+                "columns_with_candidate": len(full),
+                "pbo_with_candidate": round(parts["pbo"], 6),
+                "passes_with_candidate": bool(parts["pbo"] <= PBO_MAX),
+                "w": round(share, 6),
+                "f": round(parts["arm_fail_rate_when_winning"], 6),
+                "g": round(parts["legacy_fail_rate_when_winning"], 6),
+                "candidate_unconditional": round(parts["arm_unconditional_fail_rate"], 6),
+                "identity_residual": round(parts["pbo"] - identity, 12),
+            }
+            results.append(row)
+            print(json.dumps(row, sort_keys=True), flush=True)
+
+    print("\n-- gate 4 cost of the same padding, measured not assumed --")
+    trials = _load_registry()
+    annualized = [float(trial.metrics["annualized_sharpe"]) for trial in trials]
+    dsr_rows: list[dict[str, Any]] = []
+    for label in ("best", "worst"):
+        for k in PURCHASE_K:
+            added = [sharpe for _arm, _symbols, sharpe in sources[label][:k]]
+            population = [*annualized, *added, ceiling_sharpe]
+            variance = non_annualized_sharpe_variance(population)
+            dsr = deflated_sharpe_ratio(
+                ceiling_returns,
+                trial_sharpe_variance=variance,
+                effective_trials=len(population),
+            )
+            dsr_rows.append(
+                {
+                    "padding": label,
+                    "k": k,
+                    "effective_trials": len(population),
+                    "sharpe_variance": float(f"{variance:.6e}"),
+                    "dsr": round(dsr.deflated_sharpe_ratio, 6),
+                    "passes_dsr": bool(dsr.deflated_sharpe_ratio >= DSR_MIN),
+                }
+            )
+            print(json.dumps(dsr_rows[-1], sort_keys=True), flush=True)
+
+    print("")
+    print("-- the adversary's real problem: minimise PBO subject to DSR >= 0.95 --")
+    # Junk padding buys gate 3 and loses gate 4, because the same distance from
+    # the registry mean that makes a column OOS-dominated also inflates the
+    # Sharpe variance gate 4 divides by. The adversary's optimum is therefore
+    # padding AT the registry mean (iteration 64: 39 arms there turn trial 88
+    # from a gate-4 failure into a pass). This scans Sharpe bands x K for any
+    # cell where both gates pass at once.
+    registry_mean = sum(annualized) / len(annualized)
+    print(f"registry mean annualized sharpe {registry_mean:.6f}")
+    band_rows: list[dict[str, Any]] = []
+    for level in (0.0, 0.4, registry_mean, 1.2):
+        nearest = sorted(ranked, key=lambda row: abs(row[2] - level))[:128]
+        band_columns = [
+            _padded(_returns_from_report(arm, symbols), total) for arm, symbols, _s in nearest
+        ]
+        for k in (8, 16, 32, 64, 128):
+            pad_columns = band_columns[:k]
+            pad_sharpes = [sharpe for _arm, _symbols, sharpe in nearest[:k]]
+            parts = pbo_decompose([*columns, *pad_columns, ceiling])
+            population = [*annualized, *pad_sharpes, ceiling_sharpe]
+            variance = non_annualized_sharpe_variance(population)
+            dsr = deflated_sharpe_ratio(
+                ceiling_returns,
+                trial_sharpe_variance=variance,
+                effective_trials=len(population),
+            )
+            value = dsr.deflated_sharpe_ratio
+            row = {
+                "band_center": round(level, 6),
+                "k": k,
+                "pad_sharpe_span": [round(min(pad_sharpes), 6), round(max(pad_sharpes), 6)],
+                "pbo": round(parts["pbo"], 6),
+                "passes_pbo": bool(parts["pbo"] <= PBO_MAX),
+                "sharpe_variance": float(f"{variance:.6e}"),
+                "effective_trials": len(population),
+                "dsr": round(value, 6),
+                "passes_dsr": bool(value >= DSR_MIN),
+                "passes_both": bool(parts["pbo"] <= PBO_MAX and value >= DSR_MIN),
+                "w": round(parts["arm_is_win_share"], 6),
+                "g": round(parts["legacy_fail_rate_when_winning"], 6),
+            }
+            band_rows.append(row)
+            print(json.dumps(row, sort_keys=True), flush=True)
+    winners = [row for row in band_rows if row["passes_both"]]
+    print(f"cells where BOTH gates pass: {len(winners)} of {len(band_rows)}")
+
+    print("\n-- scale-freeness control: duplicate the candidate instead of padding --")
+    duplicate: list[dict[str, Any]] = []
+    for copies in (1, 2, 4, 8, 16, 32):
+        full = [*columns, *([ceiling] * copies), ceiling]
+        value = fast_pbo(full)
+        duplicate.append({"copies": copies, "columns": len(full), "pbo": round(value, 6)})
+        print(json.dumps(duplicate[-1], sort_keys=True), flush=True)
+
+    print("\n-- the forbidden attack, priced only: greedy legacy pruning --")
+    prune = _greedy_prune([*columns, ceiling])
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    path = OUT_DIR / "gate3_purchasability.json"
+    path.write_text(
+        json.dumps(
+            {
+                "baseline_candidates_pbo": round(baseline, 6),
+                "candidate": {"arm": CEILING_ARM, "annualized_sharpe": ceiling_sharpe},
+                "candidate_only": {
+                    "pbo": round(with_arm, 6),
+                    "decomposition": {key: round(value, 6) for key, value in arm_parts.items()},
+                },
+                "padding_sharpe_span": {
+                    label: [round(source[0][2], 6), round(source[-1][2], 6)]
+                    for label, source in sources.items()
+                },
+                "padding_sweep": results,
+                "gate4_cost": dsr_rows,
+                "duplicate_control": duplicate,
+                "sharpe_band_scan": band_rows,
+                "greedy_prune": prune,
+                "pbo_max": PBO_MAX,
+                "dsr_min": DSR_MIN,
+            },
+            indent=1,
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    print(f"\nwrote {path}")
+
+
+def gate3_frontier() -> None:
+    """Push the one band that kept gate 4 while lowering gate 3 as far as it goes.
+
+    The 20-cell scan in ``gate3-purchasability`` left the frontier minimum at
+    PBO 0.095571 (band 0.4, K=128, DSR 0.969577) and the k-ladder visibly
+    saturating (0.128283 -> 0.101166 -> 0.095571). Extrapolating a saturation
+    is not measuring one, so this extends the same band to K=256 and K=512.
+    """
+
+    _ids, columns, total, _usable = _pool()
+    ceiling_returns = _returns_from_report(CEILING_ARM, tuple(UNIVERSE_13))
+    ceiling = _padded(ceiling_returns, total)
+    trials = _load_registry()
+    annualized = [float(trial.metrics["annualized_sharpe"]) for trial in trials]
+    rows = _sweep_rows()
+    ceiling_sharpe = next(
+        (sharpe for arm, _symbols, sharpe in rows if _same_arm(arm, CEILING_ARM)), 0.0
+    )
+    ranked = [row for row in rows if not _same_arm(row[0], CEILING_ARM)]
+
+    level = 0.4
+    nearest = sorted(ranked, key=lambda row: abs(row[2] - level))[:512]
+    print(
+        f"band {level}: {len(nearest)} arms, sharpe span "
+        f"{min(row[2] for row in nearest):.6f} .. {max(row[2] for row in nearest):.6f}"
+    )
+    built: list[list[float]] = []
+    started = time.time()
+    for index, (arm, symbols, _sharpe) in enumerate(nearest, start=1):
+        built.append(_padded(_returns_from_report(arm, symbols), total))
+        if index % 100 == 0:
+            print(f"  {index}/{len(nearest)} engine runs, {time.time() - started:.0f}s", flush=True)
+
+    out: list[dict[str, Any]] = []
+    for k in (128, 256, 512):
+        parts = pbo_decompose([*columns, *built[:k], ceiling])
+        pad_sharpes = [sharpe for _arm, _symbols, sharpe in nearest[:k]]
+        population = [*annualized, *pad_sharpes, ceiling_sharpe]
+        variance = non_annualized_sharpe_variance(population)
+        dsr = deflated_sharpe_ratio(
+            ceiling_returns, trial_sharpe_variance=variance, effective_trials=len(population)
+        )
+        row = {
+            "band_center": level,
+            "k": k,
+            "pad_sharpe_span": [round(min(pad_sharpes), 6), round(max(pad_sharpes), 6)],
+            "pbo": round(parts["pbo"], 6),
+            "passes_pbo": bool(parts["pbo"] <= PBO_MAX),
+            "sharpe_variance": float(f"{variance:.6e}"),
+            "effective_trials": len(population),
+            "dsr": round(dsr.deflated_sharpe_ratio, 6),
+            "passes_dsr": bool(dsr.deflated_sharpe_ratio >= DSR_MIN),
+            "passes_both": bool(parts["pbo"] <= PBO_MAX and dsr.deflated_sharpe_ratio >= DSR_MIN),
+            "w": round(parts["arm_is_win_share"], 6),
+            "g": round(parts["legacy_fail_rate_when_winning"], 6),
+        }
+        out.append(row)
+        print(json.dumps(row, sort_keys=True), flush=True)
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    path = OUT_DIR / "gate3_frontier.json"
+    path.write_text(json.dumps({"band_extension": out}, indent=1, sort_keys=True), encoding="utf-8")
+    print(f"wrote {path}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--mode",
-        choices=("validate", "pbo-validate", "sweep", "stop-condition", "gate3-currency"),
+        choices=(
+            "validate",
+            "pbo-validate",
+            "sweep",
+            "stop-condition",
+            "gate3-currency",
+            "gate3-purchasability",
+            "gate3-frontier",
+        ),
         required=True,
     )
     parser.add_argument("--grid", choices=sorted(GRIDS), default="donchian-btceth")
@@ -902,6 +1245,10 @@ def main() -> None:
         run_sweep(args.grid, workers=args.workers)
     elif args.mode == "gate3-currency":
         gate3_currency()
+    elif args.mode == "gate3-purchasability":
+        gate3_purchasability()
+    elif args.mode == "gate3-frontier":
+        gate3_frontier()
     else:
         stop_condition(args.grid, top=args.top)
 

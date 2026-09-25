@@ -3473,3 +3473,83 @@ deliberately **not** re-recorded).
   eight consecutive measurement defects, an outside bound for the ninth,
   four independent Sharpe anchors all below the gate-3 floor, and not once
   an edge.
+
+## 2026-09-25 — iteration 69
+
+Searched for (a) whether the outside literature says anything about CSCV/PBO's
+dependence on the **size and composition of the column pool**, which is exactly
+what today's local measurement attacks, and (b) the standing product-law query
+(spot, long-only, daily, two-sided costs). Three sources filed, **all three new
+to this file** (checked by grep before drafting: `mql5`, `Dube`, `quantbeckman`,
+`Tttiiimmm` all returned 0 hits; `davidhbailey`/`backtest-prob` returned 2/1,
+`Balaena` 1, `concretum` 15, `2602.11708` 17 and `coinquant` 6, so those were
+deliberately **not** re-recorded).
+
+- **mql5.com/en/articles/13743, Francis Dube, 2023-11-21 — "Combinatorially
+  Symmetric Cross Validation In MQL5."** Full implementation walk-through of the
+  same statistic gate 3 uses. On pool dependence: *"The PBO value attained will
+  mainly depend on the variety of parameter sets trialed during optimization"*,
+  and *"using fewer parameter variations can lead to the under estimation of
+  overfitting, at the same time including a large number of unrealistic
+  parameter combinations can produce over estimates"*; deliberately including
+  dominated combinations *"will only taint the final result"*. Empirically the
+  same moving-average EA records PBO from **0.2 to 0.8888** across timeframes on
+  identical algorithm settings.
+  **Testable here: yes, and tested the same day — and its direction is refuted
+  in this configuration.** This is the first outside source in this file to state
+  that PBO is a property of the supplied pool rather than of a strategy, which is
+  the premise of gate-3 defects 4 and 5 (iterations 67, 68). Its *prediction* is
+  that junk inflates PBO. Measured locally with the candidate **held fixed**,
+  64 junk columns move the ceiling arm from **0.235120 to 0.005594** — the
+  opposite sign. Both are true and the scope is the difference: Dube's pool is
+  the one the winner is *selected from*, so junk pollutes selection; gate 3's
+  candidate matrix supplies the **OOS median** the fixed winner is ranked
+  against, so junk lowers the bar. Recorded so no future document can quote
+  Dube's direction as reassurance that gate 3 cannot be diluted.
+  `docs/research/GATE3_PURCHASABILITY_2026-09-25.md`.
+
+- **quantbeckman.com, "Combinatorial Purged Cross Validation for
+  Optimization", 2025-09-01.** States the deflation premise this program runs on:
+  *"Let N be the number of independent trials... the expected value of the
+  maximum performance across all trials will be significantly higher than the
+  expected value of any single trial. This difference grows with N."*
+  **Testable here: no** — it is a method exposition, not a result.
+  **Recorded for what it does not contain:** asked directly whether a single
+  candidate's own OOS degradation can be separated from the pool's, the article
+  does not address the distinction and frames degradation over the whole
+  optimization curve. That is now the **third** outside source consulted on this
+  point (after Bailey et al. and Dube) with no vocabulary for it, which is why
+  iterations 64/66/67/68's mis-attribution defects and today's defect 6 had to be
+  measured here rather than cited.
+
+- **github.com/Tttiiimmm-code/Trading-bot PR #6, 2026-09-16 — "Add a
+  trend-following strategy with a measured edge."** Donchian breakout entry on
+  **4-hour** bars, ATR trailing-stop exit, optional regime filter, 1 % account
+  risk per trade, **10** crypto pairs, **2018-2026 (8.7 years)**, **4 053**
+  trades, walk-forward, not pre-registered. Mean **+0.169R** per trade,
+  t **5.68**, 95 % CI **[+0.110, +0.227]**; longs 2 169 trades +0.161R, shorts
+  1 884 trades +0.178R; *"Profitable in 30 of 35 quarters, 8 of 9 years, 10 of 10
+  markets"*; portfolio replay 2022-2026 CAGR **+34.5 %**, max drawdown
+  **−35.1 %**, **Sharpe 1.29**, worst year −8.6 %, best +96.5 %. Costs are 12 %
+  of edge at a median stop distance of 4.46 %. No buy-and-hold comparison.
+  **Testable here: no** — it is **long and short** (product law forbids shorts)
+  and **4-hour** rather than daily, so neither the architecture nor the result
+  transfers. **Recorded as the fifth independent outside Sharpe anchor:**
+  **1.29** on a strategy far closer to trial 118's shape than anything else in
+  this file (Donchian entry, ATR exit, regime filter) and with shorts allowed,
+  still below this engine's **1.578665** ceiling and far below the **1.886356**
+  a novel candidate needs to clear gate 3. The anchors now read 1.29, 1.30,
+  1.442, 0.85, 0.56 — **five for five below the gate-3 floor**, and the two
+  closest in architecture are the two that allow shorts.
+
+- **Arrivals: zero. Thirteenth consecutive pass.** Three sources handled, all
+  three new. Today's shape returns to iterations 60-66's methodological pattern
+  for the first two sources and continues iteration 67's empirical pattern for
+  the third — and for the first time in this file an outside source made a
+  **directional prediction about gate 3 that the same day's local measurement
+  refuted in scope**. **Streak, counted against this file rather than asserted:
+  zero strategy arrivals in iterations 57 through 69 — thirteen consecutive
+  passes.** The literature has now handed this program vocabulary for eight
+  measurement defects, an outside bound for the ninth, a refuted prediction for
+  the tenth, five independent Sharpe anchors all below the gate-3 floor, and not
+  once an edge.
