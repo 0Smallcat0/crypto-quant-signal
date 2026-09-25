@@ -641,6 +641,64 @@ Hard limits, binding:
 > gained a `gate3-currency` mode). This is the **tenth** operator choice due
 > and the fifth with no deadline. Full measurement and the three options:
 > `docs/research/GATE3_NOVELTY_PENALTY_2026-09-24.md`.
+>
+> Refinement 2026-09-25 (iteration 69) — **the success exit itself was never
+> measured; gate 3 alone is purchasable, the conjunction is not, and that is
+> the first defence of this framework in the program's record.** Iteration 64
+> proved gate 4's variance input is analyst-controllable; the mirror question
+> was never asked of gate 3, the gate that did the refusing in every closure
+> of iterations 66-68. CSCV's fail test is a **rank inside the pool**
+> (`rank / (N + 1) <= 0.5`), so the verdict is measured against the pool's own
+> median. **SIXTH RECORDED GATE-3 DEFECT, and the first whose direction is
+> unexpected: the gate rewards registering junk.** Holding the candidate fixed
+> at iteration 67's ceiling arm and padding with the 64 lowest-Sharpe valid
+> sweep arms (−0.053085 to −0.759738), candidates-PBO moves **0.235120 →
+> 0.235120 → 0.195726 → 0.188733 → 0.172727 → 0.144056 → 0.023776 (PASS) →
+> 0.005594 (PASS)** at K = 0/1/2/4/8/16/32/64; with **no new candidate at all**
+> K=64 takes the 37-column legacy pool from **0.651826 to 0.028749**, and
+> `gate_3_pbo.passes` is a report-level field while trials 29, 37 and 118
+> already carry `passes_dsr: true`. The K=1 step is **exactly inert** because
+> the threshold is `floor(0.5·(N+1))` and one dominated column advances rank
+> and threshold by 1 each — so the decline is rank arithmetic, and honest full
+> disclosure of bad arms and a lower PBO are **the same act**. **BUT THE STOP
+> CONDITION IS A CONJUNCTION AND IT HELD: 0 of 36** measured (padding-shape, K)
+> cells pass both gates. The junk that buys gate 3 destroys gate 4 — Sharpe
+> variance **1.584220e-04 → 4.153607e-04 → 8.549405e-04** and DSR **0.994802 →
+> 0.930822 (fails) → 0.539019** at K = 0/16/64 — and the padding that protects
+> gate 4 destroys gate 3: padding **at** the registry mean (0.944374), which is
+> iteration 64's own dilution attack, drives variance down to **8.461149e-05**
+> and DSR up to **0.998472** at K=128 while PBO **rises to 0.258353**, worse
+> than unpadded. Mechanism measured: the pool's own failure rate g — which must
+> be small, since PBO ≤ 0.05 requires (1 − w)·g ≤ 0.05 — is monotone in the
+> padding band's centre (**0.037013 / 0.387743 / 0.745297 / 0.993754** at K=64
+> for bands 0.0 / 0.4 / 0.944374 / 1.2). **The two gates read the same distance
+> from the registry mean with opposite signs**, and no third direction exists
+> because a column's OOS rank and its full-sample Sharpe are the same quantity
+> on overlapping data. The frontier — minimum PBO subject to DSR ≥ 0.95 — is
+> **0.095571** (band 0.4, K=128, DSR 0.969577), **1.9114x the bar**, an
+> **interior** minimum confirmed by K=256 (**0.098601**) and K=512
+> (**0.144522**), and **10.2 %** from iteration 64's independently measured
+> 0.105361. Three controls, all negative: duplicating the candidate leaves PBO
+> in **[0.205128, 0.240249]** (so this is not iteration 68's resemblance
+> premium restated), good padding raises PBO to **0.828283**, and the
+> **forbidden** attack — greedy legacy pruning, i.e. silent survivor filtering —
+> saturates after 14 drops at **0.094406** with 24 of 37 columns left. Scope
+> limit stated, not buried: padding comes from the **39 020** arms this engine
+> can express, so the claim is "not purchasable with anything this repository
+> can build", iteration 67's framing, not a proof over all possible columns.
+> **Consequence, and it runs in the program's favour for the first time:
+> iterations 67 and 68 are strengthened — the ceiling arm's 0.235120 cannot be
+> padded away while gate 4 holds, so "no route reaches the stop condition" is
+> not an artifact of who else is in the pool.** Route closed: **no proposal may
+> treat pool composition as a path to the stop condition**, and no document may
+> cite a PBO improvement obtained by growing the pool. **The loop declines the
+> attack, the sixth consecutive refusal** of an act or rule change that would
+> convert this program's best measured object from a fail into a pass. Nothing
+> was repaired and nothing frozen was edited; no new script (iteration 67's
+> gained `gate3-purchasability` and `gate3-frontier` modes). This is the
+> **eleventh** operator choice due and the sixth with no deadline. Full
+> measurement and the three options:
+> `docs/research/GATE3_PURCHASABILITY_2026-09-25.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
@@ -653,6 +711,7 @@ lever is blocked, and the block is structural rather than temporary:
 | October holdout | **Operator-only**, single-use, nominations fixed. |
 | A new parameter family | **P3 refuses it**, and the PBO/family measurements say the winner would not be trustworthy anyway. **QUALIFIED 2026-09-19 (iteration 64): this is the one lever that is not structurally blocked — it can trip the stop condition. P3's N-cost rationale is refuted (+1.87% at K=44; the N=85->101 report shows the bar falling); what binds is a gate-3 pass bar near annualized Sharpe 1.63 that 0 of 133 trials reach. See item 3 below.** **CLOSED 2026-09-22 (iteration 67): the bar is not reachable. An exhaustive hindsight sweep of the engine's whole expressible parameter space (39 020 valid arms) tops out at 1.578665, and that arm fails gate 3 at 0.235120 — 4.70x the bar — while passing gate 4. It also survives only to N=17 113 against the 39 020 arms needed to find it. A new *architecture* is a different thing and is not measured.** |
 | Revising gate 3 after finding it misranks | Changing the rules after seeing results. Refused by design, even though the defect is real and recorded. |
+| Padding the candidate pool | **NEW ROW 2026-09-25 (iteration 69): this lever exists, was never listed, works on gate 3 alone, and is refused.** It needs no rule change and no dishonesty — 32 deliberately bad *registered* arms take the ceiling arm's candidates-PBO from 0.235120 to **0.023776**, and 64 take the 37-column legacy pool from 0.651826 to **0.028749** with no new candidate at all, because CSCV's fail test is a rank inside the pool. **It dies on the conjunction:** the same columns push the Sharpe variance to 8.549405e-04 and the DSR to 0.539019, and **0 of 36** measured (padding-shape, K) cells pass both gates. The frontier — minimum PBO subject to DSR ≥ 0.95 — is **0.095571**, 1.9114x the bar. No proposal may register arms to move a gate-3 verdict or cite a PBO improvement obtained by growing the pool. `docs/research/GATE3_PURCHASABILITY_2026-09-25.md`. |
 | More diagnostics | Would not change the standing answer. Step 0 forbids running them. |
 
 **So the correct behaviour of an iteration that reaches this point is: do
