@@ -8673,3 +8673,202 @@
   document rewritten, no prior log entry edited, **no file under
   `configs/runtime/`, `src/` or any scheduled-task definition touched**. No new
   script: one existing script gained two modes.
+
+## 2026-09-30 — iteration 71 (P1: the 2026-09-29 repair of the weekly recorder was incomplete, the guard it added cannot catch the state it left behind, and both facts are measured rather than feared)
+
+- **Step 0, line 1 — current answer, unchanged by this iteration.** As first
+  stated **2026-07-27**, refined through **2026-09-25**, and still not
+  forward-validated: the timing rule adds real value in
+  crypto only, the best backtested book bought drawdown plus a slim return
+  margin rather than return, every one of the three unblocking levers has now
+  been measured and none of them decides, all six gates are characterised, no
+  route reaches the stop condition, and pool composition cannot buy the
+  conjunction. **Nothing here is an edge that passes the six gates.** This
+  iteration measured nothing about the edge and did not move this line.
+
+- **Step 0, line 2 — what this iteration moves.** It does **not** advance a
+  research route; every route is closed and the contract's own instruction for
+  that state is *"do P1 maintenance, confirm the three tracks are gaining rows,
+  and stop."* What it closes is an **evidence-integrity** failure: the Taiwan
+  and gold forward tracks stopped recording on **2026-09-18**, the repair
+  attempted on 2026-09-29 was **incomplete**, and the guard that repair added is
+  **structurally unable to detect what it left behind** — so the 2026-10-03 run
+  would have lost a second week of rows while reporting success.
+
+- **Step 0, line 3 — why it is not sprawl.** No new script (two existing run
+  scripts gained a probe), no new research document, no diagnostic, no arm
+  registered, no gate report regenerated. P1 is the queue's first item and its
+  own text is *"If any stops gaining rows, fix it before anything else."*
+
+- **State read.** Registry **N = 133** (`trial_registry.jsonl`, 133 lines);
+  latest gate report is still **2026-07-25** — `pbo` **0.651826**,
+  `pbo_all_columns` **0.732556**, `passes: false`, **37** candidate columns,
+  12 870 combinations, 16 CSCV blocks; `holdout_lock.json` still reads
+  **`"spent": false`** with `spent_at: null`. Nothing regenerated, nothing
+  spent.
+
+- **P1 audit — the crypto daily tracks are healthy.** `shadow_trial88.jsonl`
+  and `shadow_trial118.jsonl` both hold **67 rows**, **2026-07-24..2026-09-29**,
+  no duplicates, and exactly **one** gap (2026-08-09, pre-existing and already
+  on record). Both files were written today at 08:21 with yesterday's completed
+  candle, which is the correct lag.
+
+- **P1 audit — the weekly tracks have been dead for twelve days, and the
+  recorded repair did not restore them.** `shadow_tw0050.jsonl` holds
+  **10 sessions** and `shadow_gld.jsonl` **11**, both last dated **2026-09-18**;
+  the 2026-09-26 Saturday run is gone. Its log is the one the 2026-09-29 note
+  described — `tw_shadow_20260926_094001.log`, **94 bytes**, three blank
+  `exit=` fields and no error text — and the cause it names is right: PowerShell
+  resolves a command *before* applying its redirection, so a
+  CommandNotFoundException goes to the host, not the log, and `$LASTEXITCODE`
+  keeps its null value.
+
+- **THE FINDING, and it is not the one the 2026-09-29 note anticipated.** That
+  note added a `Test-Path` interpreter guard to both repositories and rebuilt
+  the sibling `.venv` — `python.exe` is present, timestamped **2026-09-29
+  21:40:07**. But the rebuild was **`py -3.12 -m venv .venv` with no
+  `pip install`**: `site-packages` contained exactly **two entries**, `pip` and
+  its dist-info. Measured, not inferred — importing the three modules the
+  weekly task runs returned
+  **`No module named 'yaml'`**, **`No module named 'httpx'`** and
+  **`No module named 'yaml'`** respectively. **So on 2026-10-03 the interpreter
+  would have existed, `Test-Path` would have passed, and both rows would have
+  been lost again** — the second consecutive silent week, on the only evidence
+  stream this program can still generate, with a freshly-added guard in place
+  and reporting nothing wrong. A guard that checks a file exists cannot see an
+  environment that is empty. **And nothing above it would have reported the
+  failure either:** Windows Task Scheduler records `LastTaskResult` **0** — plain
+  success — for the `TwShadow0050` run of **2026-09-26 09:40:00**, the run that
+  recorded nothing, so the scheduler, the log file and the new guard would all
+  three have agreed the week was fine. Both tasks are `Ready` and correctly
+  scheduled (`CryptoShadowTrial88` next at 2026-10-01 08:20, `TwShadow0050` next
+  at **2026-10-03 09:40**).
+
+- **Repair, verified in both directions rather than asserted.** The sibling
+  environment was reinstalled — `pip list` now reports **50** packages, where
+  `site-packages` this morning held exactly **two** entries (`pip` and its
+  dist-info), covering every declared dependency
+  except `pyarrow` and every dev tool (pydantic, PyYAML, httpx, SQLAlchemy,
+  alembic, pandas, numpy, psycopg, fastapi, jinja2, uvicorn, pytest, ruff, mypy,
+  import-linter, types-PyYAML). All three recorder modules now import
+  **OK**. End-to-end read-only check: `python -m scripts.shadow_signal_tw
+  --summary` exits **0** and reports `0050: sessions=10
+  first/last=2026-07-24/2026-09-18` and `GLD: sessions=11
+  first/last=2026-07-23/2026-09-18` — **no row was appended**, because a
+  mid-week write would splice an off-schedule observation into a weekly
+  append-only series.
+
+- **Both run scripts gained a dependency probe, and the probe is measured on
+  both sides.** Every recorder module in both repositories is behind
+  `if __name__ == "__main__":`, so importing one runs nothing; the probe is
+  therefore a free check that the whole dependency chain resolves. Positive
+  control: the probe returns `$LASTEXITCODE` **0** in both repositories as the
+  scheduled tasks will invoke it. Negative control: a missing module and a
+  missing dependency each return **1**, so the `-ne 0` branch fires and the
+  script exits 126 after writing two FATAL lines. This is one probe added to
+  each of two existing scripts — **no new script**.
+
+- **Second, smaller measured finding, recorded because the guard's own advice
+  depended on it.** The FATAL text added on 2026-09-29 tells a future operator
+  to repair with `pip install -e .[dev]`. **That command does not work here:**
+  it made zero progress in two separate ~9-minute runs, hanging while creating
+  the isolated build environment, while `--no-build-isolation` resolved and
+  began installing immediately. Separately, **`pyarrow`'s 28 MB wheel stalled in
+  three consecutive attempts** — it is declared in both repositories'
+  `pyproject.toml` and imported by **nothing**: `grep -rn 'pyarrow|parquet'`
+  over `src/` and `scripts/` returns **0 hits in both repos**, and the sibling's
+  candle store is JSONL. Both repair strings were corrected to the form that
+  works, and the pyarrow exception is recorded in each script so a future repair
+  under time pressure is not blocked by a dependency nothing uses.
+
+- **Step 2, web research — five sources, all five new; the seventh outside
+  Sharpe anchor.** Novelty was checked across `RESEARCH_LOG.md`, `LOOP_LOG.md`
+  and the whole `docs/` tree over 25 identifiers, all returning zero hits, with
+  **nine** further candidates dropped for already appearing. The anchor:
+  `VadimChudin/aegis` PR #34 (2026-09-29), Binance **spot** daily, 14 USDT
+  pairs, 2018-2026, costed at 10 bps of turnover, long-only multi-lookback
+  momentum — **Sharpe 1.27** at −18.5% drawdown against BTC+ETH buy-and-hold
+  0.65 at −87.9%. It is **testable here** under product law, and it is
+  **32.7% below** iteration 68's cheapest novel crossing of 1.886356 and
+  **19.6% below** iteration 67's engine ceiling of 1.578665. The anchors now
+  read **1.442, 1.30, 1.29, 1.27, 0.89, 0.85, 0.56 — seven for seven below the
+  gate-3 floor.** Also new and directly useful: `miighty/validated-crypto-strategies`
+  is the **first outside book charged at exactly this program's 10 + 5 = 15 bps**,
+  and under that charge a plain daily EMA trend rule on 10 Binance spot majors
+  over 8.5 years earns **0.3361**; arXiv **2609.34510** (2026-09-28) is the first
+  source here with a backtest, a paper period and a **real-money** live period
+  for the same methods, and measures an average absolute **backtest-to-live
+  Sharpe gap of 1.91** — larger than the whole distance from zero to this
+  engine's ceiling. A comment on Kazantsev's dev.to post states iteration 63's
+  holdout-power finding independently and from a real failed reproduction.
+  One route is **blocked and explicitly not quoted**: SSRN 7115459, whose
+  existence and authorship were verified via Crossref and OpenAlex but whose
+  text returned 403/CAPTCHA/429/404/timeout on eight routes — its
+  search-summary figures are deliberately **not** written into either file.
+  **Arrivals: zero. Fifteenth consecutive pass.**
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken** over 81 files and 325 dependencies;
+  `pytest -m "not network"` **383 passed in 134.95s**.
+
+- **Operator-attention items, dated 2026-09-30 — eighteen.** (a) Gate 3
+  misranks and rejects everything; (b) the one risk-compliant gate-4 pass is
+  one-trial-fragile; (c) two of six gates have ever decided a candidate; (d) the
+  contract's own MinTRL for trial 88 is 2028-06-29, not 90 days; (e)
+  `PRE_HOLDOUT_PROTOCOL.md` §1 calls all-columns PBO a "conservative upper
+  bound", false at N=133; (f) the live paper runtime is a no-op — **verified
+  today from `events.jsonl`, the last `signal`, `target`, `cycle` and
+  `exec_quote` events are all 2026-07-31T00:05 and the last `fill` is
+  2026-07-28, so it is 61 days of `health` events and nothing else** — and the
+  dashboard's 90-day observation bar reaches 100 % **tomorrow, 2026-10-01**;
+  (g) the forward tracks charge no trading cost; (h) they archive no input;
+  (i) the read rule states no replay depth, ≥206 bars required; (j) Test 2
+  cannot fire at 90 days; (k) holdout nomination N1 has not named the live
+  contract since 2026-07-31; (l) gate 4's variance input is
+  analyst-controllable; (m) gate 6 cannot fail; (n) the sleeve book cannot be
+  graded at all; (o) the gate-3 bar is unreachable and the gate refuses the
+  ceiling for other columns' failures; (p) gate 3 charges a novelty premium;
+  (q) gate 3's verdict is purchasable with 32 junk arms and the conjunction
+  with gate 4 is the undocumented protection. **(r) NEW — the weekly forward
+  track failed silently for twelve days, its 2026-09-29 repair left an
+  interpreter with no dependencies, and the guard added that day passes on
+  exactly that state; both rows for 2026-09-26 are unrecoverable, because
+  forward evidence can only be archived forward.** Items (g)-(k) are due
+  **before 2026-10-22**, now **22 days**; (m) **before 2026-10-03**, now
+  **3 days**; (l), (n), (o), (p), (q) have no deadline; (r) is repaired, and its
+  standing consequence is that **no future iteration may report P1 as healthy
+  on the strength of a scheduled task existing or a log file being written** —
+  the tracks' own row counts and dates are the only evidence that counts, since
+  Task Scheduler recorded `LastTaskResult` 0 for the run that lost them.
+
+- **What this iteration does NOT do.** **No arm was registered** — N is still
+  **133**, no `append_trial` call was made, no gate report was regenerated, no
+  return series was written. The holdout was **not read, not fetched and not
+  unsealed**; `spent` is still `false`. No gate rule was modified, re-read or
+  re-scored. No frozen pre-registration was edited; the contract's standing
+  answer is **not** appended to, because this iteration measured nothing about
+  the edge and adding a refinement would be the sprawl step 0 forbids. No prior
+  result document was rewritten and no prior log entry edited. **No file under
+  `configs/runtime/`, `src/`, or any scheduled-task definition was touched** —
+  the two changed files are `scripts/run_shadow_track.ps1` here and
+  `scripts/run_tw_shadow.ps1` in the sibling repository, both run-wrappers, and
+  neither is read by the 08:05 live runtime. **No shadow row was written by
+  hand, in either repository**: the only recorder invoked was the sibling's
+  read-only `--summary`, and the 2026-09-26 rows are left missing rather than
+  reconstructed, because a back-filled row is not forward evidence. Also
+  carried into this commit, unchanged and unedited: the **2026-09-29
+  (iteration 70)** research block and the `Test-Path` guards, which that sitting
+  wrote but never committed or logged — no iteration-70 log entry is
+  back-dated here, because that session left none and inventing one would be a
+  record of work this iteration cannot attest to.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides, and the seventh independent outside Sharpe anchor
+  landed today at 1.27 — still below the floor, like the six before it.
+  **Nothing here is an edge that passes the six gates.** What changed today is
+  only that the forward evidence stream is recording again, and that the thing
+  which stopped it was a class of failure this program had not been able to
+  see.
