@@ -8872,3 +8872,101 @@
   only that the forward evidence stream is recording again, and that the thing
   which stopped it was a class of failure this program had not been able to
   see.
+
+### Correction block, same day (2026-09-30), iteration 71 — four defects found by the verification pass and repaired here rather than left standing
+
+The contract's standing correction duty says a wrong description must be
+corrected in place the same day. An adversarial read of this entry and of
+today's `RESEARCH_LOG.md` block found four things wrong. All four were
+re-checked against their sources before being written down here, and none of
+them moves today's verdict — but three of them are exactly the kind of
+"described the source without reading the decisive line" error this program
+exists to catch, and the fourth is a claim that defeats itself.
+
+- **1. RETRACTED — "a vol-free long-only momentum ensemble" (today's
+  `RESEARCH_LOG.md` block) is wrong; the aegis strategy is
+  volatility-targeted.** Re-read directly from
+  `python/aegis_lab/research/trend.py`: the module defines
+  **`TARGET_VOL = 0.10`** and **`MAX_W = 2.0`** and sizes every position as
+  **`return (score * TARGET_VOL / vol).clip(-MAX_W, MAX_W)`** — score divided
+  by realized 60-day volatility and scaled to a 10 % target. That is a
+  volatility-scaling overlay in the position layer, i.e. the *same* mechanism
+  iteration 70 recorded from the Summitward source, not its absence. The entry
+  additionally claimed its four caveats were "all read out of the code rather
+  than inferred", and **not one of them mentions this line** — which is the
+  most consequential line in the file. The "read in full" claim for that code
+  is withdrawn for this reading.
+
+- **2. RETRACTED — "no leverage", and with it the unqualified word
+  "admissible".** Product law requires no leverage, and today's block cited
+  "no leverage" as one of the grounds for **Testable here: YES**. The source
+  caps weights at **`MAX_W = 2.0`**, i.e. up to 2x capital in a single name.
+  It is likely that a 10 % vol target against crypto's realized volatility
+  almost never reaches that cap — iteration 70 checked exactly this for its own
+  source and recorded "realized 7.0% against a 10% target" — **but this
+  iteration did not check it, and did not say so.** Corrected status: **1.27
+  stays recorded as the seventh outside Sharpe anchor, and its admissibility is
+  downgraded from "fully admissible under product law" to "admissible except
+  that its position cap permits 2x and the realized cap-hit rate was not
+  measured here."** The claim that it is the first *fully* admissible-and-closer
+  source is withdrawn; iteration 70's Summitward entry, which did measure its
+  realized exposure, keeps that status.
+
+- **3. RETRACTED — the ensemble-breadth sentence, on two counts.** Today's
+  block wrote that 1.27 against a best single lookback of 1.23 is "+0.04, the
+  **fifth** independent measurement of the ensemble-breadth premium and inside
+  the existing band (+0.01, +0.03, +0.06)". `RESEARCH_LOG.md:2112-2118` already
+  tabulates **five** prior measurements (+0.03, +0.01, +0.0498, +0.0272,
+  +0.06), so this one is the **sixth**, not the fifth; and `:2119-2121` states
+  in this file's own words that **"The five are not commensurable and no
+  arithmetic may be done across them"**, which is precisely what placing +0.04
+  "inside the existing band" does. The measurement is kept as a recorded
+  observation of that source; **the ranking, the band comparison and the word
+  "inside" are withdrawn.**
+
+- **4. CORRECTED — "the forward evidence stream is recording again"
+  overstates what was restored.** No row has been added to either weekly track
+  and none will be before **2026-10-03**; `shadow_tw0050.jsonl` is still 10 rows
+  and `shadow_gld.jsonl` still 11, both last dated 2026-09-18. What was
+  demonstrated is that the dependency chain resolves and the recorder runs
+  read-only to exit 0 — i.e. the stream is **able** to record again. The
+  distinction matters here more than anywhere, because the whole finding of this
+  iteration is that a thing which *looks* healthy at every layer can be
+  recording nothing.
+
+- **5. Also corrected, a gap rather than an error: the contract's step 1 names
+  three things to read and this iteration reported only two.**
+  `docs/research/GOALP_EXPERIMENT3_PREREGISTRATION.md` has now been read in
+  full (84 lines). Status: **FROZEN on commit**, written 2026-07-21, the
+  16-arm cross-sectional momentum family (K ∈ {2,3} × lookback ∈ {90,180} ×
+  rebalance ∈ {weekly, monthly} × absolute_filter ∈ {on, off}) with three
+  pre-declared success criteria (winner DSR > 0.9273, max drawdown ≤ 51.93 %,
+  annualized turnover ≤ 53.1). It has **already been executed** — the registry
+  holds **64** `cross_sectional_momentum` rows — and its closing clause is
+  *"The autonomous research loop may EXECUTE this pre-registration but may not
+  EDIT it."* Nothing in this iteration touched it, and nothing in it is
+  actionable today: iteration 67's exhaustive sweep already established that
+  the best arm this architecture can express reaches 1.578665 and still fails
+  gate 3.
+
+- **6. Stop-condition check, run explicitly — restoring an entry this iteration
+  had dropped.** Fourteen consecutive iterations recorded this check as its own
+  line and today's entry folded it into the state read. Run explicitly: the
+  latest full-registry gate report is `gate_report_2026-07-25.json` at N=133,
+  `gate_3_pbo.passes` is **false** with `pbo` **0.651826**, and no report was
+  regenerated today. **No candidate shows DSR ≥ 0.95 AND candidates-PBO ≤ 0.05.
+  The stop condition is NOT met, `EDGE_CANDIDATE_FOUND.md` does not exist and
+  was not created, and nothing in this iteration claims otherwise.**
+
+- **What these corrections do not change.** The verdict is untouched: 1.27 is
+  still **32.7 %** below iteration 68's cheapest novel crossing of 1.886356 and
+  **19.6 %** below iteration 67's engine ceiling of 1.578665, and a
+  volatility-targeted ensemble is, if anything, *more* clearly a new
+  architecture than a vol-free one — so it faces the same novel-candidate price
+  and is still not an arrival. **Arrivals: zero, fifteenth consecutive pass**,
+  unchanged. The P1 finding, the repair, the probe and all of today's
+  measurements of this program's own files were re-checked item by item and
+  stand as written: N=133, holdout `spent: false`, 67 rows on each crypto track
+  with the single 2026-08-09 gap, 10 and 11 rows on the weekly tracks both last
+  dated 2026-09-18, the 94-byte blank-exit log, and 2026-07-31 as the last
+  decision event, 61 days ago.

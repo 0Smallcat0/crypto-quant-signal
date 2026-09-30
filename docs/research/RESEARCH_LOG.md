@@ -3921,3 +3921,44 @@ deliberately **not** re-recorded).
   corroboration of the eleventh, an independent statement of iteration 63's
   holdout-power finding, a real-money backtest-to-live Sharpe gap of 1.91,
   seven Sharpe anchors all below the gate-3 floor, and not once an edge.**
+
+- **CORRECTION to this same block, same day (2026-09-30), found by the
+  iteration's own verification pass and repaired rather than left standing.**
+  Three statements above about the aegis source are withdrawn. They were
+  re-checked directly against `python/aegis_lab/research/trend.py` before this
+  note was written.
+  **(a) "a vol-free long-only momentum ensemble" is wrong — the strategy is
+  volatility-targeted.** The module defines **`TARGET_VOL = 0.10`** and
+  **`MAX_W = 2.0`** and sizes every position as
+  **`return (score * TARGET_VOL / vol).clip(-MAX_W, MAX_W)`** — score over
+  realized 60-day volatility, scaled to a 10 % target. That is the same
+  position-layer mechanism iteration 70 recorded from the Summitward source,
+  not its absence. The four caveats listed above claim to be "all read out of
+  the code rather than inferred" and **none of them mentions this line**, which
+  is the decisive one; the "read in full" claim is withdrawn for this reading.
+  **(b) "no leverage" is withdrawn, and with it the unqualified verdict
+  "Testable here: YES".** The cap `MAX_W = 2.0` permits up to 2x capital in a
+  single name. A 10 % vol target against crypto volatility may well never reach
+  it — iteration 70 measured exactly that for its own source ("realized 7.0%
+  against a 10% target") — **but this iteration did not measure it and did not
+  say so.** Corrected status: **the 1.27 stands as the seventh outside Sharpe
+  anchor; its admissibility is downgraded to "admissible except that its
+  position cap permits 2x, cap-hit rate unmeasured here"**, and the claim that
+  it is a *fully* admissible source is withdrawn.
+  **(c) The ensemble-breadth sentence is withdrawn on two counts.** This file
+  already tabulates **five** prior measurements of that premium at lines
+  2112-2118 (+0.03, +0.01, +0.0498, +0.0272, +0.06), so +0.04 is the **sixth**,
+  not the fifth; and line 2119-2121 states in this file's own words that
+  **"The five are not commensurable and no arithmetic may be done across
+  them"**, which is exactly what calling +0.04 "inside the existing band" does.
+  The observation is kept; the ranking, the band comparison and the word
+  "inside" are withdrawn.
+  **None of this moves the verdict.** 1.27 remains **32.7 %** below iteration
+  68's cheapest novel crossing of 1.886356 and **19.6 %** below iteration 67's
+  engine ceiling of 1.578665; a volatility-targeted ensemble is if anything
+  *more* clearly a new architecture than a vol-free one, so it faces the same
+  novel-candidate price. **Arrivals: zero, fifteenth consecutive pass**,
+  unchanged. The other four sources in this block were re-checked and stand as
+  written, including the miighty 15 bps cost model and its nine Sharpe values,
+  arXiv 2609.34510's 1.91 backtest-to-live gap, and the deliberate non-quotation
+  of SSRN 7115459.
