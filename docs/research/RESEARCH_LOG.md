@@ -3553,3 +3553,371 @@ deliberately **not** re-recorded).
   measurement defects, an outside bound for the ninth, a refuted prediction for
   the tenth, five independent Sharpe anchors all below the gate-3 floor, and not
   once an edge.
+
+## 2026-09-29 — iteration 70 (five sources, all new; the first outside anchor that is fully admissible under product law, and the first outside statement of iteration 69's mechanism)
+
+- **2026-08-24 — Summitward / Engineer Investor, "Does Trend Following Work on
+  Crypto?"** (https://summitward.com/learn/crypto-trend-following; code at
+  `engineerinvestor/systematic-trend-following-with-managed-futures`).
+  Coinbase **daily spot** closes 2017-01..2025-06, net of estimated costs
+  (1-4 bp of traded value, turnover ~7-8x/yr). A plain **200-day long/flat rule
+  on Bitcoin alone** scores **Sharpe 0.89** at **-10.4%** drawdown and *beats*
+  the diversified 1/3/12-month long/short TSMOM ensemble on BTC/ETH/SOL
+  (**0.79**, -14.6%): *"the boring 200-day long/flat rule on Bitcoin alone, the
+  design most retail trend products use, posted a slightly better Sharpe ratio
+  and a shallower drawdown than the diversified multi-horizon ensemble.
+  Complexity did not pay in this sample."* Buy-and-hold BTC is **1.13** at
+  **-83.8%**; a **vol-managed equal weight carrying no trend signal at all** is
+  **1.24** at -19.9%. Its own decomposition gives buy-and-hold 0.73, vol-managed
+  B&H 0.74, raw trend without vol-scaling 0.71, full trend 0.79 — i.e. the trend
+  signal is worth ~**+0.05** Sharpe on top of vol management. Delaying every
+  trade by five days cuts 0.79 to 0.60. The author declines to claim the result:
+  *"a bootstrap confidence interval around the strategy's Sharpe ratio spans
+  roughly 0.1 to 1.5. Eight and a half years of data cannot tell you whether
+  crypto trend following is mediocre or excellent."*
+  **Testable here: YES — and it is the first source in this file for which the
+  answer is an unqualified yes.** Spot, daily bars, long/flat (no shorts), costs
+  charged on traded value, public OHLCV, and the vol target scales position
+  *down* (realized 7.0% against a 10% target), so no leverage. Every previous
+  "yes" in this file carried a caveat; the five most recent anchors were all
+  disqualified by shorts, bar interval, or perps.
+  **Recorded as the sixth independent outside Sharpe anchor, and the first
+  admissible one: 0.89.** The anchors now read **1.442, 1.30, 1.29, 0.89, 0.85,
+  0.56** — **six for six below the gate-3 floor**, and the new one is the
+  *lowest* of the three closest in architecture to this program's own rule.
+  Against iteration 68's cheapest novel crossing of **1.886356** it sits
+  **52.82% below** (the floor is **2.1195x** it); against iteration 67's engine
+  ceiling of 1.578665, **43.62% below**. **Not an arrival, and the reason is
+  arithmetic rather than taste:** a vol-scaling overlay is a new architecture,
+  iteration 68 priced a novel candidate's gate-3 pass at 1.886356 to 2.355461,
+  and 0.89 is less than half of the lower end. **Fourteenth consecutive pass.**
+  What it does add, and what this program has *not* run in this form, is the
+  **ablation**: that vol-scaling rather than the trend signal carries the
+  drawdown reduction. This program's own three-sleeve book (iteration 66) is a
+  cousin of that claim — it buys drawdown, not money — and the ablation is
+  filed, not run, because P3 and iterations 66-68 forbid presenting either as
+  search progress.
+
+- **2026-09-17 — `arielb57/manytrials`, "Deflated Sharpe and PBO, done right"**
+  (https://github.com/arielb57/manytrials, MIT, README read in full).
+  The **first outside source to measure PBO's dependence on pool composition in
+  a controlled test**, and it runs the axis opposite to iteration 69's: it holds
+  the pool structure fixed and varies *skill*, where iteration 69 held the
+  *candidate* fixed and varied the pool. Its fixed-seed suite asserts
+  *"Pure noise: mean PBO over 40 matrices in [0.4, 0.6]. One column with a
+  Sharpe of 1.5 among 20 (10 years daily): mean PBO below 0.1."* Its global-null
+  demo — 1000 trials, 20 latent ideas x 50 clones at rho=0.9, **no skill
+  anywhere** — reports **PBO 0.200**, not 0.5, so correlated clone structure
+  deflates the statistic even with nothing real in the pool. On the DSR/PBO
+  interaction this loop measured as an opposition: *"It is a useful score but
+  not a p-value: the maximum of N null Sharpes has a much narrower distribution
+  than a single Sharpe, so thresholding DSR at 0.95 rejects far less often than
+  5% under the null."* Its calibration table (T=252, 400 searches/cell) puts the
+  realized false-discovery rate between **1.0% and 8.0%** at a nominal 5%,
+  depending entirely on within-cluster rho. **Testable here: NO as a strategy**
+  (it contains no signal) — but it is the first outside artifact that would drop
+  onto the same `T x N` returns matrix gate 3 already builds, and it carries
+  three things this program does not have: a calibrated `p = 1 - Phi(z)^N`, a
+  cluster-adjusted effective N, and a Newey-West widening of the Sharpe error
+  bar for serial correlation. **Filed, not adopted:** installing it would be a
+  gate-statistic change, and this loop has declined six of those in a row.
+
+- **2026-05-21 — tikeda123, "A Paper to Read in the Age When AI Has Made Edge
+  Discovery Easier: PBO"** (https://qiita.com/tikeda123/items/fd589372f78ffa4c48fb).
+  **The outside statement of iteration 69's mechanism, in words, four months
+  before this loop measured it.** A 144-candidate MA-crossover grid on USDJPY
+  60-minute bars records a **simplified PBO of 4/70 = 5.71%** while carrying a
+  **35.7% out-of-sample probability of loss**, and the author attributes the
+  divergence to pool quality: *"PBO is a rank-based metric that checks whether
+  the selected strategy falls into the bottom half of the candidate pool,
+  whereas OOS probability of loss is an economic metric ... If the overall
+  quality of the candidate pool is poor, even a strategy that ranks high OOS can
+  still have a negative absolute return."* The pool is explicitly bad — *"The
+  median full-sample Sharpe of the 144 candidates is -0.277, meaning that the
+  candidate pool itself is poor"* — and the recommendation is
+  *"it is therefore necessary to also examine the diversity of the candidate
+  pool."* On the candidate-only statistic this program has now asked four
+  outside sources for, it says the opposite exists: *"PBO is not a measure of
+  whether a single strategy is good or bad. Rather, it is the probability that
+  the selection process of choosing the best strategy from N candidates fails
+  OOS."* Its section 8 is titled **"An Important Prohibition: Do Not Use PBO as
+  an Objective Function"** and ends *"CSCV is inspection, not design."* — which
+  is, in the source's own words, the rule iteration 69 imposed on itself when it
+  refused the padding attack. Full-sample best of the 144 is **0.57**, long/short
+  on hourly FX at 1.0 pip round-trip. **Testable here: NO** for the strategy
+  (FX, 60-minute, long/short); **YES** for the reading, and it is recorded as an
+  outside precedent for the sixth gate-3 defect rather than as a duplicate of
+  it: it states the direction in prose, it does not measure the padding.
+
+- **undated working paper, code committed 2026-06-01..2026-09-21 — Daru Finance
+  / D. V. Gatto, "Backtest Overfitting & the Deflated Sharpe Ratio"**
+  (https://daru.finance/research-review/lopez-de-prado/backtest-overfitting;
+  code `DaruFinance/lopez-de-prado-work-review`). ~**92 500** real fully-costed
+  strategies — 50 000 crypto on 20 perpetual pairs, 22 500 US equity, 20 000 FX.
+  **The best crypto strategy of 50 000 scores 2.00 annualized net of costs
+  against a False-Strategy-Theorem null of 2.72, giving DSR 0.029** — it is
+  **26.47% below its own null**, and no asset class produced a DSR-0.95 pass:
+  *"The 50,000 strategies carry only 434 independent bets, and the median
+  per-pair probability of backtest overfitting is 0.28. Even the strongest
+  strategy out of 50,000 is a coin flip once you count the trials."*
+  **Two independent corroborations of this program's own measurements.**
+  (a) **Pool composition moves PBO by 2.5x inside the same study** — 0.28 on the
+  wide 2 500-per-pair search against **0.70** on a narrow 136-trial single-family
+  MA grid, of which *"crypto's PBO median of 0.70 says the in-sample winner
+  usually lands in the bottom half out of sample"* — the same direction as
+  iterations 64/66/67/69, measured on somebody else's corpus.
+  (b) **The search that finds the ceiling costs more deflation than the ceiling
+  can carry** — iteration 67's self-referential closure, here reproduced at
+  scale: 2.00 against an E[max] of 2.72 at N=50 000 is structurally the same
+  fact as 1.578665 surviving to N=17 113 while the sweep that located it needed
+  39 020 arms. It is the first outside instance of that specific shape.
+  Its own caveat runs in the same direction as iteration 27's: *"The DSR uses
+  the nominal trial count with the empirical trial-Sharpe dispersion, which is
+  conservative: feeding it the effective count would raise the DSR slightly, and
+  the 'not significant' verdict holds either way."* Controlled 136-trial grid:
+  crypto median best 0.62 against a null of 0.66, DSR 0.44, **136 nominal trials
+  -> 3 effective**. **Testable here: NO** — perpetual futures, dollar bars, and
+  the 2.00 is an in-sample best, so nothing transfers under product law. Not
+  recorded as a Sharpe anchor for that reason.
+
+- **2026-08-26 — arXiv 2608.25348, Zeng, Yang, Han & He, "Point-in-Time Audit
+  Before Alpha"** (https://arxiv.org/abs/2608.25348, PDF read).
+  A point-in-time data audit cut null-signal **false passes by 78.5%
+  (0.2910 -> 0.0625)** — a large, genuine reduction in false discovery — **and
+  PBO did not see it**: *"PBO changed by only -0.001429, interval
+  [-0.004286, 0], with nine ties. DSR was zero where computable and missing when
+  no candidate was selected."*, and *"The simulation did not distinguish
+  exact-grid deletion from availability masking and showed no material PBO
+  improvement."* Filed as a **power** observation about gate 3 from the opposite
+  side of every previous one: iterations 56/64/66/67/68/69 measured things that
+  move PBO and should not; this measures a thing that should move it and does
+  not. Economics, and they are unanimous: *"In the one-time historical holdout,
+  all 23 evaluated runs had positive IC but negative net Sharpe under primary
+  costs, and none of 460 fee-slippage cells had positive Sharpe."* Best observed
+  Sharpe per arm is **-6.3148 / -5.5009 / -5.4938**, medians near -21 to -30.
+  **Testable here: NO** — Binance BTCUSDT USD-M perpetuals, 5- and 15-minute
+  bars, long/short. Also filed for its matched-budget control: *"the audited
+  adaptive agent tied random search and did not establish superiority."*
+
+- **Blocked route, recorded so it is not re-walked and not cited.** Arian,
+  Norouzi M. & Seco, *"Backtest overfitting in the machine learning era: A
+  comparison of out-of-sample testing methods in a synthetic controlled
+  environment"* (Knowledge-Based Systems 305, 2024; SSRN 4686376 / 4778909) is
+  the one located paper that compares PBO and DSR *across* validation schemes.
+  Four routes returned nothing readable: ScienceDirect `S0950705124011110`
+  **403**, SSRN `Delivery.cfm` **403**, `ouci.dntb.gov.ua` mirror **502**,
+  Semantic Scholar DOI `10.1016/j.knosys.2024.112477` **404**. **Unverified —
+  nothing from it may be quoted or relied on.** Separately, a completeness note:
+  arXiv **2512.22476** (AutoQuant) is already in this file at line 1010, logged
+  as "surfaced, not filed", and its measured figure was never recorded — it is
+  **PBO 0.586 on a BTC/USDT pool of N_opt = 40 configurations**, noted here
+  without re-opening that entry.
+
+- **Arrivals: zero. Fourteenth consecutive pass — but the pass is narrower than
+  the thirteen before it.** Five sources handled, all five new; the novelty check
+  was run against `RESEARCH_LOG.md`, `LOOP_LOG.md` and the whole `docs/` tree,
+  and fifteen candidates were dropped for hitting it. For the first time the
+  file contains a source that is **fully admissible under product law** — spot,
+  long-only, daily, costed, public data — so the reason it is not an arrival is
+  no longer "inadmissible" but **"admissible and 52.82% short of the bar a novel
+  candidate must clear"**. Two of the five (manytrials, Qiita) state in the
+  outside literature the premise underneath iteration 69's sixth gate-3 defect,
+  one of them four months earlier and in prose; a third (Daru) reproduces both
+  the pool-composition effect and iteration 67's search-cost closure on 92 500
+  strategies it built itself; the fourth shows PBO failing to register a real
+  78.5% improvement. **The literature has now handed this program vocabulary for
+  eight measurement defects, an outside precedent for the ninth and tenth, an
+  independent 92 500-strategy corroboration of the eleventh, six Sharpe anchors
+  all below the gate-3 floor, and not once an edge.**
+
+## 2026-09-30 — iteration 71 (five sources, all new; the seventh outside Sharpe anchor and the first outside book charged at this program's exact 15 bps, plus the first real-money measurement of what a backtest-to-live gap costs in Sharpe)
+
+- **2026-09-29 — `VadimChudin/aegis` PR #34, "Research: crypto time-series
+  momentum — Sharpe 1.27 on 2018-2026, robust"**
+  (https://github.com/VadimChudin/aegis/pull/34; report
+  `docs/research/trend.md`, code `python/aegis_lab/research/trend.py`, both
+  read in full). Binance **spot** daily klines from `data.binance.vision`, 14
+  USDT pairs, 2017-08..2026-09 with results from 2018, costs charged at
+  **0.10% per unit of turnover** (`COST = 0.001` applied as
+  `pos.diff().abs() * cost`). The rule, verbatim: *"Score = mean of
+  sign(close / close L days ago − 1) for L = 20, 60, 120, 250; long-only
+  (score < 0 → 0)."* Result table: long-only ensemble **CAGR 17.3%, Sharpe
+  1.27, max drawdown −18.5%** (halves 1.58 / 0.92) against a control of
+  BTC+ETH buy-and-hold unlevered at **0.65 / −87.9%**; single lookbacks 1.23
+  (20d), 1.16 (60d), 1.17 (120d), 0.95 (250d); long/short ensemble **0.91**;
+  costs x4 (0.40%) **1.05**; BTC alone **1.23**; trading two days late
+  **1.30**. Its own null: *"Shuffled weights (20 runs): Sharpe mean 0.14, best
+  0.47."* The author's summary of the result is *"The edge is risk, not
+  return."*
+  **Testable here: YES** — spot, long-only (score clipped at zero), daily close
+  decision with next-day fill, costed, public OHLCV, no leverage. **Recorded as
+  the seventh independent outside Sharpe anchor: 1.27.** The anchors now read
+  **1.442, 1.30, 1.29, 1.27, 0.89, 0.85, 0.56** — **seven for seven below the
+  gate-3 floor.** Against iteration 68's cheapest novel crossing of
+  **1.886356** it sits **32.7% below**; against iteration 67's engine ceiling
+  of **1.578665**, **19.6% below**. **Four caveats, none of them the author's
+  claim and all of them read out of the code rather than inferred:** (a) the
+  charge is **10 bps one-way**, not this program's 15, and the source's own 4x
+  row (40 bps) gives 1.05, so the 15 bps point is **bracketed by [1.05, 1.27]**
+  — any single interpolated value is our arithmetic, not their number, and is
+  not recorded as one; (b) `basket()` scales the mean coin return by
+  `sqrt(n)` — its own comment says *"as if uncorrelated"* — which crypto coins
+  are not, leaving Sharpe near-invariant but not CAGR; (c) the Sharpe is
+  `mean/std*sqrt(365)` with **no risk-free subtraction**, so it is not strictly
+  commensurable with the local convention and the anchor is filed with that
+  stated; (d) provenance — the branch was authored by a bot
+  (`usehoplite[bot]`) and merged into an unrelated desktop app repo created
+  three days earlier with 0 stars, so it is real, readable code and **not** a
+  peer-reviewed result. **Fifteenth consecutive pass**, and the reason is the
+  same arithmetic as the fourteenth: a vol-free long-only momentum ensemble is
+  a new architecture, iteration 68 prices a novel candidate's gate-3 pass at
+  **1.886356 to 2.355461**, and 1.27 is **below the lower end by a third**.
+  Free and worth recording: ensemble **1.27** against best single lookback
+  **1.23** is **+0.04**, the **fifth** independent measurement of the
+  ensemble-breadth premium and inside the existing band (+0.01, +0.03, +0.06).
+
+- **2026-09-28 — arXiv 2609.34510, Yu, Zhou, Ding, Wei, Liu, Zhou, Ge, Xu,
+  Zhang, Luo, Zhang, Cheng, Zhang, Zhang & Fang, "Can AI Make Money in Crypto?
+  Measuring the Gap from Backtests to Real Markets"**
+  (https://arxiv.org/abs/2609.34510, HTML full text read; code
+  `Starlien95/Awesome-TradingAI`). **The first source in this file that carries
+  a backtest, a paper-trading period and a real-money live period for the same
+  methods**, and therefore the first that can price what this program's forward
+  track is for. OKX, 10 large-cap coins, train 2021-2023 / validate 2024 /
+  test 2025, paper 2026-06-04..2026-09-21, **real money 2026-08-24..2026-09-21**;
+  long legs are spot at 0.10%/trade, shorts are perps at 0.05% taker.
+  Abstract: *"strong historical performance does not reliably transfer to
+  prospective trading"*; §4.3: *"none of the evaluated methods sustains
+  market-beating performance in live trading"*. Numbers: 2025 backtest best
+  **TCN 1.62**, GATs 1.57, buy-and-hold **−0.18**; *"The median return of the
+  selected ML methods drops from 36.0% in historical backtesting to −9.8% in
+  paper trading"*; *"The median return across the four methods is −0.56%,
+  despite the market gaining 11.63% over the same period."* **The number this
+  program should keep:** *"the average absolute gap decreases from 58.85 pp to
+  28.51 pp for alpha and from 1.91 to 0.94 for the Sharpe ratio"* — a measured
+  **backtest-to-live Sharpe gap of 1.91**, which is **larger than the entire
+  distance from zero to this engine's 1.578665 hindsight ceiling**. **Testable
+  here: NO** — configurations are selected over 5m/15m/1h/4h bars and never
+  daily (Appendix B.3), and some agents short perps at 10x isolated leverage.
+  **Not an anchor** for the same reason. Filed as an outside empirical bound on
+  what any in-sample number here is worth before forward data exists.
+
+- **repo created 2026-07-28, last push 2026-09-09 — `miighty/validated-crypto-strategies`,
+  "Crypto Regime Strategy Validation"** (https://github.com/miighty/validated-crypto-strategies;
+  README, REPORT and `docs/METHODOLOGY.md` read in full). **The first outside
+  source in 71 iterations to charge exactly this program's cost model**:
+  *"0.10% fee plus 0.05% slippage for each one-way position change"*, i.e.
+  **10 + 5 = 15 bps**, applied as `abs(new_position - old_position) × 0.15%`.
+  Binance spot and USD-M funding pinned 2018-01-01..2026-07-28 over 10 coins
+  with a per-file SHA-256 manifest committed. Overall historical Sharpe
+  ranking: dca **0.7014**, trend_following **0.3361**, momentum 0.1948,
+  breakout 0.1769, statistical_arbitrage −0.3179, contrarian −0.3262,
+  mean_reversion −0.9708, grid −1.0331, funding_arbitrage −2.6721; its daily
+  trend row shows **+283.00%** total return at **58.35%** max drawdown, and by
+  regime **0.6798** in Bull Trend against **−2.4198** in Crash/Capitulation.
+  Its own evidence boundary, verbatim: *"`historical_backtest_completed` … does
+  not mean proven edge, out-of-sample validation, investment advice, or
+  readiness for paper/live execution."* **Testable here: NO, and not an
+  anchor** — the daily trend rule is *"symmetric long/short"* with a 2xATR
+  trailing exit and the cross-sectional momentum rule is *"weekly long top
+  three/short bottom three"*, so both break long-only; the remaining strategies
+  are 4h and 1h. **Its value is the cost calibration, not the strategies:**
+  under precisely the charge this program applies, a plain daily EMA trend rule
+  on 10 Binance spot majors over 8.5 years earns **0.3361**. **Corroborated
+  independently the same week** by `crypto-hypothesis-lab/crypto-simulator`
+  (created 2026-08-15, pushed 2026-09-30, README read in full), an unrelated
+  2026 project that states *"Fees are 10 bps, slippage is 5 bps"* and
+  *"Spot candidates can only hold positive weights or cash."* — **testable here:
+  NO** (its execution layer is 1-hour SMA 20/50, with 4h and 1d only as
+  filters) and **no anchor** (it publishes no Sharpe). Two unrelated projects
+  picking the identical 10+5 decomposition is evidence the 15 bps assumption
+  underneath every number in this repository is **not idiosyncratic**.
+
+- **2026-09-29 — Pavel Kazantsev, "Three Crypto Edges. What Survived the
+  Audit?"** (https://dev.to/pavel_kkkkazantsev/three-crypto-edges-three-different-killers-1i6o,
+  originally pkazantsev.com; sibling piece 2025-09-23 also new here). Bybit
+  spot and perps, 45 symbols, 15-minute bars for the carry edge, 76 development
+  and 17 holdout windows, holdout 2025-09-01..2026-08-24, *"modelled fees of 4
+  bps plus slippage of 2 bps"*. **The article is a correction of the author's
+  own published negative**, and is filed for that shape: development net return
+  **+48.6% → +45.62%**, development Sharpe **1.17 → 1.079**, holdout net return
+  **−0.5% → +1.31%**, holdout Sharpe **−0.02 → 0.208**; block bootstrap
+  *"point estimate: Sharpe +0.208 / 95% CI (L = 4032): [−0.21, +0.44] /
+  p(Sharpe > 0): 78.2%"*, with the author's reading *"The 95% interval spans
+  zero. With 17 non-overlapping windows, wide CIs are the honest result, not a
+  flaw in the method."* Its thesis sentence is *"A negative backtest deserves
+  the same provenance checks as a profitable one."* **Testable here: NO** —
+  carry is long spot plus short perp (shorts and funding), the reversal edge is
+  15-minute, and the one daily edge is disclaimed by the author himself
+  (*"Matching run/configuration not located; sweep remains unverified"*), so its
+  momentum sweep figures are **not quotable and are not recorded**. **Not an
+  anchor.** Two things transfer anyway. (a) **An outside statement of
+  `GATE5_HOLDOUT_POWER_2026-09-18.md`'s core finding**, from Arhan Canli's
+  comment dated 2026-09-29: *"For a strategy whose true annual Sharpe is 1.17,
+  the realized Sharpe over one year has a standard error of roughly 1 to 1.3,
+  so about one year in six to eight comes out at −0.02 or worse with nothing
+  having changed."* Iteration 63 measured SE **1.0034** at the holdout's 366
+  days and a **30.1%** failure rate for an intact strategy; this is the same
+  quantity, stated independently and arrived at from a real failed reproduction
+  rather than from simulation. (b) **A null-test artifact this program has not
+  recorded**: *"Mean null turnover reached 1.82x frozen … the frozen strategy
+  received a structural cost advantage independent of signal quality."* Filed,
+  not acted on: if any local shuffle or permutation null charges costs, it is
+  biased **in the strategy's favour** by construction. Nothing here is run —
+  iteration 69's refusal governs, and no local null is being re-scored on the
+  strength of an outside blog post.
+
+- **2026-06-23 — Xynersrn & kangnuza (SMU Blockchain), "BTC Regime-Gated Alt
+  Factor Strategy"**, published by Artemis Research
+  (https://research.artemis.ai/p/btc-regime-gated-alt-factor-strategy).
+  A 2-factor cross-sectional rank on 7 Hyperliquid perps plus three equity
+  perps, 2022-01..2026-05, *"One decision per week … Weekly rebalance on Friday
+  close"*, T-1 lag, costed at *"Hyperliquid taker fees (0.035% per notional)
+  plus tiered slippage"*. Reported: *"Sharpe 1.31, max drawdown -27.2%, and
+  5.63x final equity. Net of Hyperliquid fees and tiered slippage: Sharpe 1.27,
+  5.33x"*, against BTC buy-and-hold 1.93x / −64.3% and equal-weight alts 4.41x
+  / −66.6%; threshold sensitivity 55 → 1.46 and 65 → 0.83; the short overlay
+  was tested twice and *"Permanently rejected"* at 0.10 and 0.05. **Testable
+  here: NO, and not an anchor** — perpetual futures, **leverage to 2.5x**, and
+  **weekly** rather than daily decisions; three disqualifications, any one of
+  them sufficient. Filed for one sentence, §6.1, which is the behaviour this
+  program's gate-3 work has been arguing for: *"The test-window Sharpe of 2.07
+  is not strong OOS validation; the test window contains 65 of the backtest's
+  104 lifetime BULL weeks, making it structurally the easier half."* An outside
+  practitioner voluntarily discarding a **2.07** — a number **above** the
+  1.886356 floor a novel candidate must clear here — on window-composition
+  grounds alone.
+
+- **Blocked route, recorded so it is not re-walked and not cited.** Howden,
+  Joseph & Andreev, Maksim Aleksandrovich, *"Risk-Managed Time-Series Momentum
+  in Crypto Majors: Crash-State De-Risking and Drawdown Control"*, SSRN
+  7115459, DOI 10.2139/ssrn.7115459, posted 2026-07-30. **Existence and
+  metadata verified** from two independent machine-readable sources read
+  directly — Crossref returned the exact title, both authors and the
+  2026-07-30 creation date, and OpenAlex returned work `W7171800818` as an
+  SSRN preprint. **Content unverified — nothing from it may be quoted or
+  relied on.** Eight routes failed: SSRN `papers.cfm` **403** by curl and
+  **403** by fetch, `ssrn.com/abstract=` **403**, the `r.jina.ai` reader
+  returned a CAPTCHA, Semantic Scholar search **429** twice and by-DOI **404**,
+  OpenAlex holds a null `abstract_inverted_index`, and econpapers and
+  scholar.archive.org both timed out. Search-engine summaries describe a
+  30-day long/cash TSMOM sleeve on 7 majors — which, if real, would be
+  **long-flat, daily, costed and therefore the first fully admissible anchor
+  above every one recorded here** — so it is worth one further attempt from a
+  different route. **The figures those summaries carry are deliberately not
+  written into this file**, in either direction, until someone has read page 1.
+
+- **Arrivals: zero. Fifteenth consecutive pass.** Five sources handled, all
+  five new; the novelty check was run against `RESEARCH_LOG.md`, `LOOP_LOG.md`
+  and the whole `docs/` tree over 25 identifiers, all returning zero hits, and
+  **nine** further candidates were dropped for already appearing. The shape of
+  today's pass is different from the fourteenth: the fourteenth found the first
+  **admissible** source and was short of the bar by 52.82%; the fifteenth finds
+  a **closer** admissible source — 1.27, short by 32.7% — and, more usefully,
+  the first outside book charged at **exactly the 15 bps this repository
+  charges**, where a plain daily trend rule earns **0.3361**. **The literature
+  has now handed this program vocabulary for eight measurement defects, an
+  outside precedent for the ninth and tenth, an independent 92 500-strategy
+  corroboration of the eleventh, an independent statement of iteration 63's
+  holdout-power finding, a real-money backtest-to-live Sharpe gap of 1.91,
+  seven Sharpe anchors all below the gate-3 floor, and not once an edge.**
