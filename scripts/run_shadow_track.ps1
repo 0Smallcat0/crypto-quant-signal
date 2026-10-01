@@ -45,8 +45,16 @@ if ($LASTEXITCODE -ne 0) {
     exit 126
 }
 
+# The sentinel is not decoration. If command discovery fails here, PowerShell
+# leaves $LASTEXITCODE untouched - and the probe above has just set it to 0, so
+# without this line a vanished interpreter would be reported as a clean run.
+# Measured both ways on 2026-10-01: with the sentinel the wrapper exits 125 when
+# the call cannot be resolved, 0 on a healthy run, and 1 when the recorder
+# itself refuses.
+$global:LASTEXITCODE = 125
 & $python -m scripts.shadow_signal *>> $logFile
-"exit=$LASTEXITCODE finished=$(Get-Date -Format o)" | Add-Content $logFile
+$recorderExit = $LASTEXITCODE
+"exit=$recorderExit finished=$(Get-Date -Format o)" | Add-Content $logFile
 
 # Repair-command note, measured 2026-09-30: plain `pip install -e .[dev]` made
 # zero progress in two separate ~9-minute runs here (it hangs creating the
@@ -56,3 +64,25 @@ if ($LASTEXITCODE -ne 0) {
 # it is imported by nothing (grep over `src/` and `scripts/` returns zero hits
 # apart from this comment, which is itself the only match) and is not on the
 # recorder path, so it may be skipped when repairing under time pressure.
+
+# Exit-code propagation, added 2026-10-01 (iteration 72). Until today this
+# script ended on an Add-Content, so its process exit code was that cmdlet's
+# success and Windows Task Scheduler recorded LastTaskResult 0 whatever the
+# recorder did. Measured, not assumed: a .ps1 whose last native call exits 1
+# and then writes a log line exits 0 - reproduced twice before this change.
+# The recorder does exit non-zero on the failure that costs evidence here:
+# fetch_candles raises SystemExit when no public REST base url is reachable
+# (scripts/shadow_signal.py:79), and that is a permanently lost row, because
+# the recorder never back-fills. It appends at most one row per run, guarded by
+# `rows[-1]["date"] >= decision_date` (scripts/shadow_signal.py:187), so a
+# missed run DELETES a session rather than delaying it: no run happened on
+# 2026-08-10, the 2026-08-11 09:48 run wrote the 2026-08-10 session, and
+# 2026-08-09 is gone from this program's primary forward evidence for good.
+# This change makes the scheduler's record truthful. It does not make anyone
+# watch it - the tracks' own row counts and dates remain the only evidence
+# that counts (iteration 71).
+if ($null -eq $recorderExit) { $recorderExit = 125 }
+if ($recorderExit -ne 0) {
+    "FATAL: recorder exited $recorderExit - this run recorded no row, and the missed session cannot be back-filled." | Add-Content $logFile
+}
+exit $recorderExit
