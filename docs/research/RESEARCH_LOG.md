@@ -3962,3 +3962,176 @@ deliberately **not** re-recorded).
   written, including the miighty 15 bps cost model and its nine Sharpe values,
   arXiv 2609.34510's 1.91 backtest-to-live gap, and the deliberate non-quotation
   of SSRN 7115459.
+
+## 2026-10-01 — iteration 72 (five sources, all five new; the eighth outside Sharpe anchor and the first one charged at this program's exact 15 bps **in this program's own architecture**, plus the first outside source that bears on gate 4's *ranking* rather than its level)
+
+- **2026-10-01 — `avinash-rohith/predicter`, Donchian ensemble benchmark**
+  (https://github.com/avinash-rohith/predicter; repository landing page read via
+  fetch, **code not read** — stated because iteration 71 had to withdraw a "read
+  in full" claim for exactly this kind of reading). Verbatim configuration:
+  *"Long-only BTCUSDT (Binance daily), 9 lookbacks, trailing stops, 25% target
+  vol, 20% rebalance threshold, 15 bps/side costs (10 fee + 5 slippage)."* Over
+  **2018-08-11 to 2026-09-18**: total return **+225%**, CAGR **+15.6%**, Sharpe
+  **1.10**, max drawdown **-19.9%**, profit factor **1.25**, **6/9** profitable
+  calendar years. The repository describes this as implementing
+  Zarattini/Pagani/Barbon, which is **already recorded here** (9 identifier hits
+  across `docs/`), so the paper is not the new thing — the **cost charge and the
+  architecture** are.
+  **Why it matters: the cost model is identical to this repository's, verified
+  today against the source file rather than remembered.** `trial_registry.jsonl`
+  row 88 records `cost_assumptions` = `fee_bps "10"`, `slippage_bps "5"`,
+  `fill_rule "next_bar_open"` — 15 bps per fill. Iteration 71 recorded the first
+  outside book charged at exactly 15 bps (`miighty`, where a plain daily EMA
+  trend rule earned **0.3361**); this is the **second**, and the first at that
+  charge whose rule family is the **same architecture this program trades** —
+  multi-lookback Donchian, long-only, daily close decision.
+  **Testable here: YES on instrument, frequency, direction and cost;
+  admissibility NOT fully verified, and that limit is stated rather than
+  glossed.** The page gives a *"25% target vol"* and a *"20% rebalance
+  threshold"* and does **not** state whether the target position may exceed 100%
+  of capital. Product law forbids leverage, so the leverage question is
+  **unmeasured here** and no claim of "no leverage" is made — the iteration-71
+  lesson applied in advance this time instead of in a correction block.
+  **Recorded as the eighth independent outside Sharpe anchor: 1.10.** It sits
+  **30.3209%** below iteration 67's engine ceiling of **1.578665** and
+  **41.6865%** below iteration 68's cheapest novel gate-3 crossing of
+  **1.886356**. Two further figures from the same page, recorded as
+  **within-source secondary observations and explicitly not as separate
+  anchors** (same author, same symbol, same window, same charge): a daily
+  *"Close > SMA50"* rule returns CAGR **+26.8%**, Sharpe **1.33**, max drawdown
+  **-27.2%** — a *simpler* rule scoring **higher** than the nine-lookback
+  ensemble in its own repository, still **15.7516%** below the engine ceiling
+  and **29.4937%** below the novel crossing; and a frozen multi-signal vote
+  system walk-forwarded over **16 non-overlapping 60-day windows**
+  (2024-02-01..2026-09-18, 1h candles, same symbol, 0.1% fee + 0.05% slippage)
+  returns **0/16 windows profitable, -4.33% mean**, the author's own verdict
+  being *"reject as a tradable system"*. **No arithmetic is done across
+  anchors** — iteration 71's third correction forbids exactly that, and the
+  eight are not commensurable.
+  **One discrepancy recorded because it is the second consecutive pass in which
+  a search summary misdescribed a source:** the summary that surfaced this
+  repository reported *"+243.2% total return (CAGR +16.4%)"*; the page itself
+  says **+225%** and **+15.6%**. The page's figures are what is written above.
+
+- **2026-10-01 — arXiv 2606.01650, "Post Selection Estimation of Sharpe
+  Ratios"** (https://arxiv.org/abs/2606.01650; abstract page and HTML v1 read
+  via fetch, PDF route not used). Abstract, verbatim opening: *"We consider the
+  problem of estimating the true Sharpe ratio of an asset selected for having
+  the highest observed in-sample Sharpe ratio among many assets."* Estimators
+  compared: the polyhedral lemma, James-Stein shrinkage, **debiasing the
+  expected maximum Sharpe ratio**, thresholding and empirical Bayes. Verbatim:
+  *"James Stein estimator provides the best performance across many different
+  realistic values of the relevant parameters, followed by the GMLEB
+  estimator"*, and *"James Stein clearly dominates in the Gaussian layout, is
+  largely tied with Expected Max or slightly better for Uniform layout"*.
+  Ranking agreement across all simulations is reported as Kendall **tau = 0.57**
+  for James-Stein against **0.45** for Expected Max; **that pair was read
+  through the HTML route out of figure/table text rather than from a table
+  rendered here, and is recorded with that caveat.** Asset classes: **absent**
+  — it is a simulation study.
+  **Why it matters: this is the first outside source that bears on gate 4's
+  *ranking* rather than on its level.** Gate 4 is in the Expected-Max debiasing
+  family by construction — `gate_report_2026-07-25.json` carries
+  `expected_max_sharpe` per trial beside `dsr` — and the paper's subject is
+  precisely this program's situation: the true Sharpe of the strategy selected
+  for having the best in-sample Sharpe among many. It is adjacent to iteration
+  55's measured top-of-ranking inversion (registry-wide Spearman **-0.6789**
+  between Sharpe and drawdown rank, n=133), which was a statement about *what*
+  gate 4 ranks first, not about *how well* the estimator ranks.
+  **Testable here: YES in principle, REFUSED in practice.** Swapping an
+  estimator inside gate 4 after seeing which trials pass is a gate rule change,
+  and this loop has now declined six of those (iterations 66, 67, 68, 69 and the
+  two inside 67 and 68). Recorded as an **operator-only** option with **no
+  deadline**; **no number in this program is re-scored on it**, and this entry
+  may not be cited as grounds for re-reading gate 4.
+
+- **2026-10-01 — `AshJha0/agentic-trader` PR #12, "Paper trading: no crash
+  while the record has fewer than two sessions"**
+  (https://github.com/AshJha0/agentic-trader/pull/12; read via fetch). An
+  outside paper-trading project changing an evidence recorder's exit-code
+  semantics in the **opposite direction to today's P1 repair here**. Before, the
+  scheduled task *"would have exited non-zero with a traceback in cron.log"*;
+  after, it *"now logs 'nothing to record yet' and exits 0"* when *"the record
+  has fewer than two sessions"*, and *"the first ledger row appears when the
+  second session is complete"*. On the retrievable text it adds **no mechanism
+  distinguishing "nothing to record yet" from "failed to record"**, and says
+  nothing about back-filling.
+  **Why it matters:** that undistinguished pair is exactly the hole measured
+  here today from the other side — both wrappers in this program exited **0**
+  for a healthy run *and* for a run that recorded nothing, and today's repair
+  separates them. Their exit 0 is defensible and ours was not, for a reason
+  worth writing down: their missing row is still **coming**, ours is **gone**.
+  **Testable here: N/A — not an edge hypothesis.** It bears on P1.
+
+- **2026-10-01 — `myh-st/crypto-skills` PR #12, "EXP-002: trend sleeves engine
+  (Donchian + TSMOM + XSMOM), validated by 4-year runtime replay"**
+  (https://github.com/myh-st/crypto-skills/pull/12; read via fetch).
+  **Inadmissible under product law, and recorded as inadmissible rather than
+  quietly used:** perpetual **futures**, long/short, leverage **3x** (Donchian)
+  and **2x** (TSMOM and XSMOM), 7 symbols (BTC, ETH, NEAR, SEI, SUI, AVAX,
+  ENA), Dec 2022-Sep 2026. Its headline *"Sharpe 1.32 (t 2.55), +37%/yr and
+  18.5% max drawdown; at double costs, Sharpe 1.18"* is therefore **not**
+  recorded as an outside anchor. Two parts of it are useful anyway. (a)
+  Reproduction fidelity, verbatim: *"Each sleeve matches its research
+  counterpart (Sharpe 1.07 / 0.97 / 0.55 vs 1.05 / 1.00 / 0.58)"* — maximum
+  divergence **0.03** Sharpe across three independent sleeves, an outside datum
+  on how closely a reimplementation can track a published one. (b) Its
+  validation method, verbatim: *"4-year replay through the real scheduler,
+  RiskEngine, PAPER fills, funding and liquidation"* — an outside precedent for
+  replaying a strategy **through the live infrastructure** rather than through an
+  offline engine, which is directly relevant to iteration 61's finding that this
+  program's own Test 1 says *"offline"* while **no offline input exists**.
+  **Testable here: NO** as a strategy; (b) is a P1/operator design option, not a
+  search route, and is not proposed as one.
+
+- **2026-10-01 — arXiv 2608.23416, "The Axiomatic Trader" — figures
+  deliberately NOT recorded** (https://arxiv.org/abs/2608.23416; PDF route
+  returned raw object streams, HTML v3 read via fetch). The search summary that
+  surfaced it stated that the paper applies the deflated Sharpe ratio, CSCV
+  probability of backtest overfitting and a studentised SPA test, and that *"the
+  long-short library's winner survives out-of-sample testing with haircut
+  adjustments"* — which, if true, would be an outside instance of a program
+  clearing the two gates that do all the deciding here. **On the text
+  retrievable through the HTML route it is a theoretical paper: no DSR value, no
+  PBO value and no annualized Sharpe appears**, the only Sharpe-bearing sentence
+  being *"A daily R^2 of 1% is a daily Sharpe of 0.1, annualised
+  0.1*sqrt(252)~1.6"*, and universe, sample period and costs are all
+  **absent**. The retrieval may have been partial, so this is recorded as **"not
+  verified here"** and **not** as "the paper does not contain them"; **none of
+  the summary's figures are written into this file, in either direction**, until
+  someone has read the paper properly. Together with the predicter discrepancy
+  above, this is the **second consecutive pass** on which a search summary's
+  description of a source failed verification against the source.
+
+- **Arrivals: zero. Sixteenth consecutive pass.** Novelty was checked across
+  `RESEARCH_LOG.md`, `LOOP_LOG.md` and the whole `docs/` tree over **40**
+  identifiers: **27** returned zero hits and **13** were dropped for already
+  appearing — Zarattini / Pagani / Barbon and "Catching Crypto Trends" (9/9/9/4
+  hits, the paper `predicter` implements), arXiv **2604.26747**, **2603.20319**,
+  **2512.22476**, **2608.23808**, AutoQuant, MinervaScore, "Implementation
+  Risk", coinquant and quantinsti. Four further novel candidates were surfaced
+  and **not** pursued, listed so the next pass does not re-find them as new:
+  `zebadee2kk/DeFi-TraderStack-Agent` #137 (pre-registers an ensemble-trend
+  catalog — multi-lookback Donchian, trailing stop, 25% vol target, top-20
+  liquid universe; the closest unread candidate to this program's own shape),
+  `Jess08309/AI-Trading-Bot-Suite` #32, `UltiKits/UltiTools-Reborn` #382 (a
+  scheduled task that silently never fires while others in the same window do —
+  the same failure class this iteration repaired, but a Minecraft plugin), and a
+  Medium "day-of-week momentum ... Sharpe 2.96" post. One was fetched and
+  deliberately **not** recorded as an anchor: `alfred1123/Quant_Strategies` #57
+  is a literature-notes PR whose figures are second-hand and mostly perpetual
+  futures (*"Bitcoin perp-spot Sharpe of 3.35 after retail costs"*,
+  *"AdaptiveTrend ... claimed Sharpe 2.41, not audited"*), and whose one
+  spot-style figure, Liu-Tsyvinski's weekly BTC quintile Sharpes **0.45 /
+  0.19** *"not annualized"*, belongs to a paper already cited in this program's
+  own `GOALP_EXPERIMENT3_PREREGISTRATION.md`.
+  **The anchors now read 1.442, 1.33*, 1.30, 1.29, 1.27, 1.10, 0.89, 0.85,
+  0.56 — eight independent sources, nine figures, and not one of them reaches
+  the gate-3 floor** (the starred 1.33 is the within-source secondary above, not
+  a ninth source). **The literature has now handed this program vocabulary for
+  eight measurement defects, an outside precedent for the ninth and tenth, an
+  independent 92 500-strategy corroboration of the eleventh, an independent
+  statement of iteration 63's holdout-power finding, a real-money
+  backtest-to-live Sharpe gap of 1.91, an outside estimator that ranks selected
+  strategies better than the one gate 4 uses, an outside precedent on exactly
+  the recorder exit-code question P1 repaired today, and not once an edge.**

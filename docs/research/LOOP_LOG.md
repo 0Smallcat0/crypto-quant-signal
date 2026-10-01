@@ -8970,3 +8970,320 @@ exists to catch, and the fourth is a claim that defeats itself.
   with the single 2026-08-09 gap, 10 and 11 rows on the weekly tracks both last
   dated 2026-09-18, the 94-byte blank-exit log, and 2026-07-31 as the last
   decision event, 61 days ago.
+
+## 2026-10-01 — iteration 72 (P1: iteration 71 closed the crash case and left the silent case open — measured, a weekly session had already been lost that way on 2026-08-01, with the recorder, the wrapper and the scheduler all three reporting success)
+
+- **Step 0, line 1 — current answer, unchanged by this iteration.** As first
+  stated **2026-07-27** and refined through **2026-09-25**, still not
+  forward-validated: the timing rule adds real value in **crypto only**, the
+  best backtested book bought drawdown plus a slim return margin rather than
+  return, all three unblocking levers are measured and none decides, all six
+  gates are characterised, no route reaches the stop condition, and pool
+  composition cannot buy the conjunction. **Nothing here is an edge that passes
+  the six gates.** This iteration measured nothing about the edge and did not
+  move this line.
+
+- **Step 0, line 2 — what this iteration moves.** It does **not** advance a
+  research route; every route is closed and the contract's instruction for that
+  state is *"do P1 maintenance, confirm the three tracks are gaining rows, and
+  stop."* What it closes is the **second half** of the evidence-integrity
+  failure iteration 71 opened. Iteration 71 fixed *"nothing ran"* — a missing
+  interpreter, then an interpreter with no dependencies. The remaining state is
+  **"something ran, recorded nothing, and reported success"**, and it is not
+  hypothetical: **it already happened on 2026-08-01 and has never been
+  recorded.**
+
+- **Step 0, line 3 — why it is not sprawl.** No new script (the same two run
+  wrappers iteration 71 touched gained an exit-code path), no new research
+  document, no diagnostic, no arm registered, no gate report regenerated,
+  nothing frozen edited. P1 is the queue's first item and its own words are
+  *"If any stops gaining rows, fix it before anything else."*
+
+- **State read.** Registry **N = 133** (`trial_registry.jsonl`, 133 lines).
+  Latest gate report is still **2026-07-25**: `pbo` **0.651826**,
+  `pbo_all_columns` **0.732556**, `passes: false`, **37** candidate columns,
+  **12 870** combinations, **16** CSCV blocks; gate 2 `observed_days` **2676**
+  against `required_days` **1000** (passes by construction, iteration 27);
+  gate 4 `trial_sharpe_variance_deannualized` **1.584220e-04** over 133
+  per-trial rows with **three** `passes_dsr: true` — trial **29** (0.986670),
+  **37** (0.952424), **118** (0.950140), the first two disqualified by their
+  family's frozen 51.93 % drawdown bar (iteration 55). `holdout_lock.json`
+  still reads **`"spent": false`** with `spent_at: null`. Nothing regenerated,
+  nothing spent. `GOALP_EXPERIMENT3_PREREGISTRATION.md` read in full again (84
+  lines): **FROZEN on commit**, already executed (the registry holds 64
+  `cross_sectional_momentum` rows), nothing in it actionable — iteration 67's
+  sweep already established that the best arm this architecture can express
+  reaches 1.578665 and still fails gate 3.
+
+- **P1 audit — row counts and dates only, per iteration 71's standing
+  consequence.** The crypto daily tracks are healthy: `shadow_trial88.jsonl`
+  and `shadow_trial118.jsonl` both hold **68 rows**,
+  **2026-07-24..2026-09-30**, no duplicates, and exactly **one** gap
+  (2026-08-09, pre-existing and on record). Both gained **one** row since
+  iteration 71 and were written today at **08:21** with yesterday's completed
+  candle, which is the correct lag. The weekly tracks are unchanged and could
+  not have changed: `shadow_tw0050.jsonl` **10** sessions,
+  `shadow_gld.jsonl` **11**, both last dated **2026-09-18** (13 days), with the
+  next scheduled run **2026-10-03 09:40**.
+
+- **THE FINDING — the 10-vs-11 asymmetry on the weekly tracks is not a calendar
+  difference. It is a lost session, and the loss was invisible at every
+  layer.** Iteration 71 reported both counts and did not explain the gap between
+  them. Measured today from the run logs: on **2026-08-01** the weekly run
+  recorded, in this order, `ingest 0050 exit=1` — TWSE answered
+  `STOCK_DAY returned stat='很抱歉，沒有符合條件的資料!'` — then
+  **`0050: already recorded through 2026-07-24`**, then
+  `GLD: appended 2026-07-31`, then **`shadow exit=0`**. The 0050 track jumps
+  **2026-07-24 → 2026-08-07** with no row for Friday **2026-07-31**, the
+  session GLD recorded on the same run. **Recorder exit 0, wrapper exit 0,
+  Task Scheduler `LastTaskResult` 0, one session gone.**
+
+- **Mechanism, read out of the code rather than inferred.** `record()`
+  (`shadow_signal_tw.py:121-169`) refuses only when the candle file is older
+  than `MAX_STALENESS_DAYS = 10`, and **10 is larger than the 7-day refresh
+  cadence**, so exactly one missed refresh never trips it. Below the limit the
+  function reaches `if rows and str(rows[-1]["date"]) >= session:`, prints
+  *"already recorded through …"* and **returns `True`** — the same value as a
+  successful append. The comment on the constant says *"a weekly refresh plus a
+  long holiday"*, so the slack was chosen for holidays; the price is that **one
+  failed refresh is indistinguishable from a holiday to the recorder.** The
+  ingest failure itself is **deterministic, not random**: `_verification_months`
+  starts its cursor at `date(end.year, end.month, 1)`
+  (`ingest_public_ohlcv.py:287`) and STOCK_DAY returns one calendar month per
+  request, so a Saturday run falling on the **1st** asks TWSE for a month with
+  no trading day yet. The same condition recurs **2027-05-01**, **2028-01-01**,
+  **2028-04-01** and **2028-07-01**.
+
+- **Accounting consequence of that loss, measured.** The 2026-08-07 row books a
+  **two-week** step, `+0.00282694`, at the **2026-07-24** exposure of 0.25. The
+  whole 0050 chain was recomputed from its own recorded closes and exposures and
+  reproduces the recorded equity **exactly at all nine transitions** (final
+  1029.750369 both ways), so the series is internally consistent — it simply
+  attributes two weeks of price change to one exposure decision.
+
+- **SECOND FINDING — the wrappers threw away the one piece of evidence they
+  held.** Measured, not assumed: a `.ps1` whose last native call exits 1 and
+  then writes a log line **exits 0**, reproduced twice. Both tasks invoke
+  `powershell.exe -NoProfile -ExecutionPolicy Bypass -File …`, so that process
+  code is all Task Scheduler ever sees — and `TwShadow0050` indeed records
+  `LastTaskResult` **0** for its last run, **2026-09-26 09:40**, the run that
+  recorded nothing. The weekly recorder's own docstring claims *"the exit code
+  is non-zero if any refused, so a scheduled run still shows up as failed"*:
+  **true of the module, false of the scheduled run**, which is the only layer
+  anything looks at. The same hole was live on the daily track, where
+  `fetch_candles` raises `SystemExit` if no public REST base url is reachable
+  (`shadow_signal.py:79`).
+
+- **Repair, with controls in both directions.** Both wrappers now capture each
+  native call's code, preceded by a sentinel, and propagate. The sentinel is
+  not decoration: the dependency probe iteration 71 added sets `$LASTEXITCODE`
+  to **0** immediately beforehand, so a later command-discovery failure would
+  otherwise read as a clean run. Controls: healthy run → **0**; recorder
+  refusal → **1**; unresolvable call after a successful probe → **125**. The
+  weekly wrapper's three-step propagation was exercised with all three native
+  calls **stubbed**, so TWSE was never touched and no row could be written:
+  (0,0,0) → **0**, (1,0,0) → **1**, (0,1,0) → **1**, (0,0,1) → **1**,
+  (1,0,7) → **7** (the recorder's own code wins). Both files parse clean.
+  **Live positive control on the crypto wrapper:** ran as the scheduled task
+  invokes it — wrapper exit **0**, log reads *"already recorded through
+  2026-09-30"* for both tracks, rows **68 → 68**, no row written.
+  **And the repair's only false-alarm candidate in the whole record is the run
+  that lost a row:** across the **ten** weekly logs that recorded exit codes at
+  all, exactly **one** step ever returned non-zero, and it is 2026-08-01's
+  ingest. Two further logs recorded no exit code at all —
+  `tw_shadow_20260926_094001.log` (94 bytes, iteration 71's case) and
+  `tw_shadow_20260813_095817.log` (**0 bytes**, an off-schedule Thursday run
+  predating the start marker, noted rather than diagnosed because that week's
+  mid-week runs were manual).
+
+- **THIRD FINDING — a missed run deletes a row rather than delaying it, and the
+  two tracks' unequal protection is in their trigger sets, not their code.**
+  Neither recorder ever back-fills: each appends at most one row per run,
+  guarded by `rows[-1]["date"] >= decision_date`. Confirmed in the wild on the
+  daily track — **no log exists for 2026-08-10**, and the **2026-08-11 09:48**
+  run appended the **2026-08-10** session, so **2026-08-09 is gone** from this
+  program's primary forward evidence. `CryptoShadowTrial88` carries **three**
+  triggers (daily 08:20, at logon, on session-state change); `TwShadow0050`
+  carries **one** (weekly, Saturday). The extra triggers demonstrably saved a
+  row — that 09:48 recovery was one of them — and they are safe only because the
+  recorder is idempotent, observed again today at **20:08:55**, a logon-fired
+  run that refused to double-append. **The resilience is not transferable as
+  is:** the weekly cadence exists because TWSE's WAF punishes frequent sweeps,
+  and a retry on another weekday appends a row dated **that** weekday, changing
+  the series' sampling rather than completing it. **A Sunday retry, however, is
+  provably row-identical** — TWSE and NYSE are both shut Saturday and Sunday,
+  so the latest closed session is Friday either way — and a retry guarded on the
+  track's own last date would add third-party load **only** in the weeks the
+  Saturday run failed. **Recorded as an operator-ready option and deliberately
+  not applied:** it changes when the forward record samples, and this program's
+  standard is that forward-record design changes are pre-registered, not applied
+  mid-stream by the loop.
+
+- **FOURTH FINDING — what a gap does to the equity path, and which of the
+  frozen read rule's tests can see it.** **PASS, and it closes a worry:** Test 1
+  compares the recomputed exposure path *"per symbol, per date"* with
+  *"exact agreement on every **recorded** date"*, so a missing row **cannot**
+  manufacture the halt-and-fix verdict that iteration 61 found the rule issues
+  for any mismatch. **DEFECT of visibility:** Tests 2 and 3 read drawdown and
+  return off the **equity** path, which a gap perturbs, and neither can
+  distinguish the perturbation from a real move. With the exposure held across
+  the gap the difference is exactly `w(w−1)·r1·r2` per symbol — zero only at
+  w ∈ {0,1} — and bounding it over all splits of the recorded two-day move
+  gives at most **0.0144 pp** (trial 88) and **0.0400 pp** (trial 118) of equity
+  for lost-day moves within ±3 %, rising to **0.1585 pp** and **0.5354 pp** at
+  ±12 %. The material channel is whether the lost day's exposure would have
+  **differed**, and **this iteration did not measure it, by choice**: that
+  requires replaying the forward window against the recorded exposures, which
+  **is Test 1**, and the frozen rule says no read may be moved earlier. The
+  pending weekly gap is split by the same arithmetic: **GLD's exposure at
+  2026-09-18 is 0**, so its lost week costs a row and **nothing** in equity,
+  while **0050's is 0.25**, so the 2026-10-03 row will book a quarter of the
+  whole 2026-09-18 → latest move as a single step.
+
+- **Verified non-finding, recorded so that a future iteration does not
+  "correct" a correct number.** The standing answer's **14.26x** and **6.05x**
+  do not match the registry's `final_equity` **14 231.47** (14.2315x) and
+  `benchmark_final_equity` **5 976.44** (5.9764x), and **both are right.**
+  `docs/reports/backtests/trial-000088/report.json`'s equity curve opens at
+  equity **998.30302968472** and benchmark **987.6756483003885** against 1000
+  initial cash, so `last/first` is **14.255660** and **6.051018** — the
+  compounded per-date return multiple `analyze_vs_buy_and_hold.py` computes from
+  the `benchmark_equity` series — while `last/1000` is **14.231469** and
+  **5.976443**, and the stored return series compounds to **14.231469** with
+  residual **0**. Two conventions, **0.20 %** and **1.25 %** apart, both
+  traceable; this also reconciles iteration 63's reconstructed **5.9764x** with
+  the standing answer's **6.05x**. Nothing was edited.
+
+- **Step 2, web research — five sources, all five new; the eighth outside
+  Sharpe anchor, and the first in this program's own architecture at its own
+  cost charge.** Novelty was checked over **40** identifiers against
+  `RESEARCH_LOG.md`, `LOOP_LOG.md` and the whole `docs/` tree: **27** zero hits,
+  **13** dropped for already appearing. The anchor: `avinash-rohith/predicter`
+  benchmarks *"Long-only BTCUSDT (Binance daily), 9 lookbacks, trailing stops,
+  25% target vol, 20% rebalance threshold, 15 bps/side costs (10 fee + 5
+  slippage)"* at Sharpe **1.10** (CAGR +15.6 %, max drawdown −19.9 %, PF 1.25,
+  6/9 profitable years, 2018-08-11..2026-09-18) — **the same 15 bps this
+  repository charges**, verified today against trial 88's own
+  `cost_assumptions` (`fee_bps "10"`, `slippage_bps "5"`,
+  `fill_rule "next_bar_open"`), and the **same rule family** this program
+  trades. It sits **30.3209 %** below iteration 67's engine ceiling and
+  **41.6865 %** below iteration 68's cheapest novel crossing. Its admissibility
+  is recorded as **not fully verified** — the page states a 25 % vol target and
+  does not say whether the target may exceed 100 % of capital, so no "no
+  leverage" claim is made. Within the same source and **not** counted as a
+  separate anchor, a plain *"Close > SMA50"* rule scores **1.33**, higher than
+  the nine-lookback ensemble, and a frozen multi-signal vote system
+  walk-forwards to **0/16** profitable windows (−4.33 % mean), the author's own
+  verdict being *"reject as a tradable system"*. Also new and directly relevant:
+  **arXiv 2606.01650** is the first outside source bearing on gate 4's
+  **ranking** rather than its level — its subject is the true Sharpe of the
+  strategy *selected* for the best in-sample Sharpe, and it reports James–Stein
+  shrinkage beating *"debiasing the expected maximum Sharpe ratio"*, the family
+  gate 4 belongs to, at Kendall **τ 0.57 vs 0.45**; recorded as **operator-only
+  and refused here**, since swapping an estimator inside gate 4 after seeing who
+  passes is the seventh rule change this loop would have to make.
+  `AshJha0/agentic-trader` PR #12 decides **today's exact question in the
+  opposite direction** (a recorder that *"now logs 'nothing to record yet' and
+  exits 0"*, with no mechanism separating that from a failure to record) —
+  defensible there because their missing row is still coming and ours is gone.
+  `myh-st/crypto-skills` PR #12 is **inadmissible** (perpetual futures,
+  long/short, 3x and 2x leverage) and recorded as such, but supplies an outside
+  reproduction-fidelity datum (*"1.07 / 0.97 / 0.55 vs 1.05 / 1.00 / 0.58"*,
+  max divergence 0.03) and an outside precedent for replaying **through the live
+  infrastructure**, which bears on iteration 61's finding that this program's
+  Test 1 says *"offline"* while no offline input exists. One source's figures
+  were **deliberately not recorded**: a search summary credited arXiv
+  **2608.23416** with DSR, CSCV-PBO and SPA results and an out-of-sample
+  survivor, and on the retrievable HTML the paper is theoretical with no such
+  value in it, so nothing from that summary is written down in either direction.
+  **With the predicter return/CAGR discrepancy (+243.2 %/+16.4 % claimed,
+  +225 %/+15.6 % on the page), this is the second consecutive pass on which a
+  search summary's description of a source failed verification.**
+  **Arrivals: zero. Sixteenth consecutive pass.** The anchors now read
+  **1.442, 1.33\*, 1.30, 1.29, 1.27, 1.10, 0.89, 0.85, 0.56** — eight
+  independent sources, nine figures, **not one reaching the gate-3 floor.**
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken** over 81 files and 325 dependencies;
+  `pytest -m "not network"` **383 passed in 99.90s**. Recorded honestly: the
+  first pytest invocation was piped through `tail`, which iron rule 7 forbids;
+  it was re-run unpiped and **the bare run is the one recorded above**.
+
+- **Stop-condition check, run explicitly.** The latest full-registry gate report
+  is `gate_report_2026-07-25.json` at **N = 133**, `gate_3_pbo.passes` is
+  **false** with `pbo` **0.651826**, and **no report was regenerated today**.
+  **No candidate shows DSR ≥ 0.95 AND candidates-PBO ≤ 0.05. The stop condition
+  is NOT met, `EDGE_CANDIDATE_FOUND.md` does not exist and was not created, and
+  nothing in this iteration claims otherwise.**
+
+- **Operator-attention items, dated 2026-10-01 — nineteen.** (a) Gate 3
+  misranks and rejects everything; (b) the one risk-compliant gate-4 pass is
+  one-trial-fragile; (c) two of six gates have ever decided a candidate; (d) the
+  contract's own MinTRL for trial 88 is 2028-06-29, not 90 days; (e)
+  `PRE_HOLDOUT_PROTOCOL.md` §1 calls all-columns PBO a "conservative upper
+  bound", false at N=133; (f) the live paper runtime is a no-op — re-verified
+  today from `events.jsonl`, where the last `cycle`, `signal`, `target` and
+  `exec_quote` are all **2026-07-31T00:05** and the last `fill` is 2026-07-28,
+  leaving **62 days** of `health` events (62 of them, the newest
+  2026-09-30, all `WARMUP_INSUFFICIENT_HISTORY`) and nothing else — and the
+  90-day observation bar iterations 58 and 65 measured reaches 100 % **today**
+  (the dashboard rendering was not re-opened; the event stream is unchanged);
+  (g) the forward tracks charge no trading cost; (h) they archive no input;
+  (i) the read rule states no replay depth, ≥206 bars required; (j) Test 2
+  cannot fire at 90 days; (k) holdout nomination N1 has not named the live
+  contract since 2026-07-31; (l) gate 4's variance input is
+  analyst-controllable; (m) gate 6 cannot fail; (n) the sleeve book cannot be
+  graded at all; (o) the gate-3 bar is unreachable and the gate refuses the
+  ceiling for other columns' failures; (p) gate 3 charges a novelty premium;
+  (q) gate 3's verdict is purchasable with 32 junk arms and the conjunction with
+  gate 4 is the undocumented protection; (r) the weekly forward track failed
+  silently for twelve days and its 2026-09-29 repair left an interpreter with no
+  dependencies. **(s) NEW — the same track had already lost a session the same
+  way five weeks earlier, and nothing in the system could see it.** On
+  2026-08-01 a deterministic TWSE month-boundary failure left the 0050 candle
+  file unrefreshed; at 7 days stale against a 10-day guard the recorder
+  returned success for a sleeve it did not record; and the wrapper discarded the
+  one non-zero exit code in the entire weekly history. The exit path is repaired
+  in both repositories and verified both ways, but **two consequences stand:
+  Friday 2026-07-31 is permanently absent from the 0050 forward record, and the
+  staleness guard remains wider than the refresh cadence by design, so the
+  wrapper's exit code is now the only layer that can tell a failed refresh from
+  a holiday.** Items (g)-(k) are due **before 2026-10-22**, now **21 days**;
+  (m) **before 2026-10-03**, now **2 days**; (l), (n), (o), (p), (q) and the
+  new estimator option in today's research block have no deadline; (r) and (s)
+  are repaired.
+
+- **What this iteration does NOT do.** **No arm was registered** — N is still
+  **133**, no `append_trial` call was made, no gate report was regenerated, no
+  return series was written. The holdout was **not read, not fetched and not
+  unsealed**; `spent` is still `false`. No gate rule was modified, re-read or
+  re-scored, and the gate-4 estimator the literature offered today is recorded
+  as operator-only rather than applied. No frozen pre-registration was edited;
+  **Test 1 was deliberately not run**, because running it today would move the
+  2026-10-22 read earlier, which the frozen rule forbids — and that is also why
+  the lost 2026-08-09 exposure remains unmeasured rather than reconstructed.
+  The contract's standing answer is **not** appended to: this iteration measured
+  nothing about the edge, and the 14.26x/6.05x figures it quotes were **verified
+  rather than changed**. No prior result document was rewritten and no prior log
+  entry edited. **No file under `configs/runtime/`, `src/`, or any
+  scheduled-task definition was touched** — the two changed files are
+  `scripts/run_shadow_track.ps1` here and `scripts/run_tw_shadow.ps1` in the
+  sibling repository, both run wrappers, neither read by the 08:05 live runtime;
+  the Sunday-retry option that would have required a task change was measured
+  and left to the operator. **No shadow row was written by hand or by machine in
+  either repository**: the only recorder invoked was this repository's own
+  wrapper, which refused to double-append and left both tracks at 68 rows, and
+  the missing 2026-07-31, 2026-08-09 and 2026-09-26 sessions are left absent
+  rather than reconstructed, because a back-filled row is not forward evidence.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides, and the eighth independent outside Sharpe anchor
+  landed today at **1.10** — in this program's own architecture, at this
+  program's own 15 bps, and still below the floor, like the seven before it.
+  **Nothing here is an edge that passes the six gates.** What changed today is
+  that the one failure this evidence stream cannot survive — recording nothing
+  while reporting success — is now visible at the only layer that watches, and
+  that the program knows it has happened twice rather than once.
