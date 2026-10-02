@@ -4135,3 +4135,105 @@ deliberately **not** re-recorded).
   backtest-to-live Sharpe gap of 1.91, an outside estimator that ranks selected
   strategies better than the one gate 4 uses, an outside precedent on exactly
   the recorder exit-code question P1 repaired today, and not once an edge.**
+
+## 2026-10-02 — iteration 73 (four sources, all four new; no Sharpe anchor arrived, and the two most relevant sources both describe *today's own finding* from the outside — a market-data host that is unreachable and a failure that cannot be told apart from a quiet one)
+
+- **`zebadee2kk/DeFi-TraderStack-Agent` PR #151 — the candidate iteration 72
+  named as "the closest unread candidate to this program's own shape", now
+  read.** It implements that repo's issue #137 and reports **zero passers**:
+  *"Zero dual-print passers (all four rows FAIL on both prints) — the
+  successful, expected outcome."* Shape is **admissible under product law** —
+  spot (*"paper spot has no leverage"*), long-only (*"long-only, capped at
+  1.0"*), `MAX_LEVERAGE = 1.0`, daily, two-sided costs — on a frozen
+  `CANDIDATE_UNIVERSE` of **38 Kraken USD pairs** with a *"monthly
+  point-in-time top-20 snapshot (>= 365 prior bars or 720-cap, median 30-day
+  close x volume >= $2M)"*, sample **2022-10-05 -> 2024-09-23**, at
+  **80 bps taker per side** — **5.3x** this program's 15 bps. **Testable here:
+  no.** It is the same Zarattini/Pagani/Barbon ensemble-Donchian family this
+  program trades (that paper is already recorded, 9 hits), and it reports
+  **no Sharpe, CAGR or drawdown figure at all**, so it is explicitly **not** a
+  ninth Sharpe anchor. What it is: an **independent outside program running
+  this program's own strategy family to a registered negative**, and one that
+  pre-committed its universe snapshot policy and fee tier *"in a report header
+  before any scoring"*. Recorded in the direction that costs the comparison:
+  their cost charge is 5.3x harsher and their window 2.0 years against this
+  program's 7.3, so their zero-passers is **weaker evidence than this
+  program's own**, not corroboration of it.
+
+- **`francovp/cabros-bot` issue #539 — an outside statement of the defect this
+  iteration measured, arrived at from the opposite direction.** Verbatim:
+  *"every call resolves to the hardcoded default host
+  `https://api.binance.com`, which answers `451 Service unavailable from
+  restricted location`"*; the failure *"lands in the generic
+  `outcome.reason = 'market_data_unavailable'` branch (~line 529),
+  **indistinguishable from a transient provider gap**"*; consequence
+  *"crypto hit rates, expectancy-R, and MFE/MAE stay at zero forever regardless
+  of how many upstream fixes land"* and *"the entire crypto half of
+  **shadow-mode tracking** is structurally dead in production"*. Their proposed
+  fix is *"an application-owned env var, e.g. `BINANCE_DATA_BASE_URL`"*.
+  **Testable here: already done, and this program is ahead of the source** —
+  `paper_runtime.yaml` has carried a **7-candidate** `rest_base_url_candidates`
+  list and a preflight selector since before this loop began, which is the fix
+  #539 is asking for. What today's measurement adds, and what #539 does not
+  reach, is that **having the list is not the same as having redundancy**:
+  **1 of the 7 is reachable from this host.** Also recorded as a difference in
+  mechanism rather than a match: #539 sees an **HTTP 451**, i.e. the host
+  answers and refuses; this host sees **DNS failure or TLS handshake timeout**
+  on all six alternates, i.e. the host never answers. Same consequence,
+  different layer, and the 451 text appears nowhere in this program's logs.
+
+- **`itsafo/fintech-data-warehouse` issue #9 — the same block, found in code
+  review rather than in production, and it names the same escape hatch.**
+  Verbatim: *"api.binance.com returns HTTP 451 from US and some cloud IP
+  ranges. It works from the current dev machine, but the Oracle VM region is
+  untested."* Resolution proposed: the Binance Vision host for public market
+  data, or making *"the base URL configurable per environment"*. **Testable
+  here: no** — it is a provenance datum, not a strategy claim. Its value is
+  that it establishes the block is **deployment-location-dependent and known to
+  vary between two machines of the same project**, which is the reason today's
+  1-of-7 measurement is recorded as a property of **this host on this date**
+  and not as a property of Binance.
+
+- **`binance/binance-spot-api-docs` `rest-api.md` (primary source, retrieved
+  from the GitHub raw mirror after `developers.binance.com` failed DNS from
+  this host).** Verbatim: *"For APIs that only send public market data, please
+  use the base endpoint **https://data-api.binance.vision**."* Klines limit:
+  *"Default: 500; Maximum: 1000"* — which matches this repository's own guard
+  (`src/data/binance.py:129-131`) exactly, so the recorder's `FETCH_LIMIT = 400`
+  is well inside the documented ceiling. **Testable here: it is the primary
+  verification for today's measurement** — the one reachable host is not a
+  workaround this program invented, it is the host Binance designates for
+  exactly this use. And the finding that costs the argument: **the document
+  contains no statement about historical kline data being revised, corrected or
+  restated**, so today's 138-of-138 exact agreement is an **empirical
+  observation about one re-fetch on one date, not a vendor guarantee of
+  historical immutability.** The Concretum and TS-Arena direction recorded on
+  2026-09-16 is therefore still uncontradicted in principle; what changed is
+  that this program has now measured its own provider instead of inheriting
+  someone else's magnitude.
+
+- **Arrivals: zero. Seventeenth consecutive pass.** Novelty was checked across
+  `RESEARCH_LOG.md`, `LOOP_LOG.md` and the whole `docs/` tree over **19**
+  identifiers: **6** returned zero hits (`cabros-bot`, `francovp`,
+  `fintech-data-warehouse`, `itsafo`, `binance-spot-api-docs`,
+  `cryptodatadownload`) and **13** were dropped for already appearing —
+  `VadimChudin/aegis` and its **1.27** (already the fifth anchor),
+  `amberdata`, `coinapi`, `TSMOM`, `post-ETF` and the joirem pre/post-ETF-spot
+  paper whose **0.82 -> 1.22** Sharpes are already recorded at this file's
+  lines 3145-3153, and `zebadee2kk`/`DeFi-TraderStack` themselves, which
+  appear once — at line 4114, iteration 72's own "not pursued" list, which is
+  why #151 was the first thing read today. Four vendor pages (Amberdata,
+  CoinAPI, CryptoDataDownload, Changelly) were opened against today's subject
+  and **deliberately not recorded as evidence**: every statement they make
+  about gaps, revisions and *"row-level provenance flags so models know what's
+  raw versus filled data"* is marketing copy for a paid product with **no
+  measured rate attached**, and this program has twice in three passes been
+  burned by writing down a description instead of a measurement.
+  **The anchors are unchanged at 1.442, 1.33\*, 1.30, 1.29, 1.27, 1.10, 0.89,
+  0.85, 0.56 — eight independent sources, nine figures, not one reaching the
+  gate-3 floor.** Today added no figure to that list and, for the first time in
+  this program's record, **the literature's most relevant contribution was a
+  description of an infrastructure defect this program measured in itself on
+  the same day** — an outside program whose shadow tracking is *"structurally
+  dead in production"* for the single-host reason this program has a 7-entry
+  config to prevent and, measured today, 1 working entry to rely on.

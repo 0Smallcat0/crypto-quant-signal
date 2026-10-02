@@ -9287,3 +9287,304 @@ exists to catch, and the fourth is a claim that defeats itself.
   that the one failure this evidence stream cannot survive — recording nothing
   while reporting success — is now visible at the only layer that watches, and
   that the program knows it has happened twice rather than once.
+
+## 2026-10-02 — iteration 73 (P1: the forward record's own input had never been checked against its source — measured, 138 of 138 recorded closes agree string-exactly, trial 88's whole signal input is anchored and trial 118's high/low is not, and the re-fetch all of it depends on has one working host out of seven)
+
+- **Step 0, line 1 — current answer, unchanged by this iteration.** As first
+  stated **2026-07-27** and refined through **2026-09-25**, still not
+  forward-validated: the timing rule adds real value in **crypto only**, the
+  best backtested book bought drawdown plus a slim return margin rather than
+  return, all three unblocking levers are measured and none decides, all six
+  gates are characterised, no route reaches the stop condition, and pool
+  composition cannot buy the conjunction. **Nothing here is an edge that passes
+  the six gates.** This iteration measured nothing about the edge and did not
+  move this line.
+
+- **Step 0, line 2 — what this iteration moves.** It does **not** advance a
+  research route; every route is closed and the contract's instruction for that
+  state is *"do P1 maintenance, confirm the three tracks are gaining rows, and
+  stop."* What it decides is operator choice **(h)**, due before **2026-10-22**
+  and now **20 days** out. `FORWARD_TRACK_REPLAYABILITY_2026-09-16.md` section
+  3 asserts that *"the recorded `close` per symbol per date **is** a re-fetch
+  anchor"* and its section 5 states *"**No ingest was run**"* — so for **16
+  days** the sentence that option 2 ("accept reconstruction, anchored on
+  recorded closes") rests on has been **an assertion that a check would
+  succeed, never the check**. Iterations 59, 61, 62 and 72 all verified the
+  forward record **internally** — equity reproduces from its own closes, state
+  burn-in converges, the 0050 chain recomputes exactly — and **internal
+  consistency cannot fail on a wrong input.** Nobody had compared the record
+  with the exchange.
+
+- **Step 0, line 3 — why it is not sprawl.** **No new script** (the
+  measurement ran from a throwaway file outside the repository and is published
+  as a method appendix, iteration 61's own precedent), **no new research
+  document** (a dated addendum to the document that owns the claim), no
+  diagnostic, no arm registered, no gate report regenerated, nothing frozen
+  edited. P1 is the queue's first item and the forward tracks are *"the only
+  unbiased evidence this program can still generate"* — an unverified input is
+  the one defect that would make all of it worthless.
+
+- **State read.** Registry **N = 133** (`trial_registry.jsonl`, 133 lines).
+  Latest gate report is still **2026-07-25** (`generated_at`
+  2026-07-25T08:26:56.653420+00:00): `gate_3_pbo.passes` **false**, `pbo`
+  **0.651826**, `pbo_all_columns` **0.732556**, `threshold_max` **0.05**, **37**
+  candidate columns, **12 870** combinations, **16** CSCV blocks; gate 2
+  `observed_days` **2676** against `required_days` **1000** (passes by
+  construction, iteration 27); gate 4 `trial_sharpe_variance_deannualized`
+  **1.584220e-04**, `effective_trials` **133**, `threshold_min` **0.95** over
+  **133** `per_trial` rows with **three** `passes_dsr: true` — trial **29**
+  (dsr **0.98667**, Sharpe 1.410899), **37** (**0.952424**, 1.243142) and
+  **118** (**0.95014**, 1.241113), the first two disqualified by their family's
+  frozen 51.93 % drawdown bar (iteration 55). `holdout_lock` reads
+  **`"spent": false`** with `spent_at: null`. Nothing regenerated, nothing
+  spent. `GOALP_EXPERIMENT3_PREREGISTRATION.md` read in full again (85 lines):
+  **FROZEN on commit**, already executed, nothing in it actionable.
+
+- **P1 audit — row counts and dates only.** The crypto daily tracks are
+  healthy: `shadow_trial88.jsonl` and `shadow_trial118.jsonl` both hold **69
+  rows**, **2026-07-24..2026-10-01**, both gained **one** row since iteration
+  72, both written today at **08:21** with yesterday's completed candle — the
+  correct lag. The weekly tracks are unchanged and could not have changed:
+  `shadow_tw0050.jsonl` **10** sessions, `shadow_gld.jsonl` **11**, both last
+  dated **2026-09-18**, next scheduled run **2026-10-03 09:40**.
+
+- **A forward-looking note that costs nothing and is verified, not inferred.**
+  Tomorrow's weekly run is the first since iteration 72's exit-code repair, and
+  it is also the first run on which the **staleness guard can actually fire**.
+  `data/candles/0050_1d.jsonl` and `GLD_1d.jsonl` in the sibling repository
+  were last written **2026-09-19 09:49** and hold data through **2026-09-18**
+  — **13 days** stale today, **14** at tomorrow's run, against
+  `MAX_STALENESS_DAYS = 10`. Iteration 72's finding was that at 7 days (one
+  missed refresh) the guard **cannot** fire; two missed refreshes have now
+  accumulated, so a third failed refresh will be **refused loudly** and, with
+  the repair in place, propagate a non-zero exit instead of reporting success.
+  Nothing in that repository was changed today; its tree is clean.
+
+- **THE FINDING — PASS, at full strength, in two request shapes, and on the one
+  thing an internal check can never test.** Re-fetched today through the
+  recorder's own client and its own base-url selector at its own
+  `FETCH_LIMIT = 400`: of **138 independent recorded closes** (2 symbols x 69
+  dates; compared as **276** (track, date, symbol) cells), **138 agree
+  string-exactly** — to the last trailing zero, e.g. `84880.05000000` — with
+  **0** value mismatches and **0** recorded dates absent from the re-fetch. The
+  same comparison under a **different request shape** (`startTime`-paginated
+  from 2026-07-23 instead of a trailing `limit=400`) is also **138/138**, which
+  is the control the Concretum concern actually calls for, since that concern
+  is about an *identical historical query* returning different bars.
+  **What this can fail on and nothing before it could:** the comparison key is
+  the one the recorder writes (`closed[-1].open_time.date()` for the date,
+  `str(closed[-1].close_price)` for the value), so a **one-day shift** in what
+  the recorder calls "yesterday's close" would show up as 138 mismatches. It
+  shows up as zero. Iteration 59's verification reproduced equity **from the
+  recorded closes**, which a mis-dated source survives untouched.
+  Free and relevant to option 3: the `limit=400` response returned **399
+  closed candles, 2025-08-29..2026-10-01** — **329 bars before the track
+  start**, against the 21 warmup bars section 3 needs and the **>= 206**
+  iteration 61 derived. And coverage closes cleanly on a known hole: the
+  exchange has **70** closed candles in the window against the track's **69**
+  rows, the one absent date is **2026-08-09** (iteration 72's lost row), and
+  its closes **are** in the re-fetch (BTCUSDT **64901.59000000**, ETHUSDT
+  **1910.65000000**) — **a lost row, not a lost input.**
+
+- **SECOND FINDING — the anchor covers one track completely and the other only
+  on close, and section 3 was wrong in both directions.** Section 3 says
+  high/low is *"precisely the data trial 118's ATR exit consumes"*, which is
+  true and has a consequence it never drew: **trial 88 consumes none of it.**
+  The `mid_channel` path reaches `close_price` and nothing else
+  (`donchian_breakout_ensemble.py:77,83,94,98,101`); `average_true_range`
+  (`:24-43`, the only reader of `high_price`/`low_price`) is reached **only**
+  from `EXIT_ATR_CHANNEL` (`:88-96`), inside `if was_on:`. Counted from the
+  **recorded reason codes** — ATR is consumed at D iff at least one window was
+  ON at D-1, which `WINDOWS_ON_k_OF_4` records directly — the ATR branch is
+  reached on **0 of 136** cells for trial 88 and **121 of 136 (88.97 %)** for
+  trial 118, whose replay needs high/low on **138 of 138** in-window bars plus
+  **12** more per symbol reaching back into the unanchored warmup gap: **162
+  (symbol, date) bars, zero anchors.** So **Test 1's forward input is 100 %
+  anchored for trial 88** — stronger than section 3's "partly verifiable for
+  one track" — **and the unanchored part for trial 118 is not a corner case
+  but 89 % of its decision days.** Two file-only by-products: `exposure ==
+  WINDOWS_ON_k_OF_4 / 4` on **138 of 138** cells in **both** tracks (as
+  `fraction = Decimal(on_count) / Decimal("4")`, `:104`, requires), so the
+  recorded exposure column carries **no information beyond** the reason-code
+  column; and the two tracks record **identical closes on 138/138 cells and
+  identical dates on 69/69 rows**, which is why the independent fact count is
+  **138, not 276**.
+
+- **THIRD FINDING — DEFECT, new, and not about Test 1: the re-fetch everything
+  above depends on has one working host out of seven.** Section 3 notes the
+  fetch is *"conditional on Binance public REST being reachable that day"* and
+  stops there. **Four** probes of `paper_runtime.yaml`'s seven
+  `rest_base_url_candidates` through this repository's own preflight returned
+  **1/7 every time** — only **`data-api.binance.vision`** passes; `api.binance.com`,
+  `api-gcp`, `api1`, `api2`, `api3` and `api4` all fail, each classified by the
+  repo's own preflight as **`ENVIRONMENT_BLOCKER`**. The **verdict is stable
+  and the mechanism is not**: probe 1 six `DNS resolution failed`, probe 2 six
+  `ConnectTimeout` (TLS handshake), probe 3 six DNS, probe 4 five
+  ConnectTimeout plus one DNS, all within minutes — so **no single mechanism
+  may be claimed**. Why it is P1 and not a footnote: `fetch_candles` raises
+  **`SystemExit("no reachable public REST base url; shadow track skipped")`**
+  (`scripts/shadow_signal.py:79`) when none passes, so the daily track has a
+  **single point of failure and the config's apparent 7-way redundancy
+  contributes zero availability on this host**; it is why iteration 72's repair
+  is load-bearing, because a single-host dependency plus a discarded exit code
+  is exactly the pair that cost Friday 2026-07-31 on the weekly track; and it
+  bounds the October read, whose 112-bar re-fetch is conditional on **one**
+  host, leaving today's agreement **single-sourced with no
+  independent-provider cross-check available from this machine.**
+  Stated against the finding: **`data-api.binance.vision` is not a
+  workaround** — Binance's own `rest-api.md` says *"For APIs that only send
+  public market data, please use the base endpoint
+  **https://data-api.binance.vision**"* and caps klines at **1000**, leaving
+  `FETCH_LIMIT = 400` well inside the documented ceiling
+  (`src/data/binance.py:129-131` enforces the same cap), and the six blocked
+  hosts are the **authenticated-trading** hosts product law forbids this
+  program from using anyway. The defect is that **the list is one entry long in
+  practice and no document said so.**
+
+- **Scope limits, stated rather than buried.** One re-fetch on one date
+  establishes agreement **on that date**. Binance's own documentation contains
+  **no** statement that historical klines are never revised, so this is an
+  empirical observation and **not a vendor guarantee** — the Concretum /
+  TS-Arena direction recorded on 2026-09-16 stands uncontradicted in
+  principle, and what changed is only that this program has now measured **its
+  own** provider instead of inheriting someone else's magnitude. The 1-of-7
+  result is a property of **this host on 2026-10-02**, not of Binance; an
+  outside project records the same block as deployment-dependent and varying
+  between two machines of one project.
+
+- **Step 2, web research — four sources, all four new; no Sharpe anchor
+  arrived, and for the first time the two most relevant sources describe this
+  iteration's own finding from the outside.** Novelty was checked over **19**
+  identifiers against `RESEARCH_LOG.md`, `LOOP_LOG.md` and the whole `docs/`
+  tree: **6** zero hits, **13** dropped for already appearing (including
+  `VadimChudin/aegis` and its **1.27**, and the joirem pre/post-ETF paper whose
+  **0.82 -> 1.22** is already at `RESEARCH_LOG.md:3145-3153`).
+  `zebadee2kk/DeFi-TraderStack-Agent` **PR #151** — the candidate iteration 72
+  named as *"the closest unread candidate to this program's own shape"*, read
+  today as instructed — reports **zero passers** (*"all four rows FAIL on both
+  prints — the successful, expected outcome"*) on an **admissible** shape
+  (spot, *"long-only, capped at 1.0"*, `MAX_LEVERAGE = 1.0`, daily) over **38
+  Kraken USD pairs** with a monthly point-in-time top-20 snapshot,
+  **2022-10-05 -> 2024-09-23**, at **80 bps taker per side** — **5.3x** this
+  program's 15 bps. It reports **no Sharpe, CAGR or drawdown at all**, so it is
+  explicitly **not** a ninth anchor; it is an independent outside program
+  running this program's own Zarattini ensemble-Donchian family to a registered
+  negative, and recorded in the direction that costs the comparison (5.3x
+  harsher costs over 2.0 years against this program's 7.3, so **weaker**
+  evidence than this program's own, not corroboration).
+  **`francovp/cabros-bot` issue #539 is today's third finding, written by
+  someone else:** a hardcoded `api.binance.com` answering *"451 Service
+  unavailable from restricted location"*, a failure *"**indistinguishable from
+  a transient provider gap**"*, and the consequence that *"the entire crypto
+  half of **shadow-mode tracking** is structurally dead in production"* — with
+  the proposed fix being a configurable base URL, **which this program has had
+  all along.** The direction runs in this program's favour and is recorded that
+  way: having the list is not having redundancy, and only a measurement
+  distinguishes the two. `itsafo/fintech-data-warehouse` **#9** adds that the
+  block is deployment-dependent (*"It works from the current dev machine, but
+  the Oracle VM region is untested"*), which is why today's number is scoped to
+  this host; and both outside reports see an **HTTP 451** where this host sees
+  **DNS or TLS failure**, so the mechanism differs even though the consequence
+  matches — the string 451 appears nowhere in this program's logs. The fourth
+  source is **primary**: `binance/binance-spot-api-docs` `rest-api.md`,
+  retrieved from the GitHub raw mirror after `developers.binance.com` itself
+  failed DNS from this host. Four vendor pages (Amberdata, CoinAPI,
+  CryptoDataDownload, Changelly) were opened against today's subject and
+  **deliberately not recorded as evidence** — every claim they make about gaps,
+  revisions and *"row-level provenance flags"* is marketing copy with **no
+  measured rate attached**, and this program has twice in three passes been
+  burned by writing down a description instead of a measurement.
+  **Arrivals: zero. Seventeenth consecutive pass.** The anchors are unchanged
+  at **1.442, 1.33\*, 1.30, 1.29, 1.27, 1.10, 0.89, 0.85, 0.56** — eight
+  independent sources, nine figures, **not one reaching the gate-3 floor.**
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken** over 81 files and 325 dependencies;
+  `pytest -m "not network"` **383 passed in 61.45s**. No pipes on any of them.
+
+- **Stop-condition check, run explicitly.** The latest full-registry gate
+  report is `gate_report_2026-07-25.json` at **N = 133**, `gate_3_pbo.passes`
+  is **false** with `pbo` **0.651826** against a **0.05** bar — **13.0x** — and
+  **no report was regenerated today**. **No candidate shows DSR >= 0.95 AND
+  candidates-PBO <= 0.05. The stop condition is NOT met,
+  `EDGE_CANDIDATE_FOUND.md` does not exist and was not created, and nothing in
+  this iteration claims otherwise.**
+
+- **Operator-attention items, dated 2026-10-02 — twenty.** (a) Gate 3 misranks
+  and rejects everything; (b) the one risk-compliant gate-4 pass is
+  one-trial-fragile; (c) two of six gates have ever decided a candidate;
+  (d) the contract's own MinTRL for trial 88 is 2028-06-29, not 90 days;
+  (e) `PRE_HOLDOUT_PROTOCOL.md` section 1 calls all-columns PBO a
+  "conservative upper bound", false at N=133; (f) the live paper runtime is a
+  no-op; (g) the forward tracks charge no trading cost; **(h) they archive no
+  input — PARTLY DECIDED TODAY: option 2 is now evidence-backed for trial 88
+  (its whole forward signal input is anchored and agrees 138/138 under two
+  request shapes) and remains a partial reconstruction for trial 118 (162 bars
+  of high/low, 89 % of its decision cells, zero anchors), so option 1 is now
+  the only one that can close the trial-118 gap and archiving is still
+  forward-only;** (i) the read rule states no replay depth, >= 206 bars
+  required — unchanged and still required, now confirmed against a live
+  response rather than a constant; (j) Test 2 cannot fire at 90 days;
+  (k) holdout nomination N1 has not named the live contract since 2026-07-31;
+  (l) gate 4's variance input is analyst-controllable; (m) gate 6 cannot fail;
+  (n) the sleeve book cannot be graded at all; (o) the gate-3 bar is
+  unreachable and the gate refuses the ceiling for other columns' failures;
+  (p) gate 3 charges a novelty premium; (q) gate 3's verdict is purchasable
+  with 32 junk arms and the conjunction with gate 4 is the undocumented
+  protection; (r) the weekly track's 2026-09-29 repair left an interpreter with
+  no dependencies — repaired; (s) the same track had already lost a session the
+  same way five weeks earlier — repaired, with Friday 2026-07-31 permanently
+  absent. **(t) NEW — the market-data host list is one entry long in
+  practice.** Six of seven `rest_base_url_candidates` are unreachable from this
+  host across four probes, `fetch_candles` exits on zero reachable hosts
+  (`scripts/shadow_signal.py:79`), and whether to configure a second
+  **provider** so that neither the daily track nor the October re-fetch is
+  single-sourced is a change to a file the live runtime reads — **operator-only
+  and not made here.** Items (g) and (i)-(k) are due **before 2026-10-22**, now
+  **20 days**; (m) **before 2026-10-03**, now **1 day**; (h) is partly decided
+  as above and its remainder shares the 2026-10-22 date; (l), (n), (o), (p),
+  (q) and (t) have no deadline; (r) and (s) are repaired.
+
+- **What this iteration does NOT do.** **Test 1 was not run** — no exposure was
+  recomputed, `evaluate_donchian_ensemble` was never called, and the second
+  finding's ATR-branch counts come from the **recorded** reason codes rather
+  than from a replay, precisely so the 2026-10-22 read is not moved earlier,
+  which the frozen rule forbids. The lost **2026-08-09** exposure is therefore
+  still **not** reconstructed even though its closes are now known to be
+  re-fetchable. **Nothing was written to `data/candles/`** — that would have
+  stamped an archive 2026-10-02 for decisions taken up to 70 days earlier and
+  overwritten a shared research input the live runtime reads; it would also
+  have un-broken the live runtime's `WARMUP_INSUFFICIENT_HISTORY` state, which
+  iron rule 1 forbids touching. **No arm was registered** — N is still **133**,
+  no `append_trial` call was made, no gate report was regenerated, no return
+  series was written. The holdout was **not read, not fetched and not
+  unsealed**; `spent` is still `false`. No gate rule was modified, re-read or
+  re-scored. **No frozen pre-registration was edited** —
+  `FORWARD_TRACK_READ_PREREGISTRATION.md` is byte-for-byte unchanged — and no
+  prior result document was rewritten: the two changed files are
+  `docs/research/RESEARCH_LOG.md` and an **append-only dated addendum** to
+  `docs/research/FORWARD_TRACK_REPLAYABILITY_2026-09-16.md`, plus this log.
+  **No new script**: the measurement ran from a throwaway file outside the
+  repository and is published as a reproducible method appendix, which keeps
+  the ten-script limit intact. **No file under `configs/runtime/`, `src/`,
+  `scripts/`, or any scheduled-task definition was touched**, and nothing in
+  the sibling repository was changed. **No shadow row was written by hand or by
+  machine**: no recorder was invoked at all today, both daily tracks stand at
+  the 69 rows their own 08:21 scheduled run produced, and the missing
+  2026-07-31, 2026-08-09 and 2026-09-26 sessions are left absent rather than
+  reconstructed. The contract's standing answer is **not** appended to: this
+  iteration measured nothing about the edge.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides, and no ninth Sharpe anchor arrived today.
+  **Nothing here is an edge that passes the six gates.** What changed today is
+  that the forward record's **input** stopped being an assumption: 138 of 138
+  recorded closes match the exchange string-exactly under two request shapes,
+  with the date alignment checked for the first time, so trial 88's forward
+  evidence is now reconstructible without qualification and trial 118's is
+  reconstructible only on close — and that the fetch all of it rests on, this
+  program's and October's alike, has **one working host out of the seven the
+  config lists.**
