@@ -699,6 +699,72 @@ Hard limits, binding:
 > **eleventh** operator choice due and the sixth with no deadline. Full
 > measurement and the three options:
 > `docs/research/GATE3_PURCHASABILITY_2026-09-25.md`.
+>
+> Refinement 2026-10-04 (iteration 74) — **the October read was characterised
+> and never checked for whether it can be run; measured, it has no executor,
+> and the rule does not name its own inputs.** Iterations 25, 59, 61 and 62
+> established what each of the three tests can decide, and iteration 62
+> concluded that *"all three tests of the 2026-10-22 read are now
+> characterised."* That is true of what the tests **detect** and it is a
+> different claim from the read being **runnable** — characterising a test's
+> power presumes an executor who performs it as written, and nobody had asked
+> who that is. **DEFECT, 18 days out: there is none.** Across `*.py`,
+> `*.ps1`, `*.cmd`, `*.toml` and `*.cfg` in this repository, the only
+> references to a shadow-track path are `scripts/shadow_signal.py:58,67` — the
+> **writer's** own table — whose single read of the file (`load_track`,
+> `:95-102`) serves the idempotency check at `:187-188`, carries equity forward
+> at `:192` and prints that field at `:141`, and never compares a replay
+> against the record; the sibling
+> repository has only the mirror of that. `tests/` holds **zero** files
+> mentioning `shadow`, `forward_track` or `track`, so the suite reporting
+> **383 passed** does not execute a line of the program's only unbiased
+> evidence producer. No `*.ps1`/`*.cmd` mentions the read, and the rule
+> assigns no owner (**zero** hits for `operator-run`, `who runs`, `executor`,
+> `responsible`, `owner` across its 154 lines). **And the rule does not name
+> its own inputs:** its only file paths are the two *backtest* return series
+> used for MinTRL, it says *"three forward shadow tracks"*, **four** track
+> files exist, and its Test-2 bars name the crypto pair while the contract's
+> P1 names crypto-plus-Taiwan-plus-gold — two enumerations that do not pick
+> out the same set. **Four choices therefore fall to whoever opens the files
+> on the day:** the subject set; **Test 2's missing bars for two of the three
+> tracks** — the weekly rows declare `source_trial` **23** and **24**, whose
+> recorded maxima (**30.85102549397344468077160372 %** and
+> **25.00876201575916653023598257 %**) sit in a 24-row registry in another
+> repository this rule never cites, and no file under `docs/` declares either
+> as a bar; the **>= 206**-bar replay depth (iteration 61); and a row-schema
+> mapping, since the weekly rows are scalar-plus-`symbol` where the daily rows
+> are per-symbol dicts. Under the rule's own closing clause — *"No metric,
+> sub-period, symbol subset, or alternative benchmark may be introduced at
+> read time"* — settling any of them on the day is the forbidden act.
+> **One route to a false halt is closed, free:** over **307** (track, date,
+> symbol) exposure cells in all four files only five strings appear — `0`,
+> `0.25`, `0.5`, `0.75`, `1` — exactly `str(Decimal(k)/Decimal("4"))` for
+> k = 0..4, paired 1:1 with `WINDOWS_ON_k_OF_4` on every cell and all five
+> dyadic, so string, `Decimal` and `float` readings of *"exact agreement"*
+> agree everywhere. The two quoted bars verify at source (**33.04782446654657897565823246 %**
+> and **33.24023474578522547374688075 %**), rounding in **opposite**
+> directions by +0.0021755 pp and -0.0002347 pp. **Stated against the
+> finding, and this is why it is not a scandal:** the exposure to drift is
+> **bounded** — on the two crypto tracks an executor fills in *how to
+> compare*, not *what counts as a pass*, because the bars and dates were
+> frozen at **4 forward rows** — and the bound has exactly one hole, the
+> weekly tracks, where the threshold itself is missing. Externally
+> calibrated, in the direction that costs the finding: across **195**
+> pre-analysis plans, **68 %** spelled out the statistical model against
+> **90 %** that fixed clear hypotheses (Ofosu and Posner, *Perspectives on
+> Politics* 21(1), 2023), so an underspecified **procedure** beside fixed
+> **thresholds** is the modal pre-registration defect and those authors call
+> the glass half full. **The loop declines to write the harness**, which is
+> the seventh consecutive refusal: a harness built against an incomplete rule
+> silently fixes the four undeclared choices in code and the code then becomes
+> what is cited as the rule. Route closed: **no proposal may treat the
+> 2026-10-22 read as executable-as-frozen.** Nothing was repaired, nothing
+> frozen was edited, no new script. This is the **twelfth** operator choice
+> due, sharing the 2026-10-22 date with items (g) and (i)-(k); separately, the
+> **2026-10-03** gate-6 deadline (item (m)) **passed with no declaration** and
+> `GATE6_BASELINE_2026-07-25.md:76` is still `- [ ]`. Full measurement and the
+> three options:
+> `docs/research/FORWARD_READ_EXECUTABILITY_2026-10-04.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
