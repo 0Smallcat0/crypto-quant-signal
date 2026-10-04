@@ -9588,3 +9588,296 @@ exists to catch, and the fourth is a claim that defeats itself.
   reconstructible only on close — and that the fetch all of it rests on, this
   program's and October's alike, has **one working host out of the seven the
   config lists.**
+
+## 2026-10-04 — iteration 74 (P1: five iterations characterised what the October read can *decide* and none asked whether it can be *run* — measured, it has no executor, no owner, no named inputs, and four of its choices fall to whoever opens the files on the day)
+
+- **Step 0, line 1 — current answer, unchanged by this iteration.** As first
+  stated **2026-07-27** and refined through **2026-09-25**, still not
+  forward-validated: the timing rule adds real value in **crypto only**, the
+  best backtested book bought drawdown plus a slim return margin rather than
+  return, all three unblocking levers are measured and none decides, all six
+  gates are characterised, no route reaches the stop condition, and pool
+  composition cannot buy the conjunction. **Nothing here is an edge that passes
+  the six gates.** This iteration measured nothing about the edge and did not
+  move this line.
+
+- **Step 0, line 2 — what this iteration moves.** It does **not** advance a
+  research route; every route is closed and the contract's instruction for that
+  state is *"do P1 maintenance, confirm the three tracks are gaining rows, and
+  stop."* What it decides is a new operator choice, the **twelfth**, sharing
+  the **2026-10-22** date now **18 days** out. Iterations 25, 59, 61 and 62
+  audited the read rule's three tests and iteration 62 closed with *"all three
+  tests of the 2026-10-22 read are now characterised."* That sentence is true
+  of what the tests **detect**, and it is a different claim from the read being
+  **runnable** — characterising a test's power presumes an executor who
+  performs it as written. **Nobody had asked who that is.**
+
+- **Step 0, line 3 — why it is not sprawl.** **No new script** (every
+  measurement is a file listing, a `grep`, a registry field or a property of
+  the recorded JSON's representation, run inline; the ten-script limit is
+  untouched), no diagnostic, no arm registered, no gate report regenerated,
+  nothing frozen edited. One new research document, which the contract permits
+  because it **closes a route and records a decision**, plus a dated addendum
+  to the document that owns the Test-1 story. P1 is the queue's first item and
+  the forward tracks are *"the only unbiased evidence this program can still
+  generate"* — a read rule nobody can execute is the defect that would waste
+  all of it.
+
+- **State read.** Registry **N = 133** (`trial_registry.jsonl`, 133 lines).
+  Latest gate report is still **2026-07-25** (`generated_at`
+  2026-07-25T08:26:56.653420+00:00): `gate_3_pbo.passes` **false**, `pbo`
+  **0.651826** against `threshold_max` **0.05**; gate 4 `threshold_min`
+  **0.95**, `effective_trials` **133**, **three** `passes_dsr: true` — trials
+  **29** (0.98667), **37** (0.952424) and **118** (0.95014), the first two
+  disqualified by their family's frozen 51.93 % drawdown bar (iteration 55).
+  `holdout_lock` reads **`"spent": false`** with `spent_at: null`. Nothing
+  regenerated, nothing spent. `GOALP_EXPERIMENT3_PREREGISTRATION.md` read in
+  full again (85 lines): **FROZEN on commit**, already executed, nothing in it
+  actionable. `AUTONOMOUS_RESEARCH_LOOP.md` read top to bottom (1003 lines at
+  read time, in three segments).
+
+- **P1 audit — and the one prediction iteration 73 made came due yesterday.**
+  All four tracks gained rows. The crypto daily tracks hold **71 rows** each,
+  **2026-07-24..2026-10-03**, both **+2** since iteration 73, both written
+  today at **08:21** with yesterday's completed candle — the correct lag. The
+  weekly tracks ran yesterday for the first time since iteration 72's
+  exit-code repair and **succeeded**: `shadow_tw0050.jsonl` **10 -> 11**
+  sessions and `shadow_gld.jsonl` **11 -> 12**, both newest row dated
+  **2026-10-02**, written **2026-10-03 10:01:08**, and the candle refresh they
+  depend on wrote `0050_1d.jsonl` and `GLD_1d.jsonl` at **10:01:05** with data
+  through **2026-10-02**. **So iteration 73's staleness prediction did not
+  fire, and correctly:** it was conditional on a *third failed refresh*, and
+  the refresh worked, which resets the store from 13 days stale to 1 against
+  `MAX_STALENESS_DAYS = 10`. The repair and the guard are both still untested
+  in anger; that is the honest status, not a pass. Both repositories' trees
+  were clean at the start of this iteration and nothing in the sibling
+  repository was changed.
+
+- **THE FINDING — DEFECT: 18 days before the read, there is no executor, no
+  owner, and the rule does not name its own inputs.** Searched this repository
+  for every reference to a shadow-track path across `*.py`, `*.ps1`, `*.cmd`,
+  `*.toml` and `*.cfg`, excluding `docs/` and `.venv/`. **Two hits, both in the
+  writer:** `scripts/shadow_signal.py:58` and `:67`, the track table's own
+  `path` entries. That script's single read of the file — `load_track`,
+  `:95-102` — has three consumers and not one is a comparison: `:187-188`
+  prints `already recorded through` for idempotency, `:141` prints the same
+  equity field for `--summary`, and `:192` reads
+  `rows[-1]["equity"]` to carry equity forward. **Nothing anywhere recomputes a
+  recorded exposure or compares two paths.** The sibling repository has the
+  mirror and nothing more (`scripts/shadow_signal_tw.py:66,75`). **Test
+  coverage of the recorder is zero:** `tests/` contains no file mentioning
+  `shadow`, `forward_track` or `track`, and `tests/scripts/` holds four files
+  (`test_analyze_whipsaw.py`, `test_log_fill.py`, `test_run_demo.py`,
+  `test_run_gate_report.py`), none of them touching `shadow_signal.py` — so the
+  suite reporting **383 passed** below does not execute a line of the program's
+  only unbiased evidence producer. No `*.ps1`/`*.cmd` under `scripts/` mentions
+  `10-22`, `October`, `read rule` or `forward read`, and the rule assigns no
+  owner: **zero** hits for `operator-run`, `who runs`, `executor`,
+  `responsible`, `owner` across its **154** lines. **And the rule does not name
+  its own inputs** — its only file paths are the two *backtest* return series
+  used to compute MinTRL (lines 28-29, 149-150); it says *"three forward shadow
+  tracks"* at line 9 while **four** track files exist, and its Test-2 bars name
+  the crypto pair while the contract's P1 names crypto-plus-Taiwan-plus-gold.
+  **Consequence:** the reader gets written on or after 2026-10-22 with the data
+  visible, which is the rule's own line 15 — *"whoever opens the file first will
+  pick the metric that looks best"* — relocated from the metric to the
+  procedure.
+
+- **SECOND FINDING — DEFECT: Test 2 has a bar for two tracks and none for the
+  other two, and this one is the threshold itself, not a reading of one.**
+  Verified at source before anything was written (iron rule 5): registry
+  `metrics.max_drawdown_fraction` is
+  **0.3304782446654657897565823246** (trial 88) and
+  **0.3324023474578522547374688075** (trial 118), so the rule's **33.05 %** and
+  **33.24 %** are correct to the precision given — and they round in
+  **opposite** directions, the first **+0.00217553345342102434176754 pp
+  looser** and the second **-0.00023474578522547374688075 pp tighter**.
+  Immaterial in magnitude, still a reading the executor picks. **The real gap:**
+  the weekly rows declare their own source — `"source_trial": 23` (0050) and
+  `24` (GLD), set at `shadow_signal_tw.py:67,76` — and those trials live in a
+  **24-row registry in another repository**,
+  `D:/TW-Stock-Trading/docs/reports/research/trial_registry.jsonl`, recording
+  **0.3085102549397344468077160372** and **0.2500876201575916653023598257**.
+  **The rule cites neither number and never references that registry**, and no
+  file under `docs/` declares either as a Test-2 bar — searched `30.85`,
+  `0.3085`, `25.00876`, `0.25008`, `25.01%`, every hit an unrelated substring
+  inside a backtest `report.json`. A third, smaller gap sits beside it:
+  Test 1 says *"per symbol, per date"* and there are **two row schemas** — the
+  daily rows carry `close`/`exposure`/`reason_codes` as per-symbol dicts with
+  **no** `symbol` key, the weekly rows carry scalars plus a flat
+  `reason_codes` list **and** a `symbol` key. **Four choices in total fall to
+  the day**, counting iteration 61's unstated **>= 206**-bar replay depth, and
+  the rule's closing clause — *"No metric, sub-period, symbol subset, or
+  alternative benchmark may be introduced at read time"* — makes settling any
+  of them then the forbidden act.
+
+- **THIRD FINDING — PASS, and it closes one route to a false halt for free.**
+  Iteration 61 found that Test 1's *"implementation defect. Halt and fix."*
+  can fire on a correct recorder through replay depth. Representation is a
+  second way and **it cannot happen here.** Measured over **307** (track, date,
+  symbol) exposure cells — all four files, every row, 71x2 + 71x2 + 11 + 12 —
+  exactly **five** distinct strings appear: `0` (59 cells), `0.25` (28),
+  `0.5` (57), `0.75` (62), `1` (101), paired **1:1** with
+  `WINDOWS_ON_0..4_OF_4` on every cell with no exception in either direction.
+  Those five are exactly what `str(Decimal(k)/Decimal("4"))` yields for
+  k = 0..4, which is the engine's own expression at
+  `donchian_breakout_ensemble.py:104`, and all five are **dyadic rationals** —
+  so a string comparison, a `Decimal` comparison and even a `float` comparison
+  of *"exact agreement"* return the same verdict on every cell. Not over-read:
+  this is a PASS about **formatting**, a consequence of the quantity being a
+  quarter, and it says nothing about the replay being right.
+
+- **Free and stated because an executor who asserts it will find otherwise:
+  the read's own N is 89, not 90.** 2026-07-24 plus 90 days **is** 2026-10-22,
+  so the rule's date is right; the track will hold **89** rows covering
+  2026-07-24..2026-10-21 because **2026-08-09** is permanently absent
+  (iteration 72). Today: **71** rows across a **72**-day span, one missing. Not
+  a new defect — a consequence of a recorded one.
+
+- **Stated against the finding, and this is why it is not a scandal.** The
+  exposure to goalpost drift is **bounded**: on the two crypto tracks an
+  executor filling the gaps chooses *how to compare*, not *what counts as a
+  pass*, because the bars and the dates were frozen at **4 forward rows** and
+  are unedited. **The bound has exactly one hole** — the weekly tracks, where
+  the second finding shows the threshold itself is absent. And the rule's
+  hardest commitment, the 2028 answer date, is intact.
+
+- **Step 2, web research — three sources, all three new, and an arrival: the
+  ninth Sharpe anchor, the highest yet and still below the floor.** Novelty
+  checked over **19** identifiers against `RESEARCH_LOG.md`, `LOOP_LOG.md` and
+  the whole `docs/` tree. Full detail in `RESEARCH_LOG.md` under iteration 74.
+  **(a) Ofosu and Posner, "Pre-Analysis Plans: An Early Stocktaking",
+  *Perspectives on Politics* 21(1), March 2023, 174-190, DOI
+  10.1017/S1537592721000931** — primary and peer-reviewed, read from the LSE
+  Research Online accepted manuscript (18 pages, text extracted locally after
+  two PDF fetches returned binary), with the figures cross-checked against an
+  independent second retrieval before being written down. **195** PAPs from the
+  EGAP and AEA registries, 93 with public papers: *"Sixty-eight percent of PAPs
+  were judged to have spelled out the precise statistical model to be tested;
+  37% specified how they would estimate their standard errors."* against
+  *"Ninety percent of the PAPs we coded were judged to have specified clear
+  hypotheses."* **This is the first external calibration this program has for
+  the quality of its own pre-registrations rather than for a Sharpe**, and the
+  pattern matches to the letter — thresholds fixed, procedure not. Recorded in
+  the direction that costs today's finding: those authors' own verdict is
+  *"the glass is half full rather than half empty"*, so this is the **modal**
+  pre-registration defect, not an unusual one. **(b)
+  `MorphIQ-Labs/morphiq-risk-ml` issue #16**, opened **2026-10-02T22:04:44Z**,
+  OPEN, body read verbatim through `gh issue view` — an outside project working
+  today's subject two days before this iteration asked the question. Its
+  acceptance criteria require *"Set acceptance thresholds before the run"* and
+  *"do not tune them against comparator output"* (checked) **and** *"Implement
+  a shadow harness with identical captured inputs, explicit convention mapping
+  and reproducible replay"* (checked, delivered as a pinned QuantLib 1.43/Arb
+  harness with 258 captured rows and nine deterministic repetitions). The
+  comparison splits in **two directions**: this program is **ahead** on
+  pre-commitment timing — thresholds frozen at **4 forward rows**, earlier than
+  anything in that issue — and **behind** on executability, because that
+  project built the harness *before* the read. Its line *"Comparator agreement
+  is evidence, not proof that either result is correct"* independently
+  corroborates iteration 61's finding that this program's Test 1 compares a
+  system against **itself**. **(c) Concretum Research, "Catching Crypto
+  Trends" (Zarattini, Pagani, Barbon), Substack edition 2025-05-06** — the
+  numbers are new and they **close a pointer iteration 58 left open by name**
+  (*"an SSRN version with full method detail may exist; not chased this
+  iteration"*; the SSRN PDF returns **HTTP 403** from this host). Bitcoin from
+  January 2015: *"net-of-fee CAGR of 30%"*, **Sharpe 1.56**, *"maximum drawdown
+  to 19%"*; method *"ensemble of Donchian Channels across nine lookback
+  horizons"* with *"volatility-based position sizing approach targeting an
+  annualized volatility of 25%"*. **Not admissible as a candidate** — vol
+  targeting can exceed 1.0 exposure, the paper also *"examine[s] a long-short
+  implementation"*, and nine lookbacks against this program's four is a family
+  P3 refuses. **As an anchor: ninth source, tenth figure, new highest** —
+  **+8.1831 %** above 1.442, and still **1.3532 %** below iteration 64's lowest
+  gate-3 crossing (1.5814), **1.1823 %** below iteration 67's engine ceiling
+  (1.578665) and **17.3009 %** below the lowest *novel* crossing (1.886356).
+  **Re-encountered and deliberately not re-filed:** arXiv **2602.11708**
+  (AdaptiveTrend) and its 2.41, refused on product law twice over since
+  iteration 41 and already miscounted as new once before; and coinquant.ai's
+  0.38/0.54 across three prior sightings. **Anchors now 1.56, 1.442, 1.33\*,
+  1.30, 1.29, 1.27, 1.10, 0.89, 0.85, 0.56 — nine sources, ten figures, still
+  not one reaching the gate-3 floor**, with the margin on the closest narrowed
+  from **8.8150 %** to **1.3532 %**, stated sharply rather than softened.
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken** over 81 files and 325 dependencies;
+  `pytest -m "not network"` **383 passed in 121.49s**. No pipes on any of them.
+
+- **Stop-condition check, run explicitly.** The latest full-registry gate
+  report is `gate_report_2026-07-25.json` at **N = 133**, `gate_3_pbo.passes`
+  is **false** with `pbo` **0.651826** against a **0.05** bar — **13.0x** — and
+  **no report was regenerated today**. The intersection of
+  `passes_dsr: true` with `gate_3_pbo.passes` is **empty**. **No candidate
+  shows DSR >= 0.95 AND candidates-PBO <= 0.05. The stop condition is NOT met,
+  `EDGE_CANDIDATE_FOUND.md` does not exist and was not created, and nothing in
+  this iteration claims otherwise.**
+
+- **Operator-attention items, dated 2026-10-04 — twenty-one.** (a) Gate 3
+  misranks and rejects everything; (b) the one risk-compliant gate-4 pass is
+  one-trial-fragile; (c) two of six gates have ever decided a candidate;
+  (d) the contract's own MinTRL for trial 88 is 2028-06-29, not 90 days;
+  (e) `PRE_HOLDOUT_PROTOCOL.md` section 1 calls all-columns PBO a
+  "conservative upper bound", false at N=133; (f) the live paper runtime is a
+  no-op; (g) the forward tracks charge no trading cost; (h) trial 118's
+  forward input is anchored only on close (162 bars of high/low, zero
+  anchors); (i) the read rule states no replay depth, >= 206 bars required;
+  (j) Test 2 cannot fire at 90 days; (k) holdout nomination N1 has not named
+  the live contract since 2026-07-31; (l) gate 4's variance input is
+  analyst-controllable; (m) gate 6 cannot fail — **its 2026-10-03 deadline
+  PASSED yesterday with no declaration**, and
+  `GATE6_BASELINE_2026-07-25.md:76` is still `- [ ] Paper period >= 3 calendar
+  months completed`; (n) the sleeve book cannot be graded at all; (o) the
+  gate-3 bar is unreachable and the gate refuses the ceiling for other
+  columns' failures; (p) gate 3 charges a novelty premium; (q) gate 3's verdict
+  is purchasable with 32 junk arms and the conjunction with gate 4 is the
+  undocumented protection; (r) and (s) the weekly track's two lost sessions —
+  repaired, and **the repaired path ran successfully yesterday for the first
+  time**; (t) the market-data host list is one entry long in practice;
+  **(u) NEW — the 2026-10-22 read has no executor, no owner and no named
+  inputs, and four of its choices fall to the day: the subject set, Test 2's
+  missing bars for two of the three tracks, the >= 206-bar replay depth, and a
+  row-schema mapping. Declaring them is operator-only; the loop declines to
+  write the harness because a harness built against an incomplete rule
+  silently fixes those four choices in code.** Items (g)-(k) and (u) are due
+  **before 2026-10-22**, now **18 days**; (m)'s deadline has **passed**;
+  (l), (n)-(q) and (t) have no deadline.
+
+- **What this iteration does NOT do.** **The read was not performed and was
+  not moved earlier**, which the frozen rule forbids: no measurement called
+  `evaluate_donchian_ensemble`, no exposure was recomputed, and **no forward
+  drawdown and no forward Sharpe were computed** — the only forward numbers
+  touched are row counts, dates, and which exposure *strings* appear in the
+  files, which are health and representation facts rather than any of the
+  three tests. **The harness was deliberately not written**, with the reason
+  recorded rather than left as caution. **No arm was registered** — N is still
+  **133**, no `append_trial` call, no gate report regenerated, no return series
+  written. The holdout was **not read, not fetched and not unsealed**; `spent`
+  is still `false`. No gate rule was modified, re-read or re-scored. **No
+  frozen pre-registration was edited** — `FORWARD_TRACK_READ_PREREGISTRATION.md`
+  is byte-for-byte unchanged — and no prior result document was rewritten: the
+  changed files are one **new** research document, an **append-only dated
+  addendum** to `FORWARD_TRACK_REPLAYABILITY_2026-09-16.md`, an append-only
+  refinement to the contract's standing answer, `RESEARCH_LOG.md`, and this
+  log. **No new script**: every measurement ran inline and is published as a
+  reproducible method note, keeping the ten-script limit intact. **No file
+  under `configs/runtime/`, `src/`, `scripts/`, or any scheduled-task
+  definition was touched**, and nothing in the sibling repository was changed.
+  **No shadow row was written by hand or by machine**: no recorder was invoked
+  at all today, all four tracks stand at the rows their own scheduled runs
+  produced, and the missing 2026-07-31, 2026-08-09 and 2026-09-26 sessions are
+  left absent rather than reconstructed.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides. **Nothing here is an edge that passes the six
+  gates.** What changed today is that the October read stopped being treated as
+  a thing that will simply happen: five iterations had established what each of
+  its three tests can decide, and not one had checked that anyone can run them
+  — there is no executor, no owner, no named input, and four undeclared
+  choices waiting for whoever opens the files. What also changed is that the
+  literature's best published figure **in this program's own architecture** is
+  now **1.56**, the highest anchor on record and still **1.3532 %** under the
+  bar this program measured independently eight months and five base shapes
+  ago.

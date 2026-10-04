@@ -4237,3 +4237,130 @@ deliberately **not** re-recorded).
   the same day** — an outside program whose shadow tracking is *"structurally
   dead in production"* for the single-host reason this program has a 7-entry
   config to prevent and, measured today, 1 working entry to rely on.
+
+## 2026-10-04 — iteration 74 (three sources, all three new; a **ninth** Sharpe anchor arrives and it is the **highest yet and still below the floor**, plus the first peer-reviewed measurement of the base rate for today's own defect)
+
+- **George K. Ofosu and Daniel N. Posner, "Pre-Analysis Plans: An Early
+  Stocktaking", *Perspectives on Politics* 21(1), March 2023, 174-190, DOI
+  **10.1017/S1537592721000931** — new (7 identifiers checked, all zero hits in
+  `docs/`), primary, peer-reviewed, and it puts a **measured base rate** on the
+  defect this iteration found in this program's own frozen read rule.** Read
+  from the LSE Research Online accepted manuscript (18 pages, text extracted
+  locally) after the Cambridge landing page and the taisukeimai.com PDF were
+  fetched first; the figures below are verbatim and were cross-checked against
+  an independent second retrieval before being written down. Sample, as
+  printed: *"a representative sample of 195 PAPs registered on the Evidence in
+  Governance and Politics (EGAP) and American Economic Association (AEA)
+  registration platforms"*, of which *"93 ... had resulted in publicly
+  available papers"*. The rates: *"Sixty-eight percent of PAPs were judged to
+  have spelled out the precise statistical model to be tested; 37% specified
+  how they would estimate their standard errors."*; *"In 19% of cases, the
+  models presented in the resulting papers deviated from the models specified
+  in the PAP"*; *"In 44% of PAPs, the number of pre-specified control variables
+  was judged to be unclear, making it nearly impossible to compare what was
+  pre-registered with what is ultimately presented in the resulting paper."*;
+  against *"Ninety percent of the PAPs we coded were judged to have specified
+  clear hypotheses."* and *"Just over half of the 195 PAPs we analyzed were
+  judged to meet all four of these criteria"*. Downstream: *"study authors
+  faithfully presented the results of all their pre-registered primary
+  hypotheses in their paper or its appendices in 61% of cases. More than
+  one-third of studies had at least one pre-registered hypothesis that was
+  never reported."* **Testable here: not a strategy hypothesis, so it buys no
+  edge** — it is a calibration, and the first external one this program has for
+  the *quality* of its own pre-registrations rather than for a Sharpe. The
+  pattern matches exactly: **32%** of that sample left the analysis procedure
+  underspecified while **90%** fixed clear hypotheses, which is this program's
+  read rule to the letter — thresholds and dates frozen at 4 rows, comparison
+  procedure never specified. **Recorded in the direction that costs today's
+  finding:** these authors' own verdict is that *"the glass is half full rather
+  than half empty"*, so the honest reading is that this program has the
+  **modal** pre-registration defect, not an unusual one.
+
+- **`MorphIQ-Labs/morphiq-risk-ml` issue #16, "validation: shadow
+  representative portfolios against an established engine", opened
+  **2026-10-02T22:04:44Z**, still OPEN — new (zero hits for `morphiq`,
+  `MorphIQ`, `shadow harness`), and it is an outside project working today's
+  subject two days before this iteration asked the question.** Body read
+  verbatim through `gh issue view` rather than a page summary. The acceptance
+  criterion that matters: *"Set acceptance thresholds before the run:
+  price/Greek/IV accuracy, trade-level and portfolio-level economic
+  materiality, classification agreement and allowed failure rates. Derive
+  numerical thresholds from conditioning and justified error contracts; **do
+  not tune them against comparator output**."* — checked. And the one this
+  program has no equivalent of: *"Implement a shadow harness with identical
+  captured inputs, explicit convention mapping and reproducible replay.
+  Compare each trade/output and aggregates so netting cannot conceal
+  offsetting errors."* — also checked, delivered as *"a pinned QuantLib
+  1.43/Arb shadow harness, a pre-run synthetic specification, 258 captured
+  rows ... and nine deterministic repetitions"*, with *"The numerical request
+  limits, one-cent weighted-price diagnostic trigger, Greek trigger and
+  zero-interior-failure criterion ... fixed before scoring."*
+  **Testable here: not a strategy hypothesis.** Recorded because the
+  comparison splits in **two directions** and both are honest. This program is
+  **ahead** on pre-commitment timing — its thresholds and read dates were
+  frozen at **4 forward rows**, which is earlier than any artifact in that
+  issue — and **behind** on executability, because that project built the
+  harness *before* the read and this one has none 18 days out. One further
+  line corroborates a defect this program already recorded: *"Comparator
+  agreement is evidence, not proof that either result is correct."* — which is
+  iteration 61's finding that Test 1 cannot see a signal-math error, since the
+  recorder, the backtest engine and the live runtime all import the same
+  `evaluate_donchian_ensemble`, so this program's Test 1 compares a system
+  against **itself** and has no independent comparator at all.
+
+- **Concretum Research, "Catching Crypto Trends" (Zarattini, Pagani, Barbon),
+  Substack edition dated **2025-05-06** — the numbers are new (zero hits for
+  `concretumgroup.substack`, `nine lookback`, `annualized volatility of 25`,
+  and `1.56` appears nowhere in this log), and they close a pointer **iteration
+  58 left open by name**.** Iteration 58 recorded this paper as *"the closest
+  external instance of this program's own architecture found in 58
+  iterations"* but could extract no quantities, writing that the fetched page
+  *"states no sample period, no cost numbers, no bar frequency, no
+  long-only/long-short declaration, no drawdown"* and flagging that *"an SSRN
+  version with full method detail may exist; not chased this iteration"*. The
+  SSRN PDF returns **HTTP 403** from this host; the Substack edition carries
+  the figures. As printed, Bitcoin, from January 2015: *"net-of-fee CAGR of
+  30%"*, **Sharpe ratio of 1.56**, *"maximum drawdown to 19%"* against
+  *"drawdowns exceeding 80% under passive exposure"*; altcoin rotation
+  *"net-of-fee CAGR of 18%"* at *"maximum drawdown of just 11%"* and
+  *"statistically significant alpha of almost 11%"*; method *"ensemble of
+  Donchian Channels across nine lookback horizons"* with *"volatility-based
+  position sizing approach targeting an annualized volatility of 25%"*.
+  **Testable here: no, and it is not admissible as a candidate** — vol
+  targeting to a 25% annualized level is a sizing rule this engine does not
+  model and can exceed 1.0 exposure, the page states the paper also
+  *"examine[s] a long-short implementation"* so the headline's side
+  constraint is undetermined, and nine lookbacks against this program's four
+  (10/20/55/110) is a different family that P3 refuses anyway.
+  **As an anchor it is the ninth source, the tenth figure, and the new
+  highest:** 1.56 is **+8.1831%** above the previous top anchor of 1.442, and
+  it is still **1.3532%** below iteration 64's lowest measured gate-3 crossing
+  (**1.5814**), **1.1823%** below iteration 67's engine ceiling
+  (**1.578665**), **4.3365%** below the median incumbent crossing
+  (**1.630716**) and **17.3009%** below the lowest *novel* crossing
+  (**1.886356**). Stated against the comparison: a net-of-fee BTC-only Sharpe
+  from January 2015 with vol targeting is **not commensurable** with trial
+  88's 1.1823 on BTC/ETH over 2018-2025 at a fixed 15 bps and exposure capped
+  at 1.0, and the anchor list calibrates whether anyone publishes magnitudes
+  near the gate-3 floor — it is not a list of candidates.
+
+- **Re-encountered and deliberately not re-filed, so it is not counted twice.**
+  **arXiv 2602.11708 (Bui and Nguyen, AdaptiveTrend)** surfaced again as a top
+  result with its *"annualized Sharpe ratio of 2.41"*, max drawdown -12.7% and
+  Calmar 3.18 over 150+ pairs. Already recorded at iteration 41 and refused on
+  product law **twice over** — perpetual futures with leverage and shorting,
+  asymmetric 70/30 long-short, and a 6-hour rebalance outside the daily
+  frequency — and already flagged in this log as having been miscounted as new
+  once before. It is **not** an anchor and must never be cited as evidence
+  about this program. **coinquant.ai** figures (0.38, 0.54) likewise already
+  recorded across three prior sightings.
+
+- **Arrivals: one, the first in eighteen passes.** The anchors are now
+  **1.56, 1.442, 1.33\*, 1.30, 1.29, 1.27, 1.10, 0.89, 0.85, 0.56** — nine
+  independent sources, ten figures, and **still not one reaching the gate-3
+  floor.** The margin on the closest has narrowed from **8.8150%** to
+  **1.3532%**,
+  which is a sharper statement than the list has ever supported and is stated
+  as such rather than softened: the literature's best published figure in this
+  program's own architecture now sits just under the bar this program measured
+  independently, from five base shapes, eight months of iterations apart.

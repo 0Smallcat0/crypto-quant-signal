@@ -541,3 +541,50 @@ Finding 2 needs no fetch: read `reason_codes[symbol]`, take `k` from
 (the `if was_on:` guard at `donchian_breakout_ensemble.py:84`); the high/low
 bars needed are the 14 ending at each such date (`:31`,
 `start = index - window + 1`).
+
+## Addendum 2026-10-04 (iteration 74) — section 4 bounds the read on three sides and there is a fourth: no executor exists, and the rule does not name its own inputs
+
+Section 4 of this document bounds what the 2026-10-22 read can establish —
+it cannot see cost, cannot see a signal-math error, cannot be run against an
+archived input. Iteration 74 adds a bound of a different kind, and this
+document is the one that owns the claim because section 3 reasons about what
+Test 1 *would need* without ever asking who runs it.
+
+**There is no executor.** Eighteen days before the read, no code in either
+repository reads a shadow track for comparison. The only references to a
+track path across `*.py`/`*.ps1`/`*.cmd`/`*.toml`/`*.cfg` in this repository
+are `scripts/shadow_signal.py:58,67` — the **writer's** own table — whose
+single read of the file (`load_track`, `:95-102`) serves the idempotency
+check at `:187-188`, carries equity forward at `:192` and prints that field
+at `:141`, and never compares a
+replay against the record. `tests/` contains **zero** files mentioning
+`shadow`, `forward_track` or `track`, so the suite reporting 383 passed does
+not execute a line of the recorder. The rule names no owner: zero hits for
+`operator-run`, `who runs`, `executor`, `responsible`, `owner` across its
+154 lines.
+
+**And the rule does not name its own inputs.** Its only file paths are the
+two *backtest* return series used for MinTRL. It says "three forward shadow
+tracks"; **four** track files exist, and its Test-2 bars name the crypto
+pair while the contract's P1 names crypto-plus-Taiwan-plus-gold — two
+enumerations that do not pick out the same set.
+
+**Consequence for this document's section 3.** The >= 206-bar replay depth
+derived here is one of **four** things an executor must settle on the day,
+alongside the subject set, the weekly tracks' missing Test-2 bars (trials 23
+and 24 of a registry in another repository, which this rule never cites) and
+a row-schema mapping — the weekly rows are scalar-plus-`symbol` where the
+daily rows are per-symbol dicts. Under the rule's own closing clause,
+settling any of them at read time is the forbidden act.
+
+One route to a false halt is **closed**, free: across 307 (track, date,
+symbol) exposure cells in all four files only five strings appear — `0`,
+`0.25`, `0.5`, `0.75`, `1` — exactly `str(Decimal(k)/Decimal("4"))` for
+k = 0..4, paired 1:1 with `WINDOWS_ON_k_OF_4` on every cell and all five
+dyadic, so string, `Decimal` and `float` comparisons of "exact agreement"
+agree everywhere.
+
+Nothing here was repaired and nothing frozen was edited. Full measurement,
+the bounded-drift reading, the outside calibration (Ofosu and Posner 2023,
+195 pre-analysis plans) and the three options:
+`docs/research/FORWARD_READ_EXECUTABILITY_2026-10-04.md`.
