@@ -9881,3 +9881,268 @@ exists to catch, and the fourth is a claim that defeats itself.
   now **1.56**, the highest anchor on record and still **1.3532 %** under the
   bar this program measured independently eight months and five base shapes
   ago.
+
+## 2026-10-05 — iteration 75 (P1: iterations 59-69 measured what each exit can *decide* and 74 asked whether the October read can be *run* — nobody asked whether its **output** reaches anyone; measured, twelve choices are pending, six due in seventeen days, one deadline is already two days past, and the loop has no outbound path at all)
+
+- **Step 0, convergence check, run first and honestly.** **Line 1, current
+  answer:** every route to the stop condition is closed, all six gates are
+  characterised, all three unblocking levers are measured and none decides —
+  nothing here is an edge that passes the six gates. **Line 2, what this
+  iteration moves:** it closes the route *"the pending operator choices will
+  reach the operator in time by the means currently in place"*, which is the last
+  unmeasured link in the chain this program has been building since iteration 59:
+  59/61/62 measured what the October read's tests detect, 63 the holdout, 64 the
+  P3 override, 65 gate 6, 66 the sleeve route, 67 the engine ceiling, 68 a new
+  architecture, 69 the success exit's purchasability, 74 whether the read can be
+  executed at all. Every one of those hands the operator a choice; the contract
+  now counts **twelve**, six are due in **17 days**, and **nobody had asked
+  whether there is a path that delivers them.** **Line 3, why it is not sprawl:**
+  if there is no delivery path then all twenty-one attention items are messages
+  in a bottle and that defect dominates every one of them — and the question is
+  answerable today from this repository, with no backtest and no new script. One
+  new research document, which records a closed route; **zero** new scripts;
+  the ten-script limit intact.
+
+- **P1 first, as the queue requires. All four forward tracks are gaining rows.**
+  `shadow_trial88.jsonl` and `shadow_trial118.jsonl` both hold **72** rows with
+  last date **2026-10-04**, written **2026-10-05 08:21**; the weekly pair in the
+  sibling repository holds **11** (`shadow_tw0050.jsonl`) and **12**
+  (`shadow_gld.jsonl`) rows with last date **2026-10-02**, written
+  **2026-10-03 10:01** — the repaired weekly path from iteration 71 has now run
+  successfully twice in a row. `CryptoQuantDailySignalCycle`,
+  `CryptoShadowTrial88` and `TwShadow0050` all report `LastTaskResult = 0`. No
+  recorder was invoked by this iteration and no row was written by hand.
+
+- **FIRST FINDING — PASS, and it is stated first because it bounds everything
+  else: the publication channel is not broken, and when it had something to say
+  it was perfect.** `origin/main` is `1314662`, identical to local `main`;
+  `git rev-list --count origin/main..main` is **0**, so all **178** commits are
+  pushed and every LOOP_LOG entry and result document of all 74 prior iterations
+  sits on a GitHub remote the operator owns. On the live event store there are
+  **10** `notification` events and **10** `notification_delivered` markers —
+  **100 %**, no gap, nothing stuck. The stop condition's notification step is
+  **executable today**: `DISCORD_BOT_TOKEN` (**72** characters) and
+  `DISCORD_CHANNEL_ID` (**19** characters) are both present in this loop's own
+  process environment, `configs/runtime/paper_runtime.yaml:115` selects
+  `channel: discord`, `src/notify/channels.py:129` provides `send_text`, and
+  `https://discord.com/api/v10/gateway` answers **HTTP 200**
+  (`{"url":"wss://gateway.discord.gg"}`) from this host. And the lettered
+  attention list is a **stable** identifier scheme rather than drifting
+  bookkeeping: across the four consecutive lists dated **2026-09-25**,
+  **2026-09-30**, **2026-10-01** and **2026-10-02**, item **(g)** reads *"the
+  forward tracks charge no trading cost"* in all four and **(k)** reads *"holdout
+  nomination N1 has not named the live contract since 2026-07-31"* in all four,
+  while the count grew **seventeen → eighteen → nineteen → twenty** (→
+  twenty-one on 2026-10-04). This is why what follows is a **missing clause**,
+  not a broken machine.
+
+- **SECOND FINDING — DEFECT: the research loop has no outbound path and never
+  had one.** `scripts/run_research_loop.ps1` is **30 lines**; its only output is
+  `docs/research/loop_runs/run_<stamp>.log`, and that directory is ignored at
+  `.gitignore:43` — **80 logs present, 0 tracked**, so this iteration's own log
+  (`run_20261005_213701.log`, started `2026-10-05T21:37:01.8785596+08:00`) will
+  not be committed either. The contract authorises exactly **one** outbound act,
+  the Discord notification inside the stop condition, and that act is conditional
+  on a success iterations 66-69 measured as unreachable by every route. So every
+  operator-facing output this loop has produced is **pull-only** — the operator
+  must come and read, and what they must read is **9 883** lines of
+  `LOOP_LOG.md` whose newest entry alone enumerates twenty-one items inside one
+  paragraph. **And the twelve choices are collected nowhere:** the ordinal
+  phrasing `fourth` .. `twelfth operator choice` occurs only in the contract's
+  standing answer, in `LOOP_LOG.md`, and in each item's own result document —
+  there is no index. Found while building one: the ordinals run **fourth to
+  twelfth** and the strings *first*, *second* and *third operator choice* appear
+  **nowhere in `docs/`**, so **the program's own count of what the operator owes
+  cannot be reconstructed from the program's own documents**, and the two
+  enumerations that exist (twelve ordinal choices, twenty-one lettered items) are
+  nowhere mapped onto each other.
+
+- **THIRD FINDING — DEFECT: the deadlines have no trigger, and this is measured
+  against a deadline that has already arrived.** Across `src/`, `scripts/`,
+  `tests/` and `configs/`, the strings `2026-10-22`, `2026-10-03` and
+  `2026-10-01` appear **three times in total**, all three inside comments in
+  `scripts/run_shadow_track.ps1` (lines **36**, **51**, **68**) about last week's
+  unrelated wrapper repair. There is no date check, no countdown, no expiry
+  assertion and **no test that fails when a declared date passes** — the suite the
+  loop runs bare every iteration cannot notice one. Consequence, measured rather
+  than feared: item **(m)**'s deadline was **2026-10-03**, that was **2 days
+  ago**, and `GATE6_BASELINE_2026-07-25.md:76` still reads
+  `- [ ] Paper period >= 3 calendar months completed`. The pull-only channel has
+  now been tested once against a real deadline and did not meet it.
+
+- **FOURTH FINDING — DEFECT: the one channel that works is wired to a subject
+  that stopped speaking 66 days ago, and its self-healing sits behind the guard
+  that silenced it.** The last delivered message is
+  **`2026-07-31T00:05:02.543130+00:00`** — **66 days** ago. Every one of the
+  **65** events recorded after that timestamp is `health`, and all **66** health
+  events spanning **2026-07-30 .. 2026-10-04** carry the same code,
+  `WARMUP_INSUFFICIENT_HISTORY`: no signal, no target, no cycle, no quote, no
+  order, no fill, no notification. Weekly digests are **2 ever** (`2026-W29`,
+  `2026-W30`, last on **2026-07-26**) against **15** ISO weeks spanned by the
+  paper period. The ordering: `src/runtime/engine.py:202` returns on the warmup
+  guard **before** `:210` reaches `self._flush_undelivered(decision_time)`, whose
+  own comment at `:208-209` promises that *"a same-day rerun after a webhook
+  outage still gets the message out"* — so for 66 consecutive days that retry path
+  has not executed. **Currently immaterial and stated as such:** 10 of 10 are
+  delivered and nothing is stuck. What is measured is that the channel's recovery
+  is conditional on the runtime being healthy, which is the one state in which it
+  is not needed. **The manual channel is down too:** the only surface that would
+  show the mismatch is `/api/gate` (`src/api/app.py:160-180`), which returns
+  `paper_trading.days` from `cycles[0].recorded_at` **beside**
+  `paper_trading.cycles` — **94** against **29** today — and it is launched only
+  by hand (`scripts/run_dashboard.py`, referenced by no scheduled task) with
+  `http://127.0.0.1:8010` **unreachable** and no listener on the port.
+
+- **Free corroboration of iteration 72 from a second, independently written
+  file.** The health series' only missing date in 2026-07-30 .. 2026-10-04 is
+  **2026-08-09** — exactly the date permanently absent from both daily shadow
+  tracks. Two files written by different code paths agree the machine was down
+  that day.
+
+- **What the operator owes, collected in one place for the first time.** The
+  result document carries the table: **(g)**, **(h)**, **(i)**, **(j)**, **(k)**
+  and **(u)** due **2026-10-22** (**17 days**); **(m)** due **2026-10-03**,
+  **passed, undeclared**; **(l)**, **(n)**, **(o)**, **(p)**, **(q)** and **(t)**
+  with no deadline. Items **(a)**-**(f)**, **(r)** and **(s)** are the remaining
+  8 of the 21 and iteration 74 assigns them no deadline state, so this iteration
+  invents none. For reference and reported as nothing more than it is: the last
+  operator order recorded anywhere in the contract is dated **2026-07-27**
+  (`AUTONOMOUS_RESEARCH_LOOP.md:33`), **70 days** ago — the measured absence of a
+  recorded instruction, not evidence about whether the operator has read.
+  **The table is itself pull-only**, which is the honest limit of the only repair
+  available without an unauthorised act.
+
+- **Stated against the finding, with an outside calibration that costs it.** The
+  loop is **not authorised** to notify outside the stop condition, so the absence
+  of a research channel is a gap in the contract rather than a failure to use
+  something it had. And a deadline with no alarm being missed is the **modal**
+  outcome in the best-measured comparable: DeVito, Bacon and Goldacre (*Lancet*
+  2020;**395**:361-369, PMID **31958402**) found that under the FDAAA 2007 Final
+  Rule — a **statutory** one-year deadline, a public registry and a named
+  regulator, every enforcement affordance this program lacks — only **1722 of
+  4209 (40.9 %; 95 % CI 39.4-42.2)** trials reported on time, **2686 (63.8 %)**
+  ever did, the median delay was **424 days**, *"59 days higher than the legal
+  reporting requirement of 1 year"*, and *"compliance with the FDAAA 2007 is
+  poor, and not improving."* Those authors' own remedy is *"open public audit of
+  compliance for each individual sponsor"* — structurally the pushed public log
+  this program already keeps. So this program sits **at** the recommended remedy
+  and still let 2026-10-03 pass: the finding is that publication is
+  **necessary and not sufficient**, not that this program is unusual.
+
+- **The loop declines both repairs — the eighth consecutive refusal.** It will
+  **not** send an unsolicited Discord message, though the credentials are present
+  and the endpoint answers **HTTP 200**: a loop that grants itself an interrupt
+  channel on its own reading of its own finding has changed the rules in its own
+  favour, which is what iterations 66, 67, 68, 69 and 74 each refused in the one
+  case where the change would have converted a fail into a pass. It will **not**
+  write a notifier or a deadline test either: that encodes a definition of "due"
+  and "declared" no contract states, and `pytest` then becomes the authority on
+  what the operator owes — iteration 74's exact reason for declining the October
+  harness. Three options are published for the operator, A (accept the pull
+  channel), B (authorise a bounded push, with a declared rate limit and a declared
+  definition of "due"), C (make the deadline bind in `pytest`, which needs no new
+  channel or authority and whose first run would fail on item (m)).
+
+- **Step 2, web research — three sources, all three new, and the sharpest refusal
+  this log has had to make.** Full detail in `RESEARCH_LOG.md` under iteration 75.
+  **(a) Rohrbach, Suremann and Osterrieder, "Momentum and trend following trading
+  strategies for currencies and bitcoin", Zurich University of Applied Sciences,
+  SSRN abstract 2949379** — reached as an unattributed CDN PDF, 22 pages fetched
+  and text-extracted locally with `pypdf` so every figure is read off the paper.
+  Table 5, cryptocurrencies: time-series **42.02 %** return, sd **0.2831**,
+  **Sharpe 1.4843**; cross-sectional **56.94 %**, sd **0.3391**, **Sharpe
+  1.6793**. **That 1.6793 is the first figure this log has ever surfaced that sits
+  ABOVE the gate-3 floor** — **+6.1927 %** over iteration 64's lowest crossing
+  (1.5814) and **+6.3771 %** over iteration 67's engine ceiling (1.578665) — **and
+  it is refused on three independent grounds, each verified in the paper's own
+  words**: both portfolios **short** (*"one sells the three currencies with the
+  smallest (most negative) signal"*; *"for a signal = -1 one would sell 1/n units
+  of USD worth of the foreign currency"*), **zero costs by the authors' own
+  statement** (*"Our calculations overestimate the returns, since transaction costs
+  and bid-ask spreads were not considered"* — this program charges 15 bps), and an
+  **18-month** window with the authors' own *"take these results with a grain of
+  salt."* It is a **cross-sectional momentum** result, the same family as this
+  program's experiment 3, which makes the refusal sharper rather than softer.
+  **The anchor list is unchanged at nine sources and ten figures, top 1.56**,
+  still **1.3532 %** below the floor. **(b) Chen and Cai, arXiv 2501.12841v3
+  [q-fin.PM], 27 Nov 2025** — the closest outside match on record to this
+  program's own money question, and it fits product law unusually well:
+  **long-only** (*"we impose the following short selling constraint across all
+  four optimization frameworks"*, `w_i >= 0`), four coins, **7th Aug 2015 to 14th
+  July 2023**, **2898** daily observations, **50 bps** per risky asset. Its
+  conclusion corroborates the standing answer's iteration-28 split from the
+  outside: *"most volatility-timing strategies ... outperform the naive 1/N
+  benchmark"* while *"portfolio strategies depending on mean forecasts underperform
+  both the volatility-timing strategies and the naive 1/N benchmark."* It
+  contributes **no** Sharpe anchor by design — it reports performance fees on the
+  stated ground that *"the Sharpe ratio severely underestimates the performance of
+  dynamic asset allocation strategies"*, a mild challenge to this program's
+  Sharpe-priced gates that is logged rather than omitted. **(c) DeVito, Bacon and
+  Goldacre**, as above. **Bookkeeping:** the primary query returned **9** results
+  of which **7** were already filed; arXiv **2212.06888** is refused on product law
+  (derivatives, not spot); four further new identifiers (**2301.02754**,
+  **1709.06296**, **2608.07032**, **2307.13832**) are off-product and not filed;
+  **2602.11708** (2.41) and **2604.26747** re-encountered and deliberately not
+  re-filed; and the alert-monitoring angle was **searched and rejected for want of
+  provenance** — vendor blogs only, no primary document.
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks passed!**;
+  `ruff format --check` **129 files already formatted**; `mypy --strict src/`
+  **Success: no issues found in 58 source files**; `lint-imports` **13 kept, 0
+  broken**; `pytest -m "not network"` **383 passed**. No pipes on any of them.
+
+- **Stop-condition check, run explicitly.** The latest full-registry gate report
+  is `gate_report_2026-07-25.json` at **N = 133**; `gate_3_pbo.passes` is
+  **false** with `pbo` **0.651826** against the **0.05** bar — **13.0x** — and
+  **no report was regenerated today**. The intersection of `passes_dsr: true`
+  with `gate_3_pbo.passes` is **empty**. **No candidate shows DSR >= 0.95 AND
+  candidates-PBO <= 0.05. The stop condition is NOT met,
+  `EDGE_CANDIDATE_FOUND.md` does not exist and was not created, and nothing in
+  this iteration claims otherwise.** Noted because today's subject invites the
+  confusion: the fact that the success exit's notifier is reachable is a statement
+  about the **channel**, not about there being anything to send.
+
+- **Operator-attention items, dated 2026-10-05 — twenty-two.** (a) through (u) as
+  published on 2026-10-04, unchanged, plus **(v) NEW — the twelve pending
+  operator choices have no delivery path and the declared deadlines have no
+  trigger: the research loop's only output is a gitignored local log, the one
+  working outbound channel has carried nothing since 2026-07-31, no file in
+  `src/`, `scripts/`, `tests/` or `configs/` references any declared deadline, and
+  item (m)'s 2026-10-03 date passed two days ago with the checkbox still
+  unticked.** Items (g)-(k), (u) and (v) are due **before 2026-10-22**, now
+  **17 days**; (m)'s deadline has **passed**; (l), (n)-(q) and (t) have no
+  deadline.
+
+- **What this iteration does NOT do.** **No notification, message, webhook call
+  or Discord post of any kind was sent** — the only outbound requests were an
+  unauthenticated `GET` to the public Discord gateway endpoint, which transmits
+  nothing to anyone, and the Step-2 literature fetches. **The (m) checkbox was
+  deliberately not ticked**: declaring a gate-6 prerequisite is the operator's
+  act, and ticking it would be the loop settling one of the very choices it is
+  reporting as undelivered. **No arm was registered** — N is still **133**, no
+  `append_trial` call, no gate report regenerated, no return series written. The
+  holdout was **not read, fetched or unsealed**; `spent` is still `false`. **No
+  forward read was performed and no forward Sharpe or drawdown was computed**;
+  the four track files were read for row counts and dates only. No gate rule was
+  modified, re-read or re-scored. **No frozen pre-registration was edited** and
+  no prior result document was rewritten: the changed files are one **new**
+  research document, an append-only refinement to the contract's standing answer,
+  `RESEARCH_LOG.md`, and this log. **No new script**, keeping the ten-script limit
+  intact. **Nothing under `configs/runtime/`, `src/`, `scripts/`, `tests/` or any
+  scheduled-task definition was touched**, and nothing in the sibling repository
+  was changed. **No shadow row was written by hand or by machine.**
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides. **Nothing here is an edge that passes the six
+  gates.** What changed today is that the program's *output* stopped being
+  assumed to arrive: seventy-four iterations have published twelve operator
+  choices and twenty-one attention items into a pushed public log, and that log
+  is the entire delivery mechanism — no alarm, no index, no deadline check, and
+  the one channel that can interrupt has been silent for sixty-six days. The one
+  deadline that has already arrived went past undeclared, which is the measurement
+  rather than the worry. What also changed is that the highest crypto Sharpe this
+  log has ever found, **1.6793**, arrived **above** the gate-3 floor and was
+  **refused** — long-short, zero-cost and eighteen months — so the anchor list
+  still holds **nine sources, ten figures, top 1.56**, and not one of them
+  reaches the bar.

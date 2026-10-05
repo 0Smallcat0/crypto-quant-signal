@@ -765,6 +765,71 @@ Hard limits, binding:
 > `GATE6_BASELINE_2026-07-25.md:76` is still `- [ ]`. Full measurement and the
 > three options:
 > `docs/research/FORWARD_READ_EXECUTABILITY_2026-10-04.md`.
+>
+> Refinement 2026-10-05 (iteration 75) — **twelve operator choices are pending,
+> six due in seventeen days and one deadline already past, and nothing in this
+> repository delivers them.** Iterations 59-69 measured what each exit can
+> decide and iteration 74 asked whether the October read can be *run*; nobody had
+> asked whether its **output** — the choices themselves — can be received.
+> **PASS, stated first because it bounds the rest:** the publication channel is
+> not broken. `origin/main` equals local `main` with **0** unpushed of **178**
+> commits; delivery on the live store is **10 of 10** (`notification` /
+> `notification_delivered`, **100 %**); the stop condition's notifier is
+> **executable today** — `DISCORD_BOT_TOKEN` (72 chars) and
+> `DISCORD_CHANNEL_ID` (19 chars) are present in the loop's own environment,
+> `paper_runtime.yaml:115` selects `channel: discord`, and
+> `discord.com/api/v10/gateway` answers **HTTP 200**; and the lettered item list
+> is a **stable** identifier scheme — (g) and (k) read identically across the
+> four lists dated 2026-09-25 .. 2026-10-02 while the count grew seventeen to
+> twenty. **DEFECT 1 — the research loop has no outbound path and never had
+> one.** `run_research_loop.ps1` is **30 lines** whose only output is
+> `docs/research/loop_runs/run_<stamp>.log`, ignored at `.gitignore:43`
+> (**80 logs present, 0 tracked**), and the contract authorises exactly **one**
+> outbound act, inside a stop condition iterations 66-69 measured as unreachable
+> by every route. So all **21** attention items have been published
+> **pull-only**, inside **9 883** lines of `LOOP_LOG.md`, and **the twelve
+> choices are collected nowhere**: the ordinals run **fourth to twelfth** while
+> *first*, *second* and *third operator choice* appear **nowhere in `docs/`**, so
+> the program's own count of what the operator owes cannot be reconstructed from
+> the program's own documents. **DEFECT 2 — the deadlines have no trigger.**
+> Across `src/`, `scripts/`, `tests/` and `configs/` the strings `2026-10-22`,
+> `2026-10-03` and `2026-10-01` appear **three times in total**, all three in
+> unrelated comments in `run_shadow_track.ps1` (36, 51, 68). No date check, no
+> countdown, **no test that fails when a declared date passes** — and item (m)'s
+> **2026-10-03** deadline is now **2 days** past with
+> `GATE6_BASELINE_2026-07-25.md:76` still `- [ ]`. **DEFECT 3 — the one channel
+> that works is wired to a subject that stopped speaking 66 days ago.** Last
+> delivery **2026-07-31T00:05:02**; every one of the **65** events recorded since
+> is `health` and all **66** carry `WARMUP_INSUFFICIENT_HISTORY`; weekly digests
+> are **2 ever** against **15** ISO weeks; `engine.py:202` returns on the warmup
+> guard **before** `:210` flushes undelivered notifications, so the retry its own
+> comment promises has not executed in 66 days — immaterial today (10/10
+> delivered, nothing stuck) but conditional on the runtime being healthy, the one
+> state in which it is not needed; and the only surface that would show the
+> mismatch (`/api/gate`, **94** days beside **29** cycles) is hand-launched and
+> **unreachable** right now. Free corroboration of iteration 72 from a second
+> file: the health series' only missing date is **2026-08-09**, exactly the date
+> permanently absent from both daily tracks. **Externally calibrated in the
+> direction that costs the finding:** with a statutory deadline, a public
+> registry and a named regulator, only **1722 of 4209 (40.9 %)** FDAAA trials
+> reported on time, median delay **424 days**, 59 past the legal bar (DeVito,
+> Bacon and Goldacre, *Lancet* 2020;395:361-369, PMID 31958402) — and those
+> authors' own remedy is *"open public audit of compliance"*, structurally what
+> this program already does. A missed, undefended deadline is **modal**;
+> publication is the necessary-not-sufficient half. **The loop declines both
+> repairs, the eighth consecutive refusal:** it will not send an unsolicited
+> notification, which would be granting itself an interrupt channel on its own
+> reading of its own finding, and it will not write a notifier or a deadline
+> test, which would encode a definition of "due" that no contract states —
+> exactly iteration 74's reason for declining the October harness. Route closed:
+> **no proposal may treat a pending operator choice as delivered, or a declared
+> deadline as monitored, on the strength of its appearance in `LOOP_LOG.md` or in
+> this standing answer.** Nothing was repaired, nothing frozen was edited, no new
+> script, and the (m) checkbox was deliberately **not** ticked. This is the
+> **thirteenth** operator choice due and the first whose subject is the delivery
+> of the other twelve. Full measurement, the first consolidated table of what the
+> operator owes, and the three options:
+> `docs/research/OPERATOR_CHANNEL_2026-10-05.md`.
 
 ### When the analytical routes are exhausted (reached 2026-07-27, iter 23)
 
