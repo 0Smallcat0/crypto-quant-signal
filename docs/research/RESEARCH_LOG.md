@@ -4364,3 +4364,123 @@ deliberately **not** re-recorded).
   as such rather than softened: the literature's best published figure in this
   program's own architecture now sits just under the bar this program measured
   independently, from five base shapes, eight months of iterations apart.
+
+## 2026-10-05 — iteration 75 (three sources, all three new; the **highest crypto Sharpe figure this log has ever surfaced** arrives at 1.6793 — above the gate-3 floor — and is **refused on three independent grounds**, plus the first peer-reviewed base rate for deadline compliance)
+
+- **Janick Rohrbach, Silvan Suremann, Joerg Osterrieder, "Momentum and trend
+  following trading strategies for currencies and bitcoin", Zurich University of
+  Applied Sciences, SSRN abstract 2949379 — new (`Rohrbach`, `Osterrieder`,
+  `Suremann`, `super.so` and the full title all zero hits in `docs/`), and it is
+  the first figure this log has ever found that sits ABOVE the gate-3 floor.**
+  Reached as an unattributed PDF on a CDN host; the 22-page file was fetched and
+  its text extracted locally with `pypdf`, so every figure below is read off the
+  paper itself, not off a search snippet. Table 5, cryptocurrencies, verbatim:
+  time-series portfolio annualized return **42.02 %**, sd **0.2831**,
+  **Annualized Sharpe Ratio (Rf = 0%) 1.4843**; cross-sectional portfolio
+  **56.94 %**, sd **0.3391**, **1.6793**. The abstract's own framing —
+  *"For cryptocurrencies, a cross-sectional approach is more suitable"* — puts it
+  in the same family as this program's experiment 3, which makes the refusal
+  sharper rather than softer.
+  **Testable here: NO, and it is inadmissible as an anchor on three independent
+  grounds, each verified in the paper's own words.** (1) **Both portfolios
+  short.** The cross-sectional rule is *"One goes long the three currencies with
+  the largest signal. On the other hand, one sells the three currencies with the
+  smallest (most negative) signal"*, and the time-series rule is *"for a signal
+  = -1 one would sell 1/n units of USD worth of the foreign currency"* — so
+  neither 1.6793 nor 1.4843 is a long-only number, and product law is long-only
+  spot. (2) **Zero costs, stated by the authors:** *"Our calculations overestimate
+  the returns, since transaction costs and bid-ask spreads were not considered."*
+  This program charges **15 bps per fill**. (3) **Eighteen months:** *"Since
+  cryptocurrencies are still new, we could only do a backtest over a period of 18
+  months"*, with the authors' own warning *"Our short term backtest likely
+  underestimates this risk, and therefore one should take these results with a
+  grain of salt"* and *"much higher drawdowns were measured"* than the fiat
+  portfolios. **Recorded explicitly because it is the tempting case:** 1.6793
+  exceeds iteration 64's lowest gate-3 crossing (**1.5814**) by **+6.1927 %** and
+  iteration 67's engine ceiling (**1.578665**) by **+6.3771 %**, so filing it as
+  an anchor would be the first time the literature cleared this program's bar —
+  and it is refused. **The anchor list is unchanged at nine sources and ten
+  figures, top 1.56**, still **1.3532 %** below the floor.
+
+- **Heming Chen and Xiaojing Cai (Okayama University; Kobe University), "Optimal
+  vs. Naive Diversification in the Cryptocurrencies Market: The Role of
+  Time-Varying Moments and Transaction Costs", arXiv 2501.12841v3
+  [q-fin.PM], 27 Nov 2025 (paper dated October 2025) — new, and it is the
+  closest outside match to this program's own money question that this log has
+  recorded.** Read from the arXiv HTML full text; every quote below was
+  confirmed verbatim in a locally captured copy. Setup, which fits product law
+  unusually well: **long-only** — *"we impose the following short selling
+  constraint across all four optimization frameworks"*, `w_i >= 0, for all i`;
+  four coins (Bitcoin, Ethereum, Ripple, Litecoin) from coinmarketcap over
+  **7th Aug 2015 to 14th July 2023**, **2898** daily and **414** weekly
+  observations; daily and weekly rebalancing; costs `beta = 0.005`, i.e.
+  *"proportional transaction costs of 50 basis points for each of the risky
+  assets"* — more than triple this program's 15 bps. Conclusion, verbatim:
+  *"Even in the highly correlated cryptocurrencies market, most volatility-timing
+  strategies earn positive performance fees and outperform the naive 1/N
+  benchmark... Nevertheless, portfolio strategies depending on mean forecasts
+  underperform both the volatility-timing strategies and the naive 1/N benchmark,
+  reconfirming that the potential predictability of asset returns is difficult to
+  exploit in practice"*, and *"time-varying estimators of the first and second
+  moments, such as deep-learning forecasts and DCC covariances, are inferior to
+  their sample-based counterparts."*
+  **Testable here: no as a candidate** — this engine has no covariance-based
+  allocation, and P3 refuses a new family as search progress in any case.
+  **As corroboration it is the strongest outside match on record for the standing
+  answer's iteration-28 split:** an independent, long-only, cost-inclusive crypto
+  study reports that the part which beats 1/N is the **risk** channel and the part
+  which loses to 1/N is the **expected-return** channel — which is what this
+  program measured from the other direction (drawdown 33.05 % vs 80.99 % against a
+  return margin of only **5.4 %** over thirteen coins).
+  **Contributes no Sharpe anchor, by the paper's design and stated as such:** it
+  reports performance fees and no Sharpe ratios at all, on the explicit ground
+  that *"the Sharpe ratio severely underestimates the performance of dynamic asset
+  allocation strategies"* (citing Della Corte et al. 2009). That is a mild
+  challenge to this program's Sharpe-priced gates and is logged as one rather
+  than omitted.
+
+- **Nicholas J. DeVito, Seb Bacon, Ben Goldacre, "Compliance with legal
+  requirement to report clinical trial results on ClinicalTrials.gov: a cohort
+  study", *Lancet* 2020;395:361-369, DOI 10.1016/S0140-6736(19)33220-9, PMID
+  31958402 — new (`DeVito`, `Goldacre`, `FDAAA`, `trialstracker`, `31958402`
+  all zero hits in `docs/`), primary, peer-reviewed, and it puts a measured base
+  rate on today's own finding.** Abstract read verbatim from the Europe PMC
+  REST API after PubMed returned only a cookie notice. **4209** trials were due
+  to report under the FDAAA 2007 Final Rule; **1722 (40.9 %; 95 % CI 39.4-42.2)**
+  did so within the 1-year deadline; **2686 (63.8 %; 62.4-65.3)** submitted at any
+  time; *"Compliance has not improved since July, 2018"*; median delay from
+  primary completion to submission **424 days (95 % CI 412-435)**, *"59 days
+  higher than the legal reporting requirement of 1 year"*; verdict *"Compliance
+  with the FDAAA 2007 is poor, and not improving"*, attributed to *"lack of
+  enforcement by regulators"*.
+  **Testable here: no (not a strategy); filed as the external calibration for
+  iteration 75, and in the direction that costs the finding.** That setting has a
+  statutory deadline, a public registry and a named regulator — every enforcement
+  affordance this program lacks — and still **59.1 %** of trials missed the date.
+  The authors' own proposed remedy is *"open public audit of compliance for each
+  individual sponsor"*, which is structurally the pushed public log this program
+  already keeps. So the honest reading is that this program sits **at** the
+  recommended remedy and still let its 2026-10-03 deadline pass undeclared: the
+  remedy is necessary and **not sufficient**, and a missed undefended deadline is
+  the modal outcome, not an anomaly.
+
+- **Novelty and non-arrival bookkeeping, so nothing is double-counted or quietly
+  dropped.** The primary edge-hypothesis query (crypto spot long-only daily trend
+  Sharpe) returned **9** results of which **7** were already filed — arXiv
+  2512.08124, 2510.14435, 2009.12155, the Monash Le/Ruthbah paper, delphicalpha,
+  Concretum, and the `VadimChudin/aegis` repository. Of the two new ones, the
+  Rohrbach paper is filed above and arXiv 2212.06888 ("Fundamentals of
+  Perpetual Futures") is **refused on product law** — derivatives, not spot. A
+  second query surfaced four further new identifiers, **none on-product and none
+  filed**: arXiv 2301.02754 (ETF/crypto rebalancing frequency),
+  1709.06296 (large-scale allocation under model uncertainty),
+  2608.07032 (Wasserstein robust portfolio optimization), 2307.13832
+  (multi-factor neural architecture). Re-encountered and deliberately not
+  re-filed: arXiv 2602.11708 (AdaptiveTrend, 2.41 — refused on product law
+  since iteration 41) and 2604.26747. Searched and **deliberately not filed
+  for want of provenance:** the alert-monitoring angle for today's subject
+  returned only vendor marketing — a figure of 2 992 alerts/day with 63 %
+  unaddressed, attributed to a 2026 vendor study but reachable only through
+  vendor blogs with no primary document. It is recorded here as *searched and
+  rejected* rather than used, because this log's standard since iteration 71 is a
+  primary source.
