@@ -10146,3 +10146,87 @@ exists to catch, and the fourth is a claim that defeats itself.
   **refused** — long-short, zero-cost and eighteen months — so the anchor list
   still holds **nine sources, ten figures, top 1.56**, and not one of them
   reaches the bar.
+
+## 2026-10-07 — iteration 76 (P1 maintenance only: Step 0 returned nothing to measure, the 2026-10-06 slot was lost to an authentication failure, and all four tracks are recording)
+
+- **Step 0, convergence check, run first.** **Line 1, current answer:** every
+  route to the stop condition is closed, all six gates are characterised, all
+  three unblocking levers are measured and none decides — nothing here is an
+  edge that passes the six gates. **Line 2, what this iteration moves:**
+  nothing analytical, by choice. The thirteen pending operator choices are the
+  binding constraint, iteration 75 measured that they have no delivery path,
+  and a further diagnostic would add a fourteenth item to an undelivered list
+  without changing line 1. **Line 3, why it is not sprawl:** it is the
+  contract's prescribed behaviour once the routes are exhausted — *"do P1
+  maintenance, confirm the three tracks are gaining rows, and stop."* No new
+  research document, no new script, no edit to the contract's standing answer
+  (no measurement changed it).
+
+- **P1 — all four forward tracks are gaining rows.** `shadow_trial88.jsonl`
+  and `shadow_trial118.jsonl` hold **74** rows each, last date **2026-10-06**
+  (BTCUSDT close `85549.93000000`, ETHUSDT `2697.49000000` on both), up from
+  **72** / last **2026-10-04** at iteration 75. The weekly pair in the sibling
+  repository holds **11** (`shadow_tw0050.jsonl`) and **12**
+  (`shadow_gld.jsonl`) rows, last date **2026-10-02**, unchanged since
+  iteration 75 as expected; `TwShadow0050` next runs **2026-10-10 09:40**.
+  Scheduled tasks: `CryptoQuantDailySignalCycle`, `CryptoShadowTrial88` and
+  `TwShadow0050` all `LastTaskResult = 0`. The two daily recorder runs at
+  **2026-10-06 23:42** and **2026-10-07 19:48**, beyond the regular 08:20 slot,
+  both logged `already recorded through ...` and wrote nothing — the
+  idempotency guard held. No recorder was invoked by this iteration and no row
+  was written by hand.
+
+- **P1 — the 2026-10-06 loop slot was lost, and it is recorded here so the
+  numbering gap is explained rather than silent.**
+  `loop_runs/run_20261006_213702.log` reads *"Failed to authenticate. API
+  Error: 401 OAuth access token is invalid."*, `exit=1`, nine seconds after
+  start. No iteration ran, nothing was committed, and the evidence stream lost
+  nothing (both daily tracks gained the 2026-10-05 and 2026-10-06 rows). The
+  token is the operator's credential; the loop cannot and does not repair it.
+  It recovered on its own for today's slot (`run_20261007_213702.log`).
+
+- **Step 2, web research — three sources, all new, zero strategy arrivals.**
+  Full detail in `RESEARCH_LOG.md` under iteration 76. **(a) Nefedov, SSRN
+  7350238 (2026)** — abstract read verbatim from Crossref after SSRN returned
+  403: on 137 Binance perpetuals, naive evaluation inflates Sharpe **3.6×** on
+  average, none of six factors survives DSR, and *"most of the gap"* is
+  attributed to **frictions rather than in-sample over-optimization** —
+  off-product, filed as outside calibration of item (g) (cost-free forward
+  tracks omit the larger bias, not the smaller). **(b) Mesfin, arXiv
+  2605.04004** — futures, off-product; logged for its **positive controls**,
+  which this program's gates have never been shown. **(c) `btc-predictor` issue
+  #181 (2026-10-03)** — an independent practitioner reports BTC SMA50 Sharpe
+  **1.34** against buy-and-hold **0.96** at 0.1 %/side and, in their own words,
+  *"their advantage is mostly a shallower drawdown, not a higher return"* since
+  2024; not an anchor (no published artifact). **Anchor list unchanged: nine
+  sources, ten figures, top 1.56.**
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken**; `pytest -m "not network"` **383 passed, 1 warning**
+  (a third-party `StarletteDeprecationWarning` from `fastapi.testclient`).
+
+- **Stop-condition check.** Latest full-registry gate report is still
+  `gate_report_2026-07-25.json`; `gate_3_pbo.passes` **false**, `pbo`
+  **0.651826** against **0.05**. Registry **133** rows; holdout `spent`
+  **false**; `EDGE_CANDIDATE_FOUND.md` does not exist and was not created. **The
+  stop condition is NOT met.**
+
+- **Operator-attention items, dated 2026-10-07 — twenty-two, unchanged from
+  2026-10-05.** Items (g)-(k), (u) and (v) are due **before 2026-10-22**, now
+  **15 days**; (m)'s 2026-10-03 deadline has **passed** and
+  `GATE6_BASELINE_2026-07-25.md:76` is still `- [ ]`; the rest have no
+  deadline. Consolidated table: `docs/research/OPERATOR_CHANNEL_2026-10-05.md`.
+
+- **What this iteration does NOT do.** No arm registered, no gate report
+  regenerated, no holdout access, no forward read or forward metric computed,
+  no notification sent, no frozen document edited, nothing under `src/`,
+  `scripts/`, `tests/`, `configs/` or the sibling repository touched. Changed
+  files: `RESEARCH_LOG.md` and this log, both append-only.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides. **Nothing here is an edge that passes the six
+  gates.** The program now waits on two things analysis cannot supply: forward
+  rows (MinTRL 2028-06-29) and the operator's thirteen choices.

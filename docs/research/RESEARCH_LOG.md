@@ -4484,3 +4484,64 @@ deliberately **not** re-recorded).
   vendor blogs with no primary document. It is recorded here as *searched and
   rejected* rather than used, because this log's standard since iteration 71 is a
   primary source.
+
+## 2026-10-07 — iteration 76 (P1 maintenance pass; three sources, all three new; zero strategy arrivals, anchor list unchanged)
+
+- **Sergey Nefedov, "How Much Sharpe is Illusory? Quantifying Backtest
+  Overfitting in Crypto Factor Strategies", SSRN abstract 7350238, DOI
+  10.2139/ssrn.7350238 (Crossref record created 2026-08-27) — new (`Nefedov`,
+  `7350238` zero hits in `docs/research/`).** SSRN returned HTTP 403 to both
+  WebFetch and curl ("Content Blocked"); the abstract was read verbatim from the
+  Crossref REST record instead. Six factors on **137 Binance USDT-perpetual
+  contracts, 2020-2024**, a naive protocol against *"nested walk-forward
+  selection, explicit transaction costs, and the Deflated Sharpe Ratio over a
+  pre-committed grid of 24 configurations"*: *"Naïve evaluation inflates the
+  annualized Sharpe ratio by 3.6× on average, and under the baseline protocol
+  none of the six factors survives deflation; four collapse to a negative
+  out-of-sample Sharpe. A decomposition attributes most of the gap to trading
+  frictions rather than to in-sample over-optimization."*
+  **Testable here: no** — perpetuals and long-short factor portfolios, refused
+  on product law. **Use: external calibration of attention item (g)** (the
+  forward tracks charge no cost, iteration 59): an outside audit attributes the
+  *larger* share of a backtest-to-reality Sharpe gap to frictions, not to
+  selection, so a cost-free forward series is omitting the bigger of the two
+  biases, not the smaller. Full paper not read (403); the 3.6× and the
+  decomposition are the author's abstract-level claims only.
+
+- **Mathias Mesfin, "Structural Limits of OHLCV-Based Intraday Momentum Signals
+  in MNQ Futures: A Systematic Falsification Study", arXiv 2605.04004 (v1 5 May
+  2026, v3 15 Sep 2026) — new.** Abstract read via the arXiv abstract page: 14
+  signal families, 947 trading days, expanding-window walk-forward, five
+  pre-stated requirements; *"None of the 14 families met all criteria"*, eleven
+  failing on gross edge below a 2.0-point friction threshold. **Testable here:
+  no** (futures, intraday). Logged for one methodological feature this program
+  lacks: two **positive-control** signals were run through the same pipeline
+  and passed, which demonstrates the falsification apparatus *can* say yes.
+  This program's six gates have never been shown a known-good subject; not
+  proposed as work (iteration 69 already measured the closest analogue,
+  purchasability), recorded only so the gap is not rediscovered.
+
+- **`cuauhtemocbe/btc-predictor` issue #181, "Spike: validate trend-following
+  rules with walk-forward, fees and deflated Sharpe", opened 2026-10-03, read in
+  full via `gh issue view` — new practitioner source, not peer-reviewed.** An
+  independent one-off script over BTCUSDT 2019-2026 at 0.1 % per side: buy and
+  hold **Sharpe 0.96, drawdown -77 %**; close > SMA50 **1.34 / -58 %**; SMA100
+  **1.22 / -39 %**; SMA200 **0.93 / -64 %**. The author's own caveats, verbatim:
+  *"These numbers are a hypothesis, not a result. One asset, one path... and the
+  script is not in the repository"*, and *"Since 2024 the SMA rules' CAGR
+  (22-31%) is close to buy-and-hold's (26%): their advantage is mostly a
+  shallower drawdown, not a higher return."* Its pre-proposed go rule (net
+  Sharpe and drawdown both beat buy-and-hold, neighbours within 20 % do not
+  collapse, DSR probability > 0.95) is the same structure as this program's
+  gates 3-4 plus the P2 buy-and-hold rule, arrived at independently.
+  **Testable here: expressible in principle, refused as search progress** (P3
+  and iteration 67's closure). **Not filed as a Sharpe anchor:** no primary
+  artifact (the script is unpublished by its author's own statement). It is a
+  second, independent outside reading of the standing answer's "drawdown more
+  than return" on recent data, nothing more.
+
+- **Bookkeeping.** Four queries; re-encountered and not re-filed: Zarattini /
+  Pagani / Barbon (SSRN 5209907), the Vilnius BATP time-series vs
+  cross-sectional study, arXiv 2602.11708, 2606.00071, 2512.22476, 2510.14435,
+  2512.08124, 2604.26747, 2212.06888. **The anchor list is unchanged at nine
+  sources, ten figures, top 1.56.**
