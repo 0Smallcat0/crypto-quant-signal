@@ -10230,3 +10230,91 @@ exists to catch, and the fourth is a claim that defeats itself.
   measured and none decides. **Nothing here is an edge that passes the six
   gates.** The program now waits on two things analysis cannot supply: forward
   rows (MinTRL 2028-06-29) and the operator's thirteen choices.
+
+## 2026-10-12 — iteration 77 (P1 maintenance only: the machine was off 2026-10-08 17:59 to 2026-10-12 10:24, four loop slots and three daily-track rows were lost, the weekly pair caught up, and nothing analytical changed)
+
+- **Step 0, convergence check, run first.** **Line 1, current answer:** every
+  route to the stop condition is closed, all six gates are characterised, all
+  three unblocking levers are measured and none decides — nothing here is an
+  edge that passes the six gates. **Line 2, what this iteration moves:**
+  nothing analytical, by choice; it records the outage's cost to the forward
+  evidence stream so the holes are explained, not silent. **Line 3, why it is
+  not sprawl:** it is the contract's prescribed behaviour once the routes are
+  exhausted — P1 maintenance, confirm the tracks are gaining rows, stop. No new
+  research document, no new script, no edit to the standing answer.
+
+- **P1 — the outage, from the Windows System log.** Event 1074 (User32,
+  operator-initiated shutdown) at **2026-10-08 17:59:17**, event 6006 at
+  17:59:23, next boot (6005) at **2026-10-12 10:24:26**. Lost slots: research
+  loop **2026-10-08, -09, -10, -11** (no `run_*.log` for those dates; today's
+  run is the catch-up start `run_20261012_102834.log`), crypto shadow 08:20 on
+  **2026-10-09, -10, -11**, runtime 08:05 cycles on the same days, and the
+  weekly `TwShadow0050` 09:40 on **2026-10-10**. All four tasks fired at boot
+  catch-up **2026-10-12 10:28:33**; `CryptoQuantDailySignalCycle` and
+  `CryptoShadowTrial88` finished `LastTaskResult = 0`, `TwShadow0050` finished
+  `0` at 10:38:19.
+
+- **P1 — the two daily tracks gained one row and lost three, permanently.**
+  `shadow_trial88.jsonl` and `shadow_trial118.jsonl`: **76** rows each, first
+  2026-07-24, last **2026-10-11**, up from 74 / last 2026-10-06 at iteration 76
+  (the 2026-10-07 row was written 2026-10-08 08:20 before the shutdown,
+  `shadow_20261008_082002.log`). A full calendar scan of both files finds four
+  missing dates: **2026-08-09** (iteration 42) and **2026-10-08, 2026-10-09,
+  2026-10-10** (new). The recorder appends only the latest closed bar
+  (`shadow_20261012_102648.log`: *"appended 2026-10-11"* on both trials; the
+  10:28:33 catch-up then logged *"already recorded through 2026-10-11"*), the
+  same mechanism iteration 42 recorded. Latest rows: trial 88 equity
+  `1092.470605123635251155036904`, exposure BTC 0.5 / ETH 0.5; trial 118
+  `1140.218677985642733488722747`, exposure 0 / 0; closes BTCUSDT
+  `83773.12000000`, ETHUSDT `2536.94000000` on both. **The holes are left as
+  holes**, per the iteration-42 policy: no row was written by hand and no
+  backfill was attempted (an outside forward tester reaches the same rule —
+  `RESEARCH_LOG.md`, iteration 77, Nakayama). Whether three missing rows ten
+  days before 2026-10-22 affect the October read is **not** measured here —
+  the rule's inputs are themselves an open operator item (iteration 74), so
+  any statement would settle that item by assertion.
+
+- **P1 — the weekly pair caught up.** The boot catch-up of `TwShadow0050`
+  (`tw_shadow_20261012_102834.log`) appended **0050 2026-10-08** (exposure 1,
+  close 114.95, equity `1056.422910438693889224592286`) and **GLD 2026-10-09**
+  (exposure 0, close 384.579987, equity unchanged at
+  `999.3166935597225099601970623`); `shadow_tw0050.jsonl` **12** rows,
+  `shadow_gld.jsonl` **13**. No weekly session was lost. Next run
+  **2026-10-17 09:40**.
+
+- **Step 2, web research — two new sources, zero strategy arrivals.** Detail
+  in `RESEARCH_LOG.md` under iteration 77: Nakayama (MQL5, 2026-08-14), a
+  forward test with 16 of 80 decision points valid and an explicit
+  no-backdating rule; Mesíček (Quantpedia, 2025-11-13), long-only BTC with a
+  1H entry, refused on the intraday decision timeframe. **Anchor list
+  unchanged: nine sources, ten figures, top 1.56.**
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken**; `pytest -m "not network"` **383 passed,
+  1 warning** (the same third-party `StarletteDeprecationWarning`).
+
+- **Stop-condition check.** Latest full-registry gate report is still
+  `gate_report_2026-07-25.json`; `gate_3_pbo.passes` **false**, `pbo`
+  **0.651826**. Registry **133** rows; `holdout_lock.json` `spent` **false**;
+  `EDGE_CANDIDATE_FOUND.md` does not exist and was not created. **The stop
+  condition is NOT met.**
+
+- **Operator-attention items, dated 2026-10-12 — twenty-two, unchanged.** Items
+  (g)-(k), (u) and (v) are due **before 2026-10-22**, now **10 days**; (m)'s
+  2026-10-03 deadline has passed and `GATE6_BASELINE_2026-07-25.md:76` is still
+  `- [ ]`. Consolidated table: `docs/research/OPERATOR_CHANNEL_2026-10-05.md`.
+
+- **What this iteration does NOT do.** No arm registered, no gate report
+  regenerated, no holdout access, no forward read or metric computed, no
+  notification sent, no frozen document edited, no shadow row written or
+  repaired, nothing under `src/`, `scripts/`, `tests/`, `configs/` or the
+  sibling repository touched. Changed files: `RESEARCH_LOG.md` and this log,
+  both append-only.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides. **Nothing here is an edge that passes the six
+  gates.** The program waits on forward rows (MinTRL 2028-06-29) and the
+  operator's thirteen choices.

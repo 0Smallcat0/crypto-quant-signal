@@ -4545,3 +4545,41 @@ deliberately **not** re-recorded).
   cross-sectional study, arXiv 2602.11708, 2606.00071, 2512.22476, 2510.14435,
   2512.08124, 2604.26747, 2212.06888. **The anchor list is unchanged at nine
   sources, ten figures, top 1.56.**
+
+## 2026-10-12 — iteration 77 (P1 maintenance pass; two sources new, zero strategy arrivals, anchor list unchanged)
+
+- **Yuki Nakayama, "Five Trading Days, One Valid Measurement: Auditing a Live
+  Forward Test", MQL5 blog post 774134, 14 Aug 2026 — new (`774134`,
+  `Nakayama` zero hits in `docs/research/`), practitioner, not peer-reviewed.**
+  Read via WebFetch (summary model, so only the quoted sentences are cited):
+  *"16 of 80 scheduled decision points produced a valid live measurement.
+  Twenty percent."* Causes named: order rejections, an 18-hour terminal outage
+  after a shutdown that did not auto-restart, and a chart change that silently
+  disabled automation. The author's rule on the lost days: *"I am not
+  backdating it to the day the EA was installed."* **Testable here: no** (FX
+  EA, not a strategy claim). **Use: outside corroboration of this program's
+  standing no-backfill policy** (iteration 42's 2026-08-09 hole, and today's
+  three new holes from a machine shutdown): an independent forward tester losing
+  decision points to infrastructure reaches the same rule — record the loss,
+  do not reconstruct it.
+
+- **David Mesíček (Quantpedia), "How to Design a Simple Multi-Timeframe Trend
+  Strategy on Bitcoin", 13 Nov 2025 — new (zero hits).** Long-only BTC, MACD
+  entry on 1H gated by a daily MACD filter, exit on the first negative hourly
+  candle, Dec 2018 - Nov 2025. Reported (via WebFetch summary): Sharpe **1.07**,
+  annual return **6.6 %**, max drawdown **-12.4 %**, against buy-and-hold of
+  *"over 60%"* a year at *"nearly –80%"*; transaction costs and any
+  out-of-sample split **not stated**. **Testable here: no** — the decision
+  timeframe is intraday (1H), forbidden by AGENTS.md §3.2. **Not an anchor**
+  (no costs, no OOS). It is a further outside instance of the standing
+  answer's shape — a trend filter buying drawdown at a very large cost in
+  return — and in a stronger form than here (6.6 % vs >60 %/yr).
+
+- **Bookkeeping.** Four queries; re-encountered and not re-filed: Zarattini /
+  Pagani / Barbon "Catching Crypto Trends" (SSRN 5209907, Concretum and
+  abarbon.com pages), Gbadebo BATP Vol. 33, arXiv 2606.27670 (CryptoGAT),
+  2602.11708, 2208.09968, 1904.04912, CXO Advisory crypto trend pages, the
+  CoinDesk Bitcoin Trend Indicator tearsheet. A dev.to post on an "AI agent"
+  Donchian ensemble on GRTUSDT was not read (marketing, single backtested
+  number). **The anchor list is unchanged at nine sources, ten figures, top
+  1.56.**
