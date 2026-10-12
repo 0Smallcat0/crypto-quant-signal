@@ -4583,3 +4583,40 @@ deliberately **not** re-recorded).
   Donchian ensemble on GRTUSDT was not read (marketing, single backtested
   number). **The anchor list is unchanged at nine sources, ten figures, top
   1.56.**
+
+## 2026-10-12 — iteration 78 (P1 maintenance pass, regular 21:37 slot; two sources new, zero strategy arrivals, anchor list unchanged)
+
+- **Sámuel Patyi, "Cryptocurrency momentum: is it there? – Persistence and
+  predictability", Corvinus University of Budapest, TDK student research
+  paper, 2024 — new (`Patyi`, `15993` zero hits in `docs/research/`), not
+  peer-reviewed.** Read via WebFetch of the repository record
+  (`szd.lib.uni-corvinus.hu/15993/`; summary model, so only quoted phrases are
+  cited): the momentum effect *"exists and is persistent, as indicated by the
+  momentum portfolio's average weekly return of 2.60%"*, and a conditional
+  "momentum gap" variant lifts Sharpe by about 9 % to **1.41**. The abstract
+  states neither the sample period nor transaction costs. **Testable here:
+  no** — a weekly cross-sectional momentum *portfolio*, and the
+  cross-sectional route is already registered here (experiment 3, 64 arms)
+  and closed as a path to the stop condition (iterations 67-68). **Not an
+  anchor** (no costs, no out-of-sample split, student paper).
+
+- **Malek Ammar Mohammad Alahmer, "Gold Catalyst Evolution V6.11 — Backtest,
+  Forward Demo, and Evidence Hierarchy", MQL5 blog post 772592, 14 Jul 2026,
+  updated 8 Oct 2026 — new (zero hits), practitioner, vendor.** Quoted via
+  WebFetch: *"It is too simplistic to say that one year of forward testing
+  always outweighs ten years of backtesting"*, and the 2 400+ trade record
+  *"belongs to a pre-V6 generation"* and is *"not live results, independently
+  audited results, or V6.11 performance statistics."* **Testable here: no**
+  (gold EA, intraday, off-product). **Use: none for strategy;** a vendor
+  disclosing that its headline record belongs to a superseded configuration is
+  the same provenance problem this program recorded for N1 in iteration 63
+  (the sealed nomination no longer names the live contract). No action.
+
+- **Bookkeeping.** Three queries; re-encountered and not re-filed: Zarattini /
+  Pagani / Barbon (SSRN 5209907, Concretum and abarbon.com pages), arXiv
+  2602.11708, 2606.00060 (Bysik and Ślepaczuk, fourth encounter), 1904.00890,
+  Gbadebo BATP 44540, Mesíček (Quantpedia, iteration 77), Nakayama MQL5 774134
+  (iteration 77), CXO Advisory crypto trend pages. Not read: the Wisselink EUR
+  bachelor thesis, the AUT "with IA" working paper, TradersPost and uTradeAlgos
+  forward-testing explainers (generic, no data). **The anchor list is
+  unchanged at nine sources, ten figures, top 1.56.**

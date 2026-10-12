@@ -10318,3 +10318,69 @@ exists to catch, and the fourth is a claim that defeats itself.
   measured and none decides. **Nothing here is an edge that passes the six
   gates.** The program waits on forward rows (MinTRL 2028-06-29) and the
   operator's thirteen choices.
+
+## 2026-10-12 — iteration 78 (P1 maintenance only, regular 21:37 slot: second iteration today after the boot catch-up; no new bar has closed since iteration 77, all four tracks intact, nothing analytical changed)
+
+- **Step 0, convergence check, run first.** **Line 1, current answer:** every
+  route to the stop condition is closed, all six gates are characterised, all
+  three unblocking levers are measured and none decides — nothing here is an
+  edge that passes the six gates. **Line 2, what this iteration moves:**
+  nothing analytical, by choice. **Line 3, why it is not sprawl:** it is the
+  contract's prescribed behaviour once the routes are exhausted — P1
+  maintenance, confirm the tracks are gaining rows, stop. No new research
+  document, no new script, no edit to the standing answer.
+
+- **P1 — why this is a second iteration on one date.** Iteration 77 was the
+  boot catch-up of the missed slots (`run_20261012_102834.log`, committed
+  `f2f195a` at 10:39:14 +08:00); this is the regular `CryptoResearchLoop` slot
+  (`run_20261012_213702.log`, task `LastRunTime` 2026-10-12 21:37:01, still
+  running at check time). Nothing between them is expected to change.
+
+- **P1 — all four forward tracks, unchanged since iteration 77, as expected.**
+  `shadow_trial88.jsonl` and `shadow_trial118.jsonl`: **76** rows each, last
+  date **2026-10-11** (equity `1092.470605123635251155036904` and
+  `1140.218677985642733488722747`; closes BTCUSDT `83773.12000000`, ETHUSDT
+  `2536.94000000`). The 2026-10-12 UTC bar closes 2026-10-13 08:00 +08:00, so
+  no row is due before `CryptoShadowTrial88` runs at **2026-10-13 08:20**. The
+  weekly pair: `shadow_tw0050.jsonl` **12** rows (last 0050 2026-10-08),
+  `shadow_gld.jsonl` **13** (last GLD 2026-10-09); next `TwShadow0050`
+  **2026-10-17 09:40**. Scheduled tasks `CryptoQuantDailySignalCycle`,
+  `CryptoShadowTrial88`, `TwShadow0050` all `LastTaskResult = 0`. The holes at
+  2026-08-09 and 2026-10-08..10 stand; nothing written by hand.
+
+- **Step 2, web research — two new sources, zero strategy arrivals.** Detail
+  in `RESEARCH_LOG.md` under iteration 78: Patyi (Corvinus student paper,
+  2024), weekly cross-sectional momentum, Sharpe 1.41, no costs stated —
+  refused, the route is registered and closed; Alahmer (MQL5 772592, updated
+  2026-10-08), gold EA, off-product. **Anchor list unchanged: nine sources,
+  ten figures, top 1.56.**
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken**; `pytest -m "not network"` **383 passed,
+  1 warning** (the same third-party `StarletteDeprecationWarning`).
+
+- **Stop-condition check.** Latest full-registry gate report is still
+  `gate_report_2026-07-25.json`; `gate_3_pbo.passes` **false**, `pbo`
+  **0.651826**. Registry **133** rows; `holdout_lock.json` `spent` **false**;
+  `EDGE_CANDIDATE_FOUND.md` does not exist and was not created. **The stop
+  condition is NOT met.**
+
+- **Operator-attention items, dated 2026-10-12 — twenty-two, unchanged.** Items
+  (g)-(k), (u) and (v) are due **before 2026-10-22**, now **10 days**; (m)'s
+  2026-10-03 deadline has passed and `GATE6_BASELINE_2026-07-25.md:76` is still
+  `- [ ]`. Consolidated table: `docs/research/OPERATOR_CHANNEL_2026-10-05.md`.
+
+- **What this iteration does NOT do.** No arm registered, no gate report
+  regenerated, no holdout access, no forward read or metric computed, no
+  notification sent, no frozen document edited, no shadow row written or
+  repaired, nothing under `src/`, `scripts/`, `tests/`, `configs/` or the
+  sibling repository touched. Changed files: `RESEARCH_LOG.md` and this log,
+  both append-only.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides. **Nothing here is an edge that passes the six
+  gates.** The program waits on forward rows (MinTRL 2028-06-29) and the
+  operator's thirteen choices.
