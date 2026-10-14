@@ -4658,3 +4658,42 @@ deliberately **not** re-recorded).
   the AUT "with IA" working paper, the Wisselink EUR thesis, Patyi (iteration
   78), Mesíček (Quantpedia), Concretum and CXO Advisory crypto trend pages.
   **The anchor list is unchanged at nine sources, ten figures, top 1.56.**
+
+## 2026-10-14 — iteration 80 (P1 maintenance pass, regular 21:37 slot; two sources new, zero strategy arrivals, anchor list unchanged)
+
+- **Jai Tripathi, "Regime-Dependent Volatility Sensitivity", *Financial
+  Economics Letters* 5(2), article 53 (Anser Press), published online 18 Jun
+  2026 — new (`anserpress`, `Tripathi`, `Regime-Dependent Volatility` zero hits
+  in `docs/research/`).** Read via WebFetch of the article page (summary model;
+  abstract only, so only quoted phrases are cited): a volatility-targeted EMA
+  trend strategy on daily data 2015-2026 with transaction costs penalised at 3x
+  baseline in high-volatility expansions; traditional assets are
+  regime-sensitive at p < 0.001 while for Bitcoin the test fails to reject
+  equivalence across volatility states (p = 0.195), and the author concludes
+  that frameworks which *"mechanically de-leverage during volatility
+  expansions—such as volatility targeting or risk parity—may be structurally
+  misaligned for assets exhibiting positive volatility return dependence."*
+  No Sharpe, return or drawdown figure in the abstract. **Testable here: no new
+  test** — volatility-scaled sizing is an allocation question, and the
+  cash-aware/inverse-vol allocation route (experiment 9) is registered and
+  refused by P3. **Not an anchor** (no figure, out-of-sample design not stated).
+
+- **Carlos Baquero and Raquel Menezes, "Bitcoin's Power Law: Weak Structure,
+  Strong Forecasts", arXiv 2605.21316, 20 May 2026 — new (zero hits).** Read via
+  the Emergent Mind summary page (summary model; only quoted phrases cited):
+  walk-forward over 11 yearly cutoffs, *"the simple power law dominates 12–24
+  month horizons against every standard baseline at p < 0.05"*, naive
+  carry-forward is best at 1-3 months, and the in-sample-best multi-sigmoid
+  fit ranks *"among the worst long-horizon forecasters"*. **Testable here: no**
+  — a price-level forecasting paper with no trading rule, no costs, and a
+  horizon (12-24 months) far outside a daily decision. Its one transferable
+  sentence is the in-sample winner generalising worst, which is this program's
+  PBO finding in another field. No action.
+
+- **Bookkeeping.** Two queries; re-encountered and not re-filed: arXiv
+  2602.11708, Zarattini / Pagani / Barbon "Catching Crypto Trends" (abarbon.com
+  page), Mesíček (Quantpedia, iteration 77), Monash CFS trend-following page,
+  CXO Advisory crypto trend pages, Concretum intraday seasonality, the dev.to
+  XGBoost walk-forward post (already filed). Not read: a KuCoin news flash on a
+  bitcoin allocation study (news summary, no primary source). **The anchor list
+  is unchanged at nine sources, ten figures, top 1.56.**
