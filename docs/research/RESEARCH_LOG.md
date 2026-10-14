@@ -4620,3 +4620,41 @@ deliberately **not** re-recorded).
   bachelor thesis, the AUT "with IA" working paper, TradersPost and uTradeAlgos
   forward-testing explainers (generic, no data). **The anchor list is
   unchanged at nine sources, ten figures, top 1.56.**
+
+## 2026-10-14 — iteration 79 (P1 maintenance pass, catch-up of the missed 2026-10-13 slot; two sources new, zero strategy arrivals, anchor list unchanged)
+
+- **CoinDesk Indices, "The Bitcoin Trend Indicator — Navigate the Crypto
+  Seasons", two-page tearsheet, © 2025 — first read (iteration 77 listed it
+  as not read), vendor.** Read from the downloaded PDF itself, not a summary:
+  a daily signal with five values (1, 0.5, 0, -0.5, -1) built from *"four
+  crossover windows, ranging from very short term (2-day vs 10-day) to medium
+  term (20-day vs 80-day)"*, exponentially weighted, used in *"a hypothetical
+  long-only strategy that allocates between bitcoin and a risk-free asset"*
+  with exposure *"proportionate to the strength"* of the indicator. The
+  performance chart is *"rebalanced weekly and is shown gross of transaction
+  costs and fees"* and states no number. **Testable here: no new test** — it
+  is structurally the same object as this repository's live ladder (four
+  windows, fractional exposure, long-only, cash floor); an index vendor
+  converging on that shape is design corroboration, not evidence of edge.
+  **Not an anchor** (no figure, gross of costs, no out-of-sample split).
+
+- **Park Ji Hye (박지혜), "A Comparative Study of Momentum Signal Extraction
+  Methods in the Cryptocurrency Market: Risk Management, Time-Series
+  Decomposition, and Fractional Differencing", master's thesis, Sogang
+  University, 2026 — new (`Sogang`, `000000083230` zero hits), not
+  peer-reviewed.** Read via WebFetch of the dCollection record (summary model;
+  only quoted phrases cited): ~8 800 coins, daily, 2016-2025; short-horizon
+  risk-managed momentum *"annualized Sharpe of the WML\* factor around
+  1.2–1.35"*; at a one-year lookback *"pure-momentum Sharpe of −1.07 versus
+  pure-reversal Sharpe of 0.81"*. **Testable here: no** — long-short WML
+  factors are forbidden by product law, and cross-sectional momentum is a
+  registered and closed route (experiment 3; iterations 67-68). Logged for one
+  reason: a broad-universe one-year lookback reverses, consistent with this
+  program's own record that the 13-coin universe fails both bear windows while
+  BTC/ETH does not. No action.
+
+- **Bookkeeping.** Two queries; re-encountered and not re-filed: arXiv
+  2602.11708, 2606.00060 (fifth encounter), 1904.00890, Gbadebo BATP 44540,
+  the AUT "with IA" working paper, the Wisselink EUR thesis, Patyi (iteration
+  78), Mesíček (Quantpedia), Concretum and CXO Advisory crypto trend pages.
+  **The anchor list is unchanged at nine sources, ten figures, top 1.56.**

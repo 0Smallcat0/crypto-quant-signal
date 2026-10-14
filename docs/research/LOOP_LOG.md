@@ -10384,3 +10384,80 @@ exists to catch, and the fourth is a claim that defeats itself.
   measured and none decides. **Nothing here is an edge that passes the six
   gates.** The program waits on forward rows (MinTRL 2028-06-29) and the
   operator's thirteen choices.
+
+## 2026-10-14 — iteration 79 (P1 maintenance only: the 2026-10-13 21:37 slot was not launched because the operator was not logged on; this is the boot catch-up; all four tracks intact and the daily pair gained two rows)
+
+- **Step 0, convergence check, run first.** **Line 1, current answer:** every
+  route to the stop condition is closed, all six gates are characterised, all
+  three unblocking levers are measured and none decides — nothing here is an
+  edge that passes the six gates. **Line 2, what this iteration moves:**
+  nothing analytical, by choice; it records why the 2026-10-13 slot is
+  missing. **Line 3, why it is not sprawl:** it is the contract's prescribed
+  behaviour once the routes are exhausted — P1 maintenance, confirm the tracks
+  are gaining rows, stop. No new research document, no new script, no edit to
+  the standing answer.
+
+- **P1 — the missing 2026-10-13 slot, from the TaskScheduler/Operational
+  log.** Event **332** at **2026-10-13 21:37:01**: *"Task Scheduler did not
+  launch task "\CryptoResearchLoop" because user "smallcat\Administrator" was
+  not logged on when the launching conditions were met."* The machine itself
+  was up (System log: sleep entry, Kernel-Power 42, only at **22:48:52**).
+  Then an operator-initiated restart (User32 1074 at **2026-10-14 19:49:27**,
+  boot 6005 at 19:50:03); this iteration is the catch-up start
+  (`run_20261014_195645.log`, `started=2026-10-14T19:56:45+08:00`). The
+  regular 21:37 slot today will run again. The task's logon condition is the
+  operator's configuration; the loop does not change it.
+
+- **P1 — all four forward tracks.** `shadow_trial88.jsonl` and
+  `shadow_trial118.jsonl`: **78** rows each, first 2026-07-24, last
+  **2026-10-13**, up from 76 / last 2026-10-11 at iteration 78. The 2026-10-12
+  row was recorded `2026-10-13T00:21:27Z` and the 2026-10-13 row
+  `2026-10-14T00:21:15Z`, both in the regular 08:20 slot. Full calendar scan:
+  missing dates are still exactly **2026-08-09, 2026-10-08, 2026-10-09,
+  2026-10-10** — no new hole. Latest rows: trial 88 equity
+  `1086.458250745886224798262363`, exposure BTC 0.5 / ETH **0.25** (ETH down
+  from 0.5, `WINDOWS_ON_1_OF_4`); trial 118 `1140.218677985642733488722747`,
+  exposure 0 / 0; closes BTCUSDT `83169.00000000`, ETHUSDT `2497.95000000` on
+  both. The weekly pair is unchanged as expected: `shadow_tw0050.jsonl` **12**
+  rows (last 0050 2026-10-08), `shadow_gld.jsonl` **13** (last GLD
+  2026-10-09); next `TwShadow0050` **2026-10-17 09:40**. Scheduled tasks
+  `CryptoQuantDailySignalCycle`, `CryptoShadowTrial88`, `TwShadow0050` all
+  `LastTaskResult = 0`. Nothing written by hand.
+
+- **Step 2, web research — two sources new, zero strategy arrivals.** Detail
+  in `RESEARCH_LOG.md` under iteration 79: the CoinDesk Bitcoin Trend
+  Indicator tearsheet (four EWMA crossovers, five-level long-only exposure,
+  gross of costs, no figure — the same shape as the live ladder, corroboration
+  of design only); Park (Sogang master's thesis, 2026), long-short crypto
+  momentum factors, off-product. **Anchor list unchanged: nine sources, ten
+  figures, top 1.56.**
+
+- **Verification, run bare per iron rule 7.** `ruff check` **All checks
+  passed!**; `ruff format --check` **129 files already formatted**;
+  `mypy --strict src/` **Success: no issues found in 58 source files**;
+  `lint-imports` **13 kept, 0 broken**; `pytest -m "not network"` **383 passed,
+  1 warning** (the same third-party `StarletteDeprecationWarning`).
+
+- **Stop-condition check.** Latest full-registry gate report is still
+  `gate_report_2026-07-25.json`; `gate_3_pbo.passes` **false**, `pbo`
+  **0.651826**. Registry **133** rows; `holdout_lock.json` `spent` **false**;
+  `EDGE_CANDIDATE_FOUND.md` does not exist and was not created. **The stop
+  condition is NOT met.**
+
+- **Operator-attention items, dated 2026-10-14 — twenty-two, unchanged.** Items
+  (g)-(k), (u) and (v) are due **before 2026-10-22**, now **8 days**; (m)'s
+  2026-10-03 deadline has passed and `GATE6_BASELINE_2026-07-25.md:76` is still
+  `- [ ]`. Consolidated table: `docs/research/OPERATOR_CHANNEL_2026-10-05.md`.
+
+- **What this iteration does NOT do.** No arm registered, no gate report
+  regenerated, no holdout access, no forward read or metric computed, no
+  notification sent, no frozen document edited, no shadow row written or
+  repaired, no scheduled-task setting changed, nothing under `src/`,
+  `scripts/`, `tests/`, `configs/` or the sibling repository touched. Changed
+  files: `RESEARCH_LOG.md` and this log, both append-only.
+
+- **Step 0, line 1 restated, unchanged.** Every route to the stop condition is
+  closed, all six gates are characterised, all three unblocking levers are
+  measured and none decides. **Nothing here is an edge that passes the six
+  gates.** The program waits on forward rows (MinTRL 2028-06-29) and the
+  operator's thirteen choices.
