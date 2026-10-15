@@ -4697,3 +4697,47 @@ deliberately **not** re-recorded).
   XGBoost walk-forward post (already filed). Not read: a KuCoin news flash on a
   bitcoin allocation study (news summary, no primary source). **The anchor list
   is unchanged at nine sources, ten figures, top 1.56.**
+
+## 2026-10-15 — iteration 81 (P1 maintenance pass, regular 21:37 slot; two sources new and read, one new and unreadable, zero strategy arrivals, anchor list unchanged)
+
+- **Andrew Detzel, Hong Liu, Jack Strauss, Guofu Zhou and Yingzi Zhu,
+  "Bitcoin: Predictability and Profitability Via Technical Analysis",
+  working paper January 2018 — new to this log (`Detzel`, `Predictability and
+  Profitability` zero hits in `docs/research/`).** Read via WebFetch of the CXO
+  Advisory review page (summary model; only quoted phrases cited): a hold-when-
+  above-SMA rule on Bitcoin at 5/10/20/50/100 days; buy-and-hold *"Sharpe ratio
+  2.0"* against SMA Sharpe *"from 2.6 for a 5-day SMA to 2.2 for a 100-day
+  SMA"*, gross drawdown suppressed to *"-70.3% for 50-day and 100-day SMAs to
+  -66.4% for a 5-day SMA"*, robust across sample halves. CXO's own caveats:
+  figures are *"gross, not net"*, and *"testing multiple strategy variations on
+  the same sample introduces data snooping bias"*. **Testable here: no new
+  test** — single-SMA timing on BTC is a strict subset of the live ladder's
+  architecture (one of its four lines), and its sample ends before this
+  registry's 2018-03 window opens. **Not an anchor** (gross of costs; no
+  deflation for the five variants it reports). Corroboration of design only.
+
+- **James Hunt, "'Not all 200-day moving averages are equal': K33 argues
+  February's $60K low still marks cycle's maximum drawdown", *The Block*, 20 May
+  2026 — new (zero hits).** Read via WebFetch (summary model): market
+  commentary — *"189 days between the November 200-day moving average
+  breakdown and May retest — far longer than the 96, 132, and 85 days seen in
+  those prior cycles"*, and the 200-day average trending lower in 2026 where it
+  trended higher in 2014/2018/2022. No trading rule, cost or backtest.
+  **Testable here: no.** Its one relevant observation — a long sub-200-day
+  regime in 2026 — is consistent with trial 118's current zero exposure on
+  both symbols, which its forward track already records. No action.
+
+- **Theseus thesis, "Bitcoin trading performance evaluation: A comparative
+  study of momentum and mean reversion strategies from 2020 to 2025"
+  (theseus.fi handle 10024/902903) — new, NOT read:** WebFetch returned **HTTP
+  403**. The search snippet says the Bollinger mean-reversion rule wins on
+  *hourly* data, which is outside product law's daily decision timeframe
+  regardless. Not filed as evidence.
+
+- **Bookkeeping.** Four queries; re-encountered and not re-filed: arXiv
+  2602.11708, arXiv 2606.00060 (Emergent Mind), the VU *BATP* comparative
+  TSMOM/CSMOM study (44540), arXiv 1904.00890, the Wisselink EUR thesis, the
+  CoinDesk Bitcoin Trend Indicator tearsheet, Quantpedia multi-timeframe
+  Bitcoin trend, Monash CFS and CXO crypto-trend pages, arXiv 2209.05559
+  (DRL backtest overfitting), an mql5 blog post. **The anchor list is
+  unchanged at nine sources, ten figures, top 1.56.**
