@@ -8,9 +8,9 @@
 
 **A trading-signal system engineered to prove itself wrong before anyone risks money on it.**
 
-Most strategy repos exist to convince you they work. This one runs its own strategy through a six-gate falsification pipeline — registered trials, deflated Sharpe, a single-use locked holdout, ninety days of live paper trading — and publishes the scoreboard either way. A sibling strategy family has [already been killed by its own pre-registered gate](https://github.com/0Smallcat0/tw-stock-trading).
+Most strategy repos exist to convince you they work. This one runs its own strategy through a six-gate falsification pipeline — registered trials, deflated Sharpe, a single-use locked holdout, a three-month paper-trading gate — and publishes the scoreboard either way. A sibling strategy family has [already been killed by its own pre-registered gate](https://github.com/0Smallcat0/tw-stock-trading).
 
-Concretely, it is a crypto **spot, long-only, public-data, daily signal** notification system with an honest paper-trading scoreboard. Every day after the UTC close, the system decides what to buy or sell and why, and notifies the user — **the user executes manually**. A `1000 USDT` virtual account follows every signal in parallel as the scoreboard, recording virtual decisions, orders, fills, positions, cash, PnL, rejected orders, and risk events.
+Concretely, it is a crypto **spot, long-only, public-data, daily signal** notification system with an honest paper-trading scoreboard. After each UTC daily close, a cycle decides what to buy or sell and why, and notifies the user — **the user executes manually**. A `1000 USDT` virtual account follows every signal in parallel as the scoreboard, recording virtual decisions, orders, fills, positions, cash, PnL, rejected orders, and risk events.
 
 The system **never submits real exchange orders, never reads private balances, and never requires API keys — permanently, by product definition.** The human is the only executor.
 
@@ -20,7 +20,7 @@ The system **never submits real exchange orders, never reads private balances, a
 
 ## Try it in two minutes
 
-No API keys, no Docker, no network — the repo bundles 2.5 years of real BTC/ETH daily candles (2024-01 → 2026-06) and replays them through the exact engine the live qualification run uses:
+No API keys, no Docker, no network — the repo bundles 2.5 years of real BTC/ETH daily candles (2024-01 → 2026-06) and replays them through the same engine the paper runtime uses:
 
 ```bash
 git clone https://github.com/0Smallcat0/crypto-quant-signal
@@ -115,13 +115,13 @@ Responsibilities stay separated: **strategy** decides what looks attractive, **p
 
 ## The scoreboard dashboard
 
-Live view of the qualification run: today's command card, per-asset ladder state, the virtual account's equity curve, and validation-gate progress (registered trials, holdout lock status, paper-day counter). The UI is in Traditional Chinese — it is the single operator's daily instrument, not a public product.
+Read-only view of the paper scoreboard: the day's command card, per-asset ladder state, the virtual account's equity curve, and validation-gate progress (registered trials, holdout lock status, paper-day counter). The UI is in Traditional Chinese — it is the single operator's daily instrument, not a public product.
 
-![Read-only dashboard during the 90-day paper qualification run](docs/assets/dashboard.png)
+![Read-only scoreboard dashboard, 2026-07-10](docs/assets/dashboard.png)
 
 ## Project status
 
-The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The project is in the post-MVP **signal-live qualification** phase (Goal O): the single-use holdout is still sealed, and a ≥3-month paper trade runs until October before the pass/fail gate report.
+The Core MVP is **complete and verified** (foundation → daily strategy → backtest + validation-gate tooling → signal runtime → read-only dashboard). The research program concluded on 2026-10-16: no registered trial met the pre-registered stop condition (DSR ≥ 0.95 and candidates-PBO ≤ 0.05), so no signal is called qualified, and the single-use holdout is still sealed. Closing record: [`docs/research/CLOSING_2026-10-16.md`](docs/research/CLOSING_2026-10-16.md).
 
 **Search log, as of 2026-07-26 — 133 registered trials across eleven pre-registered families, ten of them registered negatives.** The honest summary of what that search found:
 
@@ -161,9 +161,9 @@ But the signal rule itself did not come from nowhere either, and saying otherwis
 
 Full tables, plus the stress test where gold's correlation *rose* rather than fell: [`VS_BUY_AND_HOLD_2026-07-26.md`](docs/research/VS_BUY_AND_HOLD_2026-07-26.md), [`SLEEVE3_GOLD_RESULT.md`](docs/research/SLEEVE3_GOLD_RESULT.md), [`CROSSMARKET_COMBINATION_RESULT.md`](docs/research/CROSSMARKET_COMBINATION_RESULT.md).
 
-None of it is certified: gate 3 still fails, and no forward evidence exists yet. All three sleeves now record forward signals so that unseen data — the only thing that can settle this — starts accumulating.
+None of it is certified: gate 3 still fails. All three sleeves recorded forward signals from 2026-07-24 until the program concluded, and the crypto sleeve's forward inputs can be replayed exactly from public daily closes.
 
-- **376 passing tests**, `mypy --strict` clean, 13 enforced import-linter contracts.
+- CI-tested, `mypy --strict` clean, 13 enforced import-linter contracts.
 - **Every pre-registration, result, retraction, and correction is committed**, including a same-day retraction of a correlation claim this project asserted without measuring.
 - Full goal roadmap and rationale: [`GOALS.md`](GOALS.md). Agent/contributor contract: [`AGENTS.md`](AGENTS.md). Design evidence: [`docs/research/SIGNAL_DESIGN_RESEARCH.md`](docs/research/SIGNAL_DESIGN_RESEARCH.md) ([English summary](docs/research/SIGNAL_DESIGN_RESEARCH_EN.md)).
 
@@ -222,7 +222,7 @@ src/
   domain/        shared types (LONG/FLAT signal, Decimal money, UTC time)
   data/          Binance Spot public client, closed-candle gate, quality checks
   features/      daily SMA ensemble, point-in-time feature snapshots
-  strategies/    Daily Trend Ensemble (active) + Large Liquid Trend 15 (inactive reference)
+  strategies/    Daily Trend Ensemble (primary contract) + Large Liquid Trend 15 (inactive reference)
   portfolio/     exposure ladder → target weights within risk budgets
   risk/          risk gate + disaster event
   execution/     paper broker
@@ -237,7 +237,7 @@ docs/
   contracts/     strategy / risk / validation-gate specifications
   research/       adversarially verified signal-design research
   reports/        completion + audit reports, trial provenance
-tests/           312 tests mirroring the src layout
+tests/           tests mirroring the src layout
 ```
 
 ## Local database credentials

@@ -10,6 +10,14 @@ New-Item -ItemType Directory -Force -Path $runDir | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $logFile = Join-Path $runDir "run_$stamp.log"
 
+# Retired 2026-10-16 (docs/research/CLOSING_2026-10-16.md). The scheduled task
+# is meant to be disabled; if it still fires, return here, before claude.exe,
+# so the run spends no model quota and commits or pushes nothing. To restart
+# the loop, record the operator order the closing record names and delete
+# this block.
+"skipped=retired $(Get-Date -Format o) see docs/research/CLOSING_2026-10-16.md" | Add-Content $logFile
+exit 0
+
 # Stop-condition latch: once an edge candidate is found, iterations only
 # maintain/verify (the contract's stop clause) — the prompt stays the same
 # because the contract itself encodes that behavior.

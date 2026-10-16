@@ -10598,3 +10598,21 @@ exists to catch, and the fourth is a claim that defeats itself.
   measured and none decides. **Nothing here is an edge that passes the six
   gates.** The program waits on forward rows (MinTRL 2028-06-29) and the
   operator's thirteen choices.
+
+## 2026-10-16 — closing (operator decision: the research program is retired)
+
+- **Operator order.** On 2026-10-16 the operator left the keep-or-retire call
+  and the items due before 2026-10-22 to the operating agent ("你要自己判斷").
+  Decision: retire. Closing record: `docs/research/CLOSING_2026-10-16.md`.
+- **Standing answer at close, unchanged.** `gate_report_2026-07-25.json`
+  `gate_3_pbo.pbo` **0.651826**, `passes` false; registry **133**;
+  `holdout_lock.json` `spent` **false**. The stop condition was never met.
+- **Stopped.** `scripts/run_research_loop.ps1` now returns before the agent
+  is called. The four tasks (`CryptoResearchLoop`,
+  `CryptoQuantDailySignalCycle`, `CryptoShadowTrial88`, `TwShadow0050`) are to
+  be disabled from an elevated shell, never unregistered. The daily pair's last
+  row at the time of this entry is 2026-10-14.
+- **Declared, items (g) (h) (i) (j) (k) (u) (v) and (m).** All in the closing
+  record. The 2026-10-22 read is cancelled; the holdout is not spent.
+- **Not done.** No arm registered, no holdout access, no forward read, no row
+  written or repaired, nothing under `src/`, `tests/` or `configs/` changed.

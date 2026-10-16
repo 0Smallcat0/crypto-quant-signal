@@ -4741,3 +4741,9 @@ deliberately **not** re-recorded).
   Bitcoin trend, Monash CFS and CXO crypto-trend pages, arXiv 2209.05559
   (DRL backtest overfitting), an mql5 blog post. **The anchor list is
   unchanged at nine sources, ten figures, top 1.56.**
+
+## 2026-10-16 — closing (no search; the research program is retired)
+
+- No web research this day. The operator retired the program; the anchor
+  list closes at nine sources, ten figures, top 1.56. Closing record:
+  `docs/research/CLOSING_2026-10-16.md`.
