@@ -6,6 +6,10 @@ expansion first). A scheduled task runs one loop iteration per day via
 `scripts/run_research_loop.ps1`. This file IS the loop's instruction set:
 each iteration reads it top to bottom and executes ONE iteration honestly.
 
+**Status: RETIRED 2026-10-16** by operator decision. `scripts/run_research_loop.ps1`
+returns before the agent is called, and the scheduled task is to be disabled.
+See `docs/research/CLOSING_2026-10-16.md`, which also says how to restart.
+
 ## Mission
 
 Search for a tradeable edge — systematically, at maximum honest intensity —
@@ -1125,6 +1129,15 @@ candidates-PBO ≤ 0.05**: write `docs/research/EDGE_CANDIDATE_FOUND.md`
 notification via the runtime notifier if reachable, and STOP starting new
 experiments. Subsequent iterations only maintain/verify until the operator
 responds. Everything below that bar: log and continue.
+
+## Retirement exit
+
+When the analytical routes are exhausted and the operator retires the
+program, the loop is stopped rather than left on a nightly maintenance-only
+iteration: the runner script returns before the agent is called, the
+scheduled tasks are disabled (not unregistered), the holdout stays sealed,
+and a closing record declares every operator item that was still due. Used
+on 2026-10-16 (`docs/research/CLOSING_2026-10-16.md`).
 
 ## Budget discipline
 
