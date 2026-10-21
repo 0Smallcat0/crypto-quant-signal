@@ -16,19 +16,23 @@ The system **never submits real exchange orders, never reads private balances, a
 
 > ⚠️ **Disclaimer:** This is a research and paper-trading project. It is **not financial advice**, produces no guaranteed returns, and executes no real trades. Signals are advisory output only.
 
+**Status: the research program closed on 2026-10-16.** No strategy passed its own pre-registered gates, so nothing here is a signal to follow. The code, the offline demo and the full research record stay up as a reference ([closing record](docs/research/CLOSING_2026-10-16.md)).
+
 ---
 
 ## Try it in two minutes
 
-No API keys, no Docker, no network — the repo bundles 2.5 years of real BTC/ETH daily candles (2024-01 → 2026-06) and replays them through the same engine the paper runtime uses:
+No API keys, no Docker, no network — the repo bundles 2.5 years of real BTC/ETH daily candles (2024-01 → 2026-06) and replays them through the same engine the paper runtime uses. It needs [Python 3.12](https://www.python.org/downloads/) exactly:
 
 ```bash
 git clone https://github.com/0Smallcat0/crypto-quant-signal
 cd crypto-quant-signal
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e .
-python -m scripts.run_demo
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -e .
+.venv/bin/python -m scripts.run_demo
 ```
+
+On Windows, write `py -3.12` for `python3.12` and `.venv\Scripts\python` for `.venv/bin/python`.
 
 You get the full scoreboard in seconds — 713 daily decision cycles, 248 ladder commands, every paper fill with fees and slippage — and the read-only dashboard at `http://127.0.0.1:8010`:
 
@@ -43,7 +47,7 @@ You get the full scoreboard in seconds — 713 daily decision cycles, 248 ladder
 }
 ```
 
-That `+14.5%` ends inside a `−27.1%` drawdown, because the bundled window ends in a bear stretch. The demo does not cherry-pick a flattering period — honest output is the whole point of this project.
+That `+14.5%` ends inside a `−27.1%` drawdown, because the bundled window ends in a bear stretch. The demo does not cherry-pick a flattering period.
 
 ![Demo scoreboard: +14.5% cumulative, sitting in a −27.1% drawdown, ladder fully in cash](docs/assets/demo-dashboard.png)
 
@@ -94,6 +98,8 @@ Long silences are correct behavior — a handful of signals per year is expected
 ```
 
 The four lookbacks are **contract-fixed** (`docs/contracts/STRATEGY_DAILY_TREND_ENSEMBLE.md`). Changing them is a new strategy variant that must be pre-registered in the trial registry and counts toward the overfitting math — you cannot quietly tune parameters into looking good.
+
+The demo and `run_backtest` use this rule. The live paper runtime's config, `configs/runtime/paper_runtime.yaml`, still holds the program's last live choice — trial 118's Donchian breakout, described under [Project status](#project-status) — and line 29 there says how to switch it back.
 
 ## Architecture
 
@@ -169,7 +175,7 @@ None of it is certified: gate 3 still fails. All three sleeves recorded forward 
 
 ## Tech stack
 
-Python 3.12 · FastAPI + Jinja/static dashboard · Pydantic config · Binance Spot public market data · append-only JSONL event store (a PostgreSQL/TimescaleDB dev container is configured but not yet wired into the runtime) · pytest · mypy (strict) · ruff · import-linter · Docker Compose.
+Python 3.12 · FastAPI + Jinja/static dashboard · Pydantic config · Binance Spot public market data · append-only JSONL event store · pytest · mypy (strict) · ruff · import-linter.
 
 ## Local setup
 
@@ -179,12 +185,6 @@ Python 3.12 is required. On Windows:
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]" -c requirements\constraints-dev.txt
-```
-
-Start the local event store (dummy dev credentials only — see below):
-
-```powershell
-docker compose up -d --wait
 ```
 
 ## Verification
@@ -208,7 +208,9 @@ Public-network smoke tests hit Binance and are excluded from the default run; th
 # One paper-runtime cycle against live public data
 .\.venv\Scripts\python.exe -m scripts.run_paper_runtime --once
 
-# Backtest with trial registration + validation-gate metrics
+# Backtest with trial registration + validation-gate metrics. Fetch the public
+# daily history once first; each run is registered as a new trial.
+.\.venv\Scripts\python.exe -m scripts.ingest_public_ohlcv --start 2017-08-01 --output-dir data/candles
 .\.venv\Scripts\python.exe -m scripts.run_backtest
 
 # Read-only dashboard (http://127.0.0.1:8010)
@@ -240,17 +242,9 @@ docs/
 tests/           tests mirroring the src layout
 ```
 
-## Local database credentials
+## The credentials in `docker-compose.yml`
 
-`docker-compose.yml` uses explicit **dummy development credentials** bound to `localhost:54320`:
-
-| | |
-|---|---|
-| Database | `crypto_quant` |
-| User | `crypto` |
-| Password | `crypto_dev_only` |
-
-These are local Docker credentials, **not production secrets**. The application requires no API keys of any kind.
+`docker-compose.yml` defines a PostgreSQL/TimescaleDB dev container that the runtime does not use; its credentials (`crypto` / `crypto_dev_only` on `localhost:54320`) are dummy local values, **not secrets**. The application requires no API keys of any kind.
 
 ## License
 

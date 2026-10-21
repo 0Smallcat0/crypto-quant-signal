@@ -68,8 +68,7 @@ from src.strategies import (
 _BPS = Decimal("10000")
 
 WARMUP_INSUFFICIENT_HISTORY = "WARMUP_INSUFFICIENT_HISTORY"
-# Kept equal to scripts/shadow_signal.py's FETCH_LIMIT so the live runtime and
-# the shadow track replay the Donchian state machine over the same depth.
+# Closed bars the Donchian replay needs before it may decide.
 DONCHIAN_WARMUP_CANDLES = 400
 STALE_DATA_HALT = "STALE_DATA_HALT"
 ZERO_QUANTITY_AFTER_ROUNDING = "ZERO_QUANTITY_AFTER_ROUNDING"
@@ -114,9 +113,8 @@ class SignalRuntime:
         Donchian replays its window state from the warmup floor every cycle, so
         it needs materially more history than the longest window: the replay
         must run long enough for the state to be determined by real crossings
-        rather than by the arbitrary start of the slice. 400 matches
-        ``scripts/shadow_signal.py``'s fetch limit, so the live runtime and the
-        shadow track decide from the same depth.
+        rather than by the arbitrary start of the slice. The live fetch asks
+        for one more bar than this, because the still-open bar is dropped.
         """
 
         if self._parameters.strategy_name == "donchian_breakout_ensemble":

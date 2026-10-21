@@ -38,6 +38,7 @@ from src.notify import (
 )
 from src.risk import DISASTER_SINGLE_DAY_DROP
 from src.runtime import (
+    DONCHIAN_WARMUP_CANDLES,
     CycleResult,
     DonchianRuntimeConfig,
     JsonlEventStore,
@@ -50,13 +51,13 @@ from src.runtime import (
     send_weekly_digest,
 )
 
-# 200-close warmup plus margin; Binance caps one request at 1000 anyway.
-# 400, not 210: the Donchian ensemble replays its window state from the warmup
-# floor every cycle and needs far more history than its longest window (110).
-# Matches scripts/shadow_signal.py's FETCH_LIMIT and src.runtime's
-# DONCHIAN_WARMUP_CANDLES, so live and shadow decide from the same depth. The
-# daily trend ensemble only needs 200 and is unaffected by the deeper fetch.
-_LIVE_FETCH_LIMIT = 400
+# The Donchian ensemble replays its window state from the warmup floor every
+# cycle and needs far more history than its longest window (110). One more than
+# DONCHIAN_WARMUP_CANDLES because Binance counts today's still-open bar, which
+# closed_only drops: a fetch of exactly 400 left 399 closed bars and every live
+# cycle stopped at WARMUP_INSUFFICIENT_HISTORY. The daily trend ensemble only
+# needs 200 and is unaffected by the deeper fetch.
+_LIVE_FETCH_LIMIT = DONCHIAN_WARMUP_CANDLES + 1
 # A lock older than this is treated as a crash leftover, not a live run.
 _LOCK_STALE_SECONDS = 2 * 60 * 60
 

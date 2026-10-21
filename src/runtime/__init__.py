@@ -7,6 +7,7 @@ from src.runtime.digest import (
     weekly_digest_key,
 )
 from src.runtime.engine import (
+    DONCHIAN_WARMUP_CANDLES,
     STALE_DATA_HALT,
     WARMUP_INSUFFICIENT_HISTORY,
     SignalRuntime,
@@ -22,6 +23,7 @@ from src.runtime.types import (
 )
 
 __all__ = [
+    "DONCHIAN_WARMUP_CANDLES",
     "EXEC_QUOTE_KIND",
     "STALE_DATA_HALT",
     "WARMUP_INSUFFICIENT_HISTORY",
